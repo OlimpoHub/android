@@ -24,6 +24,6 @@
 - [ ] Code documentation is complete.
 If in doubt, ASK.
 
-## Type of reveiw required:
+## Type of review required:
 - [ ] Review of a section.
 - [ ] Review of finished US (DoD).
