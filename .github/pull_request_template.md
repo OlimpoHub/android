@@ -3,9 +3,6 @@
 ## Description
 <!--- Please explain how this functionality can be accessed -->
 
-## Screenshot (If not required, explain why)
-<!--- Please provide a screenshot of how this functionality performs-->
-
 ## Types of changes:
 <!--- What types of changes does your code introduce? Put an `x` in all the boxes that apply: -->
 - [ ] Bug fix (non-breaking change which fixes an issue).
@@ -15,13 +12,14 @@
 ## Checklist:
 <!--- Go over all the following points, and put an `x` in all the boxes that apply. -->
 - [ ] `CHANGELOG.md` is updated.
-- [ ] Backend is complete and functional.
 - [ ] Test design is build and the US pass the tests.
-- [ ] Code standars are met.
-- [ ] Commit standars are met.
+- [ ] It has been test and it passes.
+- [ ] Code standards are met [based on this](../CodingStandard.md).
+- [ ] Commit standards are met.
 - [ ] Technical documentation is complete.
 - [ ] User manual is complete.
 - [ ] Code documentation is complete.
+
 If in doubt, ASK.
 
 ## Type of review required:
