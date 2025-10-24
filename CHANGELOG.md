@@ -2,6 +2,7 @@
 
 ### Added
 
+ - Added atom for confirm button 
  - Added atom for modify button 
  - Added atom for adding in white color ('+')
  - Poppins Font added in app/res/font package (24/10/2025)
