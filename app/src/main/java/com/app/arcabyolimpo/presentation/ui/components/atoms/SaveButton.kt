@@ -33,7 +33,8 @@ fun SaveButton(
     ) {
         Text(
             text = "Guardar",
-            color = Color.White,
+            color = Color.White,+
+            fontFamily = 
         )
     }
 }
