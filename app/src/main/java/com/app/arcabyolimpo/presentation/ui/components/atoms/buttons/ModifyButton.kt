@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.app.arcabyolimpo.presentation.theme.Poppins
 
 /**
- * SaveButton: blue squared button with rounded corners used to save changes in the app.
+ * ModifyButton: blue squared button with rounded corners used to modify in the app.
  *
  * @param onClick: () -> Unit -> function to execute when the button is clicked
  * @param cornerRadius: Dp = 8.dp -> how much rounded the corners are
@@ -26,7 +26,7 @@ import com.app.arcabyolimpo.presentation.theme.Poppins
  */
 
 @Composable
-fun SaveButton(
+fun ModifyButton(
     onClick: () -> Unit,
     cornerRadius: Dp = 8.dp,
     width: Dp = 112.dp,
@@ -43,7 +43,7 @@ fun SaveButton(
         ),
     ) {
         Text(
-            text = "Guardar",
+            text = "Modificar",
             color = Color.White,
             fontFamily = Poppins,
             fontWeight = FontWeight.SemiBold,
@@ -55,9 +55,9 @@ fun SaveButton(
     showBackground = true,
 )
 @Composable
-fun SaveButtonPreview() {
+fun ModifyButtonPreview() {
     MaterialTheme {
-        SaveButton(
+        ModifyButton(
             onClick = { },
         )
     }
