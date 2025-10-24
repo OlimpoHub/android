@@ -2,6 +2,7 @@
 
 ### Added
 
+ - Added atom for adding in white color ('+')
  - Poppins Font added in app/res/font package (24/10/2025)
  - Compose function SaveButton created (24/10/2025)
  - Typography file in presentation/theme created to use the poppins (24/10/2025)
