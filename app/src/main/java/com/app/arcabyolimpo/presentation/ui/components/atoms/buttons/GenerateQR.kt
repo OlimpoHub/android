@@ -17,6 +17,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.arcabyolimpo.presentation.theme.Poppins
 
+/**
+ * GenerateQrButton: light white rounded button used to generate a QR code in the app.
+ *
+ * @param onClick: () -> Unit -> function to execute when the button is clicked
+ * @param cornerRadius: Dp = 8.dp -> how much rounded the corners are
+ * @param width: Dp = 88.dp -> button width
+ * @param height: Dp = 32.dp -> button height
+ */
+
+
 @Composable
 fun GenerateQrButton(
     onClick: () -> Unit,
