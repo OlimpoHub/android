@@ -9,12 +9,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.app.arcabyolimpo.presentation.theme.Poppins
+import com.app.arcabyolimpo.ui.theme.ButtonBlue
+import com.app.arcabyolimpo.ui.theme.White
 
 /**
  * SaveButton: blue squared button with rounded corners used to save changes in the app.
@@ -35,7 +36,7 @@ fun SaveButton(
     Button(
         onClick = onClick,
         modifier = Modifier.size(width = width, height = height),
-        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3655C7)),
+        colors = ButtonDefaults.buttonColors(containerColor = ButtonBlue),
         shape = RoundedCornerShape(cornerRadius),
         contentPadding = PaddingValues(
             horizontal = 16.dp,
@@ -44,7 +45,7 @@ fun SaveButton(
     ) {
         Text(
             text = "Guardar",
-            color = Color.White,
+            color = White,
             fontFamily = Poppins,
             fontWeight = FontWeight.SemiBold,
         )
