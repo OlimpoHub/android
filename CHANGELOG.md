@@ -3,6 +3,7 @@
 ### Added
 
  - Atomic composable icons for UI (23/10/2025)
+ - Atomic composable status for UI (27/10/2025)
 
 
 ## [0.0.0] - 9/10/2025
