@@ -20,6 +20,19 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+/**
+ * StandardInput: composable input field with label, placeholder, and optional error handling.
+ *
+ * @param label String -> text label displayed above the input field
+ * @param onValueChange (String) -> Unit -> callback function triggered when the input value changes
+ * @param modifier Modifier = Modifier -> allows layout customization (padding, width, etc.)
+ * @param value String = "" -> initial text value displayed in the input field
+ * @param placeholder String = "" -> helper text shown when the field is empty
+ * @param isError Boolean = false -> marks the input as invalid, changing border and color styles
+ * @param errorMessage String? = null -> optional error message shown below the field if isError is true
+ * @param visualTransformation VisualTransformation = VisualTransformation.None -> defines how text is visually transformed (e.g., password masking)
+ * @param trailingIcon @Composable (() -> Unit)? = null -> optional icon displayed at the end of the input field
+ */
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun StandardInput(
