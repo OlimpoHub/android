@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
+import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.GenerateQrButton
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 
 class MainActivity : ComponentActivity() {
