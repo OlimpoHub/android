@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.arcabyolimpo.presentation.theme.Poppins
+import com.app.arcabyolimpo.ui.theme.PrimaryBlue
+import com.app.arcabyolimpo.ui.theme.White
 
 /**
  *
@@ -36,13 +38,13 @@ fun AddButton(
         shape = CircleShape,
         colors =
             ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFFFF7EB),
+                containerColor = White,
             ),
         contentPadding = PaddingValues(0.dp),
     ) {
         Text(
             text = "+",
-            color = Color(0xFF3655C7),
+            color = PrimaryBlue,
             fontFamily = Poppins,
             fontWeight = FontWeight.SemiBold,
             fontSize = 24.sp,
