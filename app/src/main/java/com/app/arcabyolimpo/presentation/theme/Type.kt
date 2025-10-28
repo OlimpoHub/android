@@ -1,4 +1,4 @@
-package com.app.arcabyolimpo.ui.theme
+package com.app.arcabyolimpo.presentation.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
@@ -17,6 +17,31 @@ val Typography =
                 lineHeight = 24.sp,
                 letterSpacing = 0.5.sp,
             ),
+        headlineLarge =
+            TextStyle(
+                fontFamily = Poppins,
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp
+            ),
+        headlineMedium =
+            TextStyle(
+                fontFamily = Poppins,
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp
+            ),
+        bodySmall =
+            TextStyle(
+                fontFamily = Poppins,
+                fontWeight = FontWeight.Normal,
+                fontSize = 12.sp
+            ),
+        bodyMedium =
+            TextStyle(
+                fontFamily = Poppins,
+                fontWeight = FontWeight.Normal,
+                fontSize = 14.sp
+            )
+
     /* Other default text styles to override
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
