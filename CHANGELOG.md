@@ -1,3 +1,9 @@
+## [0.1.0] - 3/11/2025
+
+### Added
+
+ - Added atom for delete all button
+
 ## [0.1.0] - 9/10/2025
 
 ### Added
