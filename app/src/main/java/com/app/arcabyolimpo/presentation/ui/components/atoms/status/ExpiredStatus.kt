@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun CaducadoStatus(
+fun ExpiredStatus(
     modifier: Modifier = Modifier.padding(16.dp),
     width: Dp = 95.dp,
     height: Dp = 24.dp,

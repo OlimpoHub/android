@@ -25,7 +25,7 @@ val Poppins = FontFamily(
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun EntregadoStatus(
+fun DeliveredStatus(
     modifier: Modifier = Modifier.padding(16.dp),
     width: Dp = 95.dp,
     height: Dp = 24.dp,
