@@ -3,6 +3,7 @@
 ### Added
 
  - Added atom for apply button 
+ - Added atom for delete all button
 
 ## [0.1.0] - 9/10/2025
 
