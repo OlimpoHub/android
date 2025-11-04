@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.app.myapp"
+    namespace = "com.app.arcabyolimpo"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.app.myapp"
+        applicationId = "com.app.arcabyolimpo"
         minSdk = 29
         targetSdk = 36
         versionCode = 1
