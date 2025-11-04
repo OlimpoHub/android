@@ -9,6 +9,7 @@
 
 ### Added
 
+ - Added molecule for NavBar
  - Added atom for apply button 
  - Added atom for delete all button
 
