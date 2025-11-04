@@ -19,6 +19,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 
 /**
  * StandardInput: composable input field with label, placeholder, and optional error handling.
@@ -95,7 +96,7 @@ fun StandardInput(
                         if (isError) {
                             MaterialTheme.colorScheme.error.copy(alpha = 0.7f)
                         } else {
-                            MaterialTheme.colorScheme.outline
+                            MaterialTheme.colorScheme.primary
                         },
                     cursorColor = MaterialTheme.colorScheme.primary,
                 ),
@@ -113,10 +114,13 @@ fun StandardInput(
 }
 
 @Suppress("ktlint:standard:function-naming")
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun StandardInputPreview() {
-    MaterialTheme {
+    ArcaByOlimpoTheme(
+        darkTheme = true,
+        dynamicColor = false,
+    ) {
         StandardInput(
             label = "Nombre",
             placeholder = "Escribe tu nombre",
@@ -127,14 +131,17 @@ fun StandardInputPreview() {
 }
 
 @Suppress("ktlint:standard:function-naming")
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun StandardInputErrorPreview() {
-    MaterialTheme {
+    ArcaByOlimpoTheme(
+        darkTheme = true,
+        dynamicColor = false,
+    ) {
         StandardInput(
             label = "Correo electrónico",
             placeholder = "example@email.com",
-            value = "",
+            value = "Rob",
             isError = true,
             errorMessage = "Correo inválido",
             onValueChange = {},

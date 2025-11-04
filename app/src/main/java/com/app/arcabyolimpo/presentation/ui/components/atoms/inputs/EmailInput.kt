@@ -13,6 +13,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.MailIcon
+import com.app.arcabyolimpo.presentation.util.validateEmail
+import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 
 /**
  * EmailInput: composable text field specialized for email entry, with validation and visual feedback.
@@ -40,11 +42,6 @@ fun EmailInput(
     var emailText by rememberSaveable { mutableStateOf(value) }
     var isError by rememberSaveable { mutableStateOf(false) }
 
-    fun validateEmail(input: String): Boolean {
-        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$".toRegex()
-        return input.matches(emailRegex)
-    }
-
     StandardInput(
         label = label,
         placeholder = placeholder,
@@ -68,12 +65,15 @@ fun EmailInput(
 }
 
 @Suppress("ktlint:standard:function-naming")
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun PreviewEmailInput() {
     var text by remember { mutableStateOf("") }
 
-    MaterialTheme {
+    ArcaByOlimpoTheme(
+        darkTheme = true,
+        dynamicColor = false,
+    ) {
         EmailInput(
             label = "Correo electrónico",
             placeholder = "ejemplo@correo.com",
