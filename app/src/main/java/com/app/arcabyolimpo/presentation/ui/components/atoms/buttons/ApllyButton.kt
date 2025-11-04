@@ -18,7 +18,7 @@ import com.app.arcabyolimpo.ui.theme.ButtonBlue
 import com.app.arcabyolimpo.ui.theme.White
 
 /**
- * ModifyButton: blue squared button with rounded corners used to modify in the app.
+ * ApplyButton: blue squared button with rounded corners used to modify in the app.
  *
  * @param onClick: () -> Unit -> function to execute when the button is clicked
  * @param cornerRadius: Dp = 8.dp -> how much rounded the corners are
@@ -27,10 +27,10 @@ import com.app.arcabyolimpo.ui.theme.White
  */
 
 @Composable
-fun ConfirmButton(
+fun ApplyButton(
     onClick: () -> Unit,
     cornerRadius: Dp = 8.dp,
-    width: Dp = 112.dp,
+    width: Dp = 124.dp,
     height: Dp = 40.dp,
 ) {
     Button(
@@ -44,7 +44,7 @@ fun ConfirmButton(
         ),
     ) {
         Text(
-            text = "Confirmar",
+            text = "Aplicar",
             color = White,
             fontFamily = Poppins,
             fontWeight = FontWeight.SemiBold,
@@ -56,9 +56,9 @@ fun ConfirmButton(
     showBackground = true,
 )
 @Composable
-fun ConfirmButtonPreview() {
+fun ApplyButtonPreview() {
     MaterialTheme {
-        ConfirmButton(
+        ApplyButton(
             onClick = { },
         )
     }

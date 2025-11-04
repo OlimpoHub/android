@@ -9,56 +9,54 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.app.arcabyolimpo.presentation.theme.Poppins
-import com.app.arcabyolimpo.ui.theme.ButtonBlue
-import com.app.arcabyolimpo.ui.theme.White
 
 /**
- * ModifyButton: blue squared button with rounded corners used to modify in the app.
+ * CancelButton: white squared button with rounded corners and blue text.
  *
- * @param onClick: () -> Unit -> function to execute when the button is clicked
- * @param cornerRadius: Dp = 8.dp -> how much rounded the corners are
- * @param width Dp -> button width (default: 112.dp)
- * @param height Dp -> button height (default: 40.dp)
+ * @param modifier Modifier -> customize the button
+ * @param onClick () -> Unit -> function executed when clicked
+ * @param cornerRadius Dp = 8.dp -> corner roundness
  */
-
 @Composable
-fun ConfirmButton(
+fun CancelButton(
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
     cornerRadius: Dp = 8.dp,
-    width: Dp = 112.dp,
-    height: Dp = 40.dp,
 ) {
+    val blueColor = Color(0xFF3655C7)
+    val whiteColor = Color(0xFFDBD5CC)
+
     Button(
         onClick = onClick,
-        modifier = Modifier.size(width = width, height = height),
-        colors = ButtonDefaults.buttonColors(containerColor = ButtonBlue),
-        shape = RoundedCornerShape(cornerRadius),
-        contentPadding = PaddingValues(
-            horizontal = 16.dp,
-            vertical = 8.dp
+        modifier = modifier.size(width = 112.dp, height = 40.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = whiteColor,
+            contentColor = blueColor
         ),
+        shape = RoundedCornerShape(cornerRadius),
+        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
     ) {
         Text(
-            text = "Confirmar",
-            color = White,
+            text = "Cancelar",
+            color = blueColor,
             fontFamily = Poppins,
             fontWeight = FontWeight.SemiBold,
         )
     }
 }
 
-@Preview(
-    showBackground = true,
-)
+@Preview(showBackground = true)
 @Composable
-fun ConfirmButtonPreview() {
+fun CancelButtonPreview() {
     MaterialTheme {
-        ConfirmButton(
+        CancelButton(
+            modifier = Modifier.size(width = 112.dp, height = 40.dp),
             onClick = { },
         )
     }
