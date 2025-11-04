@@ -2,15 +2,17 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    kotlin("kapt")
+    alias(libs.plugins.hilt)
 }
 
 android {
-    namespace = "com.app.arcabyolimpo"
+    namespace = "com.app.myapp"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.app.arcabyolimpo"
-        minSdk = 24
+        applicationId = "com.app.myapp"
+        minSdk = 29
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -45,16 +47,36 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.runtime)
+
+    // Corrected Compose dependencies
+    implementation(libs.androidx.ui) // Changed from libs.androidx.compose.ui
+    implementation(libs.androidx.ui.graphics) // Changed from libs.androidx.compose.ui.graphics
+    implementation(libs.androidx.ui.tooling.preview) // Changed from libs.androidx.compose.ui.tooling.preview
+    implementation(libs.androidx.material3)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
+    androidTestImplementation(libs.androidx.ui.test.junit4) // Changed from libs.androidx.compose.ui.test.junit4
+    debugImplementation(libs.androidx.ui.tooling) // Changed from libs.androidx.compose.ui.tooling
+    debugImplementation(libs.androidx.ui.test.manifest) // Changed from libs.androidx.compose.ui.test.manifest
+
+    // Hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
+
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+
+    // Coil
+    implementation(libs.coil.compose)
+
+    // Encrypted Shared Preferences
+    implementation(libs.androidx.security.crypto)
+
+    // DataStore
+    implementation(libs.androidx.datastore.preferences)
 }
