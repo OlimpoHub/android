@@ -2,6 +2,7 @@
 
 ### Added
 
+ - Added molecule for NavBar
  - Added atom for apply button 
  - Added atom for delete all button
 
@@ -19,6 +20,7 @@
  - Compose function SaveButton created (24/10/2025)
  - Typography file in presentation/theme created to use the poppins (24/10/2025)
  - Atomic composable icons for UI (23/10/2025)
+ - Atomic composable status for UI (27/10/2025)
 
 ### Change
 - Modify constructor parameters of savebutton
