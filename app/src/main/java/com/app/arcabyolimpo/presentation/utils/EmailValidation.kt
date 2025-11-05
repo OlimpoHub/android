@@ -7,6 +7,6 @@ package com.app.arcabyolimpo.presentation.util
  * @return true if the email is valid, false otherwise
  */
 fun validateEmail(input: String): Boolean {
-    val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$".toRegex()
+    val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z0-9.-]+\$".toRegex()
     return input.matches(emailRegex)
 }
