@@ -1,3 +1,8 @@
+## [0.1.1] - 5/11/2025
+
+### Added
+- Added atom for date input
+
 ## [0.1.0] - 4/11/2025
 
 ### Added
