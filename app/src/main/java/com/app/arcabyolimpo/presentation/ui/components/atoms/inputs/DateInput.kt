@@ -1,7 +1,7 @@
 @file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 
 package com.app.arcabyolimpo.presentation.ui.components.atoms.inputs
-
+import com.app.arcabyolimpo.presentation.util.toUtcMidnightOrNull
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.focus.onFocusChanged
@@ -100,24 +100,8 @@ fun DateInput(
     }
 }
 
-/** Convierte "dd/MM/yyyy" a epoch millis (medianoche UTC), o null si no parsea. */
-private fun String.toUtcMidnightOrNull(dateFormatter: SimpleDateFormat): Long? =
-    try {
-        val parsed: Date = dateFormatter.parse(this) ?: return null
-        val cal: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
-            time = parsed
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }
-        cal.timeInMillis
-    } catch (_: ParseException) {
-        null
-    }
-
 @Suppress("ktlint:standard:function-naming")
-@Preview
+@Preview(showSystemUi = false, showBackground = false, backgroundColor = 0xFF1E1F23)
 @Composable
 private fun DateInputPreview_Dark() {
     var text by rememberSaveable { mutableStateOf("") }
