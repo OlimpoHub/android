@@ -1,14 +1,8 @@
 package com.app.arcabyolimpo.presentation.screens.splash
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -18,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.app.arcabyolimpo.domain.model.auth.UserRole
+import com.app.arcabyolimpo.presentation.ui.components.atoms.logo.ArcaLogo
+import com.app.arcabyolimpo.ui.theme.Background
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
@@ -27,31 +23,19 @@ fun SplashScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
 
-    // Cuando el state ya no esté cargando, navegamos (role != null -> Home según rol; else -> Login)
     LaunchedEffect(state.isLoading, state.role) {
         if (!state.isLoading) {
-            // Delay pequeño opcional si quieres mostrar la splash un momento:
-            // kotlinx.coroutines.delay(300)
             onNavigate(state.role)
         }
     }
 
-    // UI simple de splash
-    Column(
+    Box(
         modifier =
             Modifier
                 .fillMaxSize()
-                .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+                .background(Background),
+        contentAlignment = Alignment.Center,
     ) {
-        Text(text = "MyApp", style = MaterialTheme.typography.headlineLarge)
-        Spacer(modifier = Modifier.height(12.dp))
-        if (state.isLoading) {
-            CircularProgressIndicator()
-        } else {
-            // Si hay error o no-session, mostramos un texto breve (opcional)
-            state.error?.let { Text(text = it, color = MaterialTheme.colorScheme.error) }
-        }
+        ArcaLogo(size = 160.dp)
     }
 }
