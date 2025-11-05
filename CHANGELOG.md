@@ -1,3 +1,11 @@
+## [0.1.0] - 4/11/2025
+
+### Added
+
+ - Added atom for email input
+ - Fixed email regex validation
+ - Validation input function ValidateEmail created
+
 ## [0.1.0] - 3/11/2025
 
 ### Added
