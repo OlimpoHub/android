@@ -14,12 +14,12 @@ import retrofit2.http.POST
  * network communication with the backend API service.
  */
 interface ArcaApi {
-    @POST("auth/login")
+    @POST("user/login")
     suspend fun login(
         @Body request: LoginRequestDto,
     ): LoginResponseDto
 
-    @POST("auth/refresh")
+    @POST("user/refresh")
     suspend fun refresh(
         @Body request: RefreshRequestDto,
     ): RefreshResponseDto
