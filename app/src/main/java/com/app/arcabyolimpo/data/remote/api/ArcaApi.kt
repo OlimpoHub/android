@@ -29,7 +29,7 @@ interface ArcaApi {
     ): RefreshResponseDto
 
     @GET("supplies")
-    suspend fun getSupplies(): List<SuppliesListDto>
+    suspend fun getSuppliesList(): List<SuppliesListDto>
 
     @GET("supplybatch/{id}")
     suspend fun getSupply(@Path("id") id: String): SupplyDto
