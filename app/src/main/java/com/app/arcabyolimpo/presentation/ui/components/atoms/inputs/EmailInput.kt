@@ -55,11 +55,9 @@ fun EmailInput(
         errorMessage = if (isError) "Correo electrónico no válido" else null,
         modifier = modifier.fillMaxWidth(),
         trailingIcon = {
-            IconButton(onClick = {}) {
-                MailIcon(
-                    tint = MaterialTheme.colorScheme.onSurface,
-                )
-            }
+            MailIcon(
+                tint = MaterialTheme.colorScheme.onSurface,
+            )
         },
     )
 }
