@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -90,10 +91,19 @@ fun PasswordRecoveryScreen(
                 value = email,
                 onValueChange = { email = it },
                 isError = uiState.error != null
-                        || uiState.message != "Recovery email sent",
-                errorMessage = if (uiState.message != "Recovery email sent")
-                                    uiState.message
-                                else uiState.error,
+                        || uiState.message == "User not found"
+                        || uiState.message == "Internal server error",
+                errorMessage = when (uiState.message) {
+                                "User not found" -> {
+                                    "Correo no registrado"
+                                }
+                                "Internal server error" -> {
+                                    "Error al enviar correo"
+                                }
+                                else -> {
+                                    uiState.error
+                                }
+                },
                 trailingIcon = { MailIcon() }
             )
             Spacer(modifier = Modifier.height(37.dp))
@@ -109,14 +119,9 @@ fun PasswordRecoveryScreen(
                     Text(
                         text = "¡Correo enviado exitosamente!",
                         color = ButtonBlue,
-                        style = Typography.bodySmall
-                    )
-                } else {
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Text(
-                        text = "Error al enviar correo",
-                        color = ErrorRed,
-                        style = Typography.bodySmall
+                        style = Typography.bodySmall,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
             }

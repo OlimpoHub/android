@@ -43,7 +43,7 @@ interface ArcaApi {
 
     @GET("user/verify-token")
     suspend fun verifyToken(
-        @Query("token") token: VerifyTokenDto
+        @Query("token") token: String
     ): VerifyTokenResponseDto
 
     @POST("user/update-password")

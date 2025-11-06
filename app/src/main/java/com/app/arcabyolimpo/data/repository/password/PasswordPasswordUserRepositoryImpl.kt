@@ -28,7 +28,7 @@ class PasswordPasswordUserRepositoryImpl
     override suspend fun getVerifyToken(
         token: String
     ): VerifyToken {
-        val response = api.verifyToken(VerifyTokenDto(token))
+        val response = api.verifyToken(token)
         return response.toDomain()
     }
 

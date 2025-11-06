@@ -1,5 +1,7 @@
 package com.app.arcabyolimpo.presentation.navigation
 
+import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -13,6 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
 import com.app.arcabyolimpo.domain.model.auth.UserRole
 import com.app.arcabyolimpo.presentation.screens.accountactivation.AccountActivationScreen
@@ -21,6 +24,7 @@ import com.app.arcabyolimpo.presentation.screens.client.CollaboratorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.login.LoginScreen
 import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecoveryScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationScreen
+import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
@@ -50,6 +54,8 @@ sealed class Screen(
     object PasswordRegistration : Screen("password-registration/{email}") {
         fun createRoute(email: String) = "password-registration/$email"
     }
+
+    object PasswordRegistrationSuccess : Screen("pasword-registration-success")
 
     object CoordinatorHome : Screen("admin")
 
@@ -115,18 +121,26 @@ fun ArcaNavGraph(
 
         /** Login Screen */
         composable(Screen.Login.route) {
-            LoginScreen(onLoginSuccess = { role ->
-                when (role) {
-                    UserRole.COORD ->
-                        navController.navigate(Screen.CoordinatorHome.route) {
-                            popUpTo(Screen.Login.route) { inclusive = true }
-                        }
-                    UserRole.COLAB ->
-                        navController.navigate(Screen.CollaboratorHome.route) {
-                            popUpTo(Screen.Login.route) { inclusive = true }
-                        }
+            LoginScreen(
+                onLoginSuccess = { role ->
+                    when (role) {
+                        UserRole.COORD ->
+                            navController.navigate(Screen.CoordinatorHome.route) {
+                                popUpTo(Screen.Login.route) { inclusive = true }
+                            }
+                        UserRole.COLAB ->
+                            navController.navigate(Screen.CollaboratorHome.route) {
+                                popUpTo(Screen.Login.route) { inclusive = true }
+                            }
+                    }
+                },
+                onRecoverPasswordClick = {
+                    navController.navigate(Screen.PasswordRecovery.route)
+                },
+                onAccountActivationClick = {
+                    navController.navigate(Screen.AccountActivation.route)
                 }
-            })
+            )
         }
 
         composable(Screen.PasswordRecovery.route) {
@@ -156,7 +170,12 @@ fun ArcaNavGraph(
             arguments = listOf(navArgument("token") {
                 type = NavType.StringType
                 nullable = true
-            })
+            }),
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = "arcabyolimpo://user/verify-token?token={token}"
+                }
+            )
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token")
             val viewModel: TokenVerificationViewModel = hiltViewModel()
@@ -171,14 +190,27 @@ fun ArcaNavGraph(
                     PasswordRegistrationScreen(
                         email = uiState.response?.email,
                         onBackClick = { navController.popBackStack() },
+                        onPasswordRegistrationSucessClick = {
+                            navController.navigate(Screen.PasswordRegistrationSuccess.route)
+                        },
                         viewModel = hiltViewModel()
                     )
                 }
+
                 uiState.response?.valid == false -> {
+                    TokenVerificationFailedScreen(onBackClick = { navController.popBackStack() })
+                }
+
+                uiState.isLoading == true -> {
+
+                }
+
+                else -> {
                     TokenVerificationFailedScreen(onBackClick = { navController.popBackStack() })
                 }
             }
         }
+
 
 
         composable(Screen.TokenVerificationFailed.route) {
@@ -203,7 +235,19 @@ fun ArcaNavGraph(
                         navController.navigate(Screen.Login.route)
                     }
                 },
+                onPasswordRegistrationSucessClick = {
+                    navController.popBackStack()
+                    navController.popBackStack()
+                },
                 viewModel = hiltViewModel()
+            )
+        }
+
+        composable(Screen.PasswordRegistrationSuccess.route) {
+            PasswordRegistrationSuccessScreen (
+                onBackClick = {
+                    navController.navigate(Screen.Login.route)
+                },
             )
         }
 

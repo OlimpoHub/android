@@ -12,12 +12,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.app.arcabyolimpo.presentation.theme.Typography
@@ -36,11 +38,18 @@ import com.app.arcabyolimpo.ui.theme.White
 fun PasswordRegistrationScreen(
     email: String?,
     onBackClick: () -> Unit,
+    onPasswordRegistrationSucessClick: () -> Unit,
     viewModel: PasswordRegistrationViewModel = hiltViewModel(),
 ) {
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     val uiState by viewModel.uiState.collectAsState()
+
+    if (uiState.response?.status == true) {
+        LaunchedEffect(Unit) {
+            onPasswordRegistrationSucessClick()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -74,12 +83,12 @@ fun PasswordRegistrationScreen(
             Spacer(modifier = Modifier.height(20.dp))
             Text(
                 text = "Crea una \n" +
-                        "contraseña para? \n" +
+                        "contraseña para \n" +
                         "activar tu cuenta",
                 style = Typography.headlineLarge,
                 color = White
             )
-            Spacer(modifier = Modifier.height(100.dp))
+            Spacer(modifier = Modifier.height(80.dp))
             StandardInput(
                 label = "Ingresa una nueva contraseña",
                 value = password,
@@ -101,7 +110,8 @@ fun PasswordRegistrationScreen(
                 errorMessage = if (uiState.response?.status == false)
                     uiState.response?.message
                 else uiState.error,
-                trailingIcon = { KeyIcon() }
+                trailingIcon = { KeyIcon() },
+                visualTransformation = PasswordVisualTransformation(),
             )
             Spacer(modifier = Modifier.height(37.dp))
             SetPasswordButton(

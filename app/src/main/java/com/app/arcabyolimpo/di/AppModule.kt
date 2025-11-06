@@ -95,4 +95,10 @@ object AppModule {
     fun providePasswordUserRepository(
         api: ArcaApi
     ): PasswordUserRepository = PasswordPasswordUserRepositoryImpl(api)
+
+    @Provides
+    @Singleton
+    fun provideSupplyRepository(
+        api: ArcaApi
+    ): SupplyRepository = SupplyRepositoryImpl(api)
 }
