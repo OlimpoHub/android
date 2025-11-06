@@ -56,6 +56,15 @@ class TokenAuthenticator(
             return null
         }
 
+        // IMPORTANT: if the original request did not include an Authorization header,
+        // do NOT try to refresh. This avoids treating /auth/login (and similar)
+        // 401 responses as refreshable errors and prevents unintended logout.
+        val originalRequest = response.request
+        val originalAuthHeader = originalRequest.header("Authorization")
+        if (originalAuthHeader.isNullOrBlank()) {
+            return null
+        }
+
         return runBlocking {
             refreshMutex.withLock {
                 try {

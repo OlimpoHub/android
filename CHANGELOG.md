@@ -1,3 +1,8 @@
+## [0.1.0] - 5/11/2025
+
+### Updated
+ - Login and Splash Screen UI
+
 ## [0.1.0] - 4/11/2025
 
 ### Added
