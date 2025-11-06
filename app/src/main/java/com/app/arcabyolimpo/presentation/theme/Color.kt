@@ -23,6 +23,6 @@ val InputBackgroundBlue = Color(0xFF0F142C)
 val HighlightInputBlue = Color(0xFF3D59C2)
 
 // Backgrounds
-val HeaderBackground = Color(0xFF070A18)
+val HeaderBackground = Color(0xCE070A18)
 val HeaderLineBlue = Color(0xFF101432)
 val PopupBackgroundBlue = Color(0xFF1D1F28)
