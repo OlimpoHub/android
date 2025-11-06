@@ -17,8 +17,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 
-/** Campo multilínea para capturar una descripción. Limita por longitud y muestra contador. */
+/** Multiline input for description text. Enforces a max length and shows a right-aligned counter. */
 const val DESCRIPTION_MAX_CHARS: Int = 400
+const val PLACEHOLDER_ALPHA: Float = 0.7f
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
@@ -29,14 +30,14 @@ fun DescriptionInput(
     modifier: Modifier = Modifier,
     placeholder: String = "Escribe una descripción...",
     isError: Boolean = false,
-    errorMessage: String? = null, // compatibilidad
+    // kept for compatibility; not shown if you removed the hint line
+    errorMessage: String? = null,
     minLines: Int = 4,
     maxLines: Int = 8,
     maxChars: Int = DESCRIPTION_MAX_CHARS,
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    // NUEVO: controla el ancho del campo
-    widthFraction: Float = 1f,          // 1f = 100% del ancho del padre
-    maxWidthDp: Dp? = null              // opcional: tope máximo (e.g., 560.dp)
+    widthFraction: Float = 1f,
+    maxWidthDp: Dp? = null,
 ) {
     val colorScheme: ColorScheme = MaterialTheme.colorScheme
     val limited: String = if (value.length <= maxChars) value else value.take(maxChars)
@@ -56,7 +57,12 @@ fun DescriptionInput(
         OutlinedTextField(
             value = limited,
             onValueChange = { onValueChange(if (it.length <= maxChars) it else it.take(maxChars)) },
-            placeholder = { Text(placeholder, color = colorScheme.onSurface.copy(alpha = 0.7f)) },
+            placeholder = {
+                Text(
+                    text = placeholder,
+                    color = colorScheme.onSurface.copy(alpha = PLACEHOLDER_ALPHA)
+                )
+            },
             modifier = Modifier
                 .fillMaxWidth(widthFraction)
                 .then(if (maxWidthDp != null) Modifier.widthIn(max = maxWidthDp) else Modifier)
@@ -71,16 +77,17 @@ fun DescriptionInput(
                 focusedContainerColor   = colorScheme.surface,
                 unfocusedContainerColor = colorScheme.surface,
                 disabledContainerColor  = colorScheme.surface,
+
                 focusedIndicatorColor   = if (isError) colorScheme.error else colorScheme.primary,
                 unfocusedIndicatorColor = if (isError) colorScheme.error.copy(alpha = 0.7f) else colorScheme.primary,
                 errorIndicatorColor     = colorScheme.error,
+
                 focusedTextColor        = colorScheme.onSurface,
                 unfocusedTextColor      = colorScheme.onSurface,
                 cursorColor             = if (isError) colorScheme.error else colorScheme.primary,
             ),
         )
 
-        // Solo contador a la derecha
         Row(
             modifier = Modifier
                 .fillMaxWidth(widthFraction)
@@ -91,7 +98,7 @@ fun DescriptionInput(
             Spacer(Modifier.weight(1f))
             Text(
                 text = "${limited.length}/$maxChars",
-                color = if (isError) colorScheme.error else colorScheme.onSurface.copy(alpha = 0.7f),
+                color = if (isError) colorScheme.error else colorScheme.onSurface.copy(alpha = PLACEHOLDER_ALPHA),
                 style = MaterialTheme.typography.bodySmall
             )
         }
@@ -105,7 +112,7 @@ private fun DescriptionInputPreview() {
     ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false) {
         var v by remember { mutableStateOf("") }
         Column(Modifier.fillMaxWidth().padding(16.dp)) {
-            // Ejemplo: 92% del ancho, con tope máximo de 560.dp
+            // Example: 92% width, capped at 560.dp
             DescriptionInput(
                 value = v,
                 onValueChange = { v = it },
