@@ -8,6 +8,8 @@ import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
 import com.app.arcabyolimpo.data.remote.interceptor.TokenAuthenticator
 import com.app.arcabyolimpo.data.repository.auth.UserRepositoryImpl
 import com.app.arcabyolimpo.domain.repository.auth.UserRepository
+import com.app.arcabyolimpo.data.repository.ExternalCollaborator.ExternalCollabRepositoryImpl
+import com.app.arcabyolimpo.domain.repository.ExternalCollabRepository.ExternalCollabRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -85,4 +87,10 @@ object AppModule {
         api: ArcaApi,
         authPreferences: UserPreferences,
     ): UserRepository = UserRepositoryImpl(api, authPreferences)
+
+    @Provides
+    @Singleton
+    fun provideExternalCollabRepository(
+        api: ArcaApi,
+    ): ExternalCollabRepository = ExternalCollabRepositoryImpl(api)
 }

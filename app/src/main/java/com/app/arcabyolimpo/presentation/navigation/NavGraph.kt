@@ -13,6 +13,7 @@ import com.app.arcabyolimpo.presentation.screens.admin.CoordinatorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.client.CollaboratorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.login.LoginScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
+import com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabListScreen
 
 /**
  * Defines all available destinations (routes) in the application.
@@ -29,6 +30,9 @@ sealed class Screen(
     object CoordinatorHome : Screen("admin")
 
     object CollaboratorHome : Screen("client")
+
+    object ExternalCollabList : Screen("external_collab_list")
+
 }
 
 /**
@@ -63,7 +67,7 @@ fun ArcaNavGraph(
     /** Defines all navigation. The start destination is the Splash screen. */
     NavHost(
         navController = navController,
-        startDestination = Screen.Splash.route,
+        startDestination = Screen.ExternalCollabList.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -110,6 +114,11 @@ fun ArcaNavGraph(
         /** Collaborator Home Screen */
         composable(Screen.CollaboratorHome.route) {
             CollaboratorHomeScreen()
+        }
+
+        /** External Collaborator List Screen */
+        composable(Screen.ExternalCollabList.route) {
+            ExternalCollabListScreen()
         }
     }
 }
