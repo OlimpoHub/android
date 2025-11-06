@@ -30,7 +30,7 @@ interface ArcaApi {
     suspend fun getAllCollabs(): List<ExternalCollabDto>
 
     @GET("externalCollabs/{id}")
-    suspend fun getCollabById(@Path("id") id: Int): ExternalCollabDto
+    suspend fun getCollabById(@Path("id") id: String): List<ExternalCollabDto>
 
     @POST("externalCollabs/register")
     suspend fun registerCollab(@Body collab: ExternalCollabDto): ExternalCollabDto

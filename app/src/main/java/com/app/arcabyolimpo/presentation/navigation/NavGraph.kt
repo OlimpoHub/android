@@ -4,9 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
 import com.app.arcabyolimpo.domain.model.auth.UserRole
 import com.app.arcabyolimpo.presentation.screens.admin.CoordinatorHomeScreen
@@ -14,7 +16,7 @@ import com.app.arcabyolimpo.presentation.screens.client.CollaboratorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.login.LoginScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
 import com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabListScreen
-
+import com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabDetail.ExternalCollabDetailScreen
 /**
  * Defines all available destinations (routes) in the application.
  *
@@ -32,6 +34,10 @@ sealed class Screen(
     object CollaboratorHome : Screen("client")
 
     object ExternalCollabList : Screen("external_collab_list")
+
+    object ExternalCollabDetail : Screen("external_collab_detail/{collabId}") {
+        fun createRoute(collabId: String) = "external_collab_detail/$collabId"
+    }
 
 }
 
@@ -116,9 +122,25 @@ fun ArcaNavGraph(
             CollaboratorHomeScreen()
         }
 
-        /** External Collaborator List Screen */
         composable(Screen.ExternalCollabList.route) {
-            ExternalCollabListScreen()
+            ExternalCollabListScreen(
+                onCollabClick = { collabId ->
+                    navController.navigate(Screen.ExternalCollabDetail.createRoute(collabId))
+                }
+            )
+        }
+
+        /** External Collaborator Detail Screen */
+        composable(
+            route = Screen.ExternalCollabDetail.route,
+            arguments = listOf(navArgument("collabId") { type = NavType.StringType })
+        ) {
+            ExternalCollabDetailScreen(
+                onBackClick = { navController.popBackStack() },
+                onEditClick = { id ->
+                    // TODO: Navigate to edit screen when you create it
+                }
+            )
         }
     }
 }

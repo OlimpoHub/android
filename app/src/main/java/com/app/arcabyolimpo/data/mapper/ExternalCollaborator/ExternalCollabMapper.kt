@@ -5,7 +5,7 @@ import com.app.arcabyolimpo.domain.model.ExternalCollaborator.ExternalCollab
 
 fun ExternalCollabDto.toDomain(): ExternalCollab {
     return ExternalCollab(
-        id = null,
+        id = idUsuario,
         roleId = idRol.toIntOrNull() ?: 0,
         firstName = nombre,
         lastName = apellidoPaterno,
@@ -22,20 +22,20 @@ fun ExternalCollabDto.toDomain(): ExternalCollab {
 // Domain → DTO (for sending to API)
 fun ExternalCollab.toDto(): ExternalCollabDto {
     return ExternalCollabDto(
-        idUsuario = this.id?.toString() ?: "",  // Convert Int? to String
-        idRol = this.roleId.toString(),          // Convert Int to String
+        idUsuario = this.id?.toString() ?: "",
+        idRol = this.roleId.toString(),
         nombre = this.firstName,
         apellidoPaterno = this.lastName,
         apellidoMaterno = this.secondLastName,
         fechaNacimiento = this.birthDate,
         carrera = this.degree,
         correoElectronico = this.email,
-        contrasena = null,  // Add this required field
+        contrasena = null,
         telefono = this.phone,
         estatus = if (this.isActive) 1 else 0,
-        reglamentoInterno = null,  // Add this optional field
-        copiaINE = null,            // Add this optional field
-        avisoConfidencialidad = null,  // Add this optional field
+        reglamentoInterno = null,
+        copiaINE = null,
+        avisoConfidencialidad = null,
         foto = this.photoUrl
     )
 }

@@ -20,10 +20,14 @@ class ExternalCollabRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getCollabById(id: Int): Result<ExternalCollab> {
+    override suspend fun getCollabById(id: String): Result<ExternalCollab> {
         return try {
             val response = api.getCollabById(id)
-            Result.success(response.toDomain())
+            if (response.isNotEmpty()) {
+                Result.success(response.first().toDomain())
+            } else {
+                Result.failure(Exception("Collaborator not found"))
+            }
         } catch (e: Exception) {
             Result.failure(e)
         }

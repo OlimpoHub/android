@@ -1,7 +1,7 @@
 package com.app.arcabyolimpo.domain.model.ExternalCollaborator
 
 data class ExternalCollab(
-    val id: Int? = null,
+    val id: String? = null,
     val roleId: Int,
     val firstName: String,
     val lastName: String,

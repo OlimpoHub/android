@@ -25,7 +25,8 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SearchInput
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExternalCollabListScreen(
-    viewModel: ExternalCollabListViewModel = hiltViewModel()
+    viewModel: ExternalCollabListViewModel = hiltViewModel(),
+    onCollabClick: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
@@ -153,7 +154,7 @@ fun ExternalCollabListScreen(
                         items(uiState.collabs) { collab ->
                             ExternalCollabCard(
                                 collab = collab,
-                                onClick = { /* TODO: Navigate to detail */ }
+                                onClick = { collab.id?.let { onCollabClick(it) } }
                             )
                         }
                     }

@@ -7,7 +7,7 @@ import javax.inject.Inject
 class GetCollabByIdUseCase @Inject constructor(
     private val repository: ExternalCollabRepository
 ) {
-    suspend operator fun invoke(id: Int): Result<ExternalCollab> {
+    suspend operator fun invoke(id: String): Result<ExternalCollab> {
         return repository.getCollabById(id)
     }
 }
