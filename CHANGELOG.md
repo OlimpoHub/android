@@ -7,6 +7,12 @@
 
 ### Added
 
+ - Added supplies list functionality with all the MVVM layers
+
+## [0.1.0] - 4/11/2025
+
+### Added
+
  - Added atom for email input
  - Fixed email regex validation
  - Validation input function ValidateEmail created

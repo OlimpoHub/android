@@ -17,8 +17,10 @@ navigationCompose = "2.8.5"
 hilt-navigation = "1.2.0"
 retrofit = "2.11.0"
 securityCrypto = "1.1.0"
+material = "1.7.7"
 
 [libraries]
+androidx-material = { module = "androidx.compose.material:material", version.ref = "material" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
