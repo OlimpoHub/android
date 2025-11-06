@@ -1,3 +1,9 @@
+## [0.2.0] - 6/11/2025
+
+### Added
+
+ - Added molecule for beneficiary cards
+
 ## [0.1.0] - 5/11/2025
 
 ### Updated
