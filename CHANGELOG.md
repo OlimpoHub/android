@@ -1,3 +1,8 @@
+## [0.1.0] - 6/11/2025
+
+### Added
+- Password recovery and account activation with token verification
+
 ## [0.1.0] - 5/11/2025
 
 ### Updated
