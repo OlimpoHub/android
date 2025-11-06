@@ -19,6 +19,16 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.app.arcabyolimpo.presentation.theme.Typography
+import com.app.arcabyolimpo.ui.theme.DangerGray
+import com.app.arcabyolimpo.ui.theme.ErrorRed
+import com.app.arcabyolimpo.ui.theme.HighlightInputBlue
+import com.app.arcabyolimpo.ui.theme.HighlightRed
+import com.app.arcabyolimpo.ui.theme.InputBackgroundBlue
+import com.app.arcabyolimpo.ui.theme.InputBackgroundRed
+import com.app.arcabyolimpo.ui.theme.PlaceholderGray
+import com.app.arcabyolimpo.ui.theme.SelectInputBlue
+import com.app.arcabyolimpo.ui.theme.White
 
 /**
  * StandardInput: composable input field with label, placeholder, and optional error handling.
@@ -56,8 +66,8 @@ fun StandardInput(
     ) {
         Text(
             text = label,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface,
+            style = Typography.bodyMedium,
+            color = White,
         )
 
         OutlinedTextField(
@@ -69,7 +79,7 @@ fun StandardInput(
             placeholder = {
                 Text(
                     text = placeholder,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                    color = PlaceholderGray,
                 )
             },
             modifier =
@@ -79,23 +89,24 @@ fun StandardInput(
             shape = RoundedCornerShape(12.dp),
             isError = isError,
             visualTransformation = visualTransformation,
-            textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface),
+            textStyle = TextStyle(color = White),
             trailingIcon = trailingIcon,
             colors =
                 TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    focusedContainerColor = InputBackgroundBlue,
+                    unfocusedContainerColor = InputBackgroundBlue,
+                    errorContainerColor = InputBackgroundRed,
                     focusedIndicatorColor =
                         if (isError) {
-                            MaterialTheme.colorScheme.error
+                            HighlightRed
                         } else {
-                            MaterialTheme.colorScheme.primary
+                            SelectInputBlue
                         },
                     unfocusedIndicatorColor =
                         if (isError) {
-                            MaterialTheme.colorScheme.error.copy(alpha = 0.7f)
+                            HighlightRed
                         } else {
-                            MaterialTheme.colorScheme.outline
+                            HighlightInputBlue
                         },
                     cursorColor = MaterialTheme.colorScheme.primary,
                 ),
@@ -104,8 +115,8 @@ fun StandardInput(
         if (isError && !errorMessage.isNullOrEmpty()) {
             Text(
                 text = errorMessage,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall,
+                color = ErrorRed,
+                style = Typography.bodySmall,
                 modifier = Modifier.padding(top = 2.dp),
             )
         }
@@ -134,7 +145,7 @@ fun StandardInputErrorPreview() {
         StandardInput(
             label = "Correo electrónico",
             placeholder = "example@email.com",
-            value = "",
+            value = "Hola",
             isError = true,
             errorMessage = "Correo inválido",
             onValueChange = {},

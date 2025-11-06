@@ -24,6 +24,10 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+                <data
+                    android:scheme="arcabyolimpo"
+                    android:host="user"
+                    android:path="/verify-token" />
             </intent-filter>
         </activity>
     </application>
