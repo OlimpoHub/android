@@ -1,3 +1,8 @@
+## [0.1.1] - 6/11/2025
+
+### Added
+- Added atom for description
+
 ## [0.1.1] - 5/11/2025
 
 ### Added
