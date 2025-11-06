@@ -41,6 +41,8 @@ import com.app.arcabyolimpo.ui.theme.White
 @Composable
 fun LoginScreen(
     onLoginSuccess: (UserRole) -> Unit,
+    onRecoverPasswordClick: () -> Unit,
+    onAccountActivationClick: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -101,7 +103,7 @@ fun LoginScreen(
                 style = Typography.bodyMedium,
                 textDecoration = TextDecoration.Underline,
                 color = White,
-                modifier = Modifier.clickable { },
+                modifier = Modifier.clickable { onRecoverPasswordClick() },
             )
 
             Spacer(modifier = Modifier.height(36.dp))
@@ -149,7 +151,7 @@ fun LoginScreen(
                 style = Typography.bodyMedium,
                 textDecoration = TextDecoration.Underline,
                 color = Color(0xFF3D59C2),
-                modifier = Modifier.clickable { },
+                modifier = Modifier.clickable { onAccountActivationClick() },
             )
         }
     }
