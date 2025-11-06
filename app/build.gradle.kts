@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics) // Changed from libs.androidx.compose.ui.graphics
     implementation(libs.androidx.ui.tooling.preview) // Changed from libs.androidx.compose.ui.tooling.preview
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.compose.material3)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -79,4 +80,7 @@ dependencies {
 
     // DataStore
     implementation(libs.androidx.datastore.preferences)
+
+    // ICONS
+    implementation("androidx.compose.material:material-icons-extended")
 }
