@@ -51,7 +51,7 @@ class UserRepositoryImpl
                 return response.user.toDomain()
             } catch (e: HttpException) {
                 throw when (e.code()) {
-                    401 -> AppError.Unauthorized()
+                    400, 401 -> AppError.Unauthorized()
                     in 500..599 -> AppError.ServerError()
                     else -> AppError.Unknown(e.message ?: "Error inesperado")
                 }

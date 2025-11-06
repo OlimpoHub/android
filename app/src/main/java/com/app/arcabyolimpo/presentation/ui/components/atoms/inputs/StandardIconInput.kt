@@ -19,18 +19,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.KeyIcon
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
-import com.app.arcabyolimpo.presentation.theme.Typography
-import com.app.arcabyolimpo.ui.theme.DangerGray
-import com.app.arcabyolimpo.ui.theme.ErrorRed
-import com.app.arcabyolimpo.ui.theme.HighlightInputBlue
-import com.app.arcabyolimpo.ui.theme.HighlightRed
-import com.app.arcabyolimpo.ui.theme.InputBackgroundBlue
-import com.app.arcabyolimpo.ui.theme.InputBackgroundRed
-import com.app.arcabyolimpo.ui.theme.PlaceholderGray
-import com.app.arcabyolimpo.ui.theme.SelectInputBlue
-import com.app.arcabyolimpo.ui.theme.White
 
+@Suppress("ktlint:standard:function-naming")
 /**
  * StandardInput: composable input field with label, placeholder, and optional error handling.
  *
@@ -44,9 +36,8 @@ import com.app.arcabyolimpo.ui.theme.White
  * @param visualTransformation VisualTransformation = VisualTransformation.None -> defines how text is visually transformed (e.g., password masking)
  * @param trailingIcon @Composable (() -> Unit)? = null -> optional icon displayed at the end of the input field
  */
-@Suppress("ktlint:standard:function-naming")
 @Composable
-fun StandardInput(
+fun StandardIconInput(
     label: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -56,6 +47,7 @@ fun StandardInput(
     errorMessage: String? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     trailingIcon: @Composable (() -> Unit)? = null,
+    leadingIcon: @Composable (() -> Unit)? = null, // 🆕 nuevo parámetro
 ) {
     var textValue by rememberSaveable { mutableStateOf(value) }
 
@@ -67,8 +59,8 @@ fun StandardInput(
     ) {
         Text(
             text = label,
-            style = Typography.bodyMedium,
-            color = White,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface,
         )
 
         OutlinedTextField(
@@ -80,7 +72,7 @@ fun StandardInput(
             placeholder = {
                 Text(
                     text = placeholder,
-                    color = PlaceholderGray,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 )
             },
             modifier =
@@ -90,24 +82,24 @@ fun StandardInput(
             shape = RoundedCornerShape(12.dp),
             isError = isError,
             visualTransformation = visualTransformation,
-            textStyle = TextStyle(color = White),
+            textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface),
             trailingIcon = trailingIcon,
+            leadingIcon = leadingIcon, // 🆕 icono inicial opcional
             colors =
                 TextFieldDefaults.colors(
-                    focusedContainerColor = InputBackgroundBlue,
-                    unfocusedContainerColor = InputBackgroundBlue,
-                    errorContainerColor = InputBackgroundRed,
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                     focusedIndicatorColor =
                         if (isError) {
-                            HighlightRed
+                            MaterialTheme.colorScheme.error
                         } else {
-                            SelectInputBlue
+                            MaterialTheme.colorScheme.primary
                         },
                     unfocusedIndicatorColor =
                         if (isError) {
-                            HighlightRed
+                            MaterialTheme.colorScheme.error.copy(alpha = 0.7f)
                         } else {
-                            HighlightInputBlue
+                            MaterialTheme.colorScheme.primary
                         },
                     cursorColor = MaterialTheme.colorScheme.primary,
                 ),
@@ -116,8 +108,8 @@ fun StandardInput(
         if (isError && !errorMessage.isNullOrEmpty()) {
             Text(
                 text = errorMessage,
-                color = ErrorRed,
-                style = Typography.bodySmall,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.padding(top = 2.dp),
             )
         }
@@ -125,11 +117,14 @@ fun StandardInput(
 }
 
 @Suppress("ktlint:standard:function-naming")
-@Preview(showBackground = true)
+@Preview
 @Composable
-fun StandardInputPreview() {
-    MaterialTheme {
-        StandardInput(
+fun StandardIconInputPreview() {
+    ArcaByOlimpoTheme(
+        darkTheme = true,
+        dynamicColor = false,
+    ) {
+        StandardIconInput(
             label = "Nombre",
             placeholder = "Escribe tu nombre",
             value = "",
@@ -139,16 +134,20 @@ fun StandardInputPreview() {
 }
 
 @Suppress("ktlint:standard:function-naming")
-@Preview(showBackground = true)
+@Preview
 @Composable
-fun StandardInputErrorPreview() {
-    MaterialTheme {
-        StandardInput(
+fun StandardIconInputErrorPreview() {
+    ArcaByOlimpoTheme(
+        darkTheme = true,
+        dynamicColor = false,
+    ) {
+        StandardIconInput(
             label = "Correo electrónico",
             placeholder = "example@email.com",
             value = "Rob",
             isError = true,
             errorMessage = "Correo inválido",
+            trailingIcon = { KeyIcon() },
             onValueChange = {},
         )
     }

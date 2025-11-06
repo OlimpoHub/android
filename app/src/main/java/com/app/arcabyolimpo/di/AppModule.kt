@@ -8,8 +8,10 @@ import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
 import com.app.arcabyolimpo.data.remote.interceptor.TokenAuthenticator
 import com.app.arcabyolimpo.data.repository.auth.UserRepositoryImpl
 import com.app.arcabyolimpo.data.repository.password.PasswordPasswordUserRepositoryImpl
+import com.app.arcabyolimpo.data.repository.supplies.SupplyRepositoryImpl
 import com.app.arcabyolimpo.domain.repository.auth.UserRepository
 import com.app.arcabyolimpo.domain.repository.password.PasswordUserRepository
+import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -80,7 +82,7 @@ object AppModule {
         @ApplicationContext context: Context,
     ): UserPreferences = UserPreferences(context)
 
-    /** Provides the [PasswordUserRepository] implementation. */
+    /** Provides the [UserRepository] implementation. */
     @Provides
     @Singleton
     fun provideUserRepository(
