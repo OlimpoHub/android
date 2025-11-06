@@ -79,4 +79,7 @@ dependencies {
 
     // DataStore
     implementation(libs.androidx.datastore.preferences)
+
+    // Material Pull to refresh
+    implementation(libs.androidx.material)
 }
