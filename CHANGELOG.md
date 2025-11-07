@@ -1,3 +1,10 @@
+## [0.1.0] - 7/11/2025
+
+### Added
+
+ - Added atom for password input
+ - Validation input function ValidatePassword created
+
 ## [0.1.1] - 6/11/2025
 
 ### Added
