@@ -5,6 +5,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.app.arcabyolimpo.presentation.screens.supply.components.SupplyListContent
@@ -38,10 +39,15 @@ fun SupplyListScreen(
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp)
                     )
                 },
                 actions = {
-                    NotificationIcon()
+                    NotificationIcon(
+                        modifier = Modifier.padding(horizontal = 24.dp)
+                    )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Background

@@ -52,7 +52,7 @@ fun SupplyCard(
             Modifier
                 .fillMaxWidth()
                 .clickable(onClick = onClick)
-                .padding(horizontal = 12.dp, vertical = 6.dp)
+                .padding(horizontal = 8.dp, vertical = 6.dp)
                 .scale(scale)
                 .pointerInput(Unit) {
                     detectTapGestures(
@@ -76,13 +76,13 @@ fun SupplyCard(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                    .padding(horizontal = 8.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
             ){
                 Box(
                     modifier = Modifier
-                        .size(48.dp)
+                        .size(74.dp)
                         .background(color = ButtonBlue.copy(alpha = 0.1f), shape = CircleShape)
                 )
 

@@ -13,6 +13,7 @@ import com.app.arcabyolimpo.presentation.screens.admin.CoordinatorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.client.CollaboratorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.login.LoginScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
+import com.app.arcabyolimpo.presentation.screens.supply.SupplyListScreen
 
 /**
  * Defines all available destinations (routes) in the application.
@@ -29,6 +30,8 @@ sealed class Screen(
     object CoordinatorHome : Screen("admin")
 
     object CollaboratorHome : Screen("client")
+
+    object SuppliesList : Screen("supply")
 }
 
 /**
@@ -111,5 +114,15 @@ fun ArcaNavGraph(
         composable(Screen.CollaboratorHome.route) {
             CollaboratorHomeScreen()
         }
+
+        composable(Screen.SuppliesList.route) {
+            SupplyListScreen(
+                onSupplyClick = { id ->
+                    navController.navigate("supplyDetail/$id")
+                }
+            )
+        }
+
+
     }
 }
