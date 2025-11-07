@@ -5,9 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,13 +19,17 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.app.arcabyolimpo.presentation.ui.components.atoms.status.ActiveStatus
 import com.app.arcabyolimpo.presentation.ui.components.atoms.status.InactiveStatus
+import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ModifyButton
+import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.DeleteButton
+import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.ReturnIcon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExternalCollabDetailScreen(
     viewModel: ExternalCollabDetailViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
-    onEditClick: (String) -> Unit = {}
+    onEditClick: (String) -> Unit = {},
+    onDeleteClick: (String) -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -46,27 +47,12 @@ fun ExternalCollabDetailScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back",
-                            tint = Color.White
-                        )
+                        ReturnIcon(tint = Color.White)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color(0xFF040610)
-                ),
-                actions = {
-                    uiState.collab?.id?.let { id ->
-                        IconButton(onClick = { onEditClick(id) }) {
-                            Icon(
-                                imageVector = Icons.Default.Edit,
-                                contentDescription = "Edit",
-                                tint = Color.White
-                            )
-                        }
-                    }
-                }
+                )
             )
         }
     ) { padding ->
@@ -103,7 +89,11 @@ fun ExternalCollabDetailScreen(
                 }
 
                 uiState.collab != null -> {
-                    ExternalCollabDetailContent(collab = uiState.collab!!)
+                    ExternalCollabDetailContent(
+                        collab = uiState.collab!!,
+                        onEditClick = { uiState.collab?.id?.let { onEditClick(it.toString()) } },
+                        onDeleteClick = { uiState.collab?.id?.let { onDeleteClick(it.toString()) } }
+                    )
                 }
             }
         }
@@ -111,7 +101,11 @@ fun ExternalCollabDetailScreen(
 }
 
 @Composable
-fun ExternalCollabDetailContent(collab: com.app.arcabyolimpo.domain.model.ExternalCollaborator.ExternalCollab) {
+fun ExternalCollabDetailContent(
+    collab: com.app.arcabyolimpo.domain.model.ExternalCollaborator.ExternalCollab,
+    onEditClick: () -> Unit,
+    onDeleteClick: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -174,6 +168,38 @@ fun ExternalCollabDetailContent(collab: com.app.arcabyolimpo.domain.model.Extern
         InfoCard(label = "Carrera", value = collab.degree)
         InfoCard(label = "Fecha de Nacimiento", value = formatDate(collab.birthDate))
         InfoCard(label = "ID de Rol", value = collab.roleId.toString())
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Box(
+                modifier = Modifier.weight(1f),
+                contentAlignment = Alignment.Center
+            ) {
+                ModifyButton(
+                    onClick = onEditClick,
+                    width = 140.dp,
+                    height = 40.dp
+                )
+            }
+
+            Box(
+                modifier = Modifier.weight(1f),
+                contentAlignment = Alignment.Center
+            ) {
+                DeleteButton(
+                    onClick = onDeleteClick,
+                    modifier = Modifier.size(width = 140.dp, height = 40.dp)
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
     }
 }
 
@@ -184,7 +210,7 @@ fun InfoCard(label: String, value: String) {
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFF1E293B)
+            containerColor = Color(0xFF040610)
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -195,7 +221,7 @@ fun InfoCard(label: String, value: String) {
         ) {
             Text(
                 text = label,
-                color = Color(0xFF94A3B8),
+                color = Color.White,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium
             )
@@ -213,7 +239,6 @@ fun InfoCard(label: String, value: String) {
 // Helper function to format date
 fun formatDate(dateString: String): String {
     return try {
-        // Parse the ISO date and format it nicely
         val parts = dateString.split("T")[0].split("-")
         "${parts[2]}/${parts[1]}/${parts[0]}"
     } catch (e: Exception) {
