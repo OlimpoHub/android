@@ -21,6 +21,7 @@ val InputBackgroundRed = Color(0xFF2C0F0F)
 val SelectInputBlue = Color(0xFF3253D1)
 val InputBackgroundBlue = Color(0xFF0F142C)
 val HighlightInputBlue = Color(0xFF3D59C2)
+val PlaceholderGray = Color(0XFF87858B)
 
 // Backgrounds
 val HeaderBackground = Color(0xCE070A18)

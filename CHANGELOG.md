@@ -1,12 +1,12 @@
-## [0.2.0] - 6/11/2025
+## [0.1.0] - 6/11/2025
 
 ### Fixed
- - Fixed the size of the text of 'Beneficiarios' so that it works on even smaller android devices
- - Fixed the use of fonts of the beneficiary cards
+- Fixed the size of the text of 'Beneficiarios' so that it works on even smaller android devices
+- Fixed the use of fonts of the beneficiary cards
 
 ### Added
-
- - Added molecule for beneficiary cards
+- Added molecule for beneficiary cards
+- Password recovery and account activation with token verification
 
 ## [0.1.0] - 5/11/2025
 
