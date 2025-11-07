@@ -1,3 +1,32 @@
+## [0.2.0] - 6/11/2025
+
+### Fixed
+ - Fixed the size of the text of 'Beneficiarios' so that it works on even smaller android devices
+ - Fixed the use of fonts of the beneficiary cards
+
+### Added
+
+ - Added molecule for beneficiary cards
+
+## [0.1.0] - 5/11/2025
+
+### Updated
+ - Login and Splash Screen UI
+
+## [0.1.0] - 4/11/2025
+
+### Added
+
+ - Added supplies list functionality with all the MVVM layers
+
+## [0.1.0] - 4/11/2025
+
+### Added
+
+ - Added atom for email input
+ - Fixed email regex validation
+ - Validation input function ValidateEmail created
+
 ## [0.1.0] - 3/11/2025
 
 ### Added

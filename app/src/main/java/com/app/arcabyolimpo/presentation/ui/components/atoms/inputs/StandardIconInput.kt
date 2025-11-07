@@ -19,8 +19,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.KeyIcon
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 
+@Suppress("ktlint:standard:function-naming")
 /**
  * StandardInput: composable input field with label, placeholder, and optional error handling.
  *
@@ -34,9 +36,8 @@ import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
  * @param visualTransformation VisualTransformation = VisualTransformation.None -> defines how text is visually transformed (e.g., password masking)
  * @param trailingIcon @Composable (() -> Unit)? = null -> optional icon displayed at the end of the input field
  */
-@Suppress("ktlint:standard:function-naming")
 @Composable
-fun StandardInput(
+fun StandardIconInput(
     label: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -46,6 +47,7 @@ fun StandardInput(
     errorMessage: String? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     trailingIcon: @Composable (() -> Unit)? = null,
+    leadingIcon: @Composable (() -> Unit)? = null, // 🆕 nuevo parámetro
 ) {
     var textValue by rememberSaveable { mutableStateOf(value) }
 
@@ -82,6 +84,7 @@ fun StandardInput(
             visualTransformation = visualTransformation,
             textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface),
             trailingIcon = trailingIcon,
+            leadingIcon = leadingIcon, // 🆕 icono inicial opcional
             colors =
                 TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -116,12 +119,12 @@ fun StandardInput(
 @Suppress("ktlint:standard:function-naming")
 @Preview
 @Composable
-fun StandardInputPreview() {
+fun StandardIconInputPreview() {
     ArcaByOlimpoTheme(
         darkTheme = true,
         dynamicColor = false,
     ) {
-        StandardInput(
+        StandardIconInput(
             label = "Nombre",
             placeholder = "Escribe tu nombre",
             value = "",
@@ -133,17 +136,18 @@ fun StandardInputPreview() {
 @Suppress("ktlint:standard:function-naming")
 @Preview
 @Composable
-fun StandardInputErrorPreview() {
+fun StandardIconInputErrorPreview() {
     ArcaByOlimpoTheme(
         darkTheme = true,
         dynamicColor = false,
     ) {
-        StandardInput(
+        StandardIconInput(
             label = "Correo electrónico",
             placeholder = "example@email.com",
             value = "Rob",
             isError = true,
             errorMessage = "Correo inválido",
+            trailingIcon = { KeyIcon() },
             onValueChange = {},
         )
     }
