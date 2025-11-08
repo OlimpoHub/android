@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.arcabyolimpo.R
+import com.app.arcabyolimpo.presentation.theme.Poppins
 
 val Poppins = FontFamily(
     Font(R.font.poppins_semibold)
