@@ -1,7 +1,8 @@
 package com.app.arcabyolimpo.presentation.ui.components.atoms.buttons
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -18,17 +19,15 @@ import com.app.arcabyolimpo.ui.theme.White
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun AddButton(
+fun SquareAddButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
     Button(
         onClick = onClick,
-        modifier =
-            modifier
-                .size(80.dp),
-        shape = CircleShape,
-        contentPadding = ButtonDefaults.ContentPadding,
+        modifier = modifier.size(32.dp), // 🔹 cuadrado 80x80
+        shape = RoundedCornerShape(8.dp), // 🔹 esquinas redondeadas (ajusta el valor si quieres más o menos curva)
+        contentPadding = PaddingValues(0.dp),
         colors =
             ButtonDefaults.buttonColors(
                 containerColor = White,
@@ -40,16 +39,16 @@ fun AddButton(
             color = PrimaryBlue,
             fontFamily = Poppins,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 50.sp,
+            fontSize = 20.sp,
         )
     }
 }
 
 @Suppress("ktlint:standard:function-naming")
-@Preview(showBackground = true)
+@Preview(showBackground = false)
 @Composable
-fun AddButtonPreview() {
+fun SquareAddButtonPreview() {
     MaterialTheme {
-        AddButton(onClick = {})
+        SquareAddButton(onClick = {})
     }
 }
