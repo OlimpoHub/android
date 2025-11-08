@@ -1,8 +1,12 @@
-## [0.0.0] - 07/11/2025 
+## [0.1.0] - 7/11/2025
+
+### Fixed
+ - Fixed some unused imports that were on files such as passwordRecovery screen and the use of proper atoms, that disallowed the building of the proyect.
 
 ### Added
- - Added square buttons for + and -
- 
+ - Added Screen for Beneficiary List
+ - Added square buttons for + and 
+ 
 ## [0.1.0] - 6/11/2025
 
 ### Fixed
