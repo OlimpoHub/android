@@ -16,6 +16,18 @@ import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.ui.theme.PrimaryBlue
 import com.app.arcabyolimpo.ui.theme.White
 
+
+/**
+ * A circular "Add" button component that displays a "+" symbol.
+ *
+ * @param modifier Modifier to adjust the button's layout (size, padding, etc.).
+ * @param onClick Lambda executed when the button is pressed.
+ *
+ * The button:
+ * - Uses a circular shape.
+ * - Has a white background.
+ * - Displays a large "+" in the primary blue color.
+ */
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun AddButton(
