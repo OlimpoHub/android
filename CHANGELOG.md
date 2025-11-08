@@ -1,3 +1,8 @@
+## [0.0.0] - 07/11/2025 
+
+### Added
+ - Added square buttons for + and -
+ 
 ## [0.1.0] - 6/11/2025
 
 ### Fixed
