@@ -6,8 +6,8 @@ import com.app.arcabyolimpo.domain.model.workshops.Workshop
 fun WorkshopDto.toDomain(): Workshop {
     return Workshop(
         id = id,
-        url = image,
         nameWorkshop = name.replaceFirstChar { it.uppercase() },
+        url = image,
         startHour = starthour,
         finishHour = finishhour,
         status = status,
