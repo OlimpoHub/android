@@ -4,6 +4,7 @@
 
  - Added atom for password input
  - Validation input function ValidatePassword created
+ - Added atom for upload images
 
 ## [0.1.1] - 6/11/2025
 
