@@ -1,12 +1,15 @@
 package com.app.arcabyolimpo.domain.model.workshops
 
+import java.sql.Date
+import java.sql.Time
+
 data class Workshop(
     val id: String,
     val nameWorkshop: String,
     val url: String,
-    val startHour: String,
-    val finishHour: String,
+    val startHour: Time,
+    val finishHour: Time,
     val status: Int,
     val schedule: String,
-    val date: String
+    val date: Date
 )
