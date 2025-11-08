@@ -9,9 +9,11 @@ import com.app.arcabyolimpo.data.remote.interceptor.TokenAuthenticator
 import com.app.arcabyolimpo.data.repository.auth.UserRepositoryImpl
 import com.app.arcabyolimpo.data.repository.password.PasswordPasswordUserRepositoryImpl
 import com.app.arcabyolimpo.data.repository.supplies.SupplyRepositoryImpl
+import com.app.arcabyolimpo.data.repository.workshops.WorkshopRepositoryImpl
 import com.app.arcabyolimpo.domain.repository.auth.UserRepository
 import com.app.arcabyolimpo.domain.repository.password.PasswordUserRepository
 import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
+import com.app.arcabyolimpo.domain.repository.workshops.WorkshopRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -101,4 +103,10 @@ object AppModule {
     fun provideSupplyRepository(
         api: ArcaApi
     ): SupplyRepository = SupplyRepositoryImpl(api)
+
+    @Provides
+    @Singleton
+    fun provideWorkshopRepository(
+        api: ArcaApi
+    ): WorkshopRepository = WorkshopRepositoryImpl(api)
 }
