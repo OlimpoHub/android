@@ -16,7 +16,6 @@ import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.ui.theme.PrimaryBlue
 import com.app.arcabyolimpo.ui.theme.White
 
-
 /**
  * A circular "Add" button component that displays a "+" symbol.
  *
@@ -45,7 +44,6 @@ fun AddButton(
             ButtonDefaults.buttonColors(
                 containerColor = White,
             ),
-        elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
     ) {
         Text(
             text = "+",
