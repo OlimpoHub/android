@@ -1,4 +1,15 @@
 package com.app.arcabyolimpo.data.remote.dto.workshops
 
-class WorkshopDto {
-}
+import com.google.gson.annotations.SerializedName
+import java.sql.Date
+import java.sql.Time
+data class WorkshopDto(
+    @SerializedName("idTaller") val id: String,
+    @SerializedName("URL") val image: String,
+    @SerializedName("nombreTaller") val name: String,
+    @SerializedName("horaEntrada") val starthour: Time,
+    @SerializedName("horaSalida") val finishhour: Time,
+    @SerializedName("estatus") val status: Int,
+    @SerializedName("HorarioTaller") val schedule: String,
+    @SerializedName("Fecha") val date: Date
+)
