@@ -21,27 +21,26 @@ val Typography =
             TextStyle(
                 fontFamily = Poppins,
                 fontWeight = FontWeight.Bold,
-                fontSize = 24.sp
+                fontSize = 24.sp,
             ),
         headlineMedium =
             TextStyle(
                 fontFamily = Poppins,
                 fontWeight = FontWeight.Bold,
-                fontSize = 20.sp
+                fontSize = 20.sp,
             ),
         bodySmall =
             TextStyle(
                 fontFamily = Poppins,
                 fontWeight = FontWeight.Normal,
-                fontSize = 12.sp
+                fontSize = 12.sp,
             ),
         bodyMedium =
             TextStyle(
                 fontFamily = Poppins,
                 fontWeight = FontWeight.Normal,
-                fontSize = 14.sp
-            )
-
+                fontSize = 14.sp,
+            ),
     /* Other default text styles to override
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,

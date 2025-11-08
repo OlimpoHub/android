@@ -10,16 +10,16 @@ import javax.inject.Inject
 class GetSupplyUseCase
     @Inject
     constructor(
-        private val repository: SupplyRepository
-) {
-    operator fun invoke(id: String): Flow<Result<Supply>> =
-        flow {
-            try {
-                emit(Result.Loading)
-                val supply = repository.getSupplyById(id)
-                emit(Result.Success(supply))
-            } catch (e: Exception) {
-                emit(Result.Error(e))
+        private val repository: SupplyRepository,
+    ) {
+        operator fun invoke(id: String): Flow<Result<Supply>> =
+            flow {
+                try {
+                    emit(Result.Loading)
+                    val supply = repository.getSupplyById(id)
+                    emit(Result.Success(supply))
+                } catch (e: Exception) {
+                    emit(Result.Error(e))
+                }
             }
-        }
-}
+    }

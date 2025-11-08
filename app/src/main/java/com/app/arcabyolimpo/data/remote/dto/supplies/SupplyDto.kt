@@ -7,5 +7,5 @@ data class SupplyDto(
     @SerializedName("imagenInsumo") val image: String,
     @SerializedName("nombre") val name: String,
     @SerializedName("unidadMedida") val unitMeasure: String,
-    @SerializedName("supplyBatchJson") val batch: List<SupplyBatchDto>
+    @SerializedName("supplyBatchJson") val batch: List<SupplyBatchDto>,
 )

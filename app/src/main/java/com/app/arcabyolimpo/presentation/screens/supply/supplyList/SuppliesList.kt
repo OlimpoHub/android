@@ -1,4 +1,4 @@
-package com.app.arcabyolimpo.presentation.screens.supply
+package com.app.arcabyolimpo.presentation.screens.supply.supplyList
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -7,12 +7,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.app.arcabyolimpo.presentation.screens.supply.components.SupplyListContent
+import com.app.arcabyolimpo.presentation.screens.supply.supplyList.components.SupplyListContent
 import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
+import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
-import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,7 +26,7 @@ fun SupplyListScreen(
         containerColor = Background,
         floatingActionButton = {
             AddButton(
-                onClick = { /* acción al presionar + */ }
+                onClick = { /* acción al presionar + */ },
             )
         },
         topBar = {
@@ -43,16 +43,18 @@ fun SupplyListScreen(
                 actions = {
                     NotificationIcon()
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Background
-                )
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = Background,
+                    ),
             )
         },
     ) { padding ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(padding),
         ) {
             SupplyListContent(
                 suppliesList = uiState.suppliesList,
@@ -60,7 +62,7 @@ fun SupplyListScreen(
                 error = uiState.error,
                 onSupplyClick = onSupplyClick,
                 onRetry = { viewModel.loadSuppliesList() },
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             )
         }
     }

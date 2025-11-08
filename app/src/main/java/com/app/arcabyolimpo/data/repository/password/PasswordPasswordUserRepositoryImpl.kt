@@ -17,26 +17,21 @@ class PasswordPasswordUserRepositoryImpl
     constructor(
         private val api: ArcaApi,
     ) : PasswordUserRepository {
+        override suspend fun postRecoverPassword(email: String): String {
+            val response = api.recoverPassword(RecoverPasswordDto(email))
+            return response.message
+        }
 
-    override suspend fun postRecoverPassword(
-        email: String
-    ): String {
-        val response = api.recoverPassword(RecoverPasswordDto(email))
-        return response.message
-    }
+        override suspend fun getVerifyToken(token: String): VerifyToken {
+            val response = api.verifyToken(token)
+            return response.toDomain()
+        }
 
-    override suspend fun getVerifyToken(
-        token: String
-    ): VerifyToken {
-        val response = api.verifyToken(token)
-        return response.toDomain()
+        override suspend fun postUpdatePassword(
+            email: String,
+            password: String,
+        ): UpdatePassword {
+            val response = api.updatePassword(UpdatePasswordDto(email, password))
+            return response.toDomain()
+        }
     }
-
-    override suspend fun postUpdatePassword(
-        email: String,
-        password: String
-    ): UpdatePassword {
-        val response = api.updatePassword(UpdatePasswordDto(email, password))
-        return response.toDomain()
-    }
-}

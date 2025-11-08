@@ -1,4 +1,4 @@
-package com.app.arcabyolimpo.presentation.screens.supply
+package com.app.arcabyolimpo.presentation.screens.supply.supplyList
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,20 +13,21 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class  SuppliesListViewModel
+class SuppliesListViewModel
     @Inject
     constructor(
-        private val getSuppliesListUseCase: GetSuppliesListUseCase
-    ): ViewModel(){
+        private val getSuppliesListUseCase: GetSuppliesListUseCase,
+    ) : ViewModel() {
         private val _uiState = MutableStateFlow(SuppliesListUiState())
         val uiState: StateFlow<SuppliesListUiState> = _uiState.asStateFlow()
 
-        init{
+        init {
             loadSuppliesList()
         }
-        fun loadSuppliesList(){
+
+        fun loadSuppliesList() {
             viewModelScope.launch {
-                getSuppliesListUseCase().collect{ result ->
+                getSuppliesListUseCase().collect { result ->
                     _uiState.update { state ->
                         when (result) {
                             is Result.Loading ->

@@ -1,4 +1,4 @@
-package com.app.arcabyolimpo.presentation.screens.supply.components
+package com.app.arcabyolimpo.presentation.screens.supply.supplyList.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,7 +14,6 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -31,7 +30,7 @@ fun SupplyListContent(
     onSupplyClick: (String) -> Unit,
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
-){
+) {
     val pullRefreshState =
         rememberPullRefreshState(
             refreshing = isLoading,
@@ -42,9 +41,9 @@ fun SupplyListContent(
             modifier
                 .fillMaxSize()
                 .pullRefresh(pullRefreshState),
-    ){
+    ) {
         when {
-            isLoading && suppliesList.isEmpty() ->{
+            isLoading && suppliesList.isEmpty() -> {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(1),
                     contentPadding = PaddingValues(16.dp),

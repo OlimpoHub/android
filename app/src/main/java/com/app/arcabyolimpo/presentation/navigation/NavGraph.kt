@@ -91,7 +91,7 @@ fun ArcaNavGraph(
         }
     }
 
-    //navController.navigate(Screen.PasswordRegistration.createRoute(email))
+    // navController.navigate(Screen.PasswordRegistration.createRoute(email))
 
     /** Defines all navigation. The start destination is the Splash screen. */
     NavHost(
@@ -139,7 +139,7 @@ fun ArcaNavGraph(
                 },
                 onAccountActivationClick = {
                     navController.navigate(Screen.AccountActivation.route)
-                }
+                },
             )
         }
 
@@ -150,7 +150,7 @@ fun ArcaNavGraph(
                         navController.navigate(Screen.Login.route)
                     }
                 },
-                viewModel = hiltViewModel()
+                viewModel = hiltViewModel(),
             )
         }
 
@@ -161,21 +161,25 @@ fun ArcaNavGraph(
                         navController.navigate(Screen.Login.route)
                     }
                 },
-                viewModel = hiltViewModel()
+                viewModel = hiltViewModel(),
             )
         }
 
         composable(
             route = Screen.TokenVerification.route,
-            arguments = listOf(navArgument("token") {
-                type = NavType.StringType
-                nullable = true
-            }),
-            deepLinks = listOf(
-                navDeepLink {
-                    uriPattern = "arcabyolimpo://user/verify-token?token={token}"
-                }
-            )
+            arguments =
+                listOf(
+                    navArgument("token") {
+                        type = NavType.StringType
+                        nullable = true
+                    },
+                ),
+            deepLinks =
+                listOf(
+                    navDeepLink {
+                        uriPattern = "arcabyolimpo://user/verify-token?token={token}"
+                    },
+                ),
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token")
             val viewModel: TokenVerificationViewModel = hiltViewModel()
@@ -193,7 +197,7 @@ fun ArcaNavGraph(
                         onPasswordRegistrationSucessClick = {
                             navController.navigate(Screen.PasswordRegistrationSuccess.route)
                         },
-                        viewModel = hiltViewModel()
+                        viewModel = hiltViewModel(),
                     )
                 }
 
@@ -202,7 +206,6 @@ fun ArcaNavGraph(
                 }
 
                 uiState.isLoading == true -> {
-
                 }
 
                 else -> {
@@ -211,10 +214,8 @@ fun ArcaNavGraph(
             }
         }
 
-
-
         composable(Screen.TokenVerificationFailed.route) {
-            TokenVerificationFailedScreen (
+            TokenVerificationFailedScreen(
                 onBackClick = {
                     if (!navController.popBackStack()) {
                         navController.navigate(Screen.Login.route)
@@ -225,7 +226,7 @@ fun ArcaNavGraph(
 
         composable(
             route = Screen.PasswordRegistration.route,
-            arguments = listOf(navArgument("email") { type = NavType.StringType })
+            arguments = listOf(navArgument("email") { type = NavType.StringType }),
         ) { backStackEntry ->
             val email = backStackEntry.arguments?.getString("email")
             PasswordRegistrationScreen(
@@ -239,18 +240,17 @@ fun ArcaNavGraph(
                     navController.popBackStack()
                     navController.popBackStack()
                 },
-                viewModel = hiltViewModel()
+                viewModel = hiltViewModel(),
             )
         }
 
         composable(Screen.PasswordRegistrationSuccess.route) {
-            PasswordRegistrationSuccessScreen (
+            PasswordRegistrationSuccessScreen(
                 onBackClick = {
                     navController.navigate(Screen.Login.route)
                 },
             )
         }
-
 
         /** Coordinator Home Screen */
         composable(Screen.CoordinatorHome.route) {

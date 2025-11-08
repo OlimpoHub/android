@@ -57,14 +57,14 @@ fun PasswordRecoveryScreen(
                         ReturnIcon(size = 16.dp)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Background,
-                ),
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = Background,
+                    ),
             )
         },
-        containerColor = Background
-    )
-    {   padding ->
+        containerColor = Background,
+    ) { padding ->
         Column(
             modifier =
                 Modifier
@@ -75,14 +75,15 @@ fun PasswordRecoveryScreen(
             Text(
                 text = "El Arca en Querétaro I.A.P",
                 style = Typography.bodyMedium,
-                color = White
+                color = White,
             )
             Spacer(modifier = Modifier.height(20.dp))
             Text(
-                text = "¿Olvidaste \n" +
+                text =
+                    "¿Olvidaste \n" +
                         "tu contraseña?",
                 style = Typography.headlineLarge,
-                color = White
+                color = White,
             )
             Spacer(modifier = Modifier.height(150.dp))
             StandardInput(
@@ -90,21 +91,23 @@ fun PasswordRecoveryScreen(
                 placeholder = "E.G. ejemplo@correo.com",
                 value = email,
                 onValueChange = { email = it },
-                isError = uiState.error != null
-                        || uiState.message == "User not found"
-                        || uiState.message == "Internal server error",
-                errorMessage = when (uiState.message) {
-                                "User not found" -> {
-                                    "Correo no registrado"
-                                }
-                                "Internal server error" -> {
-                                    "Error al enviar correo"
-                                }
-                                else -> {
-                                    uiState.error
-                                }
-                },
-                trailingIcon = { MailIcon() }
+                isError =
+                    uiState.error != null ||
+                        uiState.message == "User not found" ||
+                        uiState.message == "Internal server error",
+                errorMessage =
+                    when (uiState.message) {
+                        "User not found" -> {
+                            "Correo no registrado"
+                        }
+                        "Internal server error" -> {
+                            "Error al enviar correo"
+                        }
+                        else -> {
+                            uiState.error
+                        }
+                    },
+                trailingIcon = { MailIcon() },
             )
             Spacer(modifier = Modifier.height(37.dp))
             SendEmailButton(
@@ -121,7 +124,7 @@ fun PasswordRecoveryScreen(
                         color = ButtonBlue,
                         style = Typography.bodySmall,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     )
                 }
             }
@@ -129,9 +132,8 @@ fun PasswordRecoveryScreen(
     }
 }
 
-//@Preview(showBackground = true, showSystemUi = true)
-//@Composable
-//fun PasswordRecoveryScreenPreview() {
+// @Preview(showBackground = true, showSystemUi = true)
+// @Composable
+// fun PasswordRecoveryScreenPreview() {
 //    PasswordRecoveryScreen(onBackClick = { }, )
-//}
-
+// }

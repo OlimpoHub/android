@@ -7,6 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Scaffold
 import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
 import com.app.arcabyolimpo.presentation.navigation.ArcaNavGraph
+import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
+import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -26,8 +28,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Scaffold { innerPadding ->
-                ArcaNavGraph(
-                    sessionManager = sessionManager,
+                SuppliesDetailScreen(
+                    idInsumo = "1",
+                    onBackClick = { },
+                    onClickAddSupplyBatch = { },
+                    onClickDelete = { },
+                    onClickModify = { },
                 )
             }
         }

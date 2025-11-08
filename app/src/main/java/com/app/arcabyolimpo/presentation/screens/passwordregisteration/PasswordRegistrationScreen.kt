@@ -30,8 +30,6 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardInpu
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
 
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable
@@ -60,14 +58,14 @@ fun PasswordRegistrationScreen(
                         ReturnIcon(size = 16.dp)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Background,
-                ),
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = Background,
+                    ),
             )
         },
-        containerColor = Background
-    )
-    {   padding ->
+        containerColor = Background,
+    ) { padding ->
         Column(
             modifier =
                 Modifier
@@ -78,38 +76,47 @@ fun PasswordRegistrationScreen(
             Text(
                 text = "El Arca en Querétaro I.A.P",
                 style = Typography.bodyMedium,
-                color = White
+                color = White,
             )
             Spacer(modifier = Modifier.height(20.dp))
             Text(
-                text = "Crea una \n" +
+                text =
+                    "Crea una \n" +
                         "contraseña para \n" +
                         "activar tu cuenta",
                 style = Typography.headlineLarge,
-                color = White
+                color = White,
             )
             Spacer(modifier = Modifier.height(80.dp))
             StandardInput(
                 label = "Ingresa una nueva contraseña",
                 value = password,
                 onValueChange = { password = it },
-                isError = uiState.error != null
-                        || uiState.response?.status == false,
-                errorMessage = if (uiState.response?.status == false)
-                    uiState.response?.message
-                else uiState.error,
-                trailingIcon = { KeyIcon() }
+                isError =
+                    uiState.error != null ||
+                        uiState.response?.status == false,
+                errorMessage =
+                    if (uiState.response?.status == false) {
+                        uiState.response?.message
+                    } else {
+                        uiState.error
+                    },
+                trailingIcon = { KeyIcon() },
             )
             Spacer(modifier = Modifier.height(37.dp))
             StandardInput(
                 label = "Confirma tu nueva contraseña",
                 value = confirmPassword,
                 onValueChange = { confirmPassword = it },
-                isError = uiState.error != null
-                        || uiState.response?.status == false,
-                errorMessage = if (uiState.response?.status == false)
-                    uiState.response?.message
-                else uiState.error,
+                isError =
+                    uiState.error != null ||
+                        uiState.response?.status == false,
+                errorMessage =
+                    if (uiState.response?.status == false) {
+                        uiState.response?.message
+                    } else {
+                        uiState.error
+                    },
                 trailingIcon = { KeyIcon() },
                 visualTransformation = PasswordVisualTransformation(),
             )
@@ -125,9 +132,8 @@ fun PasswordRegistrationScreen(
     }
 }
 
-//@Preview(showBackground = true, showSystemUi = true)
-//@Composable
-//fun PasswordRegistrationScreenPreview() {
+// @Preview(showBackground = true, showSystemUi = true)
+// @Composable
+// fun PasswordRegistrationScreenPreview() {
 //    PasswordRegistrationScreen(onBackClick = { })
-//}
-
+// }

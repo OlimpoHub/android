@@ -24,26 +24,24 @@ import com.app.arcabyolimpo.ui.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PasswordRegistrationSuccessScreen (
-    onBackClick: () -> Unit,
-) {
+fun PasswordRegistrationSuccessScreen(onBackClick: () -> Unit) {
     Scaffold(
-    topBar = {
-        TopAppBar(
-            title = {},
-            navigationIcon = {
-                IconButton(onClick = onBackClick) {
-                    ReturnIcon(size = 16.dp)
-                }
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Background,
-            ),
-        )
-    },
-    containerColor = Background
-    )
-    {   padding ->
+        topBar = {
+            TopAppBar(
+                title = {},
+                navigationIcon = {
+                    IconButton(onClick = onBackClick) {
+                        ReturnIcon(size = 16.dp)
+                    }
+                },
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = Background,
+                    ),
+            )
+        },
+        containerColor = Background,
+    ) { padding ->
         Column(
             modifier =
                 Modifier
@@ -54,15 +52,16 @@ fun PasswordRegistrationSuccessScreen (
             Text(
                 text = "El Arca en Querétaro I.A.P",
                 style = Typography.bodyMedium,
-                color = White
+                color = White,
             )
             Spacer(modifier = Modifier.height(20.dp))
             Text(
-                text = "¡Listo! \n" +
+                text =
+                    "¡Listo! \n" +
                         "Intenta\n" +
                         "iniciar sesión",
                 style = Typography.headlineLarge,
-                color = White
+                color = White,
             )
         }
     }
