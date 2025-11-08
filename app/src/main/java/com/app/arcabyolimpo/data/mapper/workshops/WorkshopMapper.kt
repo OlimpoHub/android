@@ -13,5 +13,6 @@ fun WorkshopDto.toDomain(): Workshop {
         status = status,
         schedule = schedule,
         date = date
+
     )
 }
