@@ -17,4 +17,16 @@ data class FilterData(
     val categories: List<String>,
     val measures: List<String>,
     val workshops: List<String>,
+) {
+    fun asSections(): List<Section> =
+        listOf(
+            Section("Categorías", categories),
+            Section("Medidas", measures),
+            Section("Talleres", workshops),
+        )
+}
+
+data class Section(
+    val title: String,
+    val items: List<String>,
 )
