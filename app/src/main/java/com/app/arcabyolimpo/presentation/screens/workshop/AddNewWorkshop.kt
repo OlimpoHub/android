@@ -39,6 +39,7 @@ fun AddNewWorkshopScreen(
         val formData by viewModel.formData.collectAsState()
         val trainings by viewModel.trainings.collectAsStateWithLifecycle()
         val users by viewModel.users.collectAsStateWithLifecycle()
+        val fieldErrors by viewModel.fieldErrors.collectAsStateWithLifecycle()
 
         LaunchedEffect(Unit) {
             viewModel.loadTrainings()
@@ -75,8 +76,8 @@ fun AddNewWorkshopScreen(
                     placeholder = "Ej. Panadería",
                     value = formData.name,
                     onValueChange = { viewModel.updateFormData { copy(name = it) } },
-                    isError = uiState.error?.contains("nombre") == true,
-                    errorMessage = uiState.error?.takeIf { it.contains("nombre") }
+                    isError = fieldErrors["name"] == true,
+                    errorMessage = null // Sin mensaje de error
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -90,18 +91,9 @@ fun AddNewWorkshopScreen(
                         val selectedTraining = trainings.find { it.name == selectedName }
                         viewModel.updateFormData { copy(idTraining = selectedTraining?.id ?: "") }
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    isError = fieldErrors["idTraining"] == true
                 )
-
-                if (uiState.error?.contains("capacitación") == true) {
-                    Text(
-                        text = uiState.error ?: "",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(top = 2.dp)
-                    )
-                }
-
 
                 Spacer(modifier = Modifier.height(12.dp))
                 Row(
@@ -114,10 +106,10 @@ fun AddNewWorkshopScreen(
                         placeholder = "Ej. 08:00",
                         value = formData.startHour,
                         onValueChange = { viewModel.updateFormData { copy(startHour = it) } },
-                        isError = uiState.error?.contains("hora de entrada") == true,
-                        errorMessage = uiState.error?.takeIf { it.contains("hora de entrada") },
+                        isError = fieldErrors["startHour"] == true,
+                        errorMessage = null, // Sin mensaje de error
                         trailingIcon = {
-                            CalendarIcon(tint = MaterialTheme.colorScheme.onSurface) // Blanco o color de superficie
+                            CalendarIcon(tint = MaterialTheme.colorScheme.onSurface)
                         },
                         modifier = Modifier.weight(1f)
                     )
@@ -128,10 +120,10 @@ fun AddNewWorkshopScreen(
                         placeholder = "Ej. 12:00",
                         value = formData.finishHour,
                         onValueChange = { viewModel.updateFormData { copy(finishHour = it) } },
-                        isError = uiState.error?.contains("hora de salida") == true,
-                        errorMessage = uiState.error?.takeIf { it.contains("hora de salida") },
+                        isError = fieldErrors["finishHour"] == true,
+                        errorMessage = null, // Sin mensaje de error
                         trailingIcon = {
-                            CalendarIcon(tint = MaterialTheme.colorScheme.onSurface) // Blanco o color de superficie
+                            CalendarIcon(tint = MaterialTheme.colorScheme.onSurface)
                         },
                         modifier = Modifier.weight(1f)
                     )
@@ -141,11 +133,11 @@ fun AddNewWorkshopScreen(
                 // Fecha
                 StandardInput(
                     label = "Fecha del taller",
-                    placeholder = "Ej. 2025-11-15",
+                    placeholder = "Ej. 2016-07-30",
                     value = formData.date,
                     onValueChange = { viewModel.updateFormData { copy(date = it) } },
-                    isError = uiState.error?.contains("fecha") == true,
-                    errorMessage = uiState.error?.takeIf { it.contains("fecha") }
+                    isError = fieldErrors["date"] == true,
+                    errorMessage = null // Sin mensaje de error
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -155,8 +147,8 @@ fun AddNewWorkshopScreen(
                     placeholder = "Ej. Lunes a viernes",
                     value = formData.schedule,
                     onValueChange = { viewModel.updateFormData { copy(schedule = it) } },
-                    isError = uiState.error?.contains("horario") == true,
-                    errorMessage = uiState.error?.takeIf { it.contains("horario") }
+                    isError = fieldErrors["schedule"] == true,
+                    errorMessage = null // Sin mensaje de error
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -171,17 +163,9 @@ fun AddNewWorkshopScreen(
                             users.find { "${it.name} ${it.lastName}" == selectedName }
                         viewModel.updateFormData { copy(idUser = selectedUser?.id ?: "") }
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    isError = fieldErrors["idUser"] == true
                 )
-
-                if (uiState.error?.contains("usuario") == true) {
-                    Text(
-                        text = uiState.error ?: "",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(top = 2.dp)
-                    )
-                }
 
                 Spacer(modifier = Modifier.height(12.dp))
                 // Imagen
@@ -194,8 +178,8 @@ fun AddNewWorkshopScreen(
                         selectedImageUri = uri
                         viewModel.updateFormData { copy(image = uri?.toString().orEmpty()) }
                     },
-                    isError = uiState.error?.contains("url") == true,
-                    errorMessage = uiState.error?.takeIf { it.contains("url") }
+                    isError = false, // Opcional, según tu requerimiento
+                    errorMessage = null
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -221,7 +205,7 @@ fun AddNewWorkshopScreen(
                     )
                 }
 
-                // Mensajes de éxito/error
+                // Mensajes de éxito/error general (solo para errores de red/API)
                 if (uiState.isSuccess) {
                     Text(
                         text = "Taller creado correctamente",
@@ -233,7 +217,8 @@ fun AddNewWorkshopScreen(
                     }
                 }
 
-                if (!uiState.isSuccess && uiState.error != null) {
+                // Solo mostrar errores generales (no de validación de campos)
+                if (!uiState.isSuccess && uiState.error != null && fieldErrors.isEmpty()) {
                     Text(
                         text = uiState.error ?: "",
                         color = MaterialTheme.colorScheme.error,

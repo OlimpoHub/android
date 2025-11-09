@@ -98,6 +98,17 @@ object AppModule {
         api: ArcaApi
     ): PasswordUserRepository = PasswordPasswordUserRepositoryImpl(api)
 
+    /**
+     * Provides the [SupplyRepository] implementation.
+     *
+     * This repository handles all supply-related data operations,
+     * including fetching the supply list and retrieving detailed
+     * information for a specific supply. It uses [ArcaApi] as the
+     * remote data source and maps API responses to domain models.
+     *
+     * @param api The [ArcaApi] instance used to perform network requests.
+     * @return A singleton instance of [SupplyRepositoryImpl].
+     */
     @Provides
     @Singleton
     fun provideSupplyRepository(

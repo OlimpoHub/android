@@ -36,6 +36,7 @@ fun SelectInput(
     options: List<String>,
     onOptionSelected: (String) -> Unit,
     modifier: Modifier = Modifier,
+    isError: Boolean = false
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 

@@ -16,7 +16,7 @@ import java.util.UUID
 import javax.inject.Inject
 
 
-// Para mock data
+// Para mock data - Quitar a futuro
 data class Training(
     val id: String,
     val name: String
@@ -40,6 +40,10 @@ class AddNewWorkshopViewModel @Inject constructor(
     private val _formData = MutableStateFlow(WorkshopFormData())
     val formData: StateFlow<WorkshopFormData> = _formData.asStateFlow()
 
+    // Estados para errores específicos por campo
+    private val _fieldErrors = MutableStateFlow<Map<String, Boolean>>(emptyMap())
+    val fieldErrors: StateFlow<Map<String, Boolean>> = _fieldErrors.asStateFlow()
+
     // Estados para los dropdowns (mockdata)
     private val _trainings = MutableStateFlow<List<Training>>(emptyList())
     val trainings: StateFlow<List<Training>> = _trainings.asStateFlow()
@@ -58,11 +62,11 @@ class AddNewWorkshopViewModel @Inject constructor(
                         name = "Panadería"
                     ),
                     Training(
-                        id = "a6a4dc6e-29f3-4c34-bd3c-4c8c74a5a550",
+                        id = "f05468dc-bda0-11f0-b6b8-020161fa237d",
                         name = "Repostería"
                     ),
                     Training(
-                        id = "a6a4dc6e-29f3-4c34-bd3c-4c8c74a5a550",
+                        id = "f0546abd-bda0-11f0-b6b8-020161fa237d",
                         name = "Cocina"
                     )
                 )
@@ -85,7 +89,7 @@ class AddNewWorkshopViewModel @Inject constructor(
             try {
                 val mockUsers = listOf(
                     User(
-                        id = "4e3d1a59-2ac1-4a5e-bb77-3b238bdfc50f",
+                        id = "13fc9277-bda1-11f0-b6b8-020161fa237d",
                         name = "Juan",
                         lastName = "Pérez",
                         email = "juan.perez@email.com"
@@ -97,7 +101,7 @@ class AddNewWorkshopViewModel @Inject constructor(
                         email = "maria.gonzalez@email.com"
                     ),
                     User(
-                        id = "4e3d1a59-2ac1-4a5e-bb77-3b238bdfc50f",
+                        id = "dd03051b-bcfa-11f0-b6b8-020161fa237d",
                         name = "Carlos",
                         lastName = "Rodríguez",
                         email = "carlos.rodriguez@email.com"
@@ -162,44 +166,30 @@ class AddNewWorkshopViewModel @Inject constructor(
     // Actualiza un campo específico del formulario
     fun updateFormData(update: WorkshopFormData.() -> WorkshopFormData) {
         _formData.update { it.update() }
+        // Limpiar error del campo cuando el usuario empiece a escribir
+        clearFieldErrors()
+    }
+
+    // Limpiar errores de campos
+    private fun clearFieldErrors() {
+        _fieldErrors.value = emptyMap()
     }
 
     // Validación del formulario
     private fun validateForm(): Boolean {
         val data = _formData.value
-        return when {
-            data.name.isBlank() -> {
-                _uiState.update { it.copy(error = "El nombre del taller no puede estar vacío") }
-                false
-            }
-            data.idTraining.isBlank() -> {
-                _uiState.update { it.copy(error = "Debes seleccionar una capacitación") }
-                false
-            }
-            data.startHour.isBlank() -> {
-                _uiState.update { it.copy(error = "La hora de inicio es requerida") }
-                false
-            }
-            data.finishHour.isBlank() -> {
-                _uiState.update { it.copy(error = "La hora de salida es requerida") }
-                false
-            }
-            data.date.toString().isBlank() -> {
-                _uiState.update { it.copy(error = "La fecha es requerida") }
-                false
-            }
-            data.schedule.isBlank() -> {
-                _uiState.update { it.copy(error = "El horario es requerido") }
-                false
-            }
-            data.idUser.isBlank() -> {
-                _uiState.update { it.copy(error = "Debes seleccionar un usuario") }
-                false
-            }
-            else -> {
-                _uiState.update { it.copy(error = null) }
-                true
-            }
-        }
+        val errors = mutableMapOf<String, Boolean>()
+
+        if (data.name.isBlank()) errors["name"] = true
+        if (data.idTraining.isBlank()) errors["idTraining"] = true
+        if (data.startHour.isBlank()) errors["startHour"] = true
+        if (data.finishHour.isBlank()) errors["finishHour"] = true
+        if (data.date.isBlank()) errors["date"] = true
+        if (data.schedule.isBlank()) errors["schedule"] = true
+        if (data.idUser.isBlank()) errors["idUser"] = true
+
+        _fieldErrors.value = errors
+
+        return errors.isEmpty()
     }
 }

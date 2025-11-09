@@ -1,4 +1,4 @@
-package com.app.arcabyolimpo.presentation.screens.supply.components
+package com.app.arcabyolimpo.presentation.ui.components.molecules
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -33,26 +33,50 @@ import com.app.arcabyolimpo.ui.theme.ButtonBlue
 import com.app.arcabyolimpo.ui.theme.DangerGray
 import com.app.arcabyolimpo.ui.theme.White
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 
+/**
+ * A composable that displays a visual card representing a [Supply] item.
+ *
+ * The card includes the supply’s name, an icon placeholder, and a “View” button.
+ * It also includes a subtle press animation for tactile feedback when the user taps it.
+ *
+ * This component follows the molecule design level, meaning it combines smaller UI atoms
+ * (like `ViewButton`) into a reusable unit that can be used across different screens,
+ * such as the supply list or detailed views.
+ *
+ * @param supply The [Supply] data model containing the item’s name and related properties.
+ * @param onClick Callback triggered when the card or “View” button is tapped.
+ *
+ * ### UI Details:
+ * - **Card container:** Uses `Material3.Card` with a soft elevation and rounded corners.
+ * - **Press animation:** The card scales down slightly (`0.95f`) when pressed, using
+ *   [animateFloatAsState] for a smooth animation.
+ * - **Icon placeholder:** A circular shape filled with a semi-transparent blue background,
+ *   representing where an image or icon could be placed in future iterations.
+ * - **Text styling:** Displays the supply’s name in white, bold text using the Poppins font.
+ * - **Divider:** A subtle line below each card to separate items visually in a list.
+ *
+ */
 @Composable
 fun SupplyCard(
     supply: Supply,
     onClick: () -> Unit
 ) {
-
     var isPressed by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(
         targetValue = if (isPressed) 0.95f else 1f,
         label = ""
     )
+
     Card(
         modifier =
             Modifier
                 .fillMaxWidth()
                 .clickable(onClick = onClick)
-                .padding(horizontal = 12.dp, vertical = 6.dp)
+                .padding(horizontal = 0.dp, vertical = 0.dp)
                 .scale(scale)
                 .pointerInput(Unit) {
                     detectTapGestures(
@@ -67,31 +91,30 @@ fun SupplyCard(
         colors = CardDefaults.cardColors(
             containerColor = Background
         ),
-        elevation =
-            CardDefaults.cardElevation(defaultElevation = 2.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
-        ){
+        ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                    .padding(horizontal = 0.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
-            ){
+            ) {
                 Box(
                     modifier = Modifier
-                        .size(48.dp)
+                        .size(74.dp)
                         .background(color = ButtonBlue.copy(alpha = 0.1f), shape = CircleShape)
                 )
 
                 Text(
                     text = supply.name,
                     color = White,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 15.sp,
-                    fontFamily = Poppins,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier
                         .weight(1f)
                         .padding(start = 16.dp)
@@ -99,6 +122,7 @@ fun SupplyCard(
 
                 ViewButton(onClick = onClick)
             }
+
             Divider(
                 color = DangerGray.copy(alpha = 0.3f),
                 thickness = 0.7.dp,

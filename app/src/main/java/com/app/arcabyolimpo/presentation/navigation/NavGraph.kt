@@ -26,6 +26,7 @@ import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecove
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
+import com.app.arcabyolimpo.presentation.screens.supply.SupplyListScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
 import com.app.arcabyolimpo.presentation.screens.workshop.AddNewWorkshopScreen
@@ -288,5 +289,23 @@ fun ArcaNavGraph(
             )
         }
 
+        /**
+         * Supply List Screen.
+         *
+         * This composable represents the screen where users can view and interact with
+         * the list of available supplies.
+         *
+         * It connects to the [SupplyListScreen] composable, which displays the UI and
+         * interacts with its corresponding [SuppliesListViewModel] to handle data fetching,
+         * loading states, and errors.
+         *
+         */
+        composable(Screen.SuppliesList.route) {
+            SupplyListScreen(
+                onSupplyClick = { id ->
+                    navController.navigate("supplyDetail/$id")
+                }
+            )
+        }
     }
 }

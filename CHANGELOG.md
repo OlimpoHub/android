@@ -1,3 +1,22 @@
+## [0.1.0] - 9/11/2025
+
+### Added
+ - The files that get to be with the Api related to Workshops
+ - The view model, the view, the model for register new workshop.
+ - routes in ArcaApi and AppModule to work with workshops.
+
+### Fixed
+ - The colors of upload image, icon standar input and select option input, to match the standard input
+
+## [0.1.0] - 8/11/2025
+
+### Fixed
+ - Add button
+
+### Added
+ - Search bar and filter icon.
+ - Supplies list documentation for the code.
+
 ## [0.1.0] - 7/11/2025
 
 ### Fixed

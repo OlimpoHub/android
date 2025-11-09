@@ -62,7 +62,7 @@ fun StandardIconInput(
     Column(
         modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
+            .padding(vertical = 0.dp),
         horizontalAlignment = Alignment.Start,
     ) {
         Text(
