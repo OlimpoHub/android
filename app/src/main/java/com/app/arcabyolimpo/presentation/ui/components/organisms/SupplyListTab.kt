@@ -1,4 +1,4 @@
-package com.app.arcabyolimpo.presentation.screens.supply.components
+package com.app.arcabyolimpo.presentation.ui.components.organisms
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,13 +14,13 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.presentation.common.components.ErrorView
 import com.app.arcabyolimpo.presentation.common.components.LoadingShimmer
+import com.app.arcabyolimpo.presentation.ui.components.molecules.SupplyCard
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

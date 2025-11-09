@@ -1,4 +1,4 @@
-package com.app.arcabyolimpo.presentation.screens.supply.components
+package com.app.arcabyolimpo.presentation.ui.components.molecules
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
