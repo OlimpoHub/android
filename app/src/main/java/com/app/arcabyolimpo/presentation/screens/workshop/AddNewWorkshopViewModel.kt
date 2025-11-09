@@ -15,11 +15,11 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
 
-// Modelos de datos para los dropdowns
+
+// Para mock data
 data class Training(
     val id: String,
-    val name: String,
-    val description: String
+    val name: String
 )
 
 data class User(
@@ -40,36 +40,30 @@ class AddNewWorkshopViewModel @Inject constructor(
     private val _formData = MutableStateFlow(WorkshopFormData())
     val formData: StateFlow<WorkshopFormData> = _formData.asStateFlow()
 
-    // Estados para los dropdowns
+    // Estados para los dropdowns (mockdata)
     private val _trainings = MutableStateFlow<List<Training>>(emptyList())
     val trainings: StateFlow<List<Training>> = _trainings.asStateFlow()
-
     private val _users = MutableStateFlow<List<User>>(emptyList())
     val users: StateFlow<List<User>> = _users.asStateFlow()
 
-    // Cargar capacitaciones (simuladas por ahora - debes implementar la llamada real a tu API)
+    // Cargar capacitaciones Mockdata
     fun loadTrainings() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
-            // TODO: Reemplazar con llamada real a tu API/repositorio
-            // Por ahora simulamos datos de ejemplo
             try {
                 val mockTrainings = listOf(
                     Training(
-                        id = "a6a4dc6e-29f3-4c34-bd33-123456789abc",
-                        name = "Panadería Básica",
-                        description = "Curso de panadería tradicional"
+                        id = "a6a4dc6e-29f3-4c34-bd3c-4c8c74a5a550",
+                        name = "Panadería"
                     ),
                     Training(
-                        id = "b7b5ec7f-3a04-5d45-ce44-23456789abcd",
-                        name = "Repostería Avanzada",
-                        description = "Técnicas avanzadas de repostería"
+                        id = "a6a4dc6e-29f3-4c34-bd3c-4c8c74a5a550",
+                        name = "Repostería"
                     ),
                     Training(
-                        id = "c8c6fd8g-4b15-6e56-df55-3456789abcde",
-                        name = "Cocina Internacional",
-                        description = "Platos típicos de diferentes países"
+                        id = "a6a4dc6e-29f3-4c34-bd3c-4c8c74a5a550",
+                        name = "Cocina"
                     )
                 )
                 _trainings.value = mockTrainings
@@ -83,29 +77,27 @@ class AddNewWorkshopViewModel @Inject constructor(
         }
     }
 
-    // Cargar usuarios (simulados por ahora - debes implementar la llamada real a tu API)
+    // Cargar usuarios Mockdata
     fun loadUsers() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
-            // TODO: Reemplazar con llamada real a tu API/repositorio
-            // Por ahora simulamos datos de ejemplo
             try {
                 val mockUsers = listOf(
                     User(
-                        id = "45f2b7d1-8e91-4a1a-bb2a-90c3f1234b56",
+                        id = "4e3d1a59-2ac1-4a5e-bb77-3b238bdfc50f",
                         name = "Juan",
                         lastName = "Pérez",
                         email = "juan.perez@email.com"
                     ),
                     User(
-                        id = "56g3c8e2-9f82-5b2b-cc3b-01d4g2345c67",
+                        id = "4e3d1a59-2ac1-4a5e-bb77-3b238bdfc50f",
                         name = "María",
                         lastName = "González",
                         email = "maria.gonzalez@email.com"
                     ),
                     User(
-                        id = "67h4d9f3-0g93-6c3c-dd4c-12e5h3456d78",
+                        id = "4e3d1a59-2ac1-4a5e-bb77-3b238bdfc50f",
                         name = "Carlos",
                         lastName = "Rodríguez",
                         email = "carlos.rodriguez@email.com"
@@ -172,7 +164,7 @@ class AddNewWorkshopViewModel @Inject constructor(
         _formData.update { it.update() }
     }
 
-    // Validación mejorada del formulario
+    // Validación del formulario
     private fun validateForm(): Boolean {
         val data = _formData.value
         return when {
@@ -184,15 +176,11 @@ class AddNewWorkshopViewModel @Inject constructor(
                 _uiState.update { it.copy(error = "Debes seleccionar una capacitación") }
                 false
             }
-            data.idUser.isBlank() -> {
-                _uiState.update { it.copy(error = "Debes seleccionar un usuario") }
-                false
-            }
-            data.startHour.toString().isBlank() -> {
+            data.startHour.isBlank() -> {
                 _uiState.update { it.copy(error = "La hora de inicio es requerida") }
                 false
             }
-            data.finishHour.toString().isBlank() -> {
+            data.finishHour.isBlank() -> {
                 _uiState.update { it.copy(error = "La hora de salida es requerida") }
                 false
             }
@@ -202,6 +190,14 @@ class AddNewWorkshopViewModel @Inject constructor(
             }
             data.schedule.isBlank() -> {
                 _uiState.update { it.copy(error = "El horario es requerido") }
+                false
+            }
+            data.idUser.isBlank() -> {
+                _uiState.update { it.copy(error = "Debes seleccionar un usuario") }
+                false
+            }
+            data.image.isBlank() -> {
+                _uiState.update { it.copy(error = "La URL de la imagen es obligatoria") }
                 false
             }
             else -> {

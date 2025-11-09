@@ -5,8 +5,7 @@ import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.domain.model.workshops.Workshop
 import com.app.arcabyolimpo.domain.repository.workshops.WorkshopRepository
-import java.sql.Date
-import java.sql.Time
+
 import javax.inject.Inject
 
 class WorkshopRepositoryImpl
@@ -25,9 +24,9 @@ class WorkshopRepositoryImpl
                     url = dto.image,
                     status = 0,
                     schedule = "",
-                    startHour = Time(0),
-                    finishHour = Time(0),
-                    date = Date(0)
+                    startHour = "",
+                    finishHour = "",
+                    date = ""
                 )
             }
         }

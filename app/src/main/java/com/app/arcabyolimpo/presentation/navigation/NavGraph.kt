@@ -280,6 +280,7 @@ fun ArcaNavGraph(
         /** Workshops Add Screen */
         composable(Screen.AddNewWorkshop.route) {
             AddNewWorkshopScreen(
+                navController = navController,
                 viewModel = hiltViewModel(),
                 onSuccess = {
                     navController.popBackStack()
