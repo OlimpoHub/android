@@ -20,6 +20,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
+import java.util.logging.Filter
 
 /**
  * Defines the remote API endpoints.
@@ -61,8 +62,11 @@ interface ArcaApi {
         @Path("id") id: String,
     ): SupplyDto
 
-    @POST("/supplies/filterSupplies")
+    @POST("/supplies/filter")
     suspend fun filterSupplies(
         @Body params: FilterSuppliesDto,
-    ): List<Supply>
+    ): List<SupplyDto>
+
+    @GET("/supplies/filter/data")
+    suspend fun getFilterSupplies(): FilterSuppliesDto
 }

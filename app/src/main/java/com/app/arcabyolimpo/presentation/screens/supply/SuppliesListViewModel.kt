@@ -2,8 +2,10 @@ package com.app.arcabyolimpo.presentation.screens.supply
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.arcabyolimpo.data.remote.dto.supplies.FilterSuppliesDto
 import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.usecase.supplies.FilterSuppliesUseCase
+import com.app.arcabyolimpo.domain.usecase.supplies.GetFilterDataUseCase
 import com.app.arcabyolimpo.domain.usecase.supplies.GetSuppliesListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,6 +20,7 @@ class SuppliesListViewModel
     @Inject
     constructor(
         private val getSuppliesListUseCase: GetSuppliesListUseCase,
+        private val filterSuppliesUseCase: FilterSuppliesUseCase,
     ) : ViewModel() {
         private val _uiState = MutableStateFlow(SuppliesListUiState())
         val uiState: StateFlow<SuppliesListUiState> = _uiState.asStateFlow()
