@@ -21,6 +21,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.KeyIcon
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
+import com.app.arcabyolimpo.ui.theme.ErrorRed
+import com.app.arcabyolimpo.ui.theme.HighlightInputBlue
+import com.app.arcabyolimpo.ui.theme.HighlightRed
+import com.app.arcabyolimpo.ui.theme.InputBackgroundBlue
+import com.app.arcabyolimpo.ui.theme.InputBackgroundRed
+import com.app.arcabyolimpo.ui.theme.PlaceholderGray
+import com.app.arcabyolimpo.ui.theme.SelectInputBlue
+import com.app.arcabyolimpo.ui.theme.White
 
 @Suppress("ktlint:standard:function-naming")
 /**
@@ -47,7 +55,7 @@ fun StandardIconInput(
     errorMessage: String? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     trailingIcon: @Composable (() -> Unit)? = null,
-    leadingIcon: @Composable (() -> Unit)? = null, // 🆕 nuevo parámetro
+    leadingIcon: @Composable (() -> Unit)? = null,
 ) {
     var textValue by rememberSaveable { mutableStateOf(value) }
 
@@ -60,7 +68,7 @@ fun StandardIconInput(
         Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface,
+            color = White,
         )
 
         OutlinedTextField(
@@ -72,7 +80,7 @@ fun StandardIconInput(
             placeholder = {
                 Text(
                     text = placeholder,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                    color = PlaceholderGray,
                 )
             },
             modifier =
@@ -82,33 +90,34 @@ fun StandardIconInput(
             shape = RoundedCornerShape(12.dp),
             isError = isError,
             visualTransformation = visualTransformation,
-            textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface),
+            textStyle = TextStyle(color = White),
             trailingIcon = trailingIcon,
-            leadingIcon = leadingIcon, // 🆕 icono inicial opcional
+            leadingIcon = leadingIcon,
             colors =
                 TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    focusedContainerColor = InputBackgroundBlue,
+                    unfocusedContainerColor = InputBackgroundBlue,
+                    errorContainerColor = InputBackgroundRed,
                     focusedIndicatorColor =
                         if (isError) {
-                            MaterialTheme.colorScheme.error
+                            HighlightRed
                         } else {
-                            MaterialTheme.colorScheme.primary
+                            SelectInputBlue
                         },
                     unfocusedIndicatorColor =
                         if (isError) {
-                            MaterialTheme.colorScheme.error.copy(alpha = 0.7f)
+                            HighlightRed
                         } else {
-                            MaterialTheme.colorScheme.primary
+                            HighlightInputBlue
                         },
-                    cursorColor = MaterialTheme.colorScheme.primary,
+                    cursorColor = SelectInputBlue,
                 ),
         )
 
         if (isError && !errorMessage.isNullOrEmpty()) {
             Text(
                 text = errorMessage,
-                color = MaterialTheme.colorScheme.error,
+                color = ErrorRed,
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.padding(top = 2.dp),
             )

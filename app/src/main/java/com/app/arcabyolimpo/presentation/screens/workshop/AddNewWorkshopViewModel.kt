@@ -196,10 +196,6 @@ class AddNewWorkshopViewModel @Inject constructor(
                 _uiState.update { it.copy(error = "Debes seleccionar un usuario") }
                 false
             }
-            data.image.isBlank() -> {
-                _uiState.update { it.copy(error = "La URL de la imagen es obligatoria") }
-                false
-            }
             else -> {
                 _uiState.update { it.copy(error = null) }
                 true

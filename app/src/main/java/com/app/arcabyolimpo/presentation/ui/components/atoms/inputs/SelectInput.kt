@@ -22,6 +22,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
+import com.app.arcabyolimpo.ui.theme.HighlightInputBlue
+import com.app.arcabyolimpo.ui.theme.InputBackgroundBlue
+import com.app.arcabyolimpo.ui.theme.SelectInputBlue
+import com.app.arcabyolimpo.ui.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
@@ -66,15 +70,15 @@ fun SelectInput(
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
                 shape = RoundedCornerShape(12.dp),
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                    unfocusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                    cursorColor = MaterialTheme.colorScheme.primary,
-                    focusedPlaceholderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                    unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    focusedContainerColor = InputBackgroundBlue,
+                    unfocusedContainerColor = InputBackgroundBlue,
+                    focusedIndicatorColor = SelectInputBlue,
+                    unfocusedIndicatorColor = HighlightInputBlue,
+                    focusedTextColor = White,
+                    unfocusedTextColor = White,
+                    cursorColor = SelectInputBlue,
+                    focusedPlaceholderColor = White.copy(alpha = 0.6f),
+                    unfocusedPlaceholderColor = White.copy(alpha = 0.6f),
                 ),
                 modifier = Modifier
                     .menuAnchor()

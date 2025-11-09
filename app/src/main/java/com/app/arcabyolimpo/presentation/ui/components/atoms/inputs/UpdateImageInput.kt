@@ -35,6 +35,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.UploadIcon
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
+import com.app.arcabyolimpo.ui.theme.ErrorRed
+import com.app.arcabyolimpo.ui.theme.White
+import com.app.arcabyolimpo.ui.theme.HighlightInputBlue
+import com.app.arcabyolimpo.ui.theme.HighlightRed
+import com.app.arcabyolimpo.ui.theme.InputBackgroundBlue
+import com.app.arcabyolimpo.ui.theme.InputBackgroundRed
+import com.app.arcabyolimpo.ui.theme.SelectInputBlue
+
 
 /**
  * ImageUploadInput: clickable area to select an image from the gallery.
@@ -67,8 +75,15 @@ fun ImageUploadInput(
     val currentUri: Uri? = imageUri?.takeIf { it.isNotBlank() }?.let(Uri::parse)
 
     val shape = RoundedCornerShape(12.dp)
-    val borderColor = if (isError) MaterialTheme.colorScheme.error
-    else MaterialTheme.colorScheme.primary
+
+    // mismos colores que StandardInput
+    val backgroundColor =
+        if (isError) InputBackgroundRed else InputBackgroundBlue
+    val borderColor =
+        if (isError) HighlightRed else HighlightInputBlue
+    val borderColorFocused =
+        if (isError) HighlightRed else SelectInputBlue
+    val textColor = White
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -86,7 +101,7 @@ fun ImageUploadInput(
         Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface,
+            color = textColor,
         )
 
         Box(
@@ -95,10 +110,11 @@ fun ImageUploadInput(
                 .padding(top = 4.dp)
                 .height(height)
                 .clip(shape)
-                .background(MaterialTheme.colorScheme.surface)
+                .background(backgroundColor)
                 .border(BorderStroke(1.dp, borderColor), shape)
                 .clickable { launcher.launch("image/*") }
                 .padding(12.dp),
+            contentAlignment = Alignment.Center
         ) {
             if (currentUri != null) {
                 AndroidView(
@@ -120,15 +136,15 @@ fun ImageUploadInput(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
-                        text = "Subir Imagen",
+                        text = "Subir imagen",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                        color = White.copy(alpha = 0.7f),
                         textAlign = TextAlign.Center,
                     )
-                    Spacer(Modifier.height(12.dp))
+                    Spacer(Modifier.height(8.dp))
                     UploadIcon(
-                        modifier = Modifier.size(56.dp),
-                        tint = MaterialTheme.colorScheme.onSurface
+                        modifier = Modifier.size(48.dp),
+                        tint = White.copy(alpha = 0.8f)
                     )
                 }
             }
@@ -137,14 +153,13 @@ fun ImageUploadInput(
         if (isError && !errorMessage.isNullOrEmpty()) {
             Text(
                 text = errorMessage,
-                color = MaterialTheme.colorScheme.error,
+                color = ErrorRed,
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.padding(top = 2.dp),
             )
         }
     }
 }
-
 
 /* ===================== PREVIEWS ===================== */
 
