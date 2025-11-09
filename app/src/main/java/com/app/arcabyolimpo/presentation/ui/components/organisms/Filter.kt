@@ -331,17 +331,3 @@ fun FilterExpandableSection(
         }
     }
 }
-
-val viewModel: SuppliesListViewModel = hiltViewModel()
-
-@Suppress("ktlint:standard:function-naming")
-@Preview()
-@Composable
-fun FilterPreview() {
-    Filter(
-        data = filterData,
-        onApply = { dto ->
-            viewModel.filterSupplies(dto)
-        },
-    )
-}

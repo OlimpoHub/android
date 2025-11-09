@@ -26,6 +26,7 @@ import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecove
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
+import com.app.arcabyolimpo.presentation.screens.supply.SupplyListScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
 
@@ -60,6 +61,8 @@ sealed class Screen(
     object CoordinatorHome : Screen("admin")
 
     object CollaboratorHome : Screen("client")
+
+    object SuppliesList : Screen("supply")
 }
 
 /**
@@ -91,12 +94,12 @@ fun ArcaNavGraph(
         }
     }
 
-    //navController.navigate(Screen.PasswordRegistration.createRoute(email))
+    // navController.navigate(Screen.PasswordRegistration.createRoute(email))
 
     /** Defines all navigation. The start destination is the Splash screen. */
     NavHost(
         navController = navController,
-        startDestination = Screen.Splash.route,
+        startDestination = Screen.SuppliesList.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -139,7 +142,7 @@ fun ArcaNavGraph(
                 },
                 onAccountActivationClick = {
                     navController.navigate(Screen.AccountActivation.route)
-                }
+                },
             )
         }
 
@@ -150,7 +153,7 @@ fun ArcaNavGraph(
                         navController.navigate(Screen.Login.route)
                     }
                 },
-                viewModel = hiltViewModel()
+                viewModel = hiltViewModel(),
             )
         }
 
@@ -161,21 +164,25 @@ fun ArcaNavGraph(
                         navController.navigate(Screen.Login.route)
                     }
                 },
-                viewModel = hiltViewModel()
+                viewModel = hiltViewModel(),
             )
         }
 
         composable(
             route = Screen.TokenVerification.route,
-            arguments = listOf(navArgument("token") {
-                type = NavType.StringType
-                nullable = true
-            }),
-            deepLinks = listOf(
-                navDeepLink {
-                    uriPattern = "arcabyolimpo://user/verify-token?token={token}"
-                }
-            )
+            arguments =
+                listOf(
+                    navArgument("token") {
+                        type = NavType.StringType
+                        nullable = true
+                    },
+                ),
+            deepLinks =
+                listOf(
+                    navDeepLink {
+                        uriPattern = "arcabyolimpo://user/verify-token?token={token}"
+                    },
+                ),
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token")
             val viewModel: TokenVerificationViewModel = hiltViewModel()
@@ -193,7 +200,7 @@ fun ArcaNavGraph(
                         onPasswordRegistrationSucessClick = {
                             navController.navigate(Screen.PasswordRegistrationSuccess.route)
                         },
-                        viewModel = hiltViewModel()
+                        viewModel = hiltViewModel(),
                     )
                 }
 
@@ -202,7 +209,6 @@ fun ArcaNavGraph(
                 }
 
                 uiState.isLoading == true -> {
-
                 }
 
                 else -> {
@@ -211,10 +217,8 @@ fun ArcaNavGraph(
             }
         }
 
-
-
         composable(Screen.TokenVerificationFailed.route) {
-            TokenVerificationFailedScreen (
+            TokenVerificationFailedScreen(
                 onBackClick = {
                     if (!navController.popBackStack()) {
                         navController.navigate(Screen.Login.route)
@@ -225,7 +229,7 @@ fun ArcaNavGraph(
 
         composable(
             route = Screen.PasswordRegistration.route,
-            arguments = listOf(navArgument("email") { type = NavType.StringType })
+            arguments = listOf(navArgument("email") { type = NavType.StringType }),
         ) { backStackEntry ->
             val email = backStackEntry.arguments?.getString("email")
             PasswordRegistrationScreen(
@@ -239,18 +243,17 @@ fun ArcaNavGraph(
                     navController.popBackStack()
                     navController.popBackStack()
                 },
-                viewModel = hiltViewModel()
+                viewModel = hiltViewModel(),
             )
         }
 
         composable(Screen.PasswordRegistrationSuccess.route) {
-            PasswordRegistrationSuccessScreen (
+            PasswordRegistrationSuccessScreen(
                 onBackClick = {
                     navController.navigate(Screen.Login.route)
                 },
             )
         }
-
 
         /** Coordinator Home Screen */
         composable(Screen.CoordinatorHome.route) {
@@ -260,6 +263,25 @@ fun ArcaNavGraph(
         /** Collaborator Home Screen */
         composable(Screen.CollaboratorHome.route) {
             CollaboratorHomeScreen()
+        }
+
+        /**
+         * Supply List Screen.
+         *
+         * This composable represents the screen where users can view and interact with
+         * the list of available supplies.
+         *
+         * It connects to the [SupplyListScreen] composable, which displays the UI and
+         * interacts with its corresponding [SuppliesListViewModel] to handle data fetching,
+         * loading states, and errors.
+         *
+         */
+        composable(Screen.SuppliesList.route) {
+            SupplyListScreen(
+                onSupplyClick = { id ->
+                    navController.navigate("supplyDetail/$id")
+                },
+            )
         }
     }
 }

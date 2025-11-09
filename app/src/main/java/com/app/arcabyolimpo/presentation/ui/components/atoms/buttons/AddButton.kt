@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.arcabyolimpo.presentation.theme.Poppins
+import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.PlusIcon
 import com.app.arcabyolimpo.ui.theme.PrimaryBlue
 import com.app.arcabyolimpo.ui.theme.White
 
@@ -35,22 +36,16 @@ fun AddButton(
 ) {
     Button(
         onClick = onClick,
-        modifier =
-            modifier
-                .size(80.dp),
+        modifier = modifier.size(72.dp),
         shape = CircleShape,
         contentPadding = ButtonDefaults.ContentPadding,
-        colors =
-            ButtonDefaults.buttonColors(
-                containerColor = White,
-            ),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = White,
+        ),
     ) {
-        Text(
-            text = "+",
-            color = PrimaryBlue,
-            fontFamily = Poppins,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 50.sp,
+        PlusIcon(
+            tint = PrimaryBlue,
+            modifier = Modifier.size(32.dp),
         )
     }
 }
