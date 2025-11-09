@@ -9,15 +9,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
+import com.app.arcabyolimpo.presentation.navigation.Screen
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
 import com.app.arcabyolimpo.ui.theme.Background
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun WorkshopsListScreen(
+    navController: NavHostController,
     workshopClick: (String) -> Unit,
     viewModel: WorkshopsListViewModel = hiltViewModel()
-) {
+)  {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
@@ -25,9 +28,7 @@ fun WorkshopsListScreen(
         floatingActionButton = {
             AddButton(
                 onClick = {
-                    // 👉 Aquí defines la acción del botón "+"
-                    // Ejemplo: navegar a la pantalla para agregar un nuevo taller
-                    // navController.navigate(Screen.WorkshopCreate.route)
+                    navController.navigate(Screen.AddNewWorkshop.route)
                 }
             )
         }

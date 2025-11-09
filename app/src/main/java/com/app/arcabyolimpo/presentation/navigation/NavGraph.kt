@@ -28,6 +28,7 @@ import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordR
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
+import com.app.arcabyolimpo.presentation.screens.workshop.AddNewWorkshopScreen
 import com.app.arcabyolimpo.presentation.screens.workshop.WorkshopsListScreen
 
 /**
@@ -63,6 +64,8 @@ sealed class Screen(
     object CollaboratorHome : Screen("client")
 
     object WorkshopsList : Screen("workshop")
+
+    object AddNewWorkshop: Screen("workshop/add")
 
 }
 
@@ -269,8 +272,18 @@ fun ArcaNavGraph(
         /** Workshops List Screen */
         composable(Screen.WorkshopsList.route) {
             WorkshopsListScreen(
-                workshopClick = {},
-                viewModel = hiltViewModel()
+                navController = navController,
+                workshopClick = {}
+            )
+        }
+
+        /** Workshops Add Screen */
+        composable(Screen.AddNewWorkshop.route) {
+            AddNewWorkshopScreen(
+                viewModel = hiltViewModel(),
+                onSuccess = {
+                    navController.popBackStack()
+                }
             )
         }
 

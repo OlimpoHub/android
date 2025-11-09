@@ -5,6 +5,8 @@ import java.sql.Time
 
 data class Workshop(
     val id: String,
+    val idTraining: String,
+    val idUser: String,
     val nameWorkshop: String,
     val url: String,
     val startHour: Time,
