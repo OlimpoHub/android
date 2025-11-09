@@ -6,6 +6,7 @@ import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.usecase.workshops.PostAddNewWorkshop
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopFormData
+import com.app.arcabyolimpo.domain.usecase.workshops.GetWorkshopsListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,8 +16,16 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
 
+/**
+ * ViewModel responsible for managing the UI state of the register workshops screen.
+ *
+ * This class interacts with the [postAddNewWorkshop] to post all the data in the domain layer
+ * and exposes a [StateFlow] of [AddNewWorkshopUiState] that the UI observes to render updates.
+ *
+ * @property postAddNewWorkshop Use case for posting the new workshop.
+ */
 
-// Para mock data - Quitar a futuro
+/** Mock Data - deleting in the future */
 data class Training(
     val id: String,
     val name: String
@@ -34,23 +43,21 @@ class AddNewWorkshopViewModel @Inject constructor(
     private val postAddNewWorkshop: PostAddNewWorkshop
 ) : ViewModel() {
 
+    /** Backing property for the workshops UI state. */
     private val _uiState = MutableStateFlow(AddNewWorkshopUiState())
     val uiState: StateFlow<AddNewWorkshopUiState> = _uiState.asStateFlow()
-
     private val _formData = MutableStateFlow(WorkshopFormData())
     val formData: StateFlow<WorkshopFormData> = _formData.asStateFlow()
-
-    // Estados para errores específicos por campo
     private val _fieldErrors = MutableStateFlow<Map<String, Boolean>>(emptyMap())
     val fieldErrors: StateFlow<Map<String, Boolean>> = _fieldErrors.asStateFlow()
 
-    // Estados para los dropdowns (mockdata)
+    /** Mock Data - deleting in the future */
     private val _trainings = MutableStateFlow<List<Training>>(emptyList())
     val trainings: StateFlow<List<Training>> = _trainings.asStateFlow()
     private val _users = MutableStateFlow<List<User>>(emptyList())
     val users: StateFlow<List<User>> = _users.asStateFlow()
 
-    // Cargar capacitaciones Mockdata
+    /** Mock Data - deleting in the future */
     fun loadTrainings() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
@@ -81,7 +88,7 @@ class AddNewWorkshopViewModel @Inject constructor(
         }
     }
 
-    // Cargar usuarios Mockdata
+    /** Mock Data - deleting in the future */
     fun loadUsers() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
@@ -119,7 +126,6 @@ class AddNewWorkshopViewModel @Inject constructor(
     }
 
     fun addNewWorkshop() {
-        // Validar datos antes de enviar
         if (!validateForm()) return
 
         viewModelScope.launch {
@@ -163,19 +169,14 @@ class AddNewWorkshopViewModel @Inject constructor(
         }
     }
 
-    // Actualiza un campo específico del formulario
     fun updateFormData(update: WorkshopFormData.() -> WorkshopFormData) {
         _formData.update { it.update() }
-        // Limpiar error del campo cuando el usuario empiece a escribir
         clearFieldErrors()
     }
 
-    // Limpiar errores de campos
     private fun clearFieldErrors() {
         _fieldErrors.value = emptyMap()
     }
-
-    // Validación del formulario
     private fun validateForm(): Boolean {
         val data = _formData.value
         val errors = mutableMapOf<String, Boolean>()

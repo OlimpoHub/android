@@ -75,8 +75,6 @@ fun ImageUploadInput(
     val currentUri: Uri? = imageUri?.takeIf { it.isNotBlank() }?.let(Uri::parse)
 
     val shape = RoundedCornerShape(12.dp)
-
-    // mismos colores que StandardInput
     val backgroundColor =
         if (isError) InputBackgroundRed else InputBackgroundBlue
     val borderColor =

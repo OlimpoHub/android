@@ -270,7 +270,17 @@ fun ArcaNavGraph(
             CollaboratorHomeScreen()
         }
 
-        /** Workshops List Screen */
+        /**
+         * Workshops List Screen.
+         *
+         * This composable represents the screen where users can view and interact with
+         * the list of available workshops.
+         *
+         * It connects to the [WorkshopsListScreen] composable, which displays the UI and
+         * interacts with its corresponding [WorkshopsListViewModel] to handle data fetching,
+         * loading states, and errors.
+         *
+         */
         composable(Screen.WorkshopsList.route) {
             WorkshopsListScreen(
                 navController = navController,
@@ -278,7 +288,17 @@ fun ArcaNavGraph(
             )
         }
 
-        /** Workshops Add Screen */
+        /**
+         * Workshops Add Screen.
+         *
+         * This composable represents the screen where users can view and interact with
+         * the register of a new workshop.
+         *
+         * It connects to the [AddNewWorkshopScreen] composable, which displays the UI and
+         * interacts with its corresponding [AddNewWorkshopViewModel] to handle data fetching,
+         * loading states, and errors.
+         *
+         */
         composable(Screen.AddNewWorkshop.route) {
             AddNewWorkshopScreen(
                 navController = navController,

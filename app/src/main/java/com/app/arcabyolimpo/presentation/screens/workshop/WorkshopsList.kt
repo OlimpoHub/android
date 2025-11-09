@@ -11,9 +11,21 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.app.arcabyolimpo.presentation.navigation.Screen
+import com.app.arcabyolimpo.presentation.screens.supply.SuppliesListViewModel
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
 import com.app.arcabyolimpo.ui.theme.Background
 
+/**
+ * Composable screen that displays the list of workshops.
+ *
+ * This screen is responsible for showing a list of available workshops
+ * retrieved from the [WorkshopsListViewModel]. It provides:
+ * - A floating action button for adding new workshops.
+ *
+ * @param navController The way to go through different screens that are in the [NavGraph]
+ * @param workshopClick Callback triggered when a workshop item is clicked.
+ * @param viewModel The [WorkshopsListViewModel] used to manage the UI state.
+ */
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun WorkshopsListScreen(
@@ -38,7 +50,6 @@ fun WorkshopsListScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            // 👉 Aquí colocarás la lista de talleres (LazyColumn, etc.)
         }
     }
 }

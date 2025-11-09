@@ -27,7 +27,20 @@ import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 
-
+/**
+ * Composable screen that displays the registrations of new workshops.
+ *
+ * This screen is responsible for showing a forms to register workshops
+ * retrieved from the [AddNewWorkshopViewModel]. It provides:
+ * - Each field required to register a new workshop in the data base.
+ * - A button to cancel the forms an return to [WorkshopsList].
+ * - A button to save all the fields and send it to the data base.
+ * - A navbar at the button of the screen.
+ *
+ * @param navController The way to go through different screens that are in the [NavGraph]
+ * @param workshopClick Callback triggered when a workshop item is clicked.
+ * @param viewModel The [WorkshopsListViewModel] used to manage the UI state.
+ */
 @Composable
 fun AddNewWorkshopScreen(
     navController: NavHostController,
@@ -61,6 +74,7 @@ fun AddNewWorkshopScreen(
             ) {
                 Spacer(modifier = Modifier.height(24.dp))
 
+                /** Title of the forms */
                 Text(
                     text = "Registrar Nuevo Taller",
                     style = MaterialTheme.typography.headlineSmall,
@@ -70,18 +84,20 @@ fun AddNewWorkshopScreen(
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
-                // Nombre del taller
+
+                /** Name of the workshop */
                 StandardInput(
                     label = "Nombre",
                     placeholder = "Ej. Panadería",
                     value = formData.name,
                     onValueChange = { viewModel.updateFormData { copy(name = it) } },
                     isError = fieldErrors["name"] == true,
-                    errorMessage = null // Sin mensaje de error
+                    errorMessage = null
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
-                // Capacitación
+
+                /** Trainings */
                 SelectInput(
                     label = "Capacitación",
                     selectedOption = trainings.firstOrNull { it.id == formData.idTraining }?.name
@@ -100,28 +116,28 @@ fun AddNewWorkshopScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    // Hora de entrada
+                    /** Start Hour */
                     StandardIconInput(
                         label = "Hora de entrada",
                         placeholder = "Ej. 08:00",
                         value = formData.startHour,
                         onValueChange = { viewModel.updateFormData { copy(startHour = it) } },
                         isError = fieldErrors["startHour"] == true,
-                        errorMessage = null, // Sin mensaje de error
+                        errorMessage = null,
                         trailingIcon = {
                             CalendarIcon(tint = MaterialTheme.colorScheme.onSurface)
                         },
                         modifier = Modifier.weight(1f)
                     )
 
-                    // Hora de salida
+                    /** Finish Hour*/
                     StandardIconInput(
                         label = "Hora de salida",
                         placeholder = "Ej. 12:00",
                         value = formData.finishHour,
                         onValueChange = { viewModel.updateFormData { copy(finishHour = it) } },
                         isError = fieldErrors["finishHour"] == true,
-                        errorMessage = null, // Sin mensaje de error
+                        errorMessage = null,
                         trailingIcon = {
                             CalendarIcon(tint = MaterialTheme.colorScheme.onSurface)
                         },
@@ -130,29 +146,32 @@ fun AddNewWorkshopScreen(
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
-                // Fecha
+
+                /** Date */
                 StandardInput(
                     label = "Fecha del taller",
                     placeholder = "Ej. 2016-07-30",
                     value = formData.date,
                     onValueChange = { viewModel.updateFormData { copy(date = it) } },
                     isError = fieldErrors["date"] == true,
-                    errorMessage = null // Sin mensaje de error
+                    errorMessage = null
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
-                // Horario
+
+                /** Schedule */
                 StandardInput(
                     label = "Horario",
                     placeholder = "Ej. Lunes a viernes",
                     value = formData.schedule,
                     onValueChange = { viewModel.updateFormData { copy(schedule = it) } },
                     isError = fieldErrors["schedule"] == true,
-                    errorMessage = null // Sin mensaje de error
+                    errorMessage = null
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
-                // Usuario
+
+                /** User */
                 SelectInput(
                     label = "Usuario",
                     selectedOption = users.firstOrNull { it.id == formData.idUser }
@@ -168,9 +187,9 @@ fun AddNewWorkshopScreen(
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
-                // Imagen
-                var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
+                /** Upload image */
+                var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
                 ImageUploadInput(
                     label = "Imagen del taller",
                     value = selectedImageUri,
@@ -178,7 +197,7 @@ fun AddNewWorkshopScreen(
                         selectedImageUri = uri
                         viewModel.updateFormData { copy(image = uri?.toString().orEmpty()) }
                     },
-                    isError = false, // Opcional, según tu requerimiento
+                    isError = false,
                     errorMessage = null
                 )
 
@@ -188,7 +207,8 @@ fun AddNewWorkshopScreen(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    // Cancelar
+
+                    /** Cancel */
                     CancelButton(
                         modifier = Modifier
                             .size(width = 112.dp, height = 40.dp),
@@ -197,7 +217,7 @@ fun AddNewWorkshopScreen(
 
                     Spacer(modifier = Modifier.width(16.dp))
 
-                    // Guardar
+                    /** Save */
                     SaveButton(
                         onClick = { viewModel.addNewWorkshop() },
                         width = 112.dp,
@@ -205,7 +225,6 @@ fun AddNewWorkshopScreen(
                     )
                 }
 
-                // Mensajes de éxito/error general (solo para errores de red/API)
                 if (uiState.isSuccess) {
                     Text(
                         text = "Taller creado correctamente",
@@ -217,7 +236,6 @@ fun AddNewWorkshopScreen(
                     }
                 }
 
-                // Solo mostrar errores generales (no de validación de campos)
                 if (!uiState.isSuccess && uiState.error != null && fieldErrors.isEmpty()) {
                     Text(
                         text = uiState.error ?: "",

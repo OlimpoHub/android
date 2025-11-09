@@ -115,6 +115,17 @@ object AppModule {
         api: ArcaApi
     ): SupplyRepository = SupplyRepositoryImpl(api)
 
+    /**
+     * Provides the [WorkshopRepository] implementation.
+     *
+     * This repository handles all workshop-related data operations,
+     * including fetching the workshop list and retrieving detailed
+     * information for a specific workshop. It uses [ArcaApi] as the
+     * remote data source and maps API responses to domain models.
+     *
+     * @param api The [ArcaApi] instance used to perform network requests.
+     * @return A singleton instance of [WorkshopRepositoryImpl].
+     */
     @Provides
     @Singleton
     fun provideWorkshopRepository(
