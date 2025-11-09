@@ -1,3 +1,22 @@
+## [0.1.0] - 7/11/2025
+
+### Fixed
+ - Fixed some unused imports that were on files such as passwordRecovery screen and the use of proper atoms, that disallowed the building of the proyect.
+
+### Added
+ - Added Screen for Beneficiary List
+ - Added square buttons for + and 
+ 
+## [0.1.0] - 6/11/2025
+
+### Fixed
+- Fixed the size of the text of 'Beneficiarios' so that it works on even smaller android devices
+- Fixed the use of fonts of the beneficiary cards
+
+### Added
+- Added molecule for beneficiary cards
+- Password recovery and account activation with token verification
+
 ## [0.1.0] - 5/11/2025
 
 ### Updated

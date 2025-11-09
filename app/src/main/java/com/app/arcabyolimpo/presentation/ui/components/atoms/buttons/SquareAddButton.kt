@@ -1,7 +1,8 @@
 package com.app.arcabyolimpo.presentation.ui.components.atoms.buttons
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -17,49 +18,49 @@ import com.app.arcabyolimpo.ui.theme.PrimaryBlue
 import com.app.arcabyolimpo.ui.theme.White
 
 /**
- * A circular "Add" button component that displays a "+" symbol.
+ * A small square button component that displays a "+" symbol.
  *
- * @param modifier Modifier to adjust the button's layout (size, padding, etc.).
- * @param onClick Lambda executed when the button is pressed.
+ * @param modifier Modifier to adjust the button's layout (e.g., size or padding).
+ * @param onClick Lambda function executed when the button is clicked.
  *
  * The button:
- * - Uses a circular shape.
- * - Has a white background.
- * - Displays a large "+" in the primary blue color.
+ * - Has a fixed square size (32x32 dp).
+ * - Uses slightly rounded corners for a soft appearance.
+ * - Has a white background with subtle elevation.
+ * - Displays a bold "+" symbol in the primary blue color.
  */
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun AddButton(
+fun SquareAddButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
     Button(
         onClick = onClick,
-        modifier =
-            modifier
-                .size(80.dp),
-        shape = CircleShape,
-        contentPadding = ButtonDefaults.ContentPadding,
+        modifier = modifier.size(32.dp),
+        shape = RoundedCornerShape(8.dp),
+        contentPadding = PaddingValues(0.dp),
         colors =
             ButtonDefaults.buttonColors(
                 containerColor = White,
             ),
+        elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
     ) {
         Text(
             text = "+",
             color = PrimaryBlue,
             fontFamily = Poppins,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 50.sp,
+            fontSize = 20.sp,
         )
     }
 }
 
 @Suppress("ktlint:standard:function-naming")
-@Preview(showBackground = true)
+@Preview(showBackground = false)
 @Composable
-fun AddButtonPreview() {
+fun SquareAddButtonPreview() {
     MaterialTheme {
-        AddButton(onClick = {})
+        SquareAddButton(onClick = {})
     }
 }
