@@ -7,7 +7,11 @@ import com.app.arcabyolimpo.data.remote.interceptor.AuthInterceptor
 import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
 import com.app.arcabyolimpo.data.remote.interceptor.TokenAuthenticator
 import com.app.arcabyolimpo.data.repository.auth.UserRepositoryImpl
+import com.app.arcabyolimpo.data.repository.password.PasswordPasswordUserRepositoryImpl
+import com.app.arcabyolimpo.data.repository.supplies.SupplyRepositoryImpl
 import com.app.arcabyolimpo.domain.repository.auth.UserRepository
+import com.app.arcabyolimpo.domain.repository.password.PasswordUserRepository
+import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -85,4 +89,28 @@ object AppModule {
         api: ArcaApi,
         authPreferences: UserPreferences,
     ): UserRepository = UserRepositoryImpl(api, authPreferences)
+
+    @Provides
+    @Singleton
+    fun providePasswordUserRepository(
+        api: ArcaApi
+    ): PasswordUserRepository = PasswordPasswordUserRepositoryImpl(api)
+
+    /**
+     * Provides the [SupplyRepository] implementation.
+     *
+     * This repository handles all supply-related data operations,
+     * including fetching the supply list and retrieving detailed
+     * information for a specific supply. It uses [ArcaApi] as the
+     * remote data source and maps API responses to domain models.
+     *
+     * @param api The [ArcaApi] instance used to perform network requests.
+     * @return A singleton instance of [SupplyRepositoryImpl].
+     */
+    @Provides
+    @Singleton
+    fun provideSupplyRepository(
+        api: ArcaApi
+    ): SupplyRepository = SupplyRepositoryImpl(api)
+
 }

@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview) // Changed from libs.androidx.compose.ui.tooling.preview
     implementation(libs.androidx.material3)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.foundation)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -81,6 +82,6 @@ dependencies {
     // DataStore
     implementation(libs.androidx.datastore.preferences)
 
-    // ICONS
-    implementation("androidx.compose.material:material-icons-extended")
+    // Material Pull to refresh
+    implementation(libs.androidx.material)
 }
