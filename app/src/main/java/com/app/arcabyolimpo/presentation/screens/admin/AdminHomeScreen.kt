@@ -15,25 +15,41 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.app.arcabyolimpo.presentation.screens.session.SessionViewModel
+import androidx.navigation.NavController
+import com.app.arcabyolimpo.presentation.navigation.Screen
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun CoordinatorHomeScreen() {
+fun CoordinatorHomeScreen(navController: NavController) {
     val sessionViewModel: SessionViewModel = hiltViewModel()
 
     Column(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(24.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
         Text("Bienvenido Coordinador 👑", style = MaterialTheme.typography.headlineSmall)
         Spacer(modifier = Modifier.height(20.dp))
-        Button(onClick = { sessionViewModel.logout() }) {
+
+        // Para ir a talleres (temporal, se puede quitar)
+        Button(onClick = {
+            navController.navigate(Screen.WorkshopsList.route)
+        }) {
+            Text("Talleres")
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Button(onClick = {
+            sessionViewModel.logout()
+            navController.navigate(Screen.Login.route) {
+                popUpTo(Screen.CoordinatorHome.route) { inclusive = true }
+            }
+        }) {
             Text("Cerrar sesión")
         }
-        Spacer(modifier = Modifier.height(12.dp))
     }
 }
+

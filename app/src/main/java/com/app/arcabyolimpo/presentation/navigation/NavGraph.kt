@@ -28,6 +28,7 @@ import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordR
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
+import com.app.arcabyolimpo.presentation.screens.workshop.WorkshopsListScreen
 
 /**
  * Defines all available destinations (routes) in the application.
@@ -60,6 +61,9 @@ sealed class Screen(
     object CoordinatorHome : Screen("admin")
 
     object CollaboratorHome : Screen("client")
+
+    object WorkshopsList : Screen("workshop")
+
 }
 
 /**
@@ -254,12 +258,21 @@ fun ArcaNavGraph(
 
         /** Coordinator Home Screen */
         composable(Screen.CoordinatorHome.route) {
-            CoordinatorHomeScreen()
+            CoordinatorHomeScreen(navController)
         }
 
         /** Collaborator Home Screen */
         composable(Screen.CollaboratorHome.route) {
             CollaboratorHomeScreen()
         }
+
+        /** Workshops List Screen */
+        composable(Screen.WorkshopsList.route) {
+            WorkshopsListScreen(
+                workshopClick = {},
+                viewModel = hiltViewModel()
+            )
+        }
+
     }
 }

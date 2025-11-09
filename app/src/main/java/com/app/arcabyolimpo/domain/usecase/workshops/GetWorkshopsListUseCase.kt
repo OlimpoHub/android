@@ -12,7 +12,7 @@ class GetWorkshopsListUseCase
     constructor(
         private val repository: WorkshopRepository
     ) {
-    operator fun invoke(id: String): Flow<Result<List<Workshop>>> =
+    operator fun invoke(): Flow<Result<List<Workshop>>> =
         flow {
             try {
                 emit(Result.Loading)
