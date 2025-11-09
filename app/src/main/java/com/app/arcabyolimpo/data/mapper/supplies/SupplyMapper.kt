@@ -23,11 +23,12 @@ fun SupplyDto.toDomain(): Supply =
             },
     )
 
-fun FilterSuppliesDto.toDomain(): FilterData =
-    FilterData(
-        categories = categories.orEmpty().map { it.safeCapitalize() },
-        measures = measures.orEmpty().map { it.safeCapitalize() },
-        workshops = workshops.orEmpty().map { it.safeCapitalize() },
-    )
+fun FilterSuppliesDto.toFilterData(): FilterData {
+    val map = mutableMapOf<String, List<String>>()
 
-private fun String.safeCapitalize(): String = if (this.isNotEmpty()) replaceFirstChar { it.uppercase() } else this
+    if (!categories.isNullOrEmpty()) map["Categorías"] = categories
+    if (!measures.isNullOrEmpty()) map["Medidas"] = measures
+    if (!workshops.isNullOrEmpty()) map["Talleres"] = workshops
+
+    return FilterData(map)
+}

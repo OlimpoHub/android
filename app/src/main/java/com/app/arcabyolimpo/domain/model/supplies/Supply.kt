@@ -14,16 +14,12 @@ data class SupplyBatch(
 )
 
 data class FilterData(
-    val categories: List<String>,
-    val measures: List<String>,
-    val workshops: List<String>,
+    val sections: Map<String, List<String>>,
 ) {
     fun asSections(): List<Section> =
-        listOf(
-            Section("Categorías", categories),
-            Section("Medidas", measures),
-            Section("Talleres", workshops),
-        )
+        sections.map { (title, options) ->
+            Section(title, options)
+        }
 }
 
 data class Section(
