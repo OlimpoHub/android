@@ -36,17 +36,40 @@ import androidx.compose.material3.Divider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 
+/**
+ * A composable that displays a visual card representing a [Supply] item.
+ *
+ * The card includes the supply’s name, an icon placeholder, and a “View” button.
+ * It also includes a subtle press animation for tactile feedback when the user taps it.
+ *
+ * This component follows the molecule design level, meaning it combines smaller UI atoms
+ * (like `ViewButton`) into a reusable unit that can be used across different screens,
+ * such as the supply list or detailed views.
+ *
+ * @param supply The [Supply] data model containing the item’s name and related properties.
+ * @param onClick Callback triggered when the card or “View” button is tapped.
+ *
+ * ### UI Details:
+ * - **Card container:** Uses `Material3.Card` with a soft elevation and rounded corners.
+ * - **Press animation:** The card scales down slightly (`0.95f`) when pressed, using
+ *   [animateFloatAsState] for a smooth animation.
+ * - **Icon placeholder:** A circular shape filled with a semi-transparent blue background,
+ *   representing where an image or icon could be placed in future iterations.
+ * - **Text styling:** Displays the supply’s name in white, bold text using the Poppins font.
+ * - **Divider:** A subtle line below each card to separate items visually in a list.
+ *
+ */
 @Composable
 fun SupplyCard(
     supply: Supply,
     onClick: () -> Unit
 ) {
-
     var isPressed by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(
         targetValue = if (isPressed) 0.95f else 1f,
         label = ""
     )
+
     Card(
         modifier =
             Modifier
@@ -67,19 +90,18 @@ fun SupplyCard(
         colors = CardDefaults.cardColors(
             containerColor = Background
         ),
-        elevation =
-            CardDefaults.cardElevation(defaultElevation = 2.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
-        ){
+        ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
-            ){
+            ) {
                 Box(
                     modifier = Modifier
                         .size(74.dp)
@@ -99,6 +121,7 @@ fun SupplyCard(
 
                 ViewButton(onClick = onClick)
             }
+
             Divider(
                 color = DangerGray.copy(alpha = 0.3f),
                 thickness = 0.7.dp,

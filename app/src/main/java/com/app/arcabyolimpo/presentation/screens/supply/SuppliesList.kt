@@ -15,6 +15,19 @@ import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
 
+/**
+ * Composable screen that displays the list of supplies.
+ *
+ * This screen is responsible for showing a list of available supplies
+ * retrieved from the [SuppliesListViewModel]. It provides:
+ * - A top bar with the title and notification icon.
+ * - A floating action button for adding new supplies (action pending).
+ * - A content area showing the supply list with loading and error states.
+ *
+ * @param onSupplyClick Callback triggered when a supply item is clicked.
+ * Receives the supply ID as a parameter.
+ * @param viewModel The [SuppliesListViewModel] used to manage the UI state.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SupplyListScreen(
@@ -27,7 +40,7 @@ fun SupplyListScreen(
         containerColor = Background,
         floatingActionButton = {
             AddButton(
-                onClick = { /* acción al presionar + */ }
+                onClick = { /* Action for add button (currently not implemented) */ }
             )
         },
         topBar = {
