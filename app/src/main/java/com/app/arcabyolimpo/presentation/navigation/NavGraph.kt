@@ -300,12 +300,15 @@ fun ArcaNavGraph(
          * loading states, and errors.
          *
          */
+        /**
         composable(Screen.SuppliesList.route) {
             SupplyListScreen(
                 onSupplyClick = { id ->
                     navController.navigate("supplyDetail/$id")
-                }
+                } ,
+                viewModel = hiltViewModel(),
             )
         }
+        **/
     }
 }
