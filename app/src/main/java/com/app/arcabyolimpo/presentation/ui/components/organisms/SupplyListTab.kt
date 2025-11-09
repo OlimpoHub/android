@@ -69,7 +69,7 @@ fun SupplyListContent(
             isLoading && suppliesList.isEmpty() -> {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(1),
-                    contentPadding = PaddingValues(16.dp),
+                    contentPadding = PaddingValues(0.dp),
                     horizontalArrangement = Arrangement.spacedBy(0.dp),
                     verticalArrangement = Arrangement.spacedBy(0.dp),
                 ) {
@@ -96,7 +96,7 @@ fun SupplyListContent(
             else -> {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(1),
-                    contentPadding = PaddingValues(16.dp),
+                    contentPadding = PaddingValues(0.dp),
                     horizontalArrangement = Arrangement.spacedBy(0.dp),
                     verticalArrangement = Arrangement.spacedBy(0.dp),
                 ) {

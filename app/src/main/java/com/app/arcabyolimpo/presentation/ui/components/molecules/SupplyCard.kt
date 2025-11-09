@@ -33,6 +33,7 @@ import com.app.arcabyolimpo.ui.theme.ButtonBlue
 import com.app.arcabyolimpo.ui.theme.DangerGray
 import com.app.arcabyolimpo.ui.theme.White
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 
@@ -75,7 +76,7 @@ fun SupplyCard(
             Modifier
                 .fillMaxWidth()
                 .clickable(onClick = onClick)
-                .padding(horizontal = 8.dp, vertical = 6.dp)
+                .padding(horizontal = 0.dp, vertical = 0.dp)
                 .scale(scale)
                 .pointerInput(Unit) {
                     detectTapGestures(
@@ -98,7 +99,7 @@ fun SupplyCard(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 8.dp, vertical = 12.dp),
+                    .padding(horizontal = 0.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
@@ -111,9 +112,9 @@ fun SupplyCard(
                 Text(
                     text = supply.name,
                     color = White,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 15.sp,
-                    fontFamily = Poppins,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier
                         .weight(1f)
                         .padding(start = 16.dp)
