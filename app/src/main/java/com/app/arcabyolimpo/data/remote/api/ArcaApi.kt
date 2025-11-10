@@ -12,6 +12,9 @@ import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenDto
 import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
+import com.app.arcabyolimpo.data.remote.dto.workshops.AddNewWorkshopDto
+import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
+import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -56,4 +59,15 @@ interface ArcaApi {
 
     @GET("supplybatch/{id}")
     suspend fun getSupply(@Path("id") id: String): SupplyDto
+
+    @GET("workshop")
+    suspend fun getWorkshopsList(): List<WorkshopsListDto>
+
+    @GET("workshop/{id}")
+    suspend fun getWorkshop(@Path("id") id: String): WorkshopDto
+
+    @POST("workshop/add")
+    suspend fun addWorkshop(
+        @Body requestBody: WorkshopDto
+    ): AddNewWorkshopDto
 }
