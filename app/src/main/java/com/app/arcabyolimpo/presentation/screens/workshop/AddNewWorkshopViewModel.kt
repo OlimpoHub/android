@@ -180,6 +180,8 @@ class AddNewWorkshopViewModel @Inject constructor(
     private fun validateForm(): Boolean {
         val data = _formData.value
         val errors = mutableMapOf<String, Boolean>()
+        val hourRegex = Regex("^([01]?\\d|2[0-3]):[0-5]\\d$")
+        val dateRegex = Regex("^\\d{4}-\\d{2}-\\d{2}$")
 
         if (data.name.isBlank()) errors["name"] = true
         if (data.idTraining.isBlank()) errors["idTraining"] = true
@@ -189,8 +191,18 @@ class AddNewWorkshopViewModel @Inject constructor(
         if (data.schedule.isBlank()) errors["schedule"] = true
         if (data.idUser.isBlank()) errors["idUser"] = true
 
+        if (data.startHour.isNotBlank() && !hourRegex.matches(data.startHour)) {
+            errors["startHour"] = true
+        }
+        if (data.finishHour.isNotBlank() && !hourRegex.matches(data.finishHour)) {
+            errors["finishHour"] = true
+        }
+        if (data.date.isNotBlank() && !dateRegex.matches(data.date)) {
+            errors["date"] = true
+        }
         _fieldErrors.value = errors
-
         return errors.isEmpty()
     }
+
+
 }
