@@ -4,5 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class SupplyBatchDto(
     @SerializedName("cantidad") val quantity: Int,
-    @SerializedName("FechaCaducidad") val expirationDate: String
+    @SerializedName("FechaCaducidad") val expirationDate: String,
+    @SerializedName("FechaCompra") val boughtDate: String,
+    @SerializedName("idInsumo") val supplyId: String,
 )

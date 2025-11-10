@@ -33,12 +33,12 @@ import com.app.arcabyolimpo.ui.theme.White
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun SquareMinusButton(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.size(32.dp),
     onClick: () -> Unit,
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier.size(32.dp),
+        modifier = modifier,
         shape = RoundedCornerShape(8.dp),
         contentPadding = PaddingValues(0.dp),
         colors =

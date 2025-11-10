@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -16,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,6 +30,7 @@ import com.app.arcabyolimpo.ui.theme.InputBackgroundRed
 import com.app.arcabyolimpo.ui.theme.PlaceholderGray
 import com.app.arcabyolimpo.ui.theme.SelectInputBlue
 import com.app.arcabyolimpo.ui.theme.White
+import com.app.arcabyolimpo.ui.theme.PrimaryBlue
 
 /**
  * StandardInput: composable input field with label, placeholder, and optional error handling.
@@ -56,18 +57,20 @@ fun StandardInput(
     errorMessage: String? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     trailingIcon: @Composable (() -> Unit)? = null,
+    compact: Boolean = false,
 ) {
+
     var textValue by rememberSaveable { mutableStateOf(value) }
 
     Column(
         modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
+            .padding(vertical = if (compact) 2.dp else 4.dp),
         horizontalAlignment = Alignment.Start,
     ) {
         Text(
             text = label,
-            style = Typography.bodyMedium,
+            style = if (compact) Typography.bodySmall else Typography.bodyMedium,
             color = White,
         )
 
@@ -86,12 +89,15 @@ fun StandardInput(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(top = 4.dp),
-            shape = RoundedCornerShape(12.dp),
+                    .padding(top = if (compact) 2.dp else 4.dp),
+            shape = RoundedCornerShape(if (compact) 8.dp else 12.dp),
             isError = isError,
             visualTransformation = visualTransformation,
-            textStyle = TextStyle(color = White),
+            // Merge the current LocalTextStyle so callers can override typography (e.g. bodyMedium)
+            // while we still enforce the input text color to White.
+            textStyle = LocalTextStyle.current.merge(TextStyle(color = White)),
             trailingIcon = trailingIcon,
+            singleLine = true,
             colors =
                 TextFieldDefaults.colors(
                     focusedContainerColor = InputBackgroundBlue,
@@ -109,7 +115,7 @@ fun StandardInput(
                         } else {
                             HighlightInputBlue
                         },
-                    cursorColor = MaterialTheme.colorScheme.primary,
+                    cursorColor = PrimaryBlue,
                 ),
         )
 
@@ -128,7 +134,7 @@ fun StandardInput(
 @Preview(showBackground = true)
 @Composable
 fun StandardInputPreview() {
-    MaterialTheme {
+    ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false) {
         StandardInput(
             label = "Nombre",
             placeholder = "Escribe tu nombre",
@@ -142,7 +148,7 @@ fun StandardInputPreview() {
 @Preview(showBackground = true)
 @Composable
 fun StandardInputErrorPreview() {
-    MaterialTheme {
+    ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false) {
         StandardInput(
             label = "Correo electrónico",
             placeholder = "example@email.com",
