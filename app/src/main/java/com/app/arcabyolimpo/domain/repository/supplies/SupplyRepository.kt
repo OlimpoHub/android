@@ -6,4 +6,6 @@ interface SupplyRepository {
     suspend fun getSuppliesList(): List<Supply>
 
     suspend fun getSupplyById(id: String): Supply
+
+    suspend fun getSupplyBatchById(id: String): Supply
 }

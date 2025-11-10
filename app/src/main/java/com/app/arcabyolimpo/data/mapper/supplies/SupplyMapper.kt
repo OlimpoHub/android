@@ -11,10 +11,12 @@ fun SupplyDto.toDomain(): Supply =
         name = name.replaceFirstChar { it.uppercase() },
         unitMeasure = unitMeasure,
         batch =
-            batch.map {
-                SupplyBatch(
-                    quantity = it.quantity,
-                    expirationDate = it.expirationDate,
-                )
+            batch.flatMap { supplyBatchDto ->
+                supplyBatchDto.supplyBatches?.map { spec ->
+                    SupplyBatch(
+                        quantity = spec.quantity,
+                        expirationDate = spec.expirationDate,
+                    )
+                } ?: emptyList()
             },
     )
