@@ -2,6 +2,8 @@ package com.app.arcabyolimpo.presentation.navigation
 
 import android.net.Uri
 import android.util.Log
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -18,6 +20,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
 import com.app.arcabyolimpo.domain.model.auth.UserRole
+import com.app.arcabyolimpo.presentation.common.components.LoadingShimmer
 import com.app.arcabyolimpo.presentation.screens.accountactivation.AccountActivationScreen
 import com.app.arcabyolimpo.presentation.screens.admin.CoordinatorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.client.CollaboratorHomeScreen
@@ -200,16 +203,22 @@ fun ArcaNavGraph(
                     )
                 }
 
-                uiState.response?.valid == false -> {
-                    TokenVerificationFailedScreen(onBackClick = { navController.popBackStack() })
+                uiState.isLoading -> {
+                    LoadingShimmer(
+                        modifier = Modifier
+                            .fillMaxSize()
+                    )
                 }
 
-                uiState.isLoading == true -> {
-
+                uiState.error == "Invalid or expired token" -> {
+                    TokenVerificationFailedScreen(onBackClick = { navController.popBackStack() })
                 }
 
                 else -> {
-                    TokenVerificationFailedScreen(onBackClick = { navController.popBackStack() })
+                    LoadingShimmer(
+                        modifier = Modifier
+                            .fillMaxSize()
+                    )
                 }
             }
         }

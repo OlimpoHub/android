@@ -43,6 +43,8 @@ fun PasswordRegistrationScreen(
 ) {
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+    var passwordError by remember { mutableStateOf<String?>(null) }
+    var confirmPasswordError by remember { mutableStateOf<String?>(null) }
     val uiState by viewModel.uiState.collectAsState()
 
     if (uiState.response?.status == true) {
@@ -94,10 +96,11 @@ fun PasswordRegistrationScreen(
                 value = password,
                 onValueChange = { password = it },
                 isError = uiState.error != null
-                        || uiState.response?.status == false,
-                errorMessage = if (uiState.response?.status == false)
-                    uiState.response?.message
-                else uiState.error,
+                        || passwordError != null,
+                errorMessage = when {
+                                    passwordError != null -> passwordError
+                                    else -> uiState.error
+                                },
                 trailingIcon = { KeyIcon() }
             )
             Spacer(modifier = Modifier.height(37.dp))
@@ -106,18 +109,32 @@ fun PasswordRegistrationScreen(
                 value = confirmPassword,
                 onValueChange = { confirmPassword = it },
                 isError = uiState.error != null
-                        || uiState.response?.status == false,
-                errorMessage = if (uiState.response?.status == false)
-                    uiState.response?.message
-                else uiState.error,
+                        || confirmPasswordError != null,
+                errorMessage = when {
+                    confirmPasswordError != null -> confirmPasswordError
+                    else -> uiState.error
+                } ,
                 trailingIcon = { KeyIcon() },
                 visualTransformation = PasswordVisualTransformation(),
             )
             Spacer(modifier = Modifier.height(37.dp))
             SetPasswordButton(
                 onClick = {
-                    if (!email.isNullOrEmpty()) {
-                        viewModel.postPasswordRegistration(email, password)
+                    when {
+                        password.isEmpty() -> {
+                            passwordError = "Debes ingresar una nueva contraseña"
+                        }
+                        password.isNotEmpty() && password != confirmPassword -> {
+                            passwordError = null
+                            confirmPasswordError = "Las contraseñas no coinciden"
+                        }
+                        else -> {
+                            passwordError = null
+                            confirmPasswordError = null
+                            if (!email.isNullOrEmpty()) {
+                                viewModel.postPasswordRegistration(email, password)
+                            }
+                        }
                     }
                 },
             )
