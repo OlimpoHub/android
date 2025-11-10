@@ -1,6 +1,7 @@
 package com.app.arcabyolimpo.data.repository.supplies
 
 import com.app.arcabyolimpo.data.mapper.supplies.toDomain
+import com.app.arcabyolimpo.data.mapper.supplies.toFilterData
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.dto.supplies.FilterSuppliesDto
 import com.app.arcabyolimpo.domain.model.supplies.FilterData
@@ -39,9 +40,10 @@ class SupplyRepositoryImpl
 
         override suspend fun getSupplyById(id: String): Supply = api.getSupply(id).toDomain()
 
-        override suspend fun filterSupply(params: FilterSuppliesDto): List<Supply> = api.filterSupplies(params)
-
-        override suspend fun getFilterData(): FilterData {
-            TODO("Not yet implemented")
+        override suspend fun filterSupply(filters: FilterSuppliesDto): List<Supply> {
+            val response = api.filterSupplies(filters)
+            return response.map { it.toDomain() }
         }
+
+        override suspend fun getFilterData(): FilterData = api.getFilterSupplies().toFilterData()
     }

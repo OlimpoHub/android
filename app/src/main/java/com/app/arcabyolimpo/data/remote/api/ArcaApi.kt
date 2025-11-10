@@ -65,7 +65,7 @@ interface ArcaApi {
     @POST("/supplies/filter")
     suspend fun filterSupplies(
         @Body params: FilterSuppliesDto,
-    ): List<Supply>
+    ): List<SupplyDto>
 
     @GET("/supplies/filter/data")
     suspend fun getFilterSupplies(): FilterSuppliesDto

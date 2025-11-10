@@ -28,7 +28,6 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.PlusIcon
 import com.app.arcabyolimpo.ui.theme.HeaderBackground
 import com.app.arcabyolimpo.ui.theme.PlaceholderGray
 import com.app.arcabyolimpo.ui.theme.White
-import kotlinx.coroutines.launch
 
 @Suppress("ktlint:standard:function-naming")
 @OptIn(ExperimentalMaterial3Api::class)

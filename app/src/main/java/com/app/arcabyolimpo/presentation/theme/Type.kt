@@ -27,13 +27,13 @@ val Typography =
             TextStyle(
                 fontFamily = Poppins,
                 fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
+                fontSize = 18.sp,
             ),
         headlineSmall =
             TextStyle(
                 fontFamily = Poppins,
                 fontWeight = FontWeight.Bold,
-                fontSize = 14.sp,
+                fontSize = 16.sp,
             ),
         bodySmall =
             TextStyle(

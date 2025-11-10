@@ -4,6 +4,7 @@ import androidx.navigation.NavType
 import com.app.arcabyolimpo.data.remote.dto.supplies.FilterSuppliesDto
 import com.app.arcabyolimpo.domain.model.supplies.FilterData
 import com.app.arcabyolimpo.domain.model.supplies.Supply
+import retrofit2.http.Body
 
 /**
  * Retrieves detailed information for a specific supply by its [id].
