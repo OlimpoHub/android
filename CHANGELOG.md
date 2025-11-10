@@ -4,6 +4,7 @@
  - Fixed the validation forms to register new workshop for hour and date
  - Fixed the save confirmation with the desicion dialog
  
+
 ### Added
  - Added DecisionDialog Atom
  - Screen to consult details of external collaborators
