@@ -1,3 +1,8 @@
+## [0.1.0] - 10/11/2025
+
+### Added
+ - Added DecisionDialog Atom
+
 ## [0.1.0] - 9/11/2025
 
 ### Fixed
