@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.app.arcabyolimpo.data.remote.dto.supplies.FilterSuppliesDto
 import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.usecase.supplies.FilterSuppliesUseCase
-import com.app.arcabyolimpo.domain.usecase.supplies.GetFilterDataUseCase
+import com.app.arcabyolimpo.domain.usecase.supplies.GetFiltersDataUseCase
 import com.app.arcabyolimpo.domain.usecase.supplies.GetSuppliesListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,6 +21,7 @@ class SuppliesListViewModel
     constructor(
         private val getSuppliesListUseCase: GetSuppliesListUseCase,
         private val filterSuppliesUseCase: FilterSuppliesUseCase,
+        private val getFiltersDataUseCase: GetFiltersDataUseCase,
     ) : ViewModel() {
         /** Backing property for the supplies list UI state. */
         private val _uiState = MutableStateFlow(SuppliesListUiState())
@@ -31,6 +32,7 @@ class SuppliesListViewModel
         /** Initializes the ViewModel by loading the list of supplies. */
         init {
             loadSuppliesList()
+            getSupplies()
         }
 
         /**
@@ -65,24 +67,57 @@ class SuppliesListViewModel
             }
         }
 
-        fun filterSupplies(filters: FilterSuppliesDto) {
+        fun getSupplies() {
             viewModelScope.launch {
-                filterSuppliesUseCase(filters).collect { result ->
+                getFiltersDataUseCase().collect { result ->
                     _uiState.update { state ->
                         when (result) {
-                            is Result.Loading -> state.copy(isLoading = true)
+                            is Result.Loading ->
+                                state.copy(isLoading = true)
+
                             is Result.Success ->
                                 state.copy(
-                                    suppliesList = result.data,
+                                    filterData = result.data,
                                     isLoading = false,
                                     error = null,
                                 )
 
                             is Result.Error ->
                                 state.copy(
+                                    error = result.exception.message,
+                                    isLoading = false,
+                                )
+                        }
+                    }
+                }
+            }
+        }
+
+        fun filterSupplies(filters: FilterSuppliesDto) {
+            viewModelScope.launch {
+                filterSuppliesUseCase(filters).collect { result ->
+                    when (result) {
+                        is Result.Loading -> {
+                            _uiState.update { it.copy(isLoading = true) }
+                        }
+
+                        is Result.Success -> {
+                            _uiState.update { state ->
+                                state.copy(
+                                    suppliesList = result.data,
+                                    isLoading = false,
+                                    error = null,
+                                )
+                            }
+                        }
+
+                        is Result.Error -> {
+                            _uiState.update { state ->
+                                state.copy(
                                     isLoading = false,
                                     error = result.exception.message,
                                 )
+                            }
                         }
                     }
                 }

@@ -1,7 +1,6 @@
 package com.app.arcabyolimpo.data.repository.supplies
 
 import com.app.arcabyolimpo.data.mapper.supplies.toDomain
-import com.app.arcabyolimpo.data.mapper.supplies.toFilterData
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.dto.supplies.FilterSuppliesDto
 import com.app.arcabyolimpo.domain.model.supplies.FilterData
@@ -19,7 +18,7 @@ import javax.inject.Inject
  * @param id The unique identifier of the supply to retrieve.
  * @return A [Supply] object containing detailed supply information.
  */
-@Singleton
+
 class SupplyRepositoryImpl
     @Inject
     constructor(
@@ -42,8 +41,17 @@ class SupplyRepositoryImpl
 
         override suspend fun filterSupply(filters: FilterSuppliesDto): List<Supply> {
             val response = api.filterSupplies(filters)
-            return response.map { it.toDomain() }
+            println("DEBUG FILTER RESPONSE: $response")
+            return response.map { dto ->
+                Supply(
+                    id = dto.id,
+                    name = dto.name,
+                    imageUrl = dto.image,
+                    unitMeasure = "",
+                    batch = emptyList(),
+                )
+            }
         }
 
-        override suspend fun getFilterData(): FilterData = api.getFilterSupplies().toFilterData()
+        override suspend fun getFilterData(): FilterData = api.getFilterSupplies().toDomain()
     }

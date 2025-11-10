@@ -45,18 +45,6 @@ fun SupplyListScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var showFilter by remember { mutableStateOf(false) }
 
-    val filterSections =
-        mapOf(
-            "Categorías" to listOf("Herramientas", "Materiales", "Electrónica"),
-            "Medidas" to listOf("pieza", "metros", "unidad"),
-            "Talleres" to
-                listOf(
-                    "Taller Carpintería Mañana",
-                    "Taller Electrónica Tarde",
-                    "Taller Web Full Day",
-                ),
-        )
-
     Scaffold(
         containerColor = Background,
         floatingActionButton = {
@@ -130,7 +118,9 @@ fun SupplyListScreen(
                         Modifier
                             .size(40.dp)
                             .padding(top = 16.dp)
-                            .clickable { showFilter = true },
+                            .clickable {
+                                showFilter = true
+                            },
                 )
             }
 
@@ -148,14 +138,17 @@ fun SupplyListScreen(
             }
         }
     }
-    if (showFilter) {
+    // SupplyListScreen
+    if (showFilter && uiState.filterData != null) {
         Filter(
-            data = FilterData(filterSections),
+            data = uiState.filterData!!,
             onApply = { dto ->
                 viewModel.filterSupplies(dto)
                 showFilter = false
             },
-            onDismiss = {
+            onDismiss = { showFilter = false },
+            onClearFilters = {
+                viewModel.loadSuppliesList() // recarga todos los insumos
                 showFilter = false
             },
         )

@@ -11,6 +11,7 @@ import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenDto
 import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.FilterSuppliesDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuppliesListDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyDto
 import com.app.arcabyolimpo.domain.model.supplies.Supply
@@ -65,8 +66,8 @@ interface ArcaApi {
     @POST("/supplies/filter")
     suspend fun filterSupplies(
         @Body params: FilterSuppliesDto,
-    ): List<SupplyDto>
+    ): List<SuppliesListDto>
 
-    @GET("/supplies/filter/data")
-    suspend fun getFilterSupplies(): FilterSuppliesDto
+    @GET("supplies/filter/data")
+    suspend fun getFilterSupplies(): GetFiltersDto
 }

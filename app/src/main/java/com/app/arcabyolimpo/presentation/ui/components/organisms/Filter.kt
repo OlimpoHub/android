@@ -36,6 +36,7 @@ fun Filter(
     data: FilterData,
     onApply: (FilterSuppliesDto) -> Unit,
     onDismiss: () -> Unit,
+    onClearFilters: () -> Unit,
 ) {
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
@@ -187,6 +188,7 @@ fun Filter(
                     DeleteAllButton(
                         onClick = {
                             selectedMap.forEach { (_, list) -> list.clear() }
+                            onClearFilters()
                         },
                     )
 
@@ -310,29 +312,4 @@ fun FilterExpandableSection(
             }
         }
     }
-}
-
-@Suppress("ktlint:standard:function-naming")
-@Preview()
-@Composable
-fun FilterPreview() {
-    val filterSections =
-        mapOf(
-            "Categorías" to listOf("Herramientas", "Materiales", "Electrónica"),
-            "Medidas" to listOf("pieza", "metros", "unidad"),
-            "Talleres" to
-                listOf(
-                    "Taller Carpintería Mañana",
-                    "Taller Electrónica Tarde",
-                    "Taller Web Full Day",
-                ),
-        )
-
-    Filter(
-        data = FilterData(filterSections),
-        onApply = { dto ->
-            println("Preview apply: $dto")
-        },
-        onDismiss = {},
-    )
 }

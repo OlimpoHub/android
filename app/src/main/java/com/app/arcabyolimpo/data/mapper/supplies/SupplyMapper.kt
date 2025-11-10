@@ -1,6 +1,7 @@
 package com.app.arcabyolimpo.data.mapper.supplies
 
 import com.app.arcabyolimpo.data.remote.dto.supplies.FilterSuppliesDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyDto
 import com.app.arcabyolimpo.domain.model.supplies.FilterData
 import com.app.arcabyolimpo.domain.model.supplies.Supply
@@ -31,7 +32,18 @@ fun SupplyDto.toDomain(): Supply =
             },
     )
 
-fun FilterSuppliesDto.toFilterData(): FilterData {
+fun FilterSuppliesDto.toDomain(): FilterData {
+    val map = mutableMapOf<String, List<String>>()
+
+    if (!categories.isNullOrEmpty()) map["Categorías"] = categories
+    if (!measures.isNullOrEmpty()) map["Medidas"] = measures
+    if (!workshops.isNullOrEmpty()) map["Talleres"] = workshops
+    if (!order.isNullOrEmpty()) map["Ordén"] = listOf(order)
+
+    return FilterData(map)
+}
+
+fun GetFiltersDto.toDomain(): FilterData {
     val map = mutableMapOf<String, List<String>>()
 
     if (!categories.isNullOrEmpty()) map["Categorías"] = categories
