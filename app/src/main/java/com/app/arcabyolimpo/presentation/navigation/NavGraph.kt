@@ -276,7 +276,9 @@ fun ArcaNavGraph(
 
         /** Coordinator Home Screen */
         composable(Screen.CoordinatorHome.route) {
-            CoordinatorHomeScreen()
+            CoordinatorHomeScreen(
+                navController = navController
+            )
         }
 
         /** Collaborator Home Screen */

@@ -26,6 +26,8 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardIcon
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
+import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
+
 
 /**
  * Composable screen that displays the registrations of new workshops.
@@ -53,6 +55,8 @@ fun AddNewWorkshopScreen(
         val trainings by viewModel.trainings.collectAsStateWithLifecycle()
         val users by viewModel.users.collectAsStateWithLifecycle()
         val fieldErrors by viewModel.fieldErrors.collectAsStateWithLifecycle()
+
+        var showConfirmDialog by remember { mutableStateOf(false) }
 
         LaunchedEffect(Unit) {
             viewModel.loadTrainings()
@@ -219,9 +223,21 @@ fun AddNewWorkshopScreen(
 
                     /** Save */
                     SaveButton(
-                        onClick = { viewModel.addNewWorkshop() },
+                        onClick = { showConfirmDialog = true },
                         width = 112.dp,
                         height = 40.dp
+                    )
+                }
+
+                if (showConfirmDialog) {
+                    DecisionDialog(
+                        onDismissRequest = { showConfirmDialog = false },
+                        onConfirmation = {
+                            showConfirmDialog = false
+                            viewModel.addNewWorkshop()
+                        },
+                        dialogTitle = "Confirmar registro",
+                        dialogText = "¿Deseas registrar este taller? Asegúrate de que todos los datos sean correctos."
                     )
                 }
 
