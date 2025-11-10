@@ -1,5 +1,6 @@
 package com.app.arcabyolimpo.presentation.screens.supply
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -9,16 +10,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.app.arcabyolimpo.presentation.ui.components.organisms.SupplyListContent
+import com.app.arcabyolimpo.domain.model.supplies.FilterData
 import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.FilterIcon
-import com.app.arcabyolimpo.ui.theme.Background
-import com.app.arcabyolimpo.ui.theme.White
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.SearchIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardIconInput
+import com.app.arcabyolimpo.presentation.ui.components.organisms.Filter
+import com.app.arcabyolimpo.presentation.ui.components.organisms.SupplyListContent
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
+import com.app.arcabyolimpo.ui.theme.Background
+import com.app.arcabyolimpo.ui.theme.White
 
 /**
  * Composable screen that displays the list of supplies.
@@ -40,12 +43,25 @@ fun SupplyListScreen(
     viewModel: SuppliesListViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    var showFilter by remember { mutableStateOf(false) }
+
+    val filterSections =
+        mapOf(
+            "Categorías" to listOf("Herramientas", "Materiales", "Electrónica"),
+            "Medidas" to listOf("pieza", "metros", "unidad"),
+            "Talleres" to
+                listOf(
+                    "Taller Carpintería Mañana",
+                    "Taller Electrónica Tarde",
+                    "Taller Web Full Day",
+                ),
+        )
 
     Scaffold(
         containerColor = Background,
         floatingActionButton = {
             AddButton(
-                onClick = { /* Action for add button */ }
+                onClick = { /* Action for add button */ },
             )
         },
         topBar = {
@@ -57,61 +73,69 @@ fun SupplyListScreen(
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.headlineLarge,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
                     )
                 },
                 actions = {
                     NotificationIcon(
-                        modifier = Modifier
-                            .padding(horizontal = 24.dp)
-                            .size(28.dp)
+                        modifier =
+                            Modifier
+                                .padding(horizontal = 24.dp)
+                                .size(28.dp),
                     )
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Background
-                )
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = Background,
+                    ),
             )
         },
     ) { padding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 24.dp)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(horizontal = 24.dp),
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp, bottom = 16.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp, bottom = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false){
+                ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false) {
                     StandardIconInput(
                         label = "",
                         placeholder = "Buscar",
                         value = "",
                         onValueChange = { },
                         trailingIcon = { SearchIcon() },
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(74.dp)
+                        modifier =
+                            Modifier
+                                .weight(1f)
+                                .height(74.dp),
                     )
                 }
 
                 Spacer(modifier = Modifier.width(16.dp))
 
                 FilterIcon(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .padding(top = 16.dp)
+                    modifier =
+                        Modifier
+                            .size(40.dp)
+                            .padding(top = 16.dp)
+                            .clickable { showFilter = true },
                 )
             }
 
             Box(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             ) {
                 SupplyListContent(
                     suppliesList = uiState.suppliesList,
@@ -119,9 +143,21 @@ fun SupplyListScreen(
                     error = uiState.error,
                     onSupplyClick = onSupplyClick,
                     onRetry = { viewModel.loadSuppliesList() },
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
                 )
             }
         }
+    }
+    if (showFilter) {
+        Filter(
+            data = FilterData(filterSections),
+            onApply = { dto ->
+                viewModel.filterSupplies(dto)
+                showFilter = false
+            },
+            onDismiss = {
+                showFilter = false
+            },
+        )
     }
 }

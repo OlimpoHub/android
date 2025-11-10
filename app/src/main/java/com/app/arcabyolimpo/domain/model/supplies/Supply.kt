@@ -14,7 +14,7 @@ data class Supply(
     val name: String,
     val imageUrl: String,
     val unitMeasure: String,
-    val batch: List<SupplyBatch>
+    val batch: List<SupplyBatch>,
 )
 
 /**
@@ -25,6 +25,19 @@ data class Supply(
  */
 data class SupplyBatch(
     val quantity: Int,
-    val expirationDate: String
+    val expirationDate: String,
 )
 
+data class FilterData(
+    val sections: Map<String, List<String>>,
+) {
+    fun asSections(): List<Section> =
+        sections.map { (title, options) ->
+            Section(title, options)
+        }
+}
+
+data class Section(
+    val title: String,
+    val items: List<String>,
+)
