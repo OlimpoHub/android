@@ -67,7 +67,7 @@ fun SuppliesDetailScreen(
                         color = White,
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 24.sp
+                        fontSize = 24.sp,
                     )
                 },
                 navigationIcon = {
@@ -76,7 +76,7 @@ fun SuppliesDetailScreen(
                             Icons.Default.ArrowBack,
                             "Back",
                             tint = White,
-                            )
+                        )
                     }
                 },
                 colors =
@@ -99,37 +99,40 @@ fun SuppliesDetailScreen(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 modifier =
                     Modifier
-                        .fillMaxWidth()
+                        .fillMaxWidth(),
             ) {
                 AsyncImage(
                     model = "",
                     contentDescription = "place holder",
-                    modifier = Modifier
-                        .size(160.dp)
-                        .background(Color(0xFF2A2A2A),
-                            shape = RoundedCornerShape(20.dp))
+                    modifier =
+                        Modifier
+                            .size(160.dp)
+                            .background(
+                                Color(0xFF2A2A2A),
+                                shape = RoundedCornerShape(20.dp),
+                            ),
                 )
 
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     TextValue(
                         label = "Taller",
-                        value = "Arte"
+                        value = "Arte",
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
 
                     TextValue(
                         label = "Categoría",
-                        value = "Taza"
+                        value = "Taza",
                     )
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         TextValue(
                             label = "Estatus",
-                            value = ""
+                            value = "",
                         )
                         // Modificar por estados
                         // Placeholder Colocado aqui
@@ -147,12 +150,13 @@ fun SuppliesDetailScreen(
             Spacer(modifier = Modifier.height(24.dp))
             TextValue(
                 label = "Cantidad actual",
-                value = "200 g"
+                value = "200 g",
             )
 
-            Spacer(modifier =
-                Modifier
-                    .height(28.dp)
+            Spacer(
+                modifier =
+                    Modifier
+                        .height(28.dp),
             )
 
             Row(
@@ -167,14 +171,15 @@ fun SuppliesDetailScreen(
                     color = White,
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
+                    fontSize = 20.sp,
                 )
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     FilterIcon(
-                        modifier = Modifier
-                            .size(28.dp)
-                            .clickable { }
+                        modifier =
+                            Modifier
+                                .size(28.dp)
+                                .clickable { },
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     AgregateButton(onClick = onClickAddSupplyBatch)
@@ -185,28 +190,28 @@ fun SuppliesDetailScreen(
 
             Column(
                 verticalArrangement =
-                    Arrangement.spacedBy(0.dp)
+                    Arrangement.spacedBy(0.dp),
             ) {
                 SupplyBatchRow(
                     quantity = 5,
                     date = "23/Octubre/2025",
                     adquisition = "Donación",
                     onModifyClick = modifySupplyBatch,
-                    onDeleteClick = deleteSupplyBatch
+                    onDeleteClick = deleteSupplyBatch,
                 )
                 SupplyBatchRow(
                     quantity = 10,
                     date = "16/Octubre/2025",
                     adquisition = "Compra",
                     onModifyClick = modifySupplyBatch,
-                    onDeleteClick = deleteSupplyBatch
+                    onDeleteClick = deleteSupplyBatch,
                 )
                 SupplyBatchRow(
                     quantity = 5,
                     date = "23/Octubre/2025",
                     adquisition = "Donación",
                     onModifyClick = modifySupplyBatch,
-                    onDeleteClick = deleteSupplyBatch
+                    onDeleteClick = deleteSupplyBatch,
                 )
             }
 
@@ -218,13 +223,13 @@ fun SuppliesDetailScreen(
                         .fillMaxWidth(),
                 horizontalArrangement =
                     Arrangement
-                        .spacedBy(24.dp, Alignment.CenterHorizontally)
+                        .spacedBy(24.dp, Alignment.CenterHorizontally),
             ) {
                 DeleteButton(
                     onClick = onClickDelete,
                 )
                 ModifyButton(
-                    onClick = onClickModify
+                    onClick = onClickModify,
                 )
             }
         }

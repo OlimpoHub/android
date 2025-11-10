@@ -4,8 +4,8 @@ import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatch
 
-fun SupplyBatchDto.toDomain(): Supply {
-    return Supply(
+fun SupplyBatchDto.toDomain(): Supply =
+    Supply(
         id = idSupply.toString(),
         name = name.replaceFirstChar { it.uppercase() },
         imageUrl = imageUrl,
@@ -16,7 +16,5 @@ fun SupplyBatchDto.toDomain(): Supply {
                     quantity = it.quantity,
                     expirationDate = it.expirationDate,
                 )
-            } ?: emptyList()
-
+            } ?: emptyList(),
     )
-}

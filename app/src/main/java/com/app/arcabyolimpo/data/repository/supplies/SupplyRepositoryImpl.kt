@@ -26,7 +26,5 @@ class SupplyRepositoryImpl
 
         override suspend fun getSupplyById(id: String): Supply = api.getSupply(id).toDomain()
 
-    override suspend fun getSupplyBatchById(id: String): Supply {
-        return api.getSupply(id).toDomain()
-    }
+        override suspend fun getSupplyBatchById(id: String): Supply = api.getSupply(id).toDomain()
     }
