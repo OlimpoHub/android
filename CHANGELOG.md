@@ -1,3 +1,9 @@
+## [0.1.0] - 10/11/2025
+
+### Fixed
+ - Fixed the validation forms to register new workshop for hour and date
+ - Fixed the save confirmation with the desicion dialog
+
 ## [0.1.0] - 9/11/2025
 
 ### Fixed
