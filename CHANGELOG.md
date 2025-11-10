@@ -10,6 +10,9 @@
  - The view model, the view, the model for register new workshop.
  - routes in ArcaApi and AppModule to work with workshops.
 
+### Updated
+ - Error handling for password recovery feature
+
 ## [0.1.0] - 8/11/2025
 
 ### Fixed

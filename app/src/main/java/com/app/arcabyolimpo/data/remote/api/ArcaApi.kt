@@ -15,6 +15,7 @@ import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.AddNewWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -41,17 +42,17 @@ interface ArcaApi {
     @POST("user/recover-password")
     suspend fun recoverPassword(
         @Body request: RecoverPasswordDto
-    ): RecoverPasswordResponseDto
+    ): Response<RecoverPasswordResponseDto>
 
     @GET("user/verify-token")
     suspend fun verifyToken(
         @Query("token") token: String
-    ): VerifyTokenResponseDto
+    ): Response<VerifyTokenResponseDto>
 
     @POST("user/update-password")
     suspend fun updatePassword(
         @Body request: UpdatePasswordDto
-    ): UpdatePasswordResponseDto
+    ): Response<UpdatePasswordResponseDto>
 
     @GET("supplies")
     suspend fun getSuppliesList(): List<SuppliesListDto>
