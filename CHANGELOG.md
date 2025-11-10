@@ -7,6 +7,9 @@
  - Search bar and filter icon.
  - Supplies list documentation for the code.
 
+### Updated
+ - Login UI and RBAC roles
+
 ## [0.1.0] - 7/11/2025
 
 ### Fixed
