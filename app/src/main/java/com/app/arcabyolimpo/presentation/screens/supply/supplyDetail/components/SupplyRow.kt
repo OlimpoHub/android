@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -12,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,75 +35,81 @@ fun SupplyBatchRow(
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(horizontal = 12.dp, vertical = 6.dp)
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.Start,
+            modifier =
+                Modifier
+                    .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(
-                text = "$quantity",
-                color = White,
-                fontSize = 14.sp,
-                fontFamily = Poppins
-            )
+            Column(
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+                modifier = Modifier.weight(1f)
+            ){
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(32.dp)
+                )
+                {
+                    Text(
+                        text = "$quantity",
+                        color = White,
+                        fontFamily = Poppins,
+                        fontSize = 16.sp
+                    )
+                    Text(
+                        text = date,
+                        color = White,
+                        fontFamily = Poppins,
+                        fontSize = 16.sp
+                    )
+                }
 
-            Spacer(modifier = Modifier.padding(start = 32.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-            Text(
-                text = date,
-                color = White,
-                fontSize = 14.sp,
-                fontFamily = Poppins
-            )
-        }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Spacer(modifier = Modifier.padding(start = 32.dp))
-
-            Text(
-                text = "Adquisición: $adquisition",
-                color = White,
-                fontSize = 14.sp,
-                fontFamily = Poppins
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            IconButton(
-                onClick = onModifyClick
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Create,
-                    contentDescription = "modify",
-                    tint = White
+                Text(
+                    text = "Adquisición: $adquisition",
+                    color = White,
+                    fontSize = 16.sp,
+                    fontFamily = Poppins
                 )
             }
 
-            IconButton(
-                onClick = onDeleteClick,
-
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "delete",
-                    tint = White
-                )
+                Row {
+                    IconButton(
+                        onClick = onModifyClick,
+                        modifier = Modifier.padding(end = 2.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Create,
+                            contentDescription = "modify",
+                            tint = White,
+                        )
+                    }
+
+                    IconButton(
+                        onClick = onDeleteClick,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "delete",
+                            tint = White,
+                        )
+                    }
+                }
             }
         }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Divider(
+            color = DangerGray.copy(alpha = 0.3f),
+            thickness = 0.7.dp,
+            modifier = Modifier
+                .fillMaxWidth()
+        )
     }
-
-    Divider(
-        color = DangerGray.copy(alpha = 0.3f),
-        thickness = 0.7.dp,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp)
-    )
 }

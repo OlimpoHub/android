@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -62,10 +63,11 @@ fun SuppliesDetailScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Nombre del insumo MODIFICAR",
+                        text = "[Nombre Insumo]",
                         color = White,
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Bold,
+                        fontSize = 24.sp
                     )
                 },
                 navigationIcon = {
@@ -95,26 +97,40 @@ fun SuppliesDetailScreen(
             Row(
                 verticalAlignment = Alignment.Top,
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
             ) {
                 AsyncImage(
                     model = "",
                     contentDescription = "place holder",
-                    modifier = Modifier.size(160.dp),
+                    modifier = Modifier
+                        .size(160.dp)
+                        .background(Color(0xFF2A2A2A),
+                            shape = RoundedCornerShape(20.dp))
                 )
+
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     TextValue(
                         label = "Taller",
-                        value = "MODIFICAR",
+                        value = "Arte"
                     )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
                     TextValue(
-                        label = "Categoria",
-                        value = "MODIFICAR",
+                        label = "Categoría",
+                        value = "Taza"
                     )
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
+                        TextValue(
+                            label = "Estatus",
+                            value = ""
+                        )
                         // Modificar por estados
                         // Placeholder Colocado aqui
                         ActiveStatus()
@@ -125,91 +141,90 @@ fun SuppliesDetailScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             TextValue(
-                label = "Unidad de medida",
-                value = "MODIFICAR",
+                label = "Unidad de Medida",
+                value = "gramos",
             )
+            Spacer(modifier = Modifier.height(24.dp))
             TextValue(
                 label = "Cantidad actual",
-                value = "MODIFICAR",
-            )
-            TextValue(
-                label = "Tipo de adquisición",
-                value = "MODIFICAR",
+                value = "200 g"
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier =
+                Modifier
+                    .height(28.dp)
+            )
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
             ) {
                 Text(
-                    text = "Inventario - Caducidad",
+                    text = "Inventario",
                     color = White,
                     fontFamily = Poppins,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
                 )
 
-                FilterIcon(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .padding(top = 16.dp)
-                        .clickable {
-                            // do something
-                        }
-                )
-
-                AgregateButton(
-                    onClick = onClickAddSupplyBatch,
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    FilterIcon(
+                        modifier = Modifier
+                            .size(28.dp)
+                            .clickable { }
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    AgregateButton(onClick = onClickAddSupplyBatch)
+                }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            Column {
+            Column(
+                verticalArrangement =
+                    Arrangement.spacedBy(0.dp)
+            ) {
                 SupplyBatchRow(
-                    quantity = 1,
-                    date = "07/noviembre/2025",
-                    adquisition = "Compra",
+                    quantity = 5,
+                    date = "23/Octubre/2025",
+                    adquisition = "Donación",
                     onModifyClick = modifySupplyBatch,
-                    onDeleteClick = deleteSupplyBatch,
+                    onDeleteClick = deleteSupplyBatch
                 )
                 SupplyBatchRow(
-                    quantity = 2,
-                    date = "07/noviembre/2025",
+                    quantity = 10,
+                    date = "16/Octubre/2025",
                     adquisition = "Compra",
                     onModifyClick = modifySupplyBatch,
-                    onDeleteClick = deleteSupplyBatch,
+                    onDeleteClick = deleteSupplyBatch
                 )
                 SupplyBatchRow(
-                    quantity = 3,
-                    date = "07/noviembre/2026",
-                    adquisition = "Compra",
+                    quantity = 5,
+                    date = "23/Octubre/2025",
+                    adquisition = "Donación",
                     onModifyClick = modifySupplyBatch,
-                    onDeleteClick = deleteSupplyBatch,
-                )
-                SupplyBatchRow(
-                    quantity = 3,
-                    date = "07/noviembre/2026",
-                    adquisition = "Compra",
-                    onModifyClick = modifySupplyBatch,
-                    onDeleteClick = deleteSupplyBatch,
+                    onDeleteClick = deleteSupplyBatch
                 )
             }
 
             Spacer(modifier = Modifier.height(32.dp))
 
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ){
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
+                horizontalArrangement =
+                    Arrangement
+                        .spacedBy(24.dp, Alignment.CenterHorizontally)
+            ) {
                 DeleteButton(
                     onClick = onClickDelete,
                 )
                 ModifyButton(
-                    onClick = onClickModify,
+                    onClick = onClickModify
                 )
             }
         }
