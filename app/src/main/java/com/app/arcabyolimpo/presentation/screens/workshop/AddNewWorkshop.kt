@@ -266,7 +266,8 @@ fun AddNewWorkshopScreen(
                             scope.launch {
                                 snackbarHostState.showSnackbar("Taller registrado correctamente")
                             }
-                            onSuccess?.invoke()
+
+                            viewModel.resetForm()
                         }
                     }
 

@@ -174,6 +174,12 @@ class AddNewWorkshopViewModel @Inject constructor(
         clearFieldErrors()
     }
 
+    fun resetForm() {
+        _formData.value = WorkshopFormData()
+        _fieldErrors.value = emptyMap()
+        _uiState.update { it.copy(isSuccess = false, error = null) }
+    }
+
     private fun clearFieldErrors() {
         _fieldErrors.value = emptyMap()
     }
