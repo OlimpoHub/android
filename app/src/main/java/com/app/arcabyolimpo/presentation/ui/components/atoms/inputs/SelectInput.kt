@@ -21,9 +21,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.app.arcabyolimpo.presentation.theme.Typography
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
+import com.app.arcabyolimpo.ui.theme.ErrorRed
 import com.app.arcabyolimpo.ui.theme.HighlightInputBlue
+import com.app.arcabyolimpo.ui.theme.HighlightRed
 import com.app.arcabyolimpo.ui.theme.InputBackgroundBlue
+import com.app.arcabyolimpo.ui.theme.InputBackgroundRed
 import com.app.arcabyolimpo.ui.theme.SelectInputBlue
 import com.app.arcabyolimpo.ui.theme.White
 
@@ -36,7 +40,8 @@ fun SelectInput(
     options: List<String>,
     onOptionSelected: (String) -> Unit,
     modifier: Modifier = Modifier,
-    isError: Boolean = false
+    isError: Boolean = false,
+    errorMessage: String? = null
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 
@@ -62,6 +67,7 @@ fun SelectInput(
                 onValueChange = { },
                 readOnly = true,
                 label = null,
+                isError = isError,
                 placeholder = {
                     Text(
                         text = "Selecciona una opción",
@@ -71,13 +77,14 @@ fun SelectInput(
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
                 shape = RoundedCornerShape(12.dp),
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = InputBackgroundBlue,
-                    unfocusedContainerColor = InputBackgroundBlue,
-                    focusedIndicatorColor = SelectInputBlue,
-                    unfocusedIndicatorColor = HighlightInputBlue,
+                    focusedContainerColor = if (isError) InputBackgroundRed else InputBackgroundBlue,
+                    unfocusedContainerColor = if (isError) InputBackgroundRed else InputBackgroundBlue,
+                    errorContainerColor = InputBackgroundRed,
+                    focusedIndicatorColor = if (isError) HighlightRed else SelectInputBlue,
+                    unfocusedIndicatorColor = if (isError) HighlightRed else HighlightInputBlue,
+                    cursorColor = MaterialTheme.colorScheme.primary,
                     focusedTextColor = White,
                     unfocusedTextColor = White,
-                    cursorColor = SelectInputBlue,
                     focusedPlaceholderColor = White.copy(alpha = 0.6f),
                     unfocusedPlaceholderColor = White.copy(alpha = 0.6f),
                 ),
@@ -102,6 +109,14 @@ fun SelectInput(
                     )
                 }
             }
+        }
+        if (isError && !errorMessage.isNullOrEmpty()) {
+            Text(
+                text = errorMessage,
+                color = ErrorRed,
+                style = Typography.bodySmall,
+                modifier = Modifier.padding(top = 2.dp),
+            )
         }
     }
 }

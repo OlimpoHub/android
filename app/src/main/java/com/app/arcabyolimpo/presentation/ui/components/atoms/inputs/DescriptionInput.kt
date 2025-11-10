@@ -16,6 +16,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
+import com.app.arcabyolimpo.ui.theme.HighlightInputBlue
+import com.app.arcabyolimpo.ui.theme.HighlightRed
+import com.app.arcabyolimpo.ui.theme.InputBackgroundBlue
+import com.app.arcabyolimpo.ui.theme.InputBackgroundRed
+import com.app.arcabyolimpo.ui.theme.SelectInputBlue
+import com.app.arcabyolimpo.ui.theme.White
 
 /** Multiline input for description text. Enforces a max length and shows a right-aligned counter. */
 const val DESCRIPTION_MAX_CHARS: Int = 400
@@ -74,17 +80,16 @@ fun DescriptionInput(
             minLines = minLines,
             maxLines = maxLines,
             colors = TextFieldDefaults.colors(
-                focusedContainerColor   = colorScheme.surface,
-                unfocusedContainerColor = colorScheme.surface,
-                disabledContainerColor  = colorScheme.surface,
-
-                focusedIndicatorColor   = if (isError) colorScheme.error else colorScheme.primary,
-                unfocusedIndicatorColor = if (isError) colorScheme.error.copy(alpha = 0.7f) else colorScheme.primary,
-                errorIndicatorColor     = colorScheme.error,
-
-                focusedTextColor        = colorScheme.onSurface,
-                unfocusedTextColor      = colorScheme.onSurface,
-                cursorColor             = if (isError) colorScheme.error else colorScheme.primary,
+                focusedContainerColor = if (isError) InputBackgroundRed else InputBackgroundBlue,
+                unfocusedContainerColor = if (isError) InputBackgroundRed else InputBackgroundBlue,
+                errorContainerColor = InputBackgroundRed,
+                focusedIndicatorColor = if (isError) HighlightRed else SelectInputBlue,
+                unfocusedIndicatorColor = if (isError) HighlightRed else HighlightInputBlue,
+                cursorColor = MaterialTheme.colorScheme.primary,
+                focusedTextColor = White,
+                unfocusedTextColor = White,
+                focusedPlaceholderColor = White.copy(alpha = 0.6f),
+                unfocusedPlaceholderColor = White.copy(alpha = 0.6f),
             ),
         )
 

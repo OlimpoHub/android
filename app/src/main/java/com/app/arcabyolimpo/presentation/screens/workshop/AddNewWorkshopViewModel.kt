@@ -137,7 +137,7 @@ class AddNewWorkshopViewModel @Inject constructor(
                 finishHour = _formData.value.finishHour,
                 status = 1,
                 idUser = _formData.value.idUser,
-                schedule = _formData.value.schedule,
+                description = _formData.value.description,
                 date = _formData.value.date,
                 image = _formData.value.image
             )
@@ -188,7 +188,7 @@ class AddNewWorkshopViewModel @Inject constructor(
         if (data.startHour.isBlank()) errors["startHour"] = true
         if (data.finishHour.isBlank()) errors["finishHour"] = true
         if (data.date.isBlank()) errors["date"] = true
-        if (data.schedule.isBlank()) errors["schedule"] = true
+        if (data.description.isBlank()) errors["description"] = true
         if (data.idUser.isBlank()) errors["idUser"] = true
 
         if (data.startHour.isNotBlank() && !hourRegex.matches(data.startHour)) {

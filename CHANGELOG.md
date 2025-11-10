@@ -1,9 +1,11 @@
 ## [0.1.0] - 10/11/2025
 
+### Added
+ - In register new workshops the snakbar was added.
+
 ### Fixed
  - Fixed the validation forms to register new workshop for hour and date
- - Fixed the save confirmation with the desicion dialog
- 
+ - Fixed the save confirmation with the desition dialog.
 
 ### Added
  - Added DecisionDialog Atom
