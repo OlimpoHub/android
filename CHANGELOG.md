@@ -1,3 +1,11 @@
+## [0.1.0] - 9/11/2025
+
+### Fixed
+ - Modify button
+
+### Added
+ - Added Screen for Beneficiary Details
+
 ## [0.1.0] - 8/11/2025
 
 ### Fixed
@@ -6,6 +14,9 @@
 ### Added
  - Search bar and filter icon.
  - Supplies list documentation for the code.
+
+### Updated
+ - Login UI and RBAC roles
 
 ## [0.1.0] - 7/11/2025
 
