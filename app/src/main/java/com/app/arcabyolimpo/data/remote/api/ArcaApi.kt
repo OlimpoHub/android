@@ -54,7 +54,7 @@ interface ArcaApi {
     @GET("supplies")
     suspend fun getSuppliesList(): List<SuppliesListDto>
 
-    @GET("supplybatch/{id}")
+    @GET("supplyBatch/{id}")
     suspend fun getSupply(
         @Path("id") id: String,
     ): SupplyDto
