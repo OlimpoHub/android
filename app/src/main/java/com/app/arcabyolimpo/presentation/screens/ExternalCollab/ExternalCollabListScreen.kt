@@ -26,15 +26,22 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import coil.compose.AsyncImage
+import com.app.arcabyolimpo.presentation.screens.ExternalCollab.RegisterExternalCollab.ExternalCollabRegisterScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExternalCollabListScreen(
     viewModel: ExternalCollabListViewModel = hiltViewModel(),
-    onCollabClick: (String) -> Unit
+    onCollabClick: (String) -> Unit,
+    onAddClick: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
+    var showRegisterModal by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.loadCollabs()
+    }
 
     Scaffold(
         containerColor = Color(0xFF040610),
@@ -94,7 +101,7 @@ fun ExternalCollabListScreen(
         },
         floatingActionButton = {
             AddButton(
-                onClick = { /* TODO: Navigate to add collab screen */ }
+                onClick = { showRegisterModal = true }
             )
         }
     ) { padding ->
@@ -165,6 +172,15 @@ fun ExternalCollabListScreen(
                     }
                 }
             }
+        }
+        if (showRegisterModal) {
+            ExternalCollabRegisterScreen(
+                onDismiss = { showRegisterModal = false },
+                onSuccess = {
+                    showRegisterModal = false
+                    viewModel.loadCollabs()  // Refresh list
+                }
+            )
         }
     }
 }

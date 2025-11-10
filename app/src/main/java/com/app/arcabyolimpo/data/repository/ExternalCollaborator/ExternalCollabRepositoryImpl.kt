@@ -2,6 +2,7 @@ package com.app.arcabyolimpo.data.repository.ExternalCollaborator
 
 import com.app.arcabyolimpo.data.mapper.ExternalCollaborator.toDomain
 import com.app.arcabyolimpo.data.mapper.ExternalCollaborator.toDto
+import com.app.arcabyolimpo.data.mapper.ExternalCollaborator.toRegisterDto
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.domain.model.ExternalCollaborator.ExternalCollab
 import com.app.arcabyolimpo.domain.repository.ExternalCollabRepository.ExternalCollabRepository
@@ -35,8 +36,9 @@ class ExternalCollabRepositoryImpl @Inject constructor(
 
     override suspend fun registerCollab(collab: ExternalCollab): Result<ExternalCollab> {
         return try {
-            val response = api.registerCollab(collab.toDto())
-            Result.success(response.toDomain())
+            val dto = collab.toRegisterDto()
+            val response = api.registerCollab(dto)
+            Result.success(collab)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -45,7 +47,7 @@ class ExternalCollabRepositoryImpl @Inject constructor(
     override suspend fun updateCollab(collab: ExternalCollab): Result<ExternalCollab> {
         return try {
             val response = api.updateCollab(collab.toDto())
-            Result.success(response.toDomain())
+            Result.success(collab)
         } catch (e: Exception) {
             Result.failure(e)
         }

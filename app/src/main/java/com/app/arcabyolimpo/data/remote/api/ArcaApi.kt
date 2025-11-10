@@ -5,6 +5,8 @@ import com.app.arcabyolimpo.data.remote.dto.auth.LoginResponseDto
 import com.app.arcabyolimpo.data.remote.dto.auth.RefreshRequestDto
 import com.app.arcabyolimpo.data.remote.dto.auth.RefreshResponseDto
 import com.app.arcabyolimpo.data.remote.dto.ExternalCollaborator.ExternalCollabDto
+import com.app.arcabyolimpo.data.remote.dto.ExternalCollaborator.RegisterExtCollab.RegisterExternalCollabDto
+import com.app.arcabyolimpo.data.remote.dto.ExternalCollaborator.RegisterExtCollab.RegisterResponseDto
 import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.http.*
@@ -33,10 +35,10 @@ interface ArcaApi {
     suspend fun getCollabById(@Path("id") id: String): List<ExternalCollabDto>
 
     @POST("externalCollabs/register")
-    suspend fun registerCollab(@Body collab: ExternalCollabDto): ExternalCollabDto
+    suspend fun registerCollab(@Body collab: RegisterExternalCollabDto): ExternalCollabDto
 
     @POST("externalCollabs/update")
-    suspend fun updateCollab(@Body collab: ExternalCollabDto): ExternalCollabDto
+    suspend fun updateCollab(@Body collab: ExternalCollabDto): RegisterResponseDto
 
     @POST("externalCollabs/deleteExternalCollab")
     suspend fun deleteCollab(@Body data: Map<String, Int>): Map<String, Any>

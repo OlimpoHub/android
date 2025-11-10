@@ -17,6 +17,8 @@ import com.app.arcabyolimpo.presentation.screens.login.LoginScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
 import com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabListScreen
 import com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabDetail.ExternalCollabDetailScreen
+import com.app.arcabyolimpo.presentation.screens.ExternalCollab.RegisterExternalCollab.ExternalCollabRegisterScreen
+
 /**
  * Defines all available destinations (routes) in the application.
  *
@@ -38,6 +40,8 @@ sealed class Screen(
     object ExternalCollabDetail : Screen("external_collab_detail/{collabId}") {
         fun createRoute(collabId: String) = "external_collab_detail/$collabId"
     }
+
+    object ExternalCollabRegister : Screen("external_collab_register")
 
 }
 
@@ -124,8 +128,11 @@ fun ArcaNavGraph(
 
         composable(Screen.ExternalCollabList.route) {
             ExternalCollabListScreen(
-                onCollabClick = { collabId ->
-                    navController.navigate(Screen.ExternalCollabDetail.createRoute(collabId))
+                onCollabClick = { id ->
+                    navController.navigate(Screen.ExternalCollabDetail.createRoute(id))
+                },
+                onAddClick = {
+                    navController.navigate(Screen.ExternalCollabRegister.route)
                 }
             )
         }
@@ -134,11 +141,25 @@ fun ArcaNavGraph(
         composable(
             route = Screen.ExternalCollabDetail.route,
             arguments = listOf(navArgument("collabId") { type = NavType.StringType })
-        ) {
+        ) { backStackEntry ->
+            val collabId = backStackEntry.arguments?.getString("collabId")
             ExternalCollabDetailScreen(
                 onBackClick = { navController.popBackStack() },
                 onEditClick = { id ->
                     // TODO: Navigate to edit screen when you create it
+                },
+                onDeleteClick = { id ->
+                    // TODO: Handle delete
+                }
+            )
+        }
+
+        /** External Collaborator Register Screen */
+        composable(Screen.ExternalCollabRegister.route) {
+            ExternalCollabRegisterScreen(
+                onDismiss = { navController.popBackStack() },
+                onSuccess = {
+                    navController.popBackStack()
                 }
             )
         }

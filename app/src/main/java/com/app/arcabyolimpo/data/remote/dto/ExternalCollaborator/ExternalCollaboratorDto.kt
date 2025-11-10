@@ -7,7 +7,7 @@ data class ExternalCollabDto(
     val idUsuario: String,
 
     @SerializedName("idRol")
-    val idRol: String,
+    val idRol: String?,
 
     @SerializedName("nombre")
     val nombre: String,
