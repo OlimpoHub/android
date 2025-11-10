@@ -1,6 +1,7 @@
 package com.app.arcabyolimpo.data.mapper.beneficiaries
 
 import com.app.arcabyolimpo.data.remote.dto.beneficiaries.BeneficiaryDto
+import com.app.arcabyolimpo.domain.model.beneficiaries.Beneficiary
 
 fun BeneficiaryDto.toDomain(): Beneficiary {
     return Beneficiary(
