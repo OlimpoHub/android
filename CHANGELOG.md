@@ -1,3 +1,11 @@
+## [0.1.0] - 9/11/2025
+
+### Fixed
+ - Modify button
+
+### Added
+ - Added Screen for Beneficiary Details
+
 ## [0.1.0] - 8/11/2025
 
 ### Fixed
