@@ -63,26 +63,26 @@ class SuppliesListViewModel
                     }
                 }
             }
+        }
 
-            fun filterSupplies(filters: FilterSuppliesDto) {
-                viewModelScope.launch {
-                    filterSuppliesUseCase(filters).collect { result ->
-                        _uiState.update { state ->
-                            when (result) {
-                                is Result.Loading -> state.copy(isLoading = true)
-                                is Result.Success ->
-                                    state.copy(
-                                        suppliesList = result.data,
-                                        isLoading = false,
-                                        error = null,
-                                    )
+        fun filterSupplies(filters: FilterSuppliesDto) {
+            viewModelScope.launch {
+                filterSuppliesUseCase(filters).collect { result ->
+                    _uiState.update { state ->
+                        when (result) {
+                            is Result.Loading -> state.copy(isLoading = true)
+                            is Result.Success ->
+                                state.copy(
+                                    suppliesList = result.data,
+                                    isLoading = false,
+                                    error = null,
+                                )
 
-                                is Result.Error ->
-                                    state.copy(
-                                        isLoading = false,
-                                        error = result.exception.message,
-                                    )
-                            }
+                            is Result.Error ->
+                                state.copy(
+                                    isLoading = false,
+                                    error = result.exception.message,
+                                )
                         }
                     }
                 }

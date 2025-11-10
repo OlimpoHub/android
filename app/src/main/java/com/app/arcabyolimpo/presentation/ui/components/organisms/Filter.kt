@@ -29,7 +29,6 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.PlusIcon
 import com.app.arcabyolimpo.ui.theme.HeaderBackground
 import com.app.arcabyolimpo.ui.theme.PlaceholderGray
 import com.app.arcabyolimpo.ui.theme.White
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 @Suppress("ktlint:standard:function-naming")
@@ -37,7 +36,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun Filter(
     data: FilterData,
-    onApply: (FilterSuppliesDto) -> Unit, // <-- nuevo parámetro
+    onApply: (FilterSuppliesDto) -> Unit,
 ) {
     var openBottomSheet by rememberSaveable { mutableStateOf(true) } // Abierto por default para preview
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -330,4 +329,23 @@ fun FilterExpandableSection(
             }
         }
     }
+}
+
+@Suppress("ktlint:standard:function-naming")
+@Preview(showBackground = true)
+@Composable
+fun FilterPreview() {
+    val fakeData =
+        FilterData(
+            mapOf(
+                "Categorías" to listOf("Herramientas", "Materiales", "Electrónica"),
+                "Medidas" to listOf("pieza", "metros", "unidad"),
+                "Talleres" to listOf("Taller Carpintería Mañana", "Taller Electrónica Tarde", "Taller Web Full Day"),
+            ),
+        )
+
+    Filter(
+        data = fakeData,
+        onApply = {}, // No usar viewModel en preview
+    )
 }
