@@ -1,4 +1,4 @@
-package com.app.arcabyolimpo.presentation.screens.client
+package com.app.arcabyolimpo.presentation.screens.home.assistant
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
