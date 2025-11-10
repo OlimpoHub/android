@@ -16,9 +16,8 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SaveButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.CancelButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.ExitIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.ModalInput
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.foundation.clickable
+import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.CalendarIcon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -208,11 +207,7 @@ fun ExternalCollabRegisterScreen(
                             .align(Alignment.CenterEnd)
                             .padding(end = 8.dp, top = 32.dp)
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.DateRange,
-                            contentDescription = "Seleccionar fecha",
-                            tint = Color(0xFF3B82F6)
-                        )
+                        CalendarIcon(tint = Color(0xFF3B82F6))
                     }
                 }
 

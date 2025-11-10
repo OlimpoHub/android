@@ -86,7 +86,7 @@ fun NavBar() {
                 Spacer(modifier = Modifier.height(3.dp))
                 Text(
                     text = item.label,
-                    style = Typography.bodySmall.copy(fontSize = 10.sp),
+                    style = Typography.bodySmall.copy(fontSize = 9.sp),
                     color = tint,
                 )
             }

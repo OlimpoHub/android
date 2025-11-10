@@ -115,8 +115,6 @@ fun ExternalCollabDetailContent(
             ) {
                 ModifyButton(
                     onClick = onEditClick,
-                    width = 140.dp,
-                    height = 40.dp
                 )
             }
 

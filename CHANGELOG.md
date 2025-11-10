@@ -1,7 +1,66 @@
+## [0.1.0] - 9/11/2025
+
+### Fixed
+ - Modify button
+ - The colors of upload image, icon standar input and select option input, to match the standard input
+
+### Added
+ - Added Screen for Beneficiary Details
+ - The files that get to be with the Api related to Workshops
+ - The view model, the view, the model for register new workshop.
+ - routes in ArcaApi and AppModule to work with workshops.
+
+### Updated
+ - Error handling for password recovery feature
+
+## [0.1.0] - 8/11/2025
+
+### Fixed
+ - Add button
+
+### Added
+ - Search bar and filter icon.
+ - Supplies list documentation for the code.
+
+### Updated
+ - Login UI and RBAC roles
+
+## [0.1.0] - 7/11/2025
+
+### Fixed
+ - Fixed some unused imports that were on files such as passwordRecovery screen and the use of proper atoms, that disallowed the building of the proyect.
+
+### Added
+ - Added Screen for Beneficiary List
+ - Added square buttons for + and
+ - Added atom for description
+## [0.1.0] - 6/11/2025
+
+### Fixed
+- Fixed the size of the text of 'Beneficiarios' so that it works on even smaller android devices
+- Fixed the use of fonts of the beneficiary cards
+
+### Added
+- Added molecule for beneficiary cards
+- Password recovery and account activation with token verification
+
+## [0.1.0] - 5/11/2025
+
+### Updated
+ - Login and Splash Screen UI
+
+### Added
+- Added atom for selection
+- Added atom for date input
+
 ## [0.1.0] - 4/11/2025
 
 ### Added
 
+ - Added supplies list functionality with all the MVVM layers
+ - Added atom for password input
+ - Validation input function ValidatePassword created
+ - Added atom for upload images
  - Added atom for email input
  - Fixed email regex validation
  - Validation input function ValidateEmail created
