@@ -16,6 +16,9 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SaveButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.CancelButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.ExitIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.ModalInput
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.foundation.clickable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,10 +30,14 @@ fun ExternalCollabRegisterScreen(
     val uiState by viewModel.uiState.collectAsState()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
+    // Date picker state
+    val datePickerState = rememberDatePickerState()
+    var showDatePicker by remember { mutableStateOf(false) }
+
     // Show success message
     LaunchedEffect(uiState.success) {
         if (uiState.success) {
-            kotlinx.coroutines.delay(1500) // Show message for 1.5 seconds
+            kotlinx.coroutines.delay(1500)
             viewModel.resetState()
             onSuccess()
         }
@@ -39,6 +46,56 @@ fun ExternalCollabRegisterScreen(
     DisposableEffect(Unit) {
         onDispose {
             viewModel.resetState()
+        }
+    }
+
+    // Date Picker Dialog
+    if (showDatePicker) {
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        datePickerState.selectedDateMillis?.let { millis ->
+                            val date = java.time.Instant.ofEpochMilli(millis)
+                                .atZone(java.time.ZoneId.systemDefault())
+                                .toLocalDate()
+                            viewModel.updateBirthDate(date.toString())
+                        }
+                        showDatePicker = false
+                    }
+                ) {
+                    Text("OK", color = Color(0xFF3B82F6))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDatePicker = false }) {
+                    Text("Cancelar", color = Color.Gray)
+                }
+            },
+            colors = DatePickerDefaults.colors(
+                containerColor = Color(0xFF1A1F2E)
+            )
+        ) {
+            DatePicker(
+                state = datePickerState,
+                colors = DatePickerDefaults.colors(
+                    containerColor = Color(0xFF1A1F2E),
+                    titleContentColor = Color.White,
+                    headlineContentColor = Color.White,
+                    weekdayContentColor = Color.White,
+                    subheadContentColor = Color.White,
+                    yearContentColor = Color.White,
+                    currentYearContentColor = Color(0xFF3B82F6),
+                    selectedYearContentColor = Color.White,
+                    selectedYearContainerColor = Color(0xFF3B82F6),
+                    dayContentColor = Color.White,
+                    selectedDayContentColor = Color.White,
+                    selectedDayContainerColor = Color(0xFF3B82F6),
+                    todayContentColor = Color(0xFF3B82F6),
+                    todayDateBorderColor = Color(0xFF3B82F6)
+                )
+            )
         }
     }
 
@@ -131,12 +188,33 @@ fun ExternalCollabRegisterScreen(
                     errorMessage = uiState.phoneError
                 )
 
-                ModalInput(
-                    label = "Fecha de Nacimiento",
-                    value = uiState.birthDate,
-                    onValueChange = { viewModel.updateBirthDate(it) },
-                    placeholder = "YYYY-MM-DD"
-                )
+                // Date of Birth with Calendar Picker
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { showDatePicker = true }
+                ) {
+                    ModalInput(
+                        label = "Fecha de Nacimiento",
+                        value = uiState.birthDate,
+                        onValueChange = { viewModel.updateBirthDate(it) },
+                        placeholder = "YYYY-MM-DD",
+                    )
+
+                    // Calendar icon overlay
+                    IconButton(
+                        onClick = { showDatePicker = true },
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                            .padding(end = 8.dp, top = 32.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.DateRange,
+                            contentDescription = "Seleccionar fecha",
+                            tint = Color(0xFF3B82F6)
+                        )
+                    }
+                }
 
                 ModalInput(
                     label = "Carrera",
@@ -145,7 +223,7 @@ fun ExternalCollabRegisterScreen(
                     placeholder = "Ingeniería en..."
                 )
 
-                // Status Toggle
+                // Status Toggle - Updated to Blue
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
                         text = "Estatus",
@@ -158,33 +236,33 @@ fun ExternalCollabRegisterScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        // Active Button
+                        // Active Button - Blue
                         OutlinedButton(
                             onClick = { viewModel.updateIsActive(true) },
                             modifier = Modifier.weight(1f),
                             colors = ButtonDefaults.outlinedButtonColors(
-                                containerColor = if (uiState.isActive) Color(0xFF22C55E) else Color.Transparent,
-                                contentColor = if (uiState.isActive) Color.White else Color(0xFF22C55E)
+                                containerColor = if (uiState.isActive) Color(0xFF3B82F6) else Color.Transparent,
+                                contentColor = if (uiState.isActive) Color.White else Color(0xFF3B82F6)
                             ),
                             border = androidx.compose.foundation.BorderStroke(
                                 1.dp,
-                                if (uiState.isActive) Color(0xFF22C55E) else Color(0xFF22C55E).copy(alpha = 0.5f)
+                                if (uiState.isActive) Color(0xFF3B82F6) else Color(0xFF3B82F6).copy(alpha = 0.5f)
                             )
                         ) {
                             Text("Activo")
                         }
 
-                        // Inactive Button
+                        // Inactive Button - Blue
                         OutlinedButton(
                             onClick = { viewModel.updateIsActive(false) },
                             modifier = Modifier.weight(1f),
                             colors = ButtonDefaults.outlinedButtonColors(
-                                containerColor = if (!uiState.isActive) Color(0xFFEF4444) else Color.Transparent,
-                                contentColor = if (!uiState.isActive) Color.White else Color(0xFFEF4444)
+                                containerColor = if (!uiState.isActive) Color(0xFF3B82F6) else Color.Transparent,
+                                contentColor = if (!uiState.isActive) Color.White else Color(0xFF3B82F6)
                             ),
                             border = androidx.compose.foundation.BorderStroke(
                                 1.dp,
-                                if (!uiState.isActive) Color(0xFFEF4444) else Color(0xFFEF4444).copy(alpha = 0.5f)
+                                if (!uiState.isActive) Color(0xFF3B82F6) else Color(0xFF3B82F6).copy(alpha = 0.5f)
                             )
                         ) {
                             Text("Inactivo")
