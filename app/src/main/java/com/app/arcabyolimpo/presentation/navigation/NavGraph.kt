@@ -26,6 +26,8 @@ import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
 import com.app.arcabyolimpo.presentation.screens.supply.SupplyListScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
+import com.app.arcabyolimpo.presentation.screens.workshop.AddNewWorkshopScreen
+import com.app.arcabyolimpo.presentation.screens.workshop.WorkshopsListScreen
 
 /**
  * Defines all available destinations (routes) in the application.
@@ -60,6 +62,10 @@ sealed class Screen(
     object CollaboratorHome : Screen("collaborator")
 
     object SuppliesList : Screen("supply")
+
+    object WorkshopsList : Screen("workshop")
+
+    object AddNewWorkshop: Screen("workshop/add")
 }
 
 /**
@@ -91,7 +97,6 @@ fun ArcaNavGraph(
         }
     }
 
-    // navController.navigate(Screen.PasswordRegistration.createRoute(email))
 
     /** Defines all navigation. The start destination is the Splash screen. */
     NavHost(
@@ -268,6 +273,45 @@ fun ArcaNavGraph(
         /** Collaborator Home Screen */
         composable(Screen.CollaboratorHome.route) {
             CollaboratorHomeScreen()
+        }
+
+        /**
+         * Workshops List Screen.
+         *
+         * This composable represents the screen where users can view and interact with
+         * the list of available workshops.
+         *
+         * It connects to the [WorkshopsListScreen] composable, which displays the UI and
+         * interacts with its corresponding [WorkshopsListViewModel] to handle data fetching,
+         * loading states, and errors.
+         *
+         */
+        composable(Screen.WorkshopsList.route) {
+            WorkshopsListScreen(
+                navController = navController,
+                workshopClick = {}
+            )
+        }
+
+        /**
+         * Workshops Add Screen.
+         *
+         * This composable represents the screen where users can view and interact with
+         * the register of a new workshop.
+         *
+         * It connects to the [AddNewWorkshopScreen] composable, which displays the UI and
+         * interacts with its corresponding [AddNewWorkshopViewModel] to handle data fetching,
+         * loading states, and errors.
+         *
+         */
+        composable(Screen.AddNewWorkshop.route) {
+            AddNewWorkshopScreen(
+                navController = navController,
+                viewModel = hiltViewModel(),
+                onSuccess = {
+                    navController.popBackStack()
+                }
+            )
         }
 
         /**

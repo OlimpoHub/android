@@ -2,9 +2,13 @@
 
 ### Fixed
  - Modify button
+ - The colors of upload image, icon standar input and select option input, to match the standard input
 
 ### Added
  - Added Screen for Beneficiary Details
+ - The files that get to be with the Api related to Workshops
+ - The view model, the view, the model for register new workshop.
+ - routes in ArcaApi and AppModule to work with workshops.
 
 ## [0.1.0] - 8/11/2025
 
@@ -25,8 +29,8 @@
 
 ### Added
  - Added Screen for Beneficiary List
- - Added square buttons for + and 
- 
+ - Added square buttons for + and
+ - Added atom for description
 ## [0.1.0] - 6/11/2025
 
 ### Fixed
@@ -42,16 +46,18 @@
 ### Updated
  - Login and Splash Screen UI
 
+### Added
+- Added atom for selection
+- Added atom for date input
+
 ## [0.1.0] - 4/11/2025
 
 ### Added
 
  - Added supplies list functionality with all the MVVM layers
-
-## [0.1.0] - 4/11/2025
-
-### Added
-
+ - Added atom for password input
+ - Validation input function ValidatePassword created
+ - Added atom for upload images
  - Added atom for email input
  - Fixed email regex validation
  - Validation input function ValidateEmail created
