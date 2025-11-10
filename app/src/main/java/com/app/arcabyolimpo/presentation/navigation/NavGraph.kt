@@ -80,6 +80,10 @@ sealed class Screen(
     object WorkshopsList : Screen("workshop")
 
     object AddNewWorkshop: Screen("workshop/add")
+
+    object BeneficiaryList: Screen("beneficiary")
+
+    object BeneficiaryDetail: Screen("beneficiary/id")
 }
 
 /**

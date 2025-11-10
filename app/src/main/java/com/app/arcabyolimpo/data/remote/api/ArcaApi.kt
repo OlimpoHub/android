@@ -5,6 +5,8 @@ import com.app.arcabyolimpo.data.remote.dto.auth.LoginResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.RecoverPasswordDto
 import com.app.arcabyolimpo.data.remote.dto.auth.RefreshRequestDto
 import com.app.arcabyolimpo.data.remote.dto.auth.RefreshResponseDto
+import com.app.arcabyolimpo.data.remote.dto.beneficiaries.BeneficiariesListDto
+import com.app.arcabyolimpo.data.remote.dto.beneficiaries.BeneficiaryDto
 import com.app.arcabyolimpo.data.remote.dto.ExternalCollaborator.ExternalCollabDto
 import com.app.arcabyolimpo.data.remote.dto.ExternalCollaborator.RegisterExtCollab.RegisterExternalCollabDto
 import com.app.arcabyolimpo.data.remote.dto.ExternalCollaborator.RegisterExtCollab.RegisterResponseDto
@@ -13,13 +15,13 @@ import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyDto
 import com.app.arcabyolimpo.data.remote.dto.password.RecoverPasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordResponseDto
-import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenDto
 import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.AddNewWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -88,4 +90,13 @@ interface ArcaApi {
     suspend fun addWorkshop(
         @Body requestBody: WorkshopDto
     ): AddNewWorkshopDto
+
+    @GET("beneficiary")
+    suspend fun getBeneficiariesList(): List<BeneficiariesListDto>
+
+    @GET("beneficiary/{id}")
+    suspend fun getBeneficiary(@Path("id") id: String): BeneficiaryDto
+
+    @DELETE("beneficiary/{id}")
+    suspend fun deleteBeneficiary(@Path("id") id: String): BeneficiaryDto
 }

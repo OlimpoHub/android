@@ -1,6 +1,7 @@
 ## [0.1.0] - 10/11/2025
 
 ### Added
+ - Added basic logic for US BEN-01 and BEN-02
  - Added DecisionDialog Atom
  - Screen to consult details of external collaborators
  - Screen to consult list of external collaborators

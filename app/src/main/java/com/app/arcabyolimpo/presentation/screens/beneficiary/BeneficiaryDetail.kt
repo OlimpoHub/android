@@ -14,6 +14,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -21,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,9 +35,11 @@ import com.app.arcabyolimpo.R
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.DeleteButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ModifyButton
 import com.app.arcabyolimpo.presentation.theme.Typography
+import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
 import com.app.arcabyolimpo.presentation.ui.components.atoms.status.ActiveStatus
 import com.app.arcabyolimpo.presentation.ui.components.atoms.status.InactiveStatus
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,21 +57,35 @@ fun BeneficiaryDetail(
     onModifyClick: () -> Unit,
     onDeleteClick: () -> Unit // Lógica real de eliminación
 ) {
+    // --- Logica para el snackbar ---
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
     // Lógica de UI para mostrar/ocultar diálogo
-    // var showDeleteDialog by remember { mutableStateOf(false) }
-    /*
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
     if (showDeleteDialog) {
-        DeleteBeneficiaryDialog(
-            beneficiaryName = beneficiaryName,
+        DecisionDialog(
+            dialogTitle = "¿Seguro que quieres eliminar a $beneficiaryName?",
+            dialogText = "No podrá recuperarse una vez se haya eliminado.",
             onDismissRequest = { showDeleteDialog = false },
-            onConfirmClick = {
+            onConfirmation = {
                 showDeleteDialog = false
                 onDeleteClick() // Llama a la lógica del ViewModel
+
+                // Mostrar Snackbar
+                scope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = "Beneficiario eliminado correctamente"
+                    )
+                }
             }
         )
     }
-    */
+
     Scaffold(
+        // Conectamos el snackbar al Scaffold
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = { Text(beneficiaryName) },
