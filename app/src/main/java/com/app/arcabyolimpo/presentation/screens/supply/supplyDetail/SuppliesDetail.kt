@@ -3,6 +3,7 @@ package com.app.arcabyolimpo.presentation.screens.supply.supplyDetail
 import android.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -38,6 +39,7 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AgregateButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.DeleteButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ModifyButton
+import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.FilterIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.status.ActiveStatus
 import com.app.arcabyolimpo.ui.theme.Background
@@ -51,6 +53,8 @@ fun SuppliesDetailScreen(
     onClickAddSupplyBatch: () -> Unit,
     onClickDelete: () -> Unit,
     onClickModify: () -> Unit,
+    modifySupplyBatch: () -> Unit,
+    deleteSupplyBatch: () -> Unit,
 ) {
     Scaffold(
         containerColor = Background,
@@ -66,7 +70,11 @@ fun SuppliesDetailScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(Icons.Default.ArrowBack, "Back")
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            "Back",
+                            tint = White,
+                            )
                     }
                 },
                 colors =
@@ -144,6 +152,15 @@ fun SuppliesDetailScreen(
                     fontSize = 18.sp,
                 )
 
+                FilterIcon(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .padding(top = 16.dp)
+                        .clickable {
+                            // do something
+                        }
+                )
+
                 AgregateButton(
                     onClick = onClickAddSupplyBatch,
                 )
@@ -152,10 +169,34 @@ fun SuppliesDetailScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Column {
-                SupplyBatchRow(quantity = 1, date = "07/noviembre/2025")
-                SupplyBatchRow(quantity = 2, date = "07/noviembre/2025")
-                SupplyBatchRow(quantity = 3, date = "07/noviembre/2026")
-                SupplyBatchRow(quantity = 3, date = "07/noviembre/2026")
+                SupplyBatchRow(
+                    quantity = 1,
+                    date = "07/noviembre/2025",
+                    adquisition = "Compra",
+                    onModifyClick = modifySupplyBatch,
+                    onDeleteClick = deleteSupplyBatch,
+                )
+                SupplyBatchRow(
+                    quantity = 2,
+                    date = "07/noviembre/2025",
+                    adquisition = "Compra",
+                    onModifyClick = modifySupplyBatch,
+                    onDeleteClick = deleteSupplyBatch,
+                )
+                SupplyBatchRow(
+                    quantity = 3,
+                    date = "07/noviembre/2026",
+                    adquisition = "Compra",
+                    onModifyClick = modifySupplyBatch,
+                    onDeleteClick = deleteSupplyBatch,
+                )
+                SupplyBatchRow(
+                    quantity = 3,
+                    date = "07/noviembre/2026",
+                    adquisition = "Compra",
+                    onModifyClick = modifySupplyBatch,
+                    onDeleteClick = deleteSupplyBatch,
+                )
             }
 
             Spacer(modifier = Modifier.height(32.dp))
