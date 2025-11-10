@@ -1,6 +1,7 @@
 ## [0.1.0] - 10/11/2025
 
 ### Added
+ - Added DecisionDialog Atom
  - Screen to consult details of external collaborators
  - Screen to consult list of external collaborators
  - Screen to register external collaborators
