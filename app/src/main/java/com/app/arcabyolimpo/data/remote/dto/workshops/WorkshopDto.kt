@@ -14,7 +14,7 @@ import com.google.gson.annotations.SerializedName
  * @param startHour The hour for the workshop to be started.
  * @param finishHour The hour for the workshop to be ended.
  * @param status The status of the workshop, active = 1, inactive = 0.
- * @param schedule The time when the workshops is going to happened.
+ * @param description The description of how is the workshop.
  * @param date The day when the workshop is going to take place.
  */
 data class WorkshopDto(
@@ -26,6 +26,6 @@ data class WorkshopDto(
     @SerializedName("horaEntrada") val startHour: String,
     @SerializedName("horaSalida") val finishHour: String,
     @SerializedName("estatus") val status: Int,
-    @SerializedName("horarioTaller") val schedule: String,
+    @SerializedName("descripcion") val description: String,
     @SerializedName("fecha") val date: String
 )

@@ -21,7 +21,7 @@ fun WorkshopDto.toDomain(): Workshop {
         startHour = startHour,
         finishHour = finishHour,
         status = status,
-        schedule = schedule,
+        description = description,
         date = date
 
     )
