@@ -81,7 +81,7 @@ fun AddNewWorkshopScreen(
                 /** Title of the forms */
                 Text(
                     text = "Registrar Nuevo Taller",
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.headlineLarge,
                     color = White,
                     modifier = Modifier.padding(bottom = 16.dp),
                     fontWeight = FontWeight.Bold
@@ -227,40 +227,42 @@ fun AddNewWorkshopScreen(
                         width = 112.dp,
                         height = 40.dp
                     )
-                }
 
-                if (showConfirmDialog) {
-                    DecisionDialog(
-                        onDismissRequest = { showConfirmDialog = false },
-                        onConfirmation = {
-                            showConfirmDialog = false
-                            viewModel.addNewWorkshop()
-                        },
-                        dialogTitle = "Confirmar registro",
-                        dialogText = "¿Deseas registrar este taller? Asegúrate de que todos los datos sean correctos."
-                    )
-                }
-
-                if (uiState.isSuccess) {
-                    Text(
-                        text = "Taller creado correctamente",
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(top = 12.dp)
-                    )
-                    LaunchedEffect(Unit) {
-                        onSuccess?.invoke()
+                    if (showConfirmDialog) {
+                        DecisionDialog(
+                            onDismissRequest = { showConfirmDialog = false },
+                            onConfirmation = {
+                                showConfirmDialog = false
+                                viewModel.addNewWorkshop()
+                            },
+                            dialogTitle = "Confirmar registro",
+                            dialogText = "¿Deseas registrar este taller? Asegúrate de que todos los datos sean correctos.",
+                            confirmText = "Confirmar",
+                            dismissText = "Cancelar"
+                        )
                     }
-                }
 
-                if (!uiState.isSuccess && uiState.error != null && fieldErrors.isEmpty()) {
-                    Text(
-                        text = uiState.error ?: "",
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(top = 8.dp)
-                    )
-                }
+                    if (uiState.isSuccess) {
+                        Text(
+                            text = "Taller creado correctamente",
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(top = 12.dp)
+                        )
+                        LaunchedEffect(Unit) {
+                            onSuccess?.invoke()
+                        }
+                    }
 
-                Spacer(modifier = Modifier.height(80.dp))
+                    if (!uiState.isSuccess && uiState.error != null && fieldErrors.isEmpty()) {
+                        Text(
+                            text = uiState.error ?: "",
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(80.dp))
+                }
             }
         }
     }
