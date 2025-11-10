@@ -1,4 +1,4 @@
-package com.app.arcabyolimpo.presentation.screens.ExternalCollab
+package com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabList
 
 import com.app.arcabyolimpo.domain.model.ExternalCollaborator.ExternalCollab
 

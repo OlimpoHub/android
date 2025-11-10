@@ -15,7 +15,7 @@ import com.app.arcabyolimpo.presentation.screens.admin.CoordinatorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.client.CollaboratorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.login.LoginScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
-import com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabListScreen
+import com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabList.ExternalCollabListScreen
 import com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabDetail.ExternalCollabDetailScreen
 import com.app.arcabyolimpo.presentation.screens.ExternalCollab.RegisterExternalCollab.ExternalCollabRegisterScreen
 
