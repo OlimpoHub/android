@@ -6,6 +6,9 @@
 ### Added
  - Added Screen for Beneficiary Details
 
+### Updated
+ - Error handling for password recovery feature
+
 ## [0.1.0] - 8/11/2025
 
 ### Fixed
