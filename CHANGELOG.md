@@ -2,6 +2,10 @@
 
 ### Added
  - Added basic logic for US BEN-01 and BEN-02
+ - Added DecisionDialog Atom
+ - Screen to consult details of external collaborators
+ - Screen to consult list of external collaborators
+ - Screen to register external collaborators
 
 ## [0.1.0] - 9/11/2025
 

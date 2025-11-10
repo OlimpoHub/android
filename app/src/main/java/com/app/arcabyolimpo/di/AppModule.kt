@@ -13,6 +13,8 @@ import com.app.arcabyolimpo.data.repository.supplies.SupplyRepositoryImpl
 import com.app.arcabyolimpo.data.repository.workshops.WorkshopRepositoryImpl
 import com.app.arcabyolimpo.domain.repository.auth.UserRepository
 import com.app.arcabyolimpo.domain.repository.beneficiaries.BeneficiaryRepository
+import com.app.arcabyolimpo.data.repository.ExternalCollaborator.ExternalCollabRepositoryImpl
+import com.app.arcabyolimpo.domain.repository.ExternalCollabRepository.ExternalCollabRepository
 import com.app.arcabyolimpo.domain.repository.password.PasswordUserRepository
 import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
 import com.app.arcabyolimpo.domain.repository.workshops.WorkshopRepository
@@ -93,6 +95,12 @@ object AppModule {
         api: ArcaApi,
         authPreferences: UserPreferences,
     ): UserRepository = UserRepositoryImpl(api, authPreferences)
+
+    @Provides
+    @Singleton
+    fun provideExternalCollabRepository(
+        api: ArcaApi,
+    ): ExternalCollabRepository = ExternalCollabRepositoryImpl(api)
 
     @Provides
     @Singleton
