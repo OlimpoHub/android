@@ -31,6 +31,20 @@ import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
 
+/** ---------------------------------------------------------------------------------------------- *
+ * SuppliesDeatilScreen -> receibes the id of the supply, then calls the view model tu update its
+ * view, this is in charge of displaying the data fetched into the view. Also handles different
+ * states.
+ *
+ * @param idInsumo: String -> ID of the supply
+ * @param onBackClick: () -> Unit -> function when you want to go back
+ * @param onClickAddSupplyBatch: () -> Unit -> function when you want to ADD A NEW SUPPLY
+ * @param onClickDelete: () -> Unit -> function when you want to DELETE THE SUPPLY
+ * @param onClickModify: () -> Unit -> function when you want to MODIFY THE SUPPLY
+ * @param modifySupplyBatch: () -> Unit -> function when you want to MODIFY A SUPPLY BATCH
+ * @param deleteSupplyBatch: () -> function when you want to DELETE A SUPPLY BATCH
+ * @param viewModel: SuppliesDetailViewModel -> view model that gathers the data and updates the view
+ * ---------------------------------------------------------------------------------------------- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SuppliesDetailScreen(

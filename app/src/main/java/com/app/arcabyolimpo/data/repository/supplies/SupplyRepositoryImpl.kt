@@ -55,5 +55,8 @@ class SupplyRepositoryImpl @Inject constructor(
 
         override suspend fun getFilterData(): FilterData = api.getFilterSupplies().toDomain()
 
+        /** -------------------------------------------------------------------------------------- *
+         * getSupplyBatchById -> calls the API to fetch a supply batch by its ID.
+        * --------------------------------------------------------------------------------------- */
         override suspend fun getSupplyBatchById(id: String): SupplyBatchExt = api.getSupplyBatchById(id).toDomain()
     }

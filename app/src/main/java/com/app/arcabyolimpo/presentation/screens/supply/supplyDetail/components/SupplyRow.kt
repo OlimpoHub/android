@@ -24,6 +24,16 @@ import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.ui.theme.DangerGray
 import com.app.arcabyolimpo.ui.theme.White
 
+/** ---------------------------------------------------------------------------------------------- *
+ * SupplyBatchRow -> row that contains all the batches from the supply and display characteristics
+ * like the quantity, date or adquisition, also lets the user to modify or delete a supply batch
+ *
+ * @param quantity: Int -> quantity of the supply batches
+ * @param date: String -> expiration date of the supply batch
+ * @param adquisition: String -> acquisition type of the supply
+ * @param onModifyClick: () -> Unit -> function when you want to modify the supply BATCH
+ * @param onDeleteClick: () -> Unit -> function when you want to delete the supply BATCH
+ * ---------------------------------------------------------------------------------------------- */
 @Composable
 fun SupplyBatchRow(
     quantity: Int,

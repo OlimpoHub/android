@@ -33,6 +33,18 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.status.ActiveStatus
 import com.app.arcabyolimpo.presentation.ui.components.atoms.status.InactiveStatus
 import com.app.arcabyolimpo.ui.theme.White
 
+/** ---------------------------------------------------------------------------------------------- *
+ * SupplyDetailContent -> Its the container of the view that its just called in the main
+ * SuppliesDetailScreen, has the information of the Supply and its batches and its the bridge to
+ * other functionalities like modify or delete a Supply
+ *
+ * @param supply: SupplyBatchExt -> supply fetched
+ * @param onClickAddSupplyBatch: () -> Unit -> function when you want to add a new supply
+ * @param onClickDelete: () -> Unit -> function when you want to delete the supply
+ * @param onClickModify: () -> Unit -> function when you want to modify the supply
+ * @param modifySupplyBatch: () -> Unit -> function when you want to modify a SUPPLY BATCH
+ * @param deleteSupplyBatch: () -> Unit -> function when you want to delete a SUPPLY BATCH
+ * ---------------------------------------------------------------------------------------------- */
 @Composable
 fun SupplyDetailContent(
     supply: SupplyBatchExt,
@@ -137,12 +149,15 @@ fun SupplyDetailContent(
             )
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-                FilterIcon(
-                    modifier =
-                        Modifier
-                            .size(28.dp)
-                            .clickable { },
-                )
+                if (!batches.isEmpty()) {
+                    FilterIcon(
+                        modifier =
+                            Modifier
+                                .size(28.dp)
+                                .clickable { /* Implements the filter US */ },
+                    )
+                }
+
                 Spacer(modifier = Modifier.width(16.dp))
                 AgregateButton(onClick = onClickAddSupplyBatch)
             }

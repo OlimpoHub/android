@@ -5,6 +5,11 @@ import com.app.arcabyolimpo.domain.model.supplies.Batch
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatch
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
 
+/** ---------------------------------------------------------------------------------------------- *
+ * Helper function that maps the Dto of supplyBatch to return it into a kotlin object
+ *
+ * @return SupplyBatchExt
+ * ---------------------------------------------------------------------------------------------- */
 fun SupplyBatchDto.toDomain(): SupplyBatchExt =
     SupplyBatchExt(
         id = idSupply.toString(),

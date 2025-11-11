@@ -12,6 +12,13 @@ import androidx.compose.ui.unit.sp
 import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.ui.theme.White
 
+/** ---------------------------------------------------------------------------------------------- *
+ * TextValue -> component that receives two Strings, the first one makes it bolder and the second
+ * one acts as the value.
+ *
+ * @param label: String -> information label
+ * @param value: String -> value label or the information you want to display
+ * ---------------------------------------------------------------------------------------------- */
 @Composable
 fun TextValue(
     label: String,

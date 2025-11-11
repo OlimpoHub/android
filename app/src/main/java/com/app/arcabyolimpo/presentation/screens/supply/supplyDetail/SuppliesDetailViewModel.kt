@@ -12,6 +12,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/** ----------------------------------------------------------------------------------------------- *
+* SuppliesDetailViewModel -> In charge of getting one Supply and its batches, and update the views
+* status, recives the information from the UseCase
+*
+* @param getSupplyBatchListUseCase -> US where the data form a supply and its batches are fetched
+* @return ViewModel
+* ----------------------------------------------------------------------------------------------- */
 @HiltViewModel
 class SuppliesDetailViewModel
     @Inject
@@ -21,7 +28,13 @@ class SuppliesDetailViewModel
         private val _uiState = MutableStateFlow(SuppliesDetailUiState())
         val uiState: StateFlow<SuppliesDetailUiState> = _uiState.asStateFlow()
 
-        fun getSupply(id: String) {
+    /** ------------------------------------------------------------------------------------------ *
+     * getSupply -> receives the id of a supply then uses the US and updates the status of the views
+     * marking it as loading, error or success.
+     *
+     * @param id: String -> ID of the supply
+     * ------------------------------------------------------------------------------------------ */
+    fun getSupply(id: String) {
             viewModelScope.launch {
                 getSupplyBatchListUseCase(id).collect { result ->
                     _uiState.update { state ->

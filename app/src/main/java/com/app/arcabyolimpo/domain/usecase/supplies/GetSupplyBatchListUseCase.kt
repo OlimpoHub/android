@@ -8,6 +8,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
+/** ---------------------------------------------------------------------------------------------- *
+ * GetSupplyBatchListUseCase -> Use case that receives the ID of the supply, then gathers the data
+ * from the supply and its batches, updating different status
+ *
+ * @param repository: SupplyRepository -> repository where the api calls is found
+ * ---------------------------------------------------------------------------------------------- */
 class GetSupplyBatchListUseCase
     @Inject
     constructor(

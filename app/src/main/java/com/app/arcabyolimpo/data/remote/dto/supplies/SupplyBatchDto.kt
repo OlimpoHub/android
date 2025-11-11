@@ -5,8 +5,15 @@ import com.google.gson.annotations.SerializedName
 /**
  * DTO representing a batch of a supply item received from the API.
  *
- * @param quantity The amount of units in the batch.
- * @param expirationDate The expiration date associated with the batch.
+ * @param idInsumo: String -> id of the supply
+ * @param nombre: String -> name of the supply
+ * @param imagenInsumo: String -> image of the supply
+ * @param unidadMedida: String -> measure unit of the supply
+ * @param cantidad: Int -> quantity of the supply
+ * @param nombreTaller: String -> Workshop where the supply is being used
+ * @param Descripcion: String -> category of the supply
+ * @param status: Int -> status of the supply
+ * @param SupplyBatchJson: List<SupplyBatchSpecsDto> -> attributes from the supply batch
  */
 data class SupplyBatchDto(
     @SerializedName("idInsumo") val idSupply: String,
