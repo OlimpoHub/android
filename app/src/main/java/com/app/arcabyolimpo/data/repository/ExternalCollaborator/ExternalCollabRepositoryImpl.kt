@@ -53,9 +53,9 @@ class ExternalCollabRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteCollab(id: Int): Result<Boolean> {
+    override suspend fun deleteCollab(id: String): Result<Boolean> {
         return try {
-            api.deleteCollab(mapOf("id" to id))
+            val response = api.deleteCollab(id)
             Result.success(true)
         } catch (e: Exception) {
             Result.failure(e)

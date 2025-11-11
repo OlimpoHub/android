@@ -99,7 +99,7 @@ fun ExternalCollabDetailContent(
         InfoCard(label = "Teléfono", value = collab.phone)
         InfoCard(label = "Carrera", value = collab.degree)
         InfoCard(label = "Fecha de Nacimiento", value = formatDate(collab.birthDate))
-        InfoCard(label = "ID de Rol", value = getRoleName(collab.roleId))
+        InfoCard(label = "ID de Rol", value = collab.roleId.toString())
 
         Spacer(modifier = Modifier.height(32.dp))
 
