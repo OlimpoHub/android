@@ -26,6 +26,7 @@ import com.app.arcabyolimpo.ui.theme.White
  * @param height Dp -> button height (default: 40.dp)
  */
 
+@Suppress("ktlint:standard:function-naming")
 @Composable
 fun SaveButton(
     onClick: () -> Unit,
@@ -38,10 +39,11 @@ fun SaveButton(
         modifier = Modifier.size(width = width, height = height),
         colors = ButtonDefaults.buttonColors(containerColor = ButtonBlue),
         shape = RoundedCornerShape(cornerRadius),
-        contentPadding = PaddingValues(
-            horizontal = 16.dp,
-            vertical = 8.dp
-        ),
+        contentPadding =
+            PaddingValues(
+                horizontal = 16.dp,
+                vertical = 8.dp,
+            ),
     ) {
         Text(
             text = "Guardar",
@@ -52,6 +54,7 @@ fun SaveButton(
     }
 }
 
+@Suppress("ktlint:standard:function-naming")
 @Preview(
     showBackground = true,
 )

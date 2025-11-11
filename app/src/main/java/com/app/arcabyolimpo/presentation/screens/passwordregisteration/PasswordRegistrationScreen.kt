@@ -30,8 +30,6 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardInpu
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
 
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable
@@ -43,6 +41,8 @@ fun PasswordRegistrationScreen(
 ) {
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+    var passwordError by remember { mutableStateOf<String?>(null) }
+    var confirmPasswordError by remember { mutableStateOf<String?>(null) }
     val uiState by viewModel.uiState.collectAsState()
 
     if (uiState.response?.status == true) {
@@ -60,14 +60,14 @@ fun PasswordRegistrationScreen(
                         ReturnIcon(size = 16.dp)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Background,
-                ),
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = Background,
+                    ),
             )
         },
-        containerColor = Background
-    )
-    {   padding ->
+        containerColor = Background,
+    ) { padding ->
         Column(
             modifier =
                 Modifier
@@ -78,15 +78,16 @@ fun PasswordRegistrationScreen(
             Text(
                 text = "El Arca en Querétaro I.A.P",
                 style = Typography.bodyMedium,
-                color = White
+                color = White,
             )
             Spacer(modifier = Modifier.height(20.dp))
             Text(
-                text = "Crea una \n" +
+                text =
+                    "Crea una \n" +
                         "contraseña para \n" +
                         "activar tu cuenta",
                 style = Typography.headlineLarge,
-                color = White
+                color = White,
             )
             Spacer(modifier = Modifier.height(80.dp))
             StandardInput(
@@ -94,10 +95,11 @@ fun PasswordRegistrationScreen(
                 value = password,
                 onValueChange = { password = it },
                 isError = uiState.error != null
-                        || uiState.response?.status == false,
-                errorMessage = if (uiState.response?.status == false)
-                    uiState.response?.message
-                else uiState.error,
+                        || passwordError != null,
+                errorMessage = when {
+                                    passwordError != null -> passwordError
+                                    else -> uiState.error
+                                },
                 trailingIcon = { KeyIcon() }
             )
             Spacer(modifier = Modifier.height(37.dp))
@@ -106,18 +108,32 @@ fun PasswordRegistrationScreen(
                 value = confirmPassword,
                 onValueChange = { confirmPassword = it },
                 isError = uiState.error != null
-                        || uiState.response?.status == false,
-                errorMessage = if (uiState.response?.status == false)
-                    uiState.response?.message
-                else uiState.error,
+                        || confirmPasswordError != null,
+                errorMessage = when {
+                    confirmPasswordError != null -> confirmPasswordError
+                    else -> uiState.error
+                } ,
                 trailingIcon = { KeyIcon() },
                 visualTransformation = PasswordVisualTransformation(),
             )
             Spacer(modifier = Modifier.height(37.dp))
             SetPasswordButton(
                 onClick = {
-                    if (!email.isNullOrEmpty()) {
-                        viewModel.postPasswordRegistration(email, password)
+                    when {
+                        password.isEmpty() -> {
+                            passwordError = "Debes ingresar una nueva contraseña"
+                        }
+                        password.isNotEmpty() && password != confirmPassword -> {
+                            passwordError = null
+                            confirmPasswordError = "Las contraseñas no coinciden"
+                        }
+                        else -> {
+                            passwordError = null
+                            confirmPasswordError = null
+                            if (!email.isNullOrEmpty()) {
+                                viewModel.postPasswordRegistration(email, password)
+                            }
+                        }
                     }
                 },
             )
@@ -125,9 +141,8 @@ fun PasswordRegistrationScreen(
     }
 }
 
-//@Preview(showBackground = true, showSystemUi = true)
-//@Composable
-//fun PasswordRegistrationScreenPreview() {
+// @Preview(showBackground = true, showSystemUi = true)
+// @Composable
+// fun PasswordRegistrationScreenPreview() {
 //    PasswordRegistrationScreen(onBackClick = { })
-//}
-
+// }

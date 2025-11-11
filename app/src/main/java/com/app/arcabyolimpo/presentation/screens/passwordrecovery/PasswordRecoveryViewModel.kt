@@ -2,8 +2,8 @@ package com.app.arcabyolimpo.presentation.screens.passwordrecovery
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.arcabyolimpo.domain.usecase.password.PostPasswordRecoveryUseCase
 import com.app.arcabyolimpo.domain.common.Result
+import com.app.arcabyolimpo.domain.usecase.password.PostPasswordRecoveryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -43,7 +43,6 @@ class PasswordRecoveryViewModel
                                 )
                         }
                     }
-
                 }
             }
         }

@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.compose.runtime.saveable)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -63,6 +64,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4) // Changed from libs.androidx.compose.ui.test.junit4
     debugImplementation(libs.androidx.ui.tooling) // Changed from libs.androidx.compose.ui.tooling
     debugImplementation(libs.androidx.ui.test.manifest) // Changed from libs.androidx.compose.ui.test.manifest
+    implementation(libs.androidx.compose.material.icons.extended)
 
     // Hilt
     implementation(libs.hilt.android)
@@ -81,6 +83,13 @@ dependencies {
 
     // DataStore
     implementation(libs.androidx.datastore.preferences)
+
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+
+    //Coil for image loading
+    implementation("io.coil-kt:coil-compose:2.5.0")
 
     // Material Pull to refresh
     implementation(libs.androidx.material)

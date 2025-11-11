@@ -21,13 +21,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import com.app.arcabyolimpo.presentation.theme.Typography
-import com.app.arcabyolimpo.ui.theme.InputBackgroundBlue
-import com.app.arcabyolimpo.ui.theme.PlaceholderGray
-import com.app.arcabyolimpo.ui.theme.SelectInputBlue
+import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
+import com.app.arcabyolimpo.ui.theme.ErrorRed
 import com.app.arcabyolimpo.ui.theme.HighlightInputBlue
-import com.app.arcabyolimpo.ui.theme.PrimaryBlue
+import com.app.arcabyolimpo.ui.theme.HighlightRed
+import com.app.arcabyolimpo.ui.theme.InputBackgroundBlue
+import com.app.arcabyolimpo.ui.theme.InputBackgroundRed
+import com.app.arcabyolimpo.ui.theme.SelectInputBlue
 import com.app.arcabyolimpo.ui.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,19 +40,21 @@ fun SelectInput(
     options: List<String>,
     onOptionSelected: (String) -> Unit,
     modifier: Modifier = Modifier,
+    isError: Boolean = false,
+    errorMessage: String? = null
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 
     Column(
         modifier
             .fillMaxWidth()
-            .padding(vertical = 0.dp),
+            .padding(vertical = 4.dp),
         horizontalAlignment = Alignment.Start,
     ) {
         Text(
             text = label,
-            style = Typography.bodyMedium,
-            color = White,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface,
         )
 
         ExposedDropdownMenuBox(
@@ -64,31 +67,31 @@ fun SelectInput(
                 onValueChange = { },
                 readOnly = true,
                 label = null,
+                isError = isError,
                 placeholder = {
                     Text(
                         text = "Selecciona una opción",
-                        color = PlaceholderGray
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                     )
                 },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
                 shape = RoundedCornerShape(12.dp),
                 colors = TextFieldDefaults.colors(
-                    // use the same input background as StandardInput
-                    focusedContainerColor = InputBackgroundBlue,
-                    unfocusedContainerColor = InputBackgroundBlue,
-                    errorContainerColor = InputBackgroundBlue,
-                    focusedIndicatorColor = SelectInputBlue,
-                    unfocusedIndicatorColor = HighlightInputBlue,
-                    cursorColor = PrimaryBlue,
-                    focusedPlaceholderColor = PlaceholderGray,
-                    unfocusedPlaceholderColor = PlaceholderGray,
+                    focusedContainerColor = if (isError) InputBackgroundRed else InputBackgroundBlue,
+                    unfocusedContainerColor = if (isError) InputBackgroundRed else InputBackgroundBlue,
+                    errorContainerColor = InputBackgroundRed,
+                    focusedIndicatorColor = if (isError) HighlightRed else SelectInputBlue,
+                    unfocusedIndicatorColor = if (isError) HighlightRed else HighlightInputBlue,
+                    cursorColor = MaterialTheme.colorScheme.primary,
                     focusedTextColor = White,
                     unfocusedTextColor = White,
+                    focusedPlaceholderColor = White.copy(alpha = 0.6f),
+                    unfocusedPlaceholderColor = White.copy(alpha = 0.6f),
                 ),
                 modifier = Modifier
                     .menuAnchor()
                     .fillMaxWidth()
-                    .padding(top = 2.dp)
+                    .padding(top = 4.dp)
             )
 
             ExposedDropdownMenu(
@@ -97,7 +100,7 @@ fun SelectInput(
             ) {
                 options.forEach { option ->
                     DropdownMenuItem(
-                        text = { Text(text = option, color = White) },
+                        text = { Text(text = option, color = MaterialTheme.colorScheme.onSurface) },
                         onClick = {
                             onOptionSelected(option)
                             isExpanded = false
@@ -106,6 +109,14 @@ fun SelectInput(
                     )
                 }
             }
+        }
+        if (isError && !errorMessage.isNullOrEmpty()) {
+            Text(
+                text = errorMessage,
+                color = ErrorRed,
+                style = Typography.bodySmall,
+                modifier = Modifier.padding(top = 2.dp),
+            )
         }
     }
 }

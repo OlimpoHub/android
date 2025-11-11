@@ -22,26 +22,24 @@ import com.app.arcabyolimpo.ui.theme.White
  *
  * @param onClick: () -> Unit -> function to execute when the button is clicked
  * @param cornerRadius: Dp = 8.dp -> how much rounded the corners are
- * @param width Dp -> button width (default: 112.dp)
- * @param height Dp -> button height (default: 40.dp)
  */
 
 @Composable
 fun ModifyButton(
+    modifier: Modifier = Modifier, // Cambio 1 de varios: Agregar modifier
     onClick: () -> Unit,
-    cornerRadius: Dp = 8.dp,
-    width: Dp = 112.dp,
-    height: Dp = 40.dp,
+    cornerRadius: Dp = 8.dp, // Cambio 2 de varios: Borrar width y height son parametros basura
 ) {
     Button(
         onClick = onClick,
-        modifier = Modifier.size(width = width, height = height),
+        modifier = modifier, // Cambio 3 de varios: Usar el modifier que viene de afuera
         colors = ButtonDefaults.buttonColors(containerColor = ButtonBlue),
         shape = RoundedCornerShape(cornerRadius),
-        contentPadding = PaddingValues(
-            horizontal = 16.dp,
-            vertical = 8.dp
-        ),
+        contentPadding =
+            PaddingValues(
+                horizontal = 16.dp,
+                vertical = 8.dp,
+            ),
     ) {
         Text(
             text = "Modificar",
@@ -60,6 +58,7 @@ fun ModifyButtonPreview() {
     MaterialTheme {
         ModifyButton(
             onClick = { },
+            modifier = Modifier.size(width = 112.dp, height = 40.dp)
         )
     }
 }
