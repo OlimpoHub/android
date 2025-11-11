@@ -108,7 +108,7 @@ fun Filter(
                     ExitIcon(
                         modifier =
                             Modifier
-                                .padding(top = 5.dp, end = 20.dp)
+                                .padding(top = 5.dp)
                                 .clickable {
                                     onDismiss()
                                 },
@@ -123,9 +123,12 @@ fun Filter(
                     modifier = Modifier.padding(top = 10.dp),
                 )
 
-                Text(
-                    "───────────────────",
-                    style = Typography.headlineSmall,
+                Divider(
+                    modifier =
+                        Modifier
+                            .padding(end = 40.dp),
+                    color = White,
+                    thickness = 1.dp,
                 )
 
                 sections.forEach { (title, items) ->
@@ -145,9 +148,12 @@ fun Filter(
                     style = Typography.headlineMedium,
                 )
 
-                Text(
-                    "───────────────────",
-                    style = Typography.headlineSmall,
+                Divider(
+                    modifier =
+                        Modifier
+                            .padding(end = 40.dp),
+                    color = White,
+                    thickness = 1.dp,
                 )
 
                 Row(
