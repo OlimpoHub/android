@@ -13,7 +13,7 @@ import com.app.arcabyolimpo.domain.model.supplies.SupplyBatch
  * @property startHour The hour for the workshop to be started.
  * @property finishHour The hour for the workshop to be ended.
  * @property status The status of the workshop, active = 1, inactive = 0.
- * @property schedule The time when the workshops is going to happened.
+ * @property description The description of how is the workshop.
  * @property date The day when the workshop is going to take place.
  */
 
@@ -26,6 +26,6 @@ data class Workshop(
     val startHour: String,
     val finishHour: String,
     val status: Int,
-    val schedule: String,
+    val description: String,
     val date: String
 )

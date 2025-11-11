@@ -1,9 +1,20 @@
 ## [0.1.0] - 10/11/2025
 
+### Fixed
+
+ - BeneficiaryDetail.kt fixed error that prevented merge
+ - Fixed the validation forms to register new workshop for hour and date
+ - Fixed the save confirmation with the desition dialog.
+ - Fixing validation in register new workshops.
+
+
 ### Added
+ - Added basic logic for US BEN-01 and BEN-02
+ - Added DecisionDialog Atom
  - Screen to consult details of external collaborators
  - Screen to consult list of external collaborators
  - Screen to register external collaborators
+ - In register new workshops the snakbar was added.
 
 ## [0.1.0] - 9/11/2025
 
