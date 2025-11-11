@@ -7,5 +7,5 @@ fun VerifyTokenResponseDto.toDomain(): VerifyToken =
     VerifyToken(
         valid = valid,
         email = email,
-        message = message
+        message = message,
     )

@@ -1,6 +1,5 @@
 package com.app.arcabyolimpo.presentation.screens.tokenverification
 
-import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationViewModel
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationViewModel
 import com.app.arcabyolimpo.presentation.theme.Typography
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.ReturnIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardInput
@@ -23,14 +23,10 @@ import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.ErrorRed
 import com.app.arcabyolimpo.ui.theme.White
 
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun TokenVerificationFailedScreen(
-    onBackClick: () -> Unit,
-) {
+fun TokenVerificationFailedScreen(onBackClick: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -40,14 +36,14 @@ fun TokenVerificationFailedScreen(
                         ReturnIcon(size = 16.dp)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Background,
-                ),
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = Background,
+                    ),
             )
         },
-        containerColor = Background
-    )
-    {   padding ->
+        containerColor = Background,
+    ) { padding ->
         Column(
             modifier =
                 Modifier
@@ -58,14 +54,15 @@ fun TokenVerificationFailedScreen(
             Text(
                 text = "El Arca en Querétaro I.A.P",
                 style = Typography.bodyMedium,
-                color = White
+                color = White,
             )
             Spacer(modifier = Modifier.height(20.dp))
             Text(
-                text = "¡Token inválido! \n" +
+                text =
+                    "¡Token inválido! \n" +
                         "Intenta de nuevo",
                 style = Typography.headlineLarge,
-                color = ErrorRed
+                color = ErrorRed,
             )
         }
     }
@@ -76,4 +73,3 @@ fun TokenVerificationFailedScreen(
 fun TokenVerificationFailedScreenPreview() {
     TokenVerificationFailedScreen(onBackClick = { })
 }
-

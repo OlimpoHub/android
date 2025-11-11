@@ -30,7 +30,9 @@ fun CollaboratorHomeScreen() {
         verticalArrangement = Arrangement.Center,
     ) {
         Text("Bienvenido Colaborador 👑", style = MaterialTheme.typography.headlineSmall)
+
         Spacer(modifier = Modifier.height(20.dp))
+
         Button(onClick = { sessionViewModel.logout() }) {
             Text("Cerrar sesión")
         }

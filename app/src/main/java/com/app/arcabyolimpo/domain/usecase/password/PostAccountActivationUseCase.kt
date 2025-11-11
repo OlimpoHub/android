@@ -1,11 +1,10 @@
 package com.app.arcabyolimpo.domain.usecase.password
 
+import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.repository.password.PasswordUserRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
-
-import com.app.arcabyolimpo.domain.common.Result
 
 class PostAccountActivationUseCase
     @Inject
