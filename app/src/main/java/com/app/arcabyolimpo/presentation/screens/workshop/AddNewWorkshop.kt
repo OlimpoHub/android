@@ -26,6 +26,11 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardIcon
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
+import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
+import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
+import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.DescriptionInput
+import kotlinx.coroutines.launch
+
 
 /**
  * Composable screen that displays the registrations of new workshops.
@@ -54,6 +59,11 @@ fun AddNewWorkshopScreen(
         val users by viewModel.users.collectAsStateWithLifecycle()
         val fieldErrors by viewModel.fieldErrors.collectAsStateWithLifecycle()
 
+        var showConfirmDialog by remember { mutableStateOf(false) }
+
+        val snackbarHostState = remember { SnackbarHostState() }
+        val scope = rememberCoroutineScope()
+
         LaunchedEffect(Unit) {
             viewModel.loadTrainings()
             viewModel.loadUsers()
@@ -61,6 +71,14 @@ fun AddNewWorkshopScreen(
 
         Scaffold(
             containerColor = Background,
+            snackbarHost = {
+                SnackbarHost(snackbarHostState) { data ->
+                    Snackbarcustom(
+                        title = data.visuals.message,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            },
             bottomBar = { NavBar() }
         ) { padding ->
             Column(
@@ -77,7 +95,7 @@ fun AddNewWorkshopScreen(
                 /** Title of the forms */
                 Text(
                     text = "Registrar Nuevo Taller",
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.headlineLarge,
                     color = White,
                     modifier = Modifier.padding(bottom = 16.dp),
                     fontWeight = FontWeight.Bold
@@ -159,13 +177,13 @@ fun AddNewWorkshopScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                /** Schedule */
-                StandardInput(
-                    label = "Horario",
-                    placeholder = "Ej. Lunes a viernes",
-                    value = formData.schedule,
-                    onValueChange = { viewModel.updateFormData { copy(schedule = it) } },
-                    isError = fieldErrors["schedule"] == true,
+                /** Description */
+                DescriptionInput(
+                    label = "Descripción",
+                    placeholder = "Escribe una breve descripción del taller...",
+                    value = formData.description,
+                    onValueChange = { viewModel.updateFormData { copy(description = it) } },
+                    isError = fieldErrors["description"] == true,
                     errorMessage = null
                 )
 
@@ -219,32 +237,51 @@ fun AddNewWorkshopScreen(
 
                     /** Save */
                     SaveButton(
-                        onClick = { viewModel.addNewWorkshop() },
+                        onClick = { showConfirmDialog = true },
                         width = 112.dp,
                         height = 40.dp
                     )
-                }
 
-                if (uiState.isSuccess) {
-                    Text(
-                        text = "Taller creado correctamente",
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(top = 12.dp)
-                    )
-                    LaunchedEffect(Unit) {
-                        onSuccess?.invoke()
+                    if (showConfirmDialog) {
+                        DecisionDialog(
+                            onDismissRequest = {
+                                showConfirmDialog = false
+                                scope.launch {
+                                    snackbarHostState.showSnackbar("Registro cancelado")
+                                }
+                            },
+                            onConfirmation = {
+                                showConfirmDialog = false
+                                viewModel.addNewWorkshop()
+                            },
+                            dialogTitle = "Confirmar registro",
+                            dialogText = "¿Deseas registrar este taller? Asegúrate de que todos los datos sean correctos.",
+                            confirmText = "Confirmar",
+                            dismissText = "Cancelar"
+                        )
                     }
-                }
 
-                if (!uiState.isSuccess && uiState.error != null && fieldErrors.isEmpty()) {
-                    Text(
-                        text = uiState.error ?: "",
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(top = 8.dp)
-                    )
-                }
+                    LaunchedEffect(uiState.isSuccess) {
+                        if (uiState.isSuccess) {
+                            scope.launch {
+                                snackbarHostState.showSnackbar("Taller registrado correctamente")
+                            }
 
-                Spacer(modifier = Modifier.height(80.dp))
+                            viewModel.resetForm()
+                        }
+                    }
+
+
+                    LaunchedEffect(uiState.error) {
+                        if (uiState.error != null) {
+                            scope.launch {
+                                snackbarHostState.showSnackbar("Error: ${uiState.error}")
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(80.dp))
+                }
             }
         }
     }

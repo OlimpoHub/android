@@ -14,11 +14,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import com.app.arcabyolimpo.presentation.navigation.Screen
 import com.app.arcabyolimpo.presentation.screens.session.SessionViewModel
+import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun CoordinatorHomeScreen() {
+fun CoordinatorHomeScreen(
+    navController: NavHostController
+) {
     val sessionViewModel: SessionViewModel = hiltViewModel()
 
     Column(
@@ -31,6 +36,9 @@ fun CoordinatorHomeScreen() {
     ) {
         Text("Bienvenido Coordinador 👑", style = MaterialTheme.typography.headlineSmall)
         Spacer(modifier = Modifier.height(20.dp))
+        Button(onClick = { navController.navigate(Screen.WorkshopsList.route) }) {
+            Text("Talleres")
+        }
         Button(onClick = { sessionViewModel.logout() }) {
             Text("Cerrar sesión")
         }

@@ -80,6 +80,10 @@ sealed class Screen(
     object WorkshopsList : Screen("workshop")
 
     object AddNewWorkshop: Screen("workshop/add")
+
+    object BeneficiaryList: Screen("beneficiary")
+
+    object BeneficiaryDetail: Screen("beneficiary/id")
 }
 
 /**
@@ -288,7 +292,9 @@ fun ArcaNavGraph(
 
         /** Coordinator Home Screen */
         composable(Screen.CoordinatorHome.route) {
-            CoordinatorHomeScreen()
+            CoordinatorHomeScreen(
+                navController = navController
+            )
         }
 
         /** Collaborator Home Screen */
