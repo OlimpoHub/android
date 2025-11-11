@@ -184,7 +184,7 @@ fun BeneficiaryDetailContent(
                         ) {
                             DetailTextRow(label = "Fecha de nacimiento:", value = beneficiary.birthdate)
                             DetailTextRow(label = "Fecha de ingreso:", value = beneficiary.entryDate)
-                            StatusField(isActive = beneficiary.status == 1)
+                            StatusField(isActive = beneficiary.status == 0)
                         }
 
                         // --- Columna Derecha ---
@@ -309,7 +309,7 @@ fun BeneficiaryDetailPreviewInactive() {
                     entryDate = "01/01/2023",
                     image = "",
                     disabilities = "Sí",
-                    status = 1
+                    status = 0
                 )
             ),
             snackbarHostState = remember { SnackbarHostState() },

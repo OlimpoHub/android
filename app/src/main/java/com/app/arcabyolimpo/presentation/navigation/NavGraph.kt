@@ -28,16 +28,9 @@ import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecove
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
-<<<<<<< HEAD
-import com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabList.ExternalCollabListScreen
-import com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabDetail.ExternalCollabDetailScreen
-import com.app.arcabyolimpo.presentation.screens.ExternalCollab.RegisterExternalCollab.ExternalCollabRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
-import com.app.arcabyolimpo.presentation.screens.supply.SupplyListScreen
-=======
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
->>>>>>> ccf6b8e7f26058010a61fbf7ed7c1dcc3358360d
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
 import com.app.arcabyolimpo.presentation.screens.workshop.AddNewWorkshopScreen
