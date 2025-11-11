@@ -1,38 +1,45 @@
 package com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabDetail
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
 import com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabDetail.components.ExternalCollabDetailContent
-import com.app.arcabyolimpo.presentation.ui.components.atoms.status.ActiveStatus
-import com.app.arcabyolimpo.presentation.ui.components.atoms.status.InactiveStatus
-import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ModifyButton
-import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.DeleteButton
+import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.ReturnIcon
 
+@Suppress("ktlint:standard:function-naming")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExternalCollabDetailScreen(
     viewModel: ExternalCollabDetailViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
     onEditClick: (String) -> Unit = {},
-    onDeleteClick: (String) -> Unit = {}
+    onDeleteClick: () -> Unit = {},
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val scaffoldState = rememberScaffoldState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    var showConfirmDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(uiState.deleted, uiState.deleteError) {
+        if (uiState.deleted) {
+            snackbarHostState.showSnackbar("El colaborador fue eliminado correctamente")
+            onDeleteClick()
+            viewModel.resetDeleteState()
+        } else if (uiState.deleteError != null) {
+            snackbarHostState.showSnackbar("Error al eliminar: ${uiState.deleteError}")
+            viewModel.resetDeleteState()
+        }
+    }
 
     Scaffold(
         containerColor = Color(0xFF040610),
@@ -55,7 +62,8 @@ fun ExternalCollabDetailScreen(
                     containerColor = Color(0xFF040610)
                 )
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { padding ->
         Box(
             modifier = Modifier
@@ -93,9 +101,31 @@ fun ExternalCollabDetailScreen(
                     ExternalCollabDetailContent(
                         collab = uiState.collab!!,
                         onEditClick = { uiState.collab?.id?.let { onEditClick(it.toString()) } },
-                        onDeleteClick = { uiState.collab?.id?.let { onDeleteClick(it.toString()) } }
+                        onDeleteClick = { showConfirmDialog = true }
                     )
                 }
+            }
+
+            if (showConfirmDialog) {
+                DecisionDialog(
+                    onDismissRequest = { showConfirmDialog = false },
+                    onConfirmation = {
+                        showConfirmDialog = false
+                        // lanzar delete
+                        uiState.collab?.id?.toString()?.let { idStr ->
+                            viewModel.deleteCollabById(idStr)
+                        }
+                    },
+                    dialogTitle = "Eliminar colaborador",
+                    dialogText = "¿Estás seguro que deseas eliminar este colaborador? Esta acción no se puede deshacer.",
+                    confirmText = "Eliminar",
+                    dismissText = "Cancelar",
+                )
+            }
+
+            if (uiState.deleteLoading) {
+                // un pequeño overlay o progress en centro
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
         }
     }
