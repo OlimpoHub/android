@@ -22,17 +22,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.app.arcabyolimpo.domain.model.auth.UserRole
+import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.presentation.theme.Typography
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.LoginButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.KeyIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.MailIcon
-import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardIconInput
+import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardInput
 import com.app.arcabyolimpo.presentation.ui.components.atoms.logo.ArcaLogo
+import com.app.arcabyolimpo.presentation.util.validateEmail
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
@@ -58,7 +62,7 @@ fun LoginScreen(
             Modifier
                 .fillMaxSize()
                 .background(Background)
-                .padding(start = 50.dp, top = 0.dp, end = 50.dp, bottom = 50.dp),
+                .padding(start = 32.dp, top = 0.dp, end = 32.dp, bottom = 50.dp),
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -70,13 +74,13 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(50.dp))
 
             ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false) {
-                StandardIconInput(
+                StandardInput(
                     label = "Correo Electrónico",
                     value = state.username,
                     onValueChange = { viewModel.updateUsername(it) },
-                    placeholder = "ejemplo@correo.com",
-                    isError = state.username == "" && state.error != null,
-                    errorMessage = "Correo electrónico requerido",
+                    placeholder = "E.G. ejemplo@correo.com",
+                    isError = (state.username == "" || !validateEmail(state.username)) && state.error != null,
+                    errorMessage = if (state.username == "") "Correo requerido" else "Correo inválido",
                     trailingIcon = { MailIcon() },
                 )
             }
@@ -84,11 +88,11 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
             ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false) {
-                StandardIconInput(
+                StandardInput(
                     label = "Contraseña",
                     value = state.password,
                     onValueChange = { viewModel.updatePassword(it) },
-                    placeholder = "Ingresa tu contraseña",
+                    placeholder = "••••••••",
                     visualTransformation = PasswordVisualTransformation(),
                     isError = state.password == "" && state.error != null,
                     errorMessage = "Contraseña requerida",
@@ -122,8 +126,10 @@ fun LoginScreen(
                 } else {
                     Text(
                         text = "Iniciar Sesión",
-                        color = Color(0xFFFFF7EB),
-                        style = Typography.bodyMedium,
+                        color = White,
+                        fontFamily = Poppins,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 16.sp,
                     )
                 }
             }

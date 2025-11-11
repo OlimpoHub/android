@@ -1,34 +1,39 @@
 package com.app.arcabyolimpo.presentation.navigation
 
-import android.net.Uri
-import android.util.Log
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
 import com.app.arcabyolimpo.domain.model.auth.UserRole
+import com.app.arcabyolimpo.presentation.common.components.LoadingShimmer
 import com.app.arcabyolimpo.presentation.screens.accountactivation.AccountActivationScreen
-import com.app.arcabyolimpo.presentation.screens.admin.CoordinatorHomeScreen
-import com.app.arcabyolimpo.presentation.screens.client.CollaboratorHomeScreen
+import com.app.arcabyolimpo.presentation.screens.home.assistant.CollaboratorHomeScreen
+import com.app.arcabyolimpo.presentation.screens.home.coordinator.CoordinatorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.login.LoginScreen
 import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecoveryScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
+import com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabList.ExternalCollabListScreen
+import com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabDetail.ExternalCollabDetailScreen
+import com.app.arcabyolimpo.presentation.screens.ExternalCollab.RegisterExternalCollab.ExternalCollabRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.supply.SupplyListScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
+import com.app.arcabyolimpo.presentation.screens.workshop.AddNewWorkshopScreen
+import com.app.arcabyolimpo.presentation.screens.workshop.WorkshopsListScreen
 
 /**
  * Defines all available destinations (routes) in the application.
@@ -46,6 +51,14 @@ sealed class Screen(
 
     object AccountActivation : Screen("account-activation")
 
+    object ExternalCollabList : Screen("external_collab_list")
+
+    object ExternalCollabDetail : Screen("external_collab_detail/{collabId}") {
+        fun createRoute(collabId: String) = "external_collab_detail/$collabId"
+    }
+
+    object ExternalCollabRegister : Screen("external_collab_register")
+
     object TokenVerification : Screen("user/verify-token?token={token}") {
         fun createRoute(token: String) = "user/verify-token?token=$token"
     }
@@ -58,11 +71,19 @@ sealed class Screen(
 
     object PasswordRegistrationSuccess : Screen("pasword-registration-success")
 
-    object CoordinatorHome : Screen("admin")
+    object CoordinatorHome : Screen("coordinator")
 
-    object CollaboratorHome : Screen("client")
+    object CollaboratorHome : Screen("collaborator")
 
     object SuppliesList : Screen("supply")
+
+    object WorkshopsList : Screen("workshop")
+
+    object AddNewWorkshop: Screen("workshop/add")
+
+    object BeneficiaryList: Screen("beneficiary")
+
+    object BeneficiaryDetail: Screen("beneficiary/id")
 }
 
 /**
@@ -94,7 +115,6 @@ fun ArcaNavGraph(
         }
     }
 
-    //navController.navigate(Screen.PasswordRegistration.createRoute(email))
 
     /** Defines all navigation. The start destination is the Splash screen. */
     NavHost(
@@ -106,11 +126,15 @@ fun ArcaNavGraph(
         composable(Screen.Splash.route) {
             SplashScreen(onNavigate = { role ->
                 when (role) {
-                    UserRole.COORD ->
+                    UserRole.COORDINADOR ->
                         navController.navigate(Screen.CoordinatorHome.route) {
                             popUpTo(Screen.Splash.route) { inclusive = true }
                         }
-                    UserRole.COLAB ->
+                    UserRole.ASISTENTE ->
+                        navController.navigate(Screen.CollaboratorHome.route) {
+                            popUpTo(Screen.Splash.route) { inclusive = true }
+                        }
+                    UserRole.BECARIO ->
                         navController.navigate(Screen.CollaboratorHome.route) {
                             popUpTo(Screen.Splash.route) { inclusive = true }
                         }
@@ -127,11 +151,15 @@ fun ArcaNavGraph(
             LoginScreen(
                 onLoginSuccess = { role ->
                     when (role) {
-                        UserRole.COORD ->
+                        UserRole.COORDINADOR ->
                             navController.navigate(Screen.CoordinatorHome.route) {
                                 popUpTo(Screen.Login.route) { inclusive = true }
                             }
-                        UserRole.COLAB ->
+                        UserRole.ASISTENTE ->
+                            navController.navigate(Screen.CollaboratorHome.route) {
+                                popUpTo(Screen.Login.route) { inclusive = true }
+                            }
+                        UserRole.BECARIO ->
                             navController.navigate(Screen.CollaboratorHome.route) {
                                 popUpTo(Screen.Login.route) { inclusive = true }
                             }
@@ -142,7 +170,7 @@ fun ArcaNavGraph(
                 },
                 onAccountActivationClick = {
                     navController.navigate(Screen.AccountActivation.route)
-                }
+                },
             )
         }
 
@@ -153,7 +181,7 @@ fun ArcaNavGraph(
                         navController.navigate(Screen.Login.route)
                     }
                 },
-                viewModel = hiltViewModel()
+                viewModel = hiltViewModel(),
             )
         }
 
@@ -164,21 +192,25 @@ fun ArcaNavGraph(
                         navController.navigate(Screen.Login.route)
                     }
                 },
-                viewModel = hiltViewModel()
+                viewModel = hiltViewModel(),
             )
         }
 
         composable(
             route = Screen.TokenVerification.route,
-            arguments = listOf(navArgument("token") {
-                type = NavType.StringType
-                nullable = true
-            }),
-            deepLinks = listOf(
-                navDeepLink {
-                    uriPattern = "arcabyolimpo://user/verify-token?token={token}"
-                }
-            )
+            arguments =
+                listOf(
+                    navArgument("token") {
+                        type = NavType.StringType
+                        nullable = true
+                    },
+                ),
+            deepLinks =
+                listOf(
+                    navDeepLink {
+                        uriPattern = "arcabyolimpo://user/verify-token?token={token}"
+                    },
+                ),
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token")
             val viewModel: TokenVerificationViewModel = hiltViewModel()
@@ -196,28 +228,32 @@ fun ArcaNavGraph(
                         onPasswordRegistrationSucessClick = {
                             navController.navigate(Screen.PasswordRegistrationSuccess.route)
                         },
-                        viewModel = hiltViewModel()
+                        viewModel = hiltViewModel(),
                     )
                 }
 
-                uiState.response?.valid == false -> {
-                    TokenVerificationFailedScreen(onBackClick = { navController.popBackStack() })
+                uiState.isLoading -> {
+                    LoadingShimmer(
+                        modifier = Modifier
+                            .fillMaxSize()
+                    )
                 }
 
-                uiState.isLoading == true -> {
-
+                uiState.error == "Invalid or expired token" -> {
+                    TokenVerificationFailedScreen(onBackClick = { navController.popBackStack() })
                 }
 
                 else -> {
-                    TokenVerificationFailedScreen(onBackClick = { navController.popBackStack() })
+                    LoadingShimmer(
+                        modifier = Modifier
+                            .fillMaxSize()
+                    )
                 }
             }
         }
 
-
-
         composable(Screen.TokenVerificationFailed.route) {
-            TokenVerificationFailedScreen (
+            TokenVerificationFailedScreen(
                 onBackClick = {
                     if (!navController.popBackStack()) {
                         navController.navigate(Screen.Login.route)
@@ -228,7 +264,7 @@ fun ArcaNavGraph(
 
         composable(
             route = Screen.PasswordRegistration.route,
-            arguments = listOf(navArgument("email") { type = NavType.StringType })
+            arguments = listOf(navArgument("email") { type = NavType.StringType }),
         ) { backStackEntry ->
             val email = backStackEntry.arguments?.getString("email")
             PasswordRegistrationScreen(
@@ -242,27 +278,105 @@ fun ArcaNavGraph(
                     navController.popBackStack()
                     navController.popBackStack()
                 },
-                viewModel = hiltViewModel()
+                viewModel = hiltViewModel(),
             )
         }
 
         composable(Screen.PasswordRegistrationSuccess.route) {
-            PasswordRegistrationSuccessScreen (
+            PasswordRegistrationSuccessScreen(
                 onBackClick = {
                     navController.navigate(Screen.Login.route)
                 },
             )
         }
 
-
         /** Coordinator Home Screen */
         composable(Screen.CoordinatorHome.route) {
-            CoordinatorHomeScreen()
+            CoordinatorHomeScreen(
+                navController = navController
+            )
         }
 
         /** Collaborator Home Screen */
         composable(Screen.CollaboratorHome.route) {
             CollaboratorHomeScreen()
+        }
+
+        composable(Screen.ExternalCollabList.route) {
+            ExternalCollabListScreen(
+                onCollabClick = { id ->
+                    navController.navigate(Screen.ExternalCollabDetail.createRoute(id))
+                },
+                onAddClick = {
+                    navController.navigate(Screen.ExternalCollabRegister.route)
+                }
+            )
+        }
+
+        /** External Collaborator Detail Screen */
+        composable(
+            route = Screen.ExternalCollabDetail.route,
+            arguments = listOf(navArgument("collabId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val collabId = backStackEntry.arguments?.getString("collabId")
+            ExternalCollabDetailScreen(
+                onBackClick = { navController.popBackStack() },
+                onEditClick = { id ->
+                    // TODO: Navigate to edit screen when you create it
+                },
+                onDeleteClick = { id ->
+                    // TODO: Handle delete
+                }
+            )
+        }
+
+        /** External Collaborator Register Screen */
+        composable(Screen.ExternalCollabRegister.route) {
+            ExternalCollabRegisterScreen(
+                onDismiss = { navController.popBackStack() },
+                onSuccess = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        /**
+         * Workshops List Screen.
+         *
+         * This composable represents the screen where users can view and interact with
+         * the list of available workshops.
+         *
+         * It connects to the [WorkshopsListScreen] composable, which displays the UI and
+         * interacts with its corresponding [WorkshopsListViewModel] to handle data fetching,
+         * loading states, and errors.
+         *
+         */
+        composable(Screen.WorkshopsList.route) {
+            WorkshopsListScreen(
+                navController = navController,
+                workshopClick = {}
+            )
+        }
+
+        /**
+         * Workshops Add Screen.
+         *
+         * This composable represents the screen where users can view and interact with
+         * the register of a new workshop.
+         *
+         * It connects to the [AddNewWorkshopScreen] composable, which displays the UI and
+         * interacts with its corresponding [AddNewWorkshopViewModel] to handle data fetching,
+         * loading states, and errors.
+         *
+         */
+        composable(Screen.AddNewWorkshop.route) {
+            AddNewWorkshopScreen(
+                navController = navController,
+                viewModel = hiltViewModel(),
+                onSuccess = {
+                    navController.popBackStack()
+                }
+            )
         }
 
         /**
@@ -280,7 +394,7 @@ fun ArcaNavGraph(
             SupplyListScreen(
                 onSupplyClick = { id ->
                     navController.navigate("supplyDetail/$id")
-                }
+                },
             )
         }
     }

@@ -7,11 +7,17 @@ import com.app.arcabyolimpo.data.remote.interceptor.AuthInterceptor
 import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
 import com.app.arcabyolimpo.data.remote.interceptor.TokenAuthenticator
 import com.app.arcabyolimpo.data.repository.auth.UserRepositoryImpl
+import com.app.arcabyolimpo.data.repository.beneficiaries.BeneficiaryRepositoryImpl
 import com.app.arcabyolimpo.data.repository.password.PasswordPasswordUserRepositoryImpl
 import com.app.arcabyolimpo.data.repository.supplies.SupplyRepositoryImpl
+import com.app.arcabyolimpo.data.repository.workshops.WorkshopRepositoryImpl
 import com.app.arcabyolimpo.domain.repository.auth.UserRepository
+import com.app.arcabyolimpo.domain.repository.beneficiaries.BeneficiaryRepository
+import com.app.arcabyolimpo.data.repository.ExternalCollaborator.ExternalCollabRepositoryImpl
+import com.app.arcabyolimpo.domain.repository.ExternalCollabRepository.ExternalCollabRepository
 import com.app.arcabyolimpo.domain.repository.password.PasswordUserRepository
 import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
+import com.app.arcabyolimpo.domain.repository.workshops.WorkshopRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -92,6 +98,12 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideExternalCollabRepository(
+        api: ArcaApi,
+    ): ExternalCollabRepository = ExternalCollabRepositoryImpl(api)
+
+    @Provides
+    @Singleton
     fun providePasswordUserRepository(
         api: ArcaApi
     ): PasswordUserRepository = PasswordPasswordUserRepositoryImpl(api)
@@ -113,4 +125,37 @@ object AppModule {
         api: ArcaApi
     ): SupplyRepository = SupplyRepositoryImpl(api)
 
+    /**
+     * Provides the [WorkshopRepository] implementation.
+     *
+     * This repository handles all workshop-related data operations,
+     * including fetching the workshop list and retrieving detailed
+     * information for a specific workshop. It uses [ArcaApi] as the
+     * remote data source and maps API responses to domain models.
+     *
+     * @param api The [ArcaApi] instance used to perform network requests.
+     * @return A singleton instance of [WorkshopRepositoryImpl].
+     */
+    @Provides
+    @Singleton
+    fun provideWorkshopRepository(
+        api: ArcaApi
+    ): WorkshopRepository = WorkshopRepositoryImpl(api)
+
+    /**
+     * Provides the [BeneficiaryRepository] implementation.
+     *
+     * This repository handles all beneficiary-related data operations,
+     * including fetching the beneficiary list and retrieving detailed
+     * information for a specific beneficiary. It uses [ArcaApi] as the
+     * remote data source and maps API responses to domain models.
+     *
+     * @param api The [ArcaApi] instance used to perform network requests.
+     * @return A singleton instance of [BeneficiaryRepositoryImpl].
+     */
+    @Provides
+    @Singleton
+    fun provideBeneficiaryRepository(
+        api: ArcaApi
+    ): BeneficiaryRepository = BeneficiaryRepositoryImpl(api)
 }
