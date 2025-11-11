@@ -9,13 +9,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
-import com.app.arcabyolimpo.data.remote.dto.filter.createFilterSuppliesDto
+import com.app.arcabyolimpo.data.remote.dto.filter.createFilterDto
 import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.presentation.theme.Typography
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ApplyButton
@@ -123,12 +124,11 @@ fun Filter(
                     modifier = Modifier.padding(top = 10.dp),
                 )
 
-                Divider(
-                    modifier =
-                        Modifier
-                            .padding(end = 40.dp),
-                    color = White,
+                HorizontalDivider(
+                    modifier = Modifier
+                        .padding(end = 40.dp),
                     thickness = 1.dp,
+                    color = White
                 )
 
                 sections.forEach { (title, items) ->
@@ -148,12 +148,11 @@ fun Filter(
                     style = Typography.headlineMedium,
                 )
 
-                Divider(
-                    modifier =
-                        Modifier
-                            .padding(end = 40.dp),
-                    color = White,
+                HorizontalDivider(
+                    modifier = Modifier
+                        .padding(end = 40.dp),
                     thickness = 1.dp,
+                    color = White
                 )
 
                 Row(
@@ -208,12 +207,7 @@ fun Filter(
 
                     ApplyButton(
                         onClick = {
-                            println("SELECTED MAP : $selectedMap")
-                            println("CATEGORÍAS seleccionadas: ${selectedMap["Categorías"]}")
-                            println("MEDIDAS seleccionadas: ${selectedMap["Medidas"]}")
-                            println("TALLERES seleccionados: ${selectedMap["Talleres"]}")
-
-                            val dto = createFilterSuppliesDto(selectedMap, selectedOrder.value)
+                            val dto = createFilterDto(selectedMap, selectedOrder.value)
                             onApply(dto)
                             onDismiss()
                         },

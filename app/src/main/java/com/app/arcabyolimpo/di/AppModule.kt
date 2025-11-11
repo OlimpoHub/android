@@ -14,9 +14,11 @@ import com.app.arcabyolimpo.data.repository.workshops.WorkshopRepositoryImpl
 import com.app.arcabyolimpo.domain.repository.auth.UserRepository
 import com.app.arcabyolimpo.domain.repository.beneficiaries.BeneficiaryRepository
 import com.app.arcabyolimpo.data.repository.ExternalCollaborator.ExternalCollabRepositoryImpl
+import com.app.arcabyolimpo.data.repository.user.UsersRepositoryImpl
 import com.app.arcabyolimpo.domain.repository.ExternalCollabRepository.ExternalCollabRepository
 import com.app.arcabyolimpo.domain.repository.password.PasswordUserRepository
 import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
+import com.app.arcabyolimpo.domain.repository.user.UsersRepository
 import com.app.arcabyolimpo.domain.repository.workshops.WorkshopRepository
 import dagger.Module
 import dagger.Provides
@@ -32,7 +34,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    private const val BASE_URL = "http://10.0.2.2:8080/" // LOCALHOST
+    private const val BASE_URL = "http://10.0.2.2:8081/" // LOCALHOST
 
     /**
      * Provides a configured [OkHttpClient] instance.
@@ -158,4 +160,10 @@ object AppModule {
     fun provideBeneficiaryRepository(
         api: ArcaApi
     ): BeneficiaryRepository = BeneficiaryRepositoryImpl(api)
+
+    @Provides
+    @Singleton
+    fun provideUsersRepository(
+        api: ArcaApi
+    ): UsersRepository = UsersRepositoryImpl(api)
 }
