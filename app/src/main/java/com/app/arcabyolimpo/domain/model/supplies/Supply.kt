@@ -27,4 +27,3 @@ data class SupplyBatch(
     val quantity: Int,
     val expirationDate: String,
 )
-

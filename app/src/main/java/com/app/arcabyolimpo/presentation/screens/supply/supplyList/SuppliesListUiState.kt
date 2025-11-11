@@ -1,5 +1,7 @@
 package com.app.arcabyolimpo.presentation.screens.supply.supplyList
 
+import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
+import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 
 /**
@@ -16,4 +18,10 @@ data class SuppliesListUiState(
     val suppliesList: List<Supply> = emptyList(),
     val isLoading: Boolean = false,
     val error: String? = null,
+    val filterData: FilterData? = null,
+    val selectedFilters: FilterDto =
+        FilterDto(
+            filters = emptyMap(),
+            order = "ASC",
+        ),
 )

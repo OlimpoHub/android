@@ -26,6 +26,7 @@ import com.app.arcabyolimpo.ui.theme.White
  * @param height Dp -> button height (default: 40.dp)
  */
 
+@Suppress("ktlint:standard:function-naming")
 @Composable
 fun SaveButton(
     onClick: () -> Unit,
@@ -53,6 +54,7 @@ fun SaveButton(
     }
 }
 
+@Suppress("ktlint:standard:function-naming")
 @Preview(
     showBackground = true,
 )
