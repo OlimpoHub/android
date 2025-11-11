@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/app/arcabyolimpo/presentation/screens/supply/supplyList/components/SupplyListTab.kt
-package com.app.arcabyolimpo.presentation.screens.supply.supplyList.components
-========
 package com.app.arcabyolimpo.presentation.ui.components.organisms
->>>>>>>> adc6c2a0391292890c8843ac837b49323ece8247:app/src/main/java/com/app/arcabyolimpo/presentation/ui/components/organisms/SupplyListTab.kt
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.presentation.common.components.ErrorView
 import com.app.arcabyolimpo.presentation.common.components.LoadingShimmer
-import com.app.arcabyolimpo.presentation.ui.components.molecules.SupplyCard
+import com.app.arcabyolimpo.presentation.screens.supply.supplyList.components.SupplyCard
 
 /**
  * Displays the main content of the Supplies List screen.
@@ -56,10 +52,8 @@ fun SupplyListContent(
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-<<<<<<<< HEAD:app/src/main/java/com/app/arcabyolimpo/presentation/screens/supply/supplyList/components/SupplyListTab.kt
-========
+
     // Remember the state for the pull-to-refresh component.
->>>>>>>> adc6c2a0391292890c8843ac837b49323ece8247:app/src/main/java/com/app/arcabyolimpo/presentation/ui/components/organisms/SupplyListTab.kt
     val pullRefreshState =
         rememberPullRefreshState(
             refreshing = isLoading,
@@ -67,21 +61,12 @@ fun SupplyListContent(
         )
 
     Box(
-<<<<<<<< HEAD:app/src/main/java/com/app/arcabyolimpo/presentation/screens/supply/supplyList/components/SupplyListTab.kt
-        modifier =
-            modifier
-                .fillMaxSize()
-                .pullRefresh(pullRefreshState),
-    ) {
-        when {
-========
         modifier = modifier
             .fillMaxSize()
             .pullRefresh(pullRefreshState),
     ) {
         when {
             // Show shimmer placeholders while loading and no data is yet available.
->>>>>>>> adc6c2a0391292890c8843ac837b49323ece8247:app/src/main/java/com/app/arcabyolimpo/presentation/ui/components/organisms/SupplyListTab.kt
             isLoading && suppliesList.isEmpty() -> {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(1),

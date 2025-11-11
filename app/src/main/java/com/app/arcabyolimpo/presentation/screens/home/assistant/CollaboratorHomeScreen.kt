@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.app.arcabyolimpo.presentation.screens.session.SessionViewModel
-import com.app.arcabyolimpo.presentation.screens.supply.SuppliesListViewModel
 
 @Suppress("ktlint:standard:function-naming")
 @Composable

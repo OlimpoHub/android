@@ -7,13 +7,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Icon
+import androidx.compose.material3.Icon
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Divider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,10 +33,9 @@ fun SupplyBatchRow(
     onDeleteClick: () -> Unit,
 ) {
     Column(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 6.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp, vertical = 6.dp)
     ) {
         Row(
             modifier =
@@ -46,22 +45,23 @@ fun SupplyBatchRow(
         ) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(2.dp),
-                modifier = Modifier.weight(1f),
-            ) {
+                modifier = Modifier.weight(1f)
+            ){
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(32.dp),
-                ) {
+                    horizontalArrangement = Arrangement.spacedBy(32.dp)
+                )
+                {
                     Text(
                         text = "$quantity",
                         color = White,
                         fontFamily = Poppins,
-                        fontSize = 16.sp,
+                        fontSize = 16.sp
                     )
                     Text(
                         text = date,
                         color = White,
                         fontFamily = Poppins,
-                        fontSize = 16.sp,
+                        fontSize = 16.sp
                     )
                 }
 
@@ -71,21 +71,21 @@ fun SupplyBatchRow(
                     text = "Adquisición: $adquisition",
                     color = White,
                     fontSize = 16.sp,
-                    fontFamily = Poppins,
+                    fontFamily = Poppins
                 )
             }
 
             Column(
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row {
                     IconButton(
                         onClick = onModifyClick,
-                        modifier = Modifier.padding(end = 2.dp),
+                        modifier = Modifier.padding(end = 2.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Create,
+                            imageVector = Icons.Filled.Create,
                             contentDescription = "modify",
                             tint = White,
                         )
@@ -108,9 +108,8 @@ fun SupplyBatchRow(
         Divider(
             color = DangerGray.copy(alpha = 0.3f),
             thickness = 0.7.dp,
-            modifier =
-                Modifier
-                    .fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
         )
     }
 }

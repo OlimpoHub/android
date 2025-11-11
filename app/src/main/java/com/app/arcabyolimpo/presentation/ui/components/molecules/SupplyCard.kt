@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/app/arcabyolimpo/presentation/screens/supply/supplyList/components/SupplyCard.kt
-package com.app.arcabyolimpo.presentation.screens.supply.supplyList.components
-========
 package com.app.arcabyolimpo.presentation.ui.components.molecules
->>>>>>>> adc6c2a0391292890c8843ac837b49323ece8247:app/src/main/java/com/app/arcabyolimpo/presentation/ui/components/molecules/SupplyCard.kt
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -39,13 +35,10 @@ import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.ButtonBlue
 import com.app.arcabyolimpo.ui.theme.DangerGray
 import com.app.arcabyolimpo.ui.theme.White
-<<<<<<<< HEAD:app/src/main/java/com/app/arcabyolimpo/presentation/screens/supply/supplyList/components/SupplyCard.kt
-========
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
->>>>>>>> adc6c2a0391292890c8843ac837b49323ece8247:app/src/main/java/com/app/arcabyolimpo/presentation/ui/components/molecules/SupplyCard.kt
 
 /**
  * A composable that displays a visual card representing a [Supply] item.
@@ -98,23 +91,6 @@ fun SupplyCard(
                         },
                     )
                 },
-<<<<<<<< HEAD:app/src/main/java/com/app/arcabyolimpo/presentation/screens/supply/supplyList/components/SupplyCard.kt
-        colors =
-            CardDefaults.cardColors(
-                containerColor = Background,
-            ),
-        elevation =
-            CardDefaults.cardElevation(defaultElevation = 2.dp),
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Row(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 12.dp),
-========
         colors = CardDefaults.cardColors(
             containerColor = Background
         ),
@@ -127,42 +103,24 @@ fun SupplyCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 0.dp, vertical = 12.dp),
->>>>>>>> adc6c2a0391292890c8843ac837b49323ece8247:app/src/main/java/com/app/arcabyolimpo/presentation/ui/components/molecules/SupplyCard.kt
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Box(
-<<<<<<<< HEAD:app/src/main/java/com/app/arcabyolimpo/presentation/screens/supply/supplyList/components/SupplyCard.kt
-                    modifier =
-                        Modifier
-                            .size(48.dp)
-                            .background(color = ButtonBlue.copy(alpha = 0.1f), shape = CircleShape),
-========
                     modifier = Modifier
                         .size(74.dp)
                         .background(color = ButtonBlue.copy(alpha = 0.1f), shape = CircleShape)
->>>>>>>> adc6c2a0391292890c8843ac837b49323ece8247:app/src/main/java/com/app/arcabyolimpo/presentation/ui/components/molecules/SupplyCard.kt
                 )
 
                 Text(
                     text = supply.name,
                     color = White,
-<<<<<<<< HEAD:app/src/main/java/com/app/arcabyolimpo/presentation/screens/supply/supplyList/components/SupplyCard.kt
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 15.sp,
-                    fontFamily = Poppins,
-                    modifier =
-                        Modifier
-                            .weight(1f)
-                            .padding(start = 16.dp),
-========
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier
                         .weight(1f)
                         .padding(start = 16.dp)
->>>>>>>> adc6c2a0391292890c8843ac837b49323ece8247:app/src/main/java/com/app/arcabyolimpo/presentation/ui/components/molecules/SupplyCard.kt
                 )
 
                 ViewButton(onClick = onClick)

@@ -1,6 +1,5 @@
 package com.app.arcabyolimpo.presentation.screens.supply.supplyDetail
 
-import android.R
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth

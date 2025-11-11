@@ -8,6 +8,7 @@ import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
 import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Retrieves detailed information for a specific supply by its [id].
@@ -19,9 +20,8 @@ import javax.inject.Inject
  * @return A [Supply] object containing detailed supply information.
  */
 
-class SupplyRepositoryImpl
-    @Inject
-    constructor(
+@Singleton
+class SupplyRepositoryImpl @Inject constructor(
         private val api: ArcaApi,
     ) : SupplyRepository {
         override suspend fun getSuppliesList(): List<Supply> {
@@ -54,4 +54,6 @@ class SupplyRepositoryImpl
         }
 
         override suspend fun getFilterData(): FilterData = api.getFilterSupplies().toDomain()
+
+        override suspend fun getSupplyBatchById(id: String): SupplyBatchExt = api.getSupplyBatchById(id).toDomain()
     }
