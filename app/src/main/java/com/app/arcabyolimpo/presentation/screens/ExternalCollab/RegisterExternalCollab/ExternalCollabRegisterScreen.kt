@@ -100,7 +100,9 @@ fun ExternalCollabRegisterScreen(
                 viewModel.registerCollab() // Actually register when confirmed
             },
             dialogTitle = "¿Estás seguro?",
-            dialogText = "¿Deseas registrar este usuario?"
+            dialogText = "¿Deseas registrar este usuario?",
+            confirmText = "Confirmar",
+            dismissText = "Cancelar"
         )
     }
 
