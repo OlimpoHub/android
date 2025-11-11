@@ -22,6 +22,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
+import com.app.arcabyolimpo.presentation.theme.Typography
+import com.app.arcabyolimpo.ui.theme.InputBackgroundBlue
+import com.app.arcabyolimpo.ui.theme.PlaceholderGray
+import com.app.arcabyolimpo.ui.theme.SelectInputBlue
+import com.app.arcabyolimpo.ui.theme.HighlightInputBlue
+import com.app.arcabyolimpo.ui.theme.PrimaryBlue
+import com.app.arcabyolimpo.ui.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
@@ -43,8 +50,8 @@ fun SelectInput(
     ) {
         Text(
             text = label,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface,
+            style = Typography.bodyMedium,
+            color = White,
         )
 
         ExposedDropdownMenuBox(
@@ -60,21 +67,23 @@ fun SelectInput(
                 placeholder = {
                     Text(
                         text = "Selecciona una opción",
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        color = PlaceholderGray
                     )
                 },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
                 shape = RoundedCornerShape(12.dp),
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                    unfocusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                    cursorColor = MaterialTheme.colorScheme.primary,
-                    focusedPlaceholderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                    unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    // use the same input background as StandardInput
+                    focusedContainerColor = InputBackgroundBlue,
+                    unfocusedContainerColor = InputBackgroundBlue,
+                    errorContainerColor = InputBackgroundBlue,
+                    focusedIndicatorColor = SelectInputBlue,
+                    unfocusedIndicatorColor = HighlightInputBlue,
+                    cursorColor = PrimaryBlue,
+                    focusedPlaceholderColor = PlaceholderGray,
+                    unfocusedPlaceholderColor = PlaceholderGray,
+                    focusedTextColor = White,
+                    unfocusedTextColor = White,
                 ),
                 modifier = Modifier
                     .menuAnchor()
@@ -88,7 +97,7 @@ fun SelectInput(
             ) {
                 options.forEach { option ->
                     DropdownMenuItem(
-                        text = { Text(text = option, color = MaterialTheme.colorScheme.onSurface) },
+                        text = { Text(text = option, color = White) },
                         onClick = {
                             onOptionSelected(option)
                             isExpanded = false

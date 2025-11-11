@@ -54,6 +54,8 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SelectInput
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardInput
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.text.font.FontWeight
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
@@ -78,12 +80,9 @@ fun SupplyBatchRegisterScreen(
                         text = "Registrar Lotes",
                         color = White,
                         fontFamily = Poppins,
-                        style = Typography.headlineLarge,
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.titleLarge,
                     )
-                },
-                actions = {
-                    // keep the same action icon pattern (optional)
-                    NotificationIcon()
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Background),
             )
@@ -95,7 +94,7 @@ fun SupplyBatchRegisterScreen(
                 Modifier
                     .fillMaxWidth()
                     .padding(padding)
-                    .padding(16.dp),
+                    .padding(8.dp),
         ) {
             // Reuse the content composable so we keep single-source-of-truth for UI
             SupplyBatchRegisterContent(
@@ -128,7 +127,7 @@ fun SupplyBatchRegisterContent(
             Modifier
                 .fillMaxSize()
                 .background(Background)
-                .padding(16.dp),
+                .padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -145,7 +144,6 @@ fun SupplyBatchRegisterContent(
                         val supply = supplies.firstOrNull { it.name == name }
                         if (supply != null) onSelectSupply(supply.id)
                     },
-                    modifier = Modifier.height(70.dp),
                 )
             }
 
@@ -159,9 +157,8 @@ fun SupplyBatchRegisterContent(
                         label = "Cantidad",
                         value = uiState.quantityInput,
                         onValueChange = onQuantityChanged,
-                        modifier = Modifier.weight(0.5f).height(80.dp),
+                        modifier = Modifier.weight(0.5f),
                         placeholder = "E.G 10",
-
                     )
                 }
 
@@ -202,7 +199,6 @@ fun SupplyBatchRegisterContent(
                     selectedOption = selectedAcq,
                     options = acquisitionOptions,
                     onOptionSelected = { selectedAcq = it },
-                    modifier = Modifier.height(70.dp),
                 )
             }
 

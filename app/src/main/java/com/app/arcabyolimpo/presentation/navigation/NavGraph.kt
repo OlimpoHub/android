@@ -102,7 +102,7 @@ fun ArcaNavGraph(
     /** Defines all navigation. The start destination is the Splash screen. */
     NavHost(
         navController = navController,
-        startDestination = Screen.RegisterBatchSupply.route,
+        startDestination = Screen.SuppliesList.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -292,7 +292,7 @@ fun ArcaNavGraph(
 
         composable(Screen.RegisterBatchSupply.route) {
             SupplyBatchRegisterScreen(
-                onRegisterSuccess = {
+                onRegisterClick = {
                     // navigate back to the previous screen (or change to navigate(Screen.SuppliesList.route))
                     navController.popBackStack()
                 },

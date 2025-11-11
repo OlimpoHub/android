@@ -1,5 +1,6 @@
 package com.app.arcabyolimpo.presentation.screens.supplybatchregister
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.arcabyolimpo.domain.common.Result
@@ -14,87 +15,179 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel for the Supply Batch Register screen.
+ *
+ * Debugging tips:
+ * - Use Logcat to filter logs from this ViewModel by tag:
+ *     adb logcat -s SupplyBatchRegisterVM
+ *   or in Android Studio's Logcat set the filter to `SupplyBatchRegisterVM`.
+ * - The ViewModel logs when it's created, when it invokes the getSupplies use case,
+ *   and the results (Loading/Success/Error) including the number of supplies returned.
+ * - When registering a batch, input values and use case results are also logged.
+ */
 @HiltViewModel
 class SupplyBatchRegisterViewModel
-	@Inject
-	constructor(
-		private val getSuppliesListUseCase: GetSuppliesListUseCase,
-		private val registerSupplyBatchUseCase: RegisterSupplyBatchUseCase,
-	) : ViewModel() {
+    @Inject
+    constructor(
+        private val getSuppliesListUseCase: GetSuppliesListUseCase,
+        private val registerSupplyBatchUseCase: RegisterSupplyBatchUseCase,
+    ) : ViewModel() {
+        // Tag used for Logcat so you can filter logs from this ViewModel while debugging
+        private val TAG = "SupplyBatchRegisterVM"
 
-	private val _uiState = MutableStateFlow(SupplyBatchRegisterUiState())
-	val uiState: StateFlow<SupplyBatchRegisterUiState> = _uiState.asStateFlow()
+        private val _uiState = MutableStateFlow(SupplyBatchRegisterUiState())
+        val uiState: StateFlow<SupplyBatchRegisterUiState> = _uiState.asStateFlow()
 
-	init {
-		loadSuppliesList()
-	}
+        init {
+            // Log when ViewModel is created (helps confirm DI/Hilt and screen wiring)
+            Log.d(TAG, "init: SupplyBatchRegisterViewModel created - starting loadSuppliesList()")
+            loadSuppliesList()
+        }
 
-	// Load supplies list using the same pattern as SuppliesListViewModel: expose isLoading / error
-	fun loadSuppliesList() {
-		viewModelScope.launch {
-			getSuppliesListUseCase().collect { result ->
-				_uiState.update { state ->
-					when (result) {
-						is Result.Loading -> state.copy(isLoading = true, error = null)
-						is Result.Success -> state.copy(suppliesList = result.data, isLoading = false, error = null)
-						is Result.Error -> state.copy(isLoading = false, error = result.exception.message)
-					}
-				}
-			}
-		}
-	}
+        // Load supplies list using the same pattern as SuppliesListViewModel: expose isLoading / error
+        fun loadSuppliesList() {
+            viewModelScope.launch {
+                // Helpful log to show that the load call was triggered from the UI
+                Log.d(TAG, "loadSuppliesList: invoking getSuppliesListUseCase()")
 
-	fun onSelectSupply(id: String) {
-		_uiState.update { it.copy(selectedSupplyId = id) }
-	}
+                getSuppliesListUseCase().collect { result ->
+                    // Log the raw result so you can see Loading/Success/Error in Logcat
+                    when (result) {
+                        is Result.Loading -> Log.d(TAG, "loadSuppliesList: Loading")
+                        is Result.Success ->
+                            Log.d(
+                                TAG,
+                                "loadSuppliesList: Success - received ${result.data.size} supplies",
+                            )
 
-	fun onQuantityChanged(value: String) {
-		_uiState.update { it.copy(quantityInput = value) }
-	}
+                        is Result.Error ->
+                            Log.w(
+                                TAG,
+                                "loadSuppliesList: Error - ${result.exception.message}",
+                            )
+                    }
 
-	fun onExpirationDateChanged(value: String) {
-		_uiState.update { it.copy(expirationDateInput = value) }
-	}
+                    // Update UI state after logging
+                    _uiState.update { state ->
+                        when (result) {
+                            is Result.Loading -> state.copy(isLoading = true, error = null)
+                            is Result.Success ->
+                                state.copy(
+                                    suppliesList = result.data,
+                                    isLoading = false,
+                                    error = null,
+                                )
 
-	fun onBoughtDateChanged(value: String) {
-		_uiState.update { it.copy(boughtDateInput = value) }
-	}
+                            is Result.Error ->
+                                state.copy(
+                                    isLoading = false,
+                                    error = result.exception.message,
+                                )
+                        }
+                    }
+                }
+            }
+        }
 
-	fun registerBatch() {
-		val current = _uiState.value
+        fun onSelectSupply(id: String) {
+            _uiState.update { it.copy(selectedSupplyId = id) }
+        }
 
-		val supplyId = current.selectedSupplyId
-		val quantity = current.quantityInput.toIntOrNull()
-		val expiration = current.expirationDateInput
-		val bought = current.boughtDateInput
+        fun onQuantityChanged(value: String) {
+            _uiState.update { it.copy(quantityInput = value) }
+        }
 
-		if (supplyId.isNullOrBlank() || quantity == null) {
-			_uiState.update { it.copy(registerError = "Seleccione un insumo y coloque una cantidad válida") }
-			return
-		}
+        fun onExpirationDateChanged(value: String) {
+            _uiState.update { it.copy(expirationDateInput = value) }
+        }
 
-		val batch = SupplyBatch(
-			supplyId = supplyId,
-			quantity = quantity,
-			expirationDate = expiration,
-			boughtDate = bought,
-		)
+        fun onBoughtDateChanged(value: String) {
+            _uiState.update { it.copy(boughtDateInput = value) }
+        }
 
-		viewModelScope.launch {
-			registerSupplyBatchUseCase(batch).collect { result ->
-				_uiState.update { state ->
-					when (result) {
-						is Result.Loading -> state.copy(registerLoading = true, registerError = null, registerSuccess = false)
-						is Result.Success -> state.copy(registerLoading = false, registerSuccess = true, registerError = null)
-						is Result.Error -> state.copy(registerLoading = false, registerError = result.exception.message, registerSuccess = false)
-					}
-				}
-			}
-		}
-	}
+        fun registerBatch() {
+            val current = _uiState.value
 
-	fun clearRegisterStatus() {
-		_uiState.update { it.copy(registerLoading = false, registerError = null, registerSuccess = false) }
-	}
+            val supplyId = current.selectedSupplyId
+            val quantity = current.quantityInput.toIntOrNull()
+            val expiration = current.expirationDateInput
+            val bought = current.boughtDateInput
 
-}
+            // Log user input state before validation / network call
+            Log.d(
+                TAG,
+                "registerBatch: called with supplyId=$supplyId, quantity=${current.quantityInput}, expiration=$expiration, bought=$bought",
+            )
+
+            if (supplyId.isNullOrBlank() || quantity == null) {
+                Log.w(TAG, "registerBatch: validation failed - supplyId or quantity invalid")
+                _uiState.update { it.copy(registerError = "Seleccione un insumo y coloque una cantidad válida") }
+                return
+            }
+
+            val batch =
+                SupplyBatch(
+                    supplyId = supplyId,
+                    quantity = quantity,
+                    expirationDate = expiration,
+                    boughtDate = bought,
+                )
+
+            viewModelScope.launch {
+                // Collect the use case flow and log each stage for debugging (network, mapping, etc.)
+                registerSupplyBatchUseCase(batch).collect { result ->
+                    when (result) {
+                        is Result.Loading -> Log.d(TAG, "registerBatch: Loading")
+                        is Result.Success ->
+                            Log.d(
+                                TAG,
+                                "registerBatch: Success - batch registered: ${result.data}",
+                            )
+
+                        is Result.Error ->
+                            Log.w(
+                                TAG,
+                                "registerBatch: Error - ${result.exception.message}",
+                            )
+                    }
+
+                    _uiState.update { state ->
+                        when (result) {
+                            is Result.Loading ->
+                                state.copy(
+                                    registerLoading = true,
+                                    registerError = null,
+                                    registerSuccess = false,
+                                )
+
+                            is Result.Success ->
+                                state.copy(
+                                    registerLoading = false,
+                                    registerSuccess = true,
+                                    registerError = null,
+                                )
+
+                            is Result.Error ->
+                                state.copy(
+                                    registerLoading = false,
+                                    registerError = result.exception.message,
+                                    registerSuccess = false,
+                                )
+                        }
+                    }
+                }
+            }
+        }
+
+        fun clearRegisterStatus() {
+            Log.d(TAG, "clearRegisterStatus: clearing register flags")
+            _uiState.update {
+                it.copy(
+                    registerLoading = false,
+                    registerError = null,
+                    registerSuccess = false,
+                )
+            }
+        }
+    }
