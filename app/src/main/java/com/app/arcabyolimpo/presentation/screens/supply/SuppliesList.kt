@@ -138,6 +138,7 @@ fun SupplyListScreen(
             }
         }
     }
+
     // SupplyListScreen
     if (showFilter && uiState.filterData != null) {
         Filter(
