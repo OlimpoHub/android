@@ -28,14 +28,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Scaffold { innerPadding ->
-                SuppliesDetailScreen(
-                    idInsumo = "i1",
-                    onBackClick = { },
-                    onClickAddSupplyBatch = { },
-                    onClickDelete = { },
-                    onClickModify = { },
-                    modifySupplyBatch = { },
-                    deleteSupplyBatch = { },
+                ArcaNavGraph(
+                    sessionManager = sessionManager,
                 )
             }
         }
