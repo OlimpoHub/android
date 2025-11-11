@@ -9,6 +9,7 @@
 
 
 ### Added
+ - Added delete users feature
  - Added basic logic for US BEN-01 and BEN-02
  - Added DecisionDialog Atom
  - Screen to consult details of external collaborators
