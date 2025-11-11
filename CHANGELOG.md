@@ -1,9 +1,12 @@
 ## [0.1.0] - 10/11/2025
 
 ### Fixed
+
+ - BeneficiaryDetail.kt fixed error that prevented merge
  - Fixed the validation forms to register new workshop for hour and date
  - Fixed the save confirmation with the desition dialog.
  - Fixing validation in register new workshops.
+
 
 ### Added
  - Added basic logic for US BEN-01 and BEN-02
