@@ -52,14 +52,14 @@ fun AccountActivationScreen(
                         ReturnIcon(size = 16.dp)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Background,
-                ),
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = Background,
+                    ),
             )
         },
-        containerColor = Background
-    )
-    {   padding ->
+        containerColor = Background,
+    ) { padding ->
         Column(
             modifier =
                 Modifier
@@ -70,13 +70,13 @@ fun AccountActivationScreen(
             Text(
                 text = "El Arca en Querétaro I.A.P",
                 style = Typography.bodyMedium,
-                color = White
+                color = White,
             )
             Spacer(modifier = Modifier.height(20.dp))
             Text(
                 text = "Activa tu cuenta",
                 style = Typography.headlineLarge,
-                color = White
+                color = White,
             )
             Spacer(modifier = Modifier.height(150.dp))
             StandardInput(
@@ -118,9 +118,8 @@ fun AccountActivationScreen(
     }
 }
 
-//@Preview(showBackground = true, showSystemUi = true)
-//@Composable
-//fun AccountActivationScreenPreview() {
+// @Preview(showBackground = true, showSystemUi = true)
+// @Composable
+// fun AccountActivationScreenPreview() {
 //    AccountActivationScreen(onBackClick = { })
-//}
-
+// }

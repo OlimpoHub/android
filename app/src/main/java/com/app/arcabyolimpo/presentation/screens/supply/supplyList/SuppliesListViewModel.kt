@@ -1,4 +1,4 @@
-package com.app.arcabyolimpo.presentation.screens.supply
+package com.app.arcabyolimpo.presentation.screens.supply.supplyList
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

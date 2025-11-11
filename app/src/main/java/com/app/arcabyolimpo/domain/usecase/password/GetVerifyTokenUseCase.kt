@@ -8,18 +8,18 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class GetVerifyTokenUseCase
-@Inject
-constructor(
-    private val repository: PasswordUserRepository,
-) {
-    operator fun invoke(token: String): Flow<Result<VerifyToken>> =
-        flow {
-            try {
-                emit(Result.Loading)
-                val response = repository.getVerifyToken(token)
-                emit(Result.Success(response))
-            } catch (e: Exception) {
-                emit(Result.Error(e))
+    @Inject
+    constructor(
+        private val repository: PasswordUserRepository,
+    ) {
+        operator fun invoke(token: String): Flow<Result<VerifyToken>> =
+            flow {
+                try {
+                    emit(Result.Loading)
+                    val response = repository.getVerifyToken(token)
+                    emit(Result.Success(response))
+                } catch (e: Exception) {
+                    emit(Result.Error(e))
+                }
             }
-        }
-}
+    }

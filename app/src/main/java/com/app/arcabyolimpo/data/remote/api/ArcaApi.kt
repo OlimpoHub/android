@@ -17,10 +17,12 @@ import com.app.arcabyolimpo.data.remote.dto.password.RecoverPasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.AddNewWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
+import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -111,5 +113,10 @@ interface ArcaApi {
 
     @DELETE("beneficiary/{id}")
     suspend fun deleteBeneficiary(@Path("id") id: String): BeneficiaryDto
+
+    @GET("supplyBatch/{id}")
+    suspend fun getSupplyBatchById(
+        @Path("id") id: String,
+    ): SupplyBatchDto
 
 }

@@ -17,37 +17,36 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TokenVerificationViewModel
-@Inject
-constructor(
-    private val getVerifyTokenUseCase: GetVerifyTokenUseCase,
-) : ViewModel() {
-    private val _uiState = MutableStateFlow(TokenVerificationUiState())
-    val uiState: StateFlow<TokenVerificationUiState> = _uiState.asStateFlow()
+    @Inject
+    constructor(
+        private val getVerifyTokenUseCase: GetVerifyTokenUseCase,
+    ) : ViewModel() {
+        private val _uiState = MutableStateFlow(TokenVerificationUiState())
+        val uiState: StateFlow<TokenVerificationUiState> = _uiState.asStateFlow()
 
-    fun getTokenVerification(token: String) {
-        viewModelScope.launch {
-            getVerifyTokenUseCase(token).collect { result ->
-                _uiState.update { state ->
-                    when (result) {
-                        is Result.Loading ->
-                            state.copy(
-                                isLoading = true,
-                            )
-                        is Result.Success ->
-                            state.copy(
-                                response = result.data,
-                                isLoading = false,
-                                error = null,
-                            )
-                        is Result.Error ->
-                            state.copy(
-                                error = result.exception.message,
-                                isLoading = false,
-                            )
+        fun getTokenVerification(token: String) {
+            viewModelScope.launch {
+                getVerifyTokenUseCase(token).collect { result ->
+                    _uiState.update { state ->
+                        when (result) {
+                            is Result.Loading ->
+                                state.copy(
+                                    isLoading = true,
+                                )
+                            is Result.Success ->
+                                state.copy(
+                                    response = result.data,
+                                    isLoading = false,
+                                    error = null,
+                                )
+                            is Result.Error ->
+                                state.copy(
+                                    error = result.exception.message,
+                                    isLoading = false,
+                                )
+                        }
                     }
                 }
-
             }
         }
     }
-}
