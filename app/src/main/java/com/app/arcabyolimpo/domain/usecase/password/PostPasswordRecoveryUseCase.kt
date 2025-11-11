@@ -7,18 +7,18 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class PostPasswordRecoveryUseCase
-@Inject
-constructor(
-    private val repository: PasswordUserRepository,
-) {
-    operator fun invoke(email: String): Flow<Result<String>> =
-        flow {
-            try {
-                emit(Result.Loading)
-                val message = repository.postRecoverPassword(email)
-                emit(Result.Success(message))
-            } catch (e: Exception) {
-                emit(Result.Error(e))
+    @Inject
+    constructor(
+        private val repository: PasswordUserRepository,
+    ) {
+        operator fun invoke(email: String): Flow<Result<String>> =
+            flow {
+                try {
+                    emit(Result.Loading)
+                    val message = repository.postRecoverPassword(email)
+                    emit(Result.Success(message))
+                } catch (e: Exception) {
+                    emit(Result.Error(e))
+                }
             }
-        }
-}
+    }

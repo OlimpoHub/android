@@ -55,14 +55,14 @@ fun PasswordRecoveryScreen(
                         ReturnIcon(size = 16.dp)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Background,
-                ),
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = Background,
+                    ),
             )
         },
-        containerColor = Background
-    )
-    {   padding ->
+        containerColor = Background,
+    ) { padding ->
         Column(
             modifier =
                 Modifier
@@ -73,14 +73,15 @@ fun PasswordRecoveryScreen(
             Text(
                 text = "El Arca en Querétaro I.A.P",
                 style = Typography.bodyMedium,
-                color = White
+                color = White,
             )
             Spacer(modifier = Modifier.height(20.dp))
             Text(
-                text = "¿Olvidaste \n" +
+                text =
+                    "¿Olvidaste \n" +
                         "tu contraseña?",
                 style = Typography.headlineLarge,
-                color = White
+                color = White,
             )
             Spacer(modifier = Modifier.height(150.dp))
             StandardInput(
@@ -123,9 +124,8 @@ fun PasswordRecoveryScreen(
     }
 }
 
-//@Preview(showBackground = true, showSystemUi = true)
-//@Composable
-//fun PasswordRecoveryScreenPreview() {
+// @Preview(showBackground = true, showSystemUi = true)
+// @Composable
+// fun PasswordRecoveryScreenPreview() {
 //    PasswordRecoveryScreen(onBackClick = { }, )
-//}
-
+// }

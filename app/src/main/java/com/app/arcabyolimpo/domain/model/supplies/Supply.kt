@@ -14,7 +14,7 @@ data class Supply(
     val name: String,
     val imageUrl: String,
     val unitMeasure: String,
-    val batch: List<SupplyBatch>
+    val batch: List<SupplyBatch>,
 )
 
 /**
@@ -25,6 +25,5 @@ data class Supply(
  */
 data class SupplyBatch(
     val quantity: Int,
-    val expirationDate: String
+    val expirationDate: String,
 )
-

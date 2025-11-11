@@ -36,11 +36,19 @@ fun ModifyButton(
         modifier = modifier, // Cambio 3 de varios: Usar el modifier que viene de afuera
         colors = ButtonDefaults.buttonColors(containerColor = ButtonBlue),
         shape = RoundedCornerShape(cornerRadius),
+<<<<<<< HEAD
         contentPadding = PaddingValues(
             horizontal = 16.dp,
             vertical = 8.dp
         ),
         enabled = enabled
+=======
+        contentPadding =
+            PaddingValues(
+                horizontal = 16.dp,
+                vertical = 8.dp,
+            ),
+>>>>>>> ccf6b8e7f26058010a61fbf7ed7c1dcc3358360d
     ) {
         Text(
             text = "Modificar",

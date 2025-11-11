@@ -35,10 +35,11 @@ fun CancelButton(
     Button(
         onClick = onClick,
         modifier = modifier.size(width = 112.dp, height = 40.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = whiteColor,
-            contentColor = blueColor
-        ),
+        colors =
+            ButtonDefaults.buttonColors(
+                containerColor = whiteColor,
+                contentColor = blueColor,
+            ),
         shape = RoundedCornerShape(cornerRadius),
         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
     ) {

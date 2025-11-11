@@ -2,9 +2,10 @@ package com.app.arcabyolimpo.data.remote.api
 
 import com.app.arcabyolimpo.data.remote.dto.auth.LoginRequestDto
 import com.app.arcabyolimpo.data.remote.dto.auth.LoginResponseDto
-import com.app.arcabyolimpo.data.remote.dto.password.RecoverPasswordDto
 import com.app.arcabyolimpo.data.remote.dto.auth.RefreshRequestDto
 import com.app.arcabyolimpo.data.remote.dto.auth.RefreshResponseDto
+import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
+import com.app.arcabyolimpo.data.remote.dto.password.RecoverPasswordDto
 import com.app.arcabyolimpo.data.remote.dto.beneficiaries.BeneficiariesListDto
 import com.app.arcabyolimpo.data.remote.dto.beneficiaries.BeneficiaryDto
 import com.app.arcabyolimpo.data.remote.dto.ExternalCollaborator.ExternalCollabDto
@@ -16,9 +17,12 @@ import com.app.arcabyolimpo.data.remote.dto.password.RecoverPasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.AddNewWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
+import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -56,8 +60,8 @@ interface ArcaApi {
     @POST("externalCollabs/update")
     suspend fun updateCollab(@Body collab: ExternalCollabDto): RegisterResponseDto
 
-    @POST("externalCollabs/deleteExternalCollab")
-    suspend fun deleteCollab(@Body data: Map<String, Int>): Map<String, Any>
+    @POST("externalCollabs/deleteExternalCollab/{id}")
+    suspend fun deleteCollab(@Path("id") id: String): Map<String, Any>
 
     @POST("user/recover-password")
     suspend fun recoverPassword(
@@ -78,7 +82,17 @@ interface ArcaApi {
     suspend fun getSuppliesList(): List<SuppliesListDto>
 
     @GET("supplybatch/{id}")
-    suspend fun getSupply(@Path("id") id: String): SupplyDto
+    suspend fun getSupply(
+        @Path("id") id: String,
+    ): SupplyDto
+
+    @POST("/supplies/filter")
+    suspend fun filterSupplies(
+        @Body params: FilterDto,
+    ): List<SuppliesListDto>
+
+    @GET("supplies/filter/data")
+    suspend fun getFilterSupplies(): GetFiltersDto
 
     @GET("workshop")
     suspend fun getWorkshopsList(): List<WorkshopsListDto>
@@ -98,5 +112,11 @@ interface ArcaApi {
     suspend fun getBeneficiary(@Path("id") id: String): BeneficiaryDto
 
     @DELETE("beneficiary/{id}")
-    suspend fun deleteBeneficiary(@Path("id") id: String): Response<Unit>
+    suspend fun deleteBeneficiary(@Path("id") id: String): BeneficiaryDto
+
+    @GET("supplyBatch/{id}")
+    suspend fun getSupplyBatchById(
+        @Path("id") id: String,
+    ): SupplyBatchDto
+
 }

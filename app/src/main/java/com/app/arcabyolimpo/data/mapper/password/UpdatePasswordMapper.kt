@@ -6,5 +6,5 @@ import com.app.arcabyolimpo.domain.model.password.UpdatePassword
 fun UpdatePasswordResponseDto.toDomain(): UpdatePassword =
     UpdatePassword(
         status = status,
-        message = message
+        message = message,
     )

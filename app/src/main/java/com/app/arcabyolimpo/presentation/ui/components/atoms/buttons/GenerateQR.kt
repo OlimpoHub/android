@@ -26,32 +26,31 @@ import com.app.arcabyolimpo.presentation.theme.Poppins
  * @param height: Dp = 32.dp -> button height
  */
 
-
 @Composable
 fun GenerateQrButton(
     onClick: () -> Unit,
     cornerRadius: Dp = 8.dp,
     width: Dp = 88.dp,
     height: Dp = 32.dp,
-){
+) {
     Button(
         onClick = onClick,
         modifier = Modifier.size(width = width, height = height),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFFFFF7EB)),
+        colors =
+            ButtonDefaults.buttonColors(containerColor = Color(0xFFFFF7EB)),
         shape = RoundedCornerShape(cornerRadius),
-        contentPadding = PaddingValues(
-            horizontal = 7.dp,
-            vertical = 6.dp
-        ),
-
-    ){
+        contentPadding =
+            PaddingValues(
+                horizontal = 7.dp,
+                vertical = 6.dp,
+            ),
+    ) {
         Text(
             text = "Generar QR",
             color = Color(0xFF2844AE),
             fontFamily = Poppins,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 12.sp
+            fontSize = 12.sp,
         )
     }
 }

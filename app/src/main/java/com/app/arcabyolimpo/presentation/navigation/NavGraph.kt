@@ -13,11 +13,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
 import com.app.arcabyolimpo.domain.model.auth.UserRole
 import com.app.arcabyolimpo.presentation.common.components.LoadingShimmer
+import com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabDetail.ExternalCollabDetailScreen
+import com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabList.ExternalCollabListScreen
+import com.app.arcabyolimpo.presentation.screens.ExternalCollab.RegisterExternalCollab.ExternalCollabRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.accountactivation.AccountActivationScreen
 import com.app.arcabyolimpo.presentation.screens.home.assistant.CollaboratorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.home.coordinator.CoordinatorHomeScreen
@@ -26,12 +28,16 @@ import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecove
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
+<<<<<<< HEAD
 import com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabList.ExternalCollabListScreen
 import com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabDetail.ExternalCollabDetailScreen
 import com.app.arcabyolimpo.presentation.screens.ExternalCollab.RegisterExternalCollab.ExternalCollabRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
 import com.app.arcabyolimpo.presentation.screens.supply.SupplyListScreen
+=======
+import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
+>>>>>>> ccf6b8e7f26058010a61fbf7ed7c1dcc3358360d
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
 import com.app.arcabyolimpo.presentation.screens.workshop.AddNewWorkshopScreen
@@ -81,9 +87,9 @@ sealed class Screen(
 
     object WorkshopsList : Screen("workshop")
 
-    object AddNewWorkshop: Screen("workshop/add")
+    object AddNewWorkshop : Screen("workshop/add")
 
-    object BeneficiaryList: Screen("beneficiary")
+    object BeneficiaryList : Screen("beneficiary")
 
     object BeneficiaryDetail: Screen("beneficiary/{beneficiaryId}") {
         fun createRoute(beneficiaryId: String) = "beneficiary/$beneficiaryId"
@@ -119,11 +125,12 @@ fun ArcaNavGraph(
         }
     }
 
+    // navController.navigate(Screen.PasswordRegistration.createRoute(email))
 
     /** Defines all navigation. The start destination is the Splash screen. */
     NavHost(
         navController = navController,
-        startDestination = Screen.Splash.route,
+        startDestination = Screen.SuppliesList.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -238,8 +245,9 @@ fun ArcaNavGraph(
 
                 uiState.isLoading -> {
                     LoadingShimmer(
-                        modifier = Modifier
-                            .fillMaxSize()
+                        modifier =
+                            Modifier
+                                .fillMaxSize(),
                     )
                 }
 
@@ -249,8 +257,9 @@ fun ArcaNavGraph(
 
                 else -> {
                     LoadingShimmer(
-                        modifier = Modifier
-                            .fillMaxSize()
+                        modifier =
+                            Modifier
+                                .fillMaxSize(),
                     )
                 }
             }
@@ -297,7 +306,7 @@ fun ArcaNavGraph(
         /** Coordinator Home Screen */
         composable(Screen.CoordinatorHome.route) {
             CoordinatorHomeScreen(
-                navController = navController
+                navController = navController,
             )
         }
 
@@ -313,14 +322,14 @@ fun ArcaNavGraph(
                 },
                 onAddClick = {
                     navController.navigate(Screen.ExternalCollabRegister.route)
-                }
+                },
             )
         }
 
         /** External Collaborator Detail Screen */
         composable(
             route = Screen.ExternalCollabDetail.route,
-            arguments = listOf(navArgument("collabId") { type = NavType.StringType })
+            arguments = listOf(navArgument("collabId") { type = NavType.StringType }),
         ) { backStackEntry ->
             val collabId = backStackEntry.arguments?.getString("collabId")
             ExternalCollabDetailScreen(
@@ -328,9 +337,7 @@ fun ArcaNavGraph(
                 onEditClick = { id ->
                     // TODO: Navigate to edit screen when you create it
                 },
-                onDeleteClick = { id ->
-                    // TODO: Handle delete
-                }
+                onDeleteClick = { navController.navigate(Screen.ExternalCollabList.route) }
             )
         }
 
@@ -340,7 +347,7 @@ fun ArcaNavGraph(
                 onDismiss = { navController.popBackStack() },
                 onSuccess = {
                     navController.popBackStack()
-                }
+                },
             )
         }
 
@@ -358,7 +365,7 @@ fun ArcaNavGraph(
         composable(Screen.WorkshopsList.route) {
             WorkshopsListScreen(
                 navController = navController,
-                workshopClick = {}
+                workshopClick = {},
             )
         }
 
@@ -379,7 +386,7 @@ fun ArcaNavGraph(
                 viewModel = hiltViewModel(),
                 onSuccess = {
                     navController.popBackStack()
-                }
+                },
             )
         }
 

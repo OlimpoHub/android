@@ -26,32 +26,34 @@ import com.app.arcabyolimpo.presentation.theme.Typography
 fun BeneficiaryCard(
     name: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Card(
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color(0xFFE6E0F8)
-        ),
-        modifier = modifier
-            .padding(8.dp)
-            .clickable(onClick = onClick)
+        colors =
+            CardDefaults.cardColors(
+                containerColor = Color(0xFFE6E0F8),
+            ),
+        modifier =
+            modifier
+                .padding(8.dp)
+                .clickable(onClick = onClick),
     ) {
         Column(
             modifier = Modifier.padding(vertical = 24.dp, horizontal = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_beneficiary_icon),
                 contentDescription = "Beneficiario",
                 tint = Color(0xFF6750A4),
-                modifier = Modifier.size(48.dp)
+                modifier = Modifier.size(48.dp),
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = name,
                 style = Typography.bodyMedium.copy(),
-                color = Color.Black
+                color = Color.Black,
             )
         }
     }

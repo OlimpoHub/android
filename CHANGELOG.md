@@ -1,3 +1,9 @@
+## [0.1.0] - 11/11/2025
+
+### Added
+ - Consulting an specific Supply with the batches it is contained into.
+- Added customization of Snackbar Atom
+
 ## [0.1.0] - 10/11/2025
 
 ### Fixed
@@ -9,6 +15,7 @@
 
 
 ### Added
+ - Added delete users feature
  - Added basic logic for US BEN-01 and BEN-02
  - Added DecisionDialog Atom
  - Screen to consult details of external collaborators
