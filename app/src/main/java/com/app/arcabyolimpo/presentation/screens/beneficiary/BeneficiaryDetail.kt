@@ -79,7 +79,12 @@ fun BeneficiaryDetail(
                         message = "Beneficiario eliminado correctamente"
                     )
                 }
-            }
+            },
+
+            // --- Arreglar el error ---
+            confirmText = "Confirmar",
+            dismissText = "Cancelar"
+            // --- Fin del arreglo :)
         )
     }
 
