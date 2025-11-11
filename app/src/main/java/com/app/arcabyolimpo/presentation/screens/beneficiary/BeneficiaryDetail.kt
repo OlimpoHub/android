@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,6 +32,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.app.arcabyolimpo.R
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.DeleteButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ModifyButton
@@ -41,50 +44,70 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.status.InactiveStat
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BeneficiaryDetail(
-    beneficiaryName: String,
-    beneficiaryTutorRelation: String,
-    beneficiaryTutorName: String,
-    beneficiaryEntryDate: String,
-    beneficiaryEmergencyNumber: String,
-    beneficiaryDisabilities: String,
-    beneficiaryBirthdate: String,
-    beneficiaryDetails: String,
-    beneficiaryIsActive: Boolean,
+fun BeneficiaryDetailScreen(
     onBackClick: () -> Unit,
     onModifyClick: () -> Unit,
-    onDeleteClick: () -> Unit // Lógica real de eliminación
+    viewModel: BeneficiaryDetailViewModel = hiltViewModel()
 ) {
-    // --- Logica para el snackbar ---
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    // Lógica de UI para mostrar/ocultar diálogo
     var showDeleteDialog by remember { mutableStateOf(false) }
 
+    LaunchedEffect(uiState.deleteSuccess, uiState.deleteError) {
+        if (uiState.deleteSuccess) {
+            scope.launch {
+                snackbarHostState.showSnackbar("Beneficiario eliminado correctamente")
+            }
+            onBackClick()
+        }
+
+        if (uiState.deleteError != null) {
+            scope.launch {
+                snackbarHostState.showSnackbar(uiState.deleteError)
+            }
+            viewModel.onDeleteErrorShown()
+        }
+    }
+
+    BeneficiaryDetailContent(
+        uiState = uiState,
+        snackbarHostState = snackbarHostState,
+        showDeleteDialog = showDeleteDialog,
+        onBackClick = onBackClick,
+        onModifyClick = {
+            uiState.beneficiary?.id?.let { onModifyClick() }
+        },
+        onDeleteClick = viewModel::onDeleteClicked,
+        onShowDialog = { showDeleteDialog = true },
+        onDismissDialog = { showDeleteDialog = false }
+    )
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BeneficiaryDetailContent(
+    uiState: BeneficiaryDetailUiState,
+    snackbarHostState: SnackbarHostState,
+    showDeleteDialog: Boolean,
+    onBackClick: () -> Unit,
+    onModifyClick: () -> Unit,
+    onDeleteClick: () -> Unit,
+    onShowDialog: () -> Unit,
+    onDismissDialog: () -> Unit
+) {
     if (showDeleteDialog) {
         DecisionDialog(
-            dialogTitle = "¿Seguro que quieres eliminar a $beneficiaryName?",
+            dialogTitle = "¿Seguro que quieres eliminar a ${uiState.beneficiary?.name ?: "..."}?",
             dialogText = "No podrá recuperarse una vez se haya eliminado.",
-            onDismissRequest = { showDeleteDialog = false },
+            onDismissRequest = onDismissDialog,
             onConfirmation = {
-                showDeleteDialog = false
-                onDeleteClick() // Llama a la lógica del ViewModel
-
-                // Mostrar Snackbar
-                scope.launch {
-                    snackbarHostState.showSnackbar(
-                        message = "Beneficiario eliminado correctamente"
-                    )
-                }
+                onDismissDialog()
+                onDeleteClick()
             },
-
-            // --- Arreglar el error ---
             confirmText = "Confirmar",
             dismissText = "Cancelar"
-            // --- Fin del arreglo :)
         )
     }
 
@@ -93,7 +116,7 @@ fun BeneficiaryDetail(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             TopAppBar(
-                title = { Text(beneficiaryName) },
+                title = { Text(uiState.beneficiary?.name ?: "Cargando...") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent,
                     titleContentColor = Color.White,
@@ -111,6 +134,9 @@ fun BeneficiaryDetail(
         },
         containerColor = Color(0xFF1C1B1F) // Color de fondo oscuro
     ) { paddingValues ->
+        when {
+            uiState.isScreenLoading
+        }
         Column(
             modifier = Modifier
                 .padding(paddingValues)
