@@ -92,6 +92,7 @@ fun StandardInput(
             visualTransformation = visualTransformation,
             textStyle = TextStyle(color = White),
             trailingIcon = trailingIcon,
+            singleLine = true,
             colors =
                 TextFieldDefaults.colors(
                     focusedContainerColor = InputBackgroundBlue,

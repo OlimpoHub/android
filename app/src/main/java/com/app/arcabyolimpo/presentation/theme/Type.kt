@@ -29,6 +29,12 @@ val Typography =
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp,
             ),
+        headlineSmall =
+            TextStyle(
+                fontFamily = Poppins,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 14.sp
+            ),
         bodySmall =
             TextStyle(
                 fontFamily = Poppins,

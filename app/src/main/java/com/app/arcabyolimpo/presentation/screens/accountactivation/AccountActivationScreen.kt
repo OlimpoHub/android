@@ -6,10 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -22,9 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecoveryViewModel
@@ -89,23 +84,19 @@ fun AccountActivationScreen(
                 placeholder = "E.G. ejemplo@correo.com",
                 value = email,
                 onValueChange = { email = it },
-                isError =
-                    uiState.error != null ||
-                        uiState.message == "User not found" ||
-                        uiState.message == "Internal server error",
-                errorMessage =
-                    when (uiState.message) {
-                        "User not found" -> {
-                            "Correo no registrado"
-                        }
-                        "Internal server error" -> {
-                            "Error al enviar correo"
-                        }
-                        else -> {
-                            uiState.error
-                        }
-                    },
-                trailingIcon = { MailIcon() },
+                isError = uiState.error != null,
+                errorMessage = when (uiState.error) {
+                    "User not found" -> {
+                        "Correo no registrado"
+                    }
+                    "Internal server error" -> {
+                        "Error al enviar correo"
+                    }
+                    else -> {
+                        uiState.error
+                    }
+                },
+                trailingIcon = { MailIcon() }
             )
             Spacer(modifier = Modifier.height(37.dp))
             SendEmailButton(
@@ -113,17 +104,15 @@ fun AccountActivationScreen(
                     viewModel.postPasswordRecovery(email)
                 },
             )
-            uiState.message?.let { message ->
-                if (message == "Recovery email sent") {
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Text(
-                        text = "¡Correo enviado exitosamente!",
-                        color = ButtonBlue,
-                        style = Typography.bodySmall,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                }
+            if (uiState.error == null && uiState.message == "Recovery email sent") {
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    text = "¡Correo enviado exitosamente!",
+                    color = ButtonBlue,
+                    style = Typography.bodySmall,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         }
     }

@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -91,23 +89,19 @@ fun PasswordRecoveryScreen(
                 placeholder = "E.G. ejemplo@correo.com",
                 value = email,
                 onValueChange = { email = it },
-                isError =
-                    uiState.error != null ||
-                        uiState.message == "User not found" ||
-                        uiState.message == "Internal server error",
-                errorMessage =
-                    when (uiState.message) {
-                        "User not found" -> {
-                            "Correo no registrado"
-                        }
-                        "Internal server error" -> {
-                            "Error al enviar correo"
-                        }
-                        else -> {
-                            uiState.error
-                        }
-                    },
-                trailingIcon = { MailIcon() },
+                isError = uiState.error != null,
+                errorMessage = when (uiState.error) {
+                                "User not found" -> {
+                                    "Correo no registrado"
+                                }
+                                "Internal server error" -> {
+                                    "Error al enviar correo"
+                                }
+                                else -> {
+                                    uiState.error
+                                }
+                },
+                trailingIcon = { MailIcon() }
             )
             Spacer(modifier = Modifier.height(37.dp))
             SendEmailButton(
@@ -116,17 +110,15 @@ fun PasswordRecoveryScreen(
                 },
             )
 
-            uiState.message?.let { message ->
-                if (message == "Recovery email sent") {
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Text(
-                        text = "¡Correo enviado exitosamente!",
-                        color = ButtonBlue,
-                        style = Typography.bodySmall,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                }
+            if (uiState.error == null && uiState.message == "Recovery email sent") {
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    text = "¡Correo enviado exitosamente!",
+                    color = ButtonBlue,
+                    style = Typography.bodySmall,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         }
     }
