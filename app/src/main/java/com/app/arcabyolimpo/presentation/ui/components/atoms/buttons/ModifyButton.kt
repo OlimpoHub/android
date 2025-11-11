@@ -29,6 +29,7 @@ fun ModifyButton(
     modifier: Modifier = Modifier, // Cambio 1 de varios: Agregar modifier
     onClick: () -> Unit,
     cornerRadius: Dp = 8.dp, // Cambio 2 de varios: Borrar width y height son parametros basura
+    enabled: Boolean = true
 ) {
     Button(
         onClick = onClick,
@@ -39,6 +40,7 @@ fun ModifyButton(
             horizontal = 16.dp,
             vertical = 8.dp
         ),
+        enabled = enabled
     ) {
         Text(
             text = "Modificar",

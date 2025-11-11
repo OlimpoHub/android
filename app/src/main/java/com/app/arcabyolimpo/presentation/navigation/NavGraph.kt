@@ -29,6 +29,8 @@ import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
 import com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabList.ExternalCollabListScreen
 import com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabDetail.ExternalCollabDetailScreen
 import com.app.arcabyolimpo.presentation.screens.ExternalCollab.RegisterExternalCollab.ExternalCollabRegisterScreen
+import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
+import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
 import com.app.arcabyolimpo.presentation.screens.supply.SupplyListScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
@@ -83,7 +85,9 @@ sealed class Screen(
 
     object BeneficiaryList: Screen("beneficiary")
 
-    object BeneficiaryDetail: Screen("beneficiary/id")
+    object BeneficiaryDetail: Screen("beneficiary/{beneficiaryId}") {
+        fun createRoute(beneficiaryId: String) = "beneficiary/$beneficiaryId"
+    }
 }
 
 /**
@@ -395,6 +399,36 @@ fun ArcaNavGraph(
                 onSupplyClick = { id ->
                     navController.navigate("supplyDetail/$id")
                 },
+            )
+        }
+
+        /**
+         * Beneficiary List Screen.
+         *
+         * Shows the grid of beneficiaries.
+         */
+        composable(Screen.BeneficiaryList.route) {
+            BeneficiaryList(
+                onBeneficiaryClick = { beneficiaryId ->
+                    navController.navigate(Screen.BeneficiaryDetail.createRoute(beneficiaryId))
+                },
+                onFilterClick = { /* TODO: Lógica de VM */},
+                onNotificationClick = { /* TODO: Lógica de VM */}
+            )
+        }
+
+        /**
+         * Beneficiary Detail Screen.
+         *
+         * Shows the details of a beneficiary and allows the function to eliminate them, others functionality are in progress.
+         */
+        composable(
+            route = Screen.BeneficiaryDetail.route,
+            arguments = listOf(navArgument("beneficiaryId") { type = NavType.StringType})
+        ) {
+            BeneficiaryDetailScreen(
+                onBackClick = { navController.popBackStack() },
+                onModifyClick = { /* TODO: Lógica de VM */ }
             )
         }
     }
