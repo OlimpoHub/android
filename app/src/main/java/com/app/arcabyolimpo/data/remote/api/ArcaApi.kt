@@ -11,6 +11,7 @@ import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenDto
 import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuppliesListDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyDto
 import okhttp3.Response
 import retrofit2.http.Body
@@ -58,4 +59,9 @@ interface ArcaApi {
     suspend fun getSupply(
         @Path("id") id: String,
     ): SupplyDto
+
+    @GET("supplyBatch/{id}")
+    suspend fun getSupplyBatch(
+        @Path("id") id: String,
+    ): SupplyBatchDto
 }

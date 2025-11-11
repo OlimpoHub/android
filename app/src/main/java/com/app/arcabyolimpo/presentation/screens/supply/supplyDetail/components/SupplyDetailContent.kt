@@ -23,17 +23,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.app.arcabyolimpo.domain.model.supplies.Supply
+import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
 import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AgregateButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.DeleteButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ModifyButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.FilterIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.status.ActiveStatus
+import com.app.arcabyolimpo.presentation.ui.components.atoms.status.InactiveStatus
 import com.app.arcabyolimpo.ui.theme.White
 
 @Composable
 fun SupplyDetailContent(
-    supply: Supply,
+    supply: SupplyBatchExt,
     onClickAddSupplyBatch: () -> Unit,
     onClickDelete: () -> Unit,
     onClickModify: () -> Unit,
@@ -56,7 +58,7 @@ fun SupplyDetailContent(
         ) {
             AsyncImage(
                 model = supply.imageUrl,
-                contentDescription = "place holder",
+                contentDescription = "imagen de ${supply.name}",
                 modifier =
                     Modifier
                         .size(160.dp)
@@ -71,25 +73,30 @@ fun SupplyDetailContent(
             ) {
                 TextValue(
                     label = "Taller",
-                    value = "",
+                    value = supply.workshop,
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 TextValue(
                     label = "Categoría",
-                    value = "",
+                    value = supply.category,
                 )
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    TextValue(
-                        label = "Estatus",
-                        value = "",
+                    Text(
+                        text = "Estatus",
+                        color = White,
+                        fontFamily = Poppins,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 15.sp,
                     )
-                    // Modificar por estados
-                    // Placeholder Colocado aqui
-                    ActiveStatus()
+                    if (supply.status == 1){
+                        ActiveStatus()
+                    } else {
+                        InactiveStatus()
+                    }
                 }
             }
         }
@@ -103,7 +110,7 @@ fun SupplyDetailContent(
         Spacer(modifier = Modifier.height(24.dp))
         TextValue(
             label = "Cantidad actual",
-            value = supply.batch.quantity,
+            value = "${supply.totalQuantity}",
         )
 
         Spacer(

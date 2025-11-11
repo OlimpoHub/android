@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             Scaffold { innerPadding ->
                 SuppliesDetailScreen(
-                    idInsumo = "1",
+                    idInsumo = "i1",
                     onBackClick = { },
                     onClickAddSupplyBatch = { },
                     onClickDelete = { },

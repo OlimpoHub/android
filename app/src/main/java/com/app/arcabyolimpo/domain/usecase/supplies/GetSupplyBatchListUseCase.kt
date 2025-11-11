@@ -2,6 +2,7 @@ package com.app.arcabyolimpo.domain.usecase.supplies
 
 import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.model.supplies.Supply
+import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
 import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -12,7 +13,7 @@ class GetSupplyBatchListUseCase
     constructor(
         private val repository: SupplyRepository,
     ) {
-        operator fun invoke(id: String): Flow<Result<Supply>> =
+        operator fun invoke(id: String): Flow<Result<SupplyBatchExt>> =
             flow {
                 try {
                     emit(Result.Loading)

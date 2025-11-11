@@ -3,6 +3,7 @@ package com.app.arcabyolimpo.data.repository.supplies
 import com.app.arcabyolimpo.data.mapper.supplies.toDomain
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.domain.model.supplies.Supply
+import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
 import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
 import javax.inject.Inject
 
@@ -26,5 +27,5 @@ class SupplyRepositoryImpl
 
         override suspend fun getSupplyById(id: String): Supply = api.getSupply(id).toDomain()
 
-        override suspend fun getSupplyBatchById(id: String): Supply = api.getSupply(id).toDomain()
+        override suspend fun getSupplyBatchById(id: String): SupplyBatchExt = api.getSupplyBatch(id).toDomain()
     }

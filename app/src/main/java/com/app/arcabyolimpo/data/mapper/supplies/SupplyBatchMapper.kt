@@ -1,18 +1,23 @@
 package com.app.arcabyolimpo.data.mapper.supplies
 
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
-import com.app.arcabyolimpo.domain.model.supplies.Supply
+import com.app.arcabyolimpo.domain.model.supplies.Batch
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatch
+import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
 
-fun SupplyBatchDto.toDomain(): Supply =
-    Supply(
+fun SupplyBatchDto.toDomain(): SupplyBatchExt =
+    SupplyBatchExt(
         id = idSupply.toString(),
         name = name.replaceFirstChar { it.uppercase() },
         imageUrl = imageUrl,
         unitMeasure = unitMeasure,
+        totalQuantity = totalQuantity,
+        workshop = workshop,
+        category = category,
+        status = status,
         batch =
             supplyBatches?.map {
-                SupplyBatch(
+                Batch(
                     quantity = it.quantity,
                     expirationDate = it.expirationDate,
                 )
