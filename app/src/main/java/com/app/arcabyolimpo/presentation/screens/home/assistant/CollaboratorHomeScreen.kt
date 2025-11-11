@@ -1,4 +1,4 @@
-package com.app.arcabyolimpo.presentation.screens.admin
+package com.app.arcabyolimpo.presentation.screens.home.assistant
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,10 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.app.arcabyolimpo.presentation.screens.session.SessionViewModel
+import com.app.arcabyolimpo.presentation.screens.supply.SuppliesListViewModel
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun CoordinatorHomeScreen() {
+fun CollaboratorHomeScreen() {
     val sessionViewModel: SessionViewModel = hiltViewModel()
 
     Column(
@@ -29,8 +30,10 @@ fun CoordinatorHomeScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        Text("Bienvenido Coordinador 👑", style = MaterialTheme.typography.headlineSmall)
+        Text("Bienvenido Colaborador 👑", style = MaterialTheme.typography.headlineSmall)
+
         Spacer(modifier = Modifier.height(20.dp))
+
         Button(onClick = { sessionViewModel.logout() }) {
             Text("Cerrar sesión")
         }

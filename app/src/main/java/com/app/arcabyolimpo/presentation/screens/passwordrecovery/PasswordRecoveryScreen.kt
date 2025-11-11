@@ -88,10 +88,8 @@ fun PasswordRecoveryScreen(
                 placeholder = "E.G. ejemplo@correo.com",
                 value = email,
                 onValueChange = { email = it },
-                isError = uiState.error != null
-                        || uiState.message == "User not found"
-                        || uiState.message == "Internal server error",
-                errorMessage = when (uiState.message) {
+                isError = uiState.error != null,
+                errorMessage = when (uiState.error) {
                                 "User not found" -> {
                                     "Correo no registrado"
                                 }
@@ -111,17 +109,15 @@ fun PasswordRecoveryScreen(
                 },
             )
 
-            uiState.message?.let { message ->
-                if (message == "Recovery email sent") {
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Text(
-                        text = "¡Correo enviado exitosamente!",
-                        color = ButtonBlue,
-                        style = Typography.bodySmall,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
+            if (uiState.error == null && uiState.message == "Recovery email sent") {
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    text = "¡Correo enviado exitosamente!",
+                    color = ButtonBlue,
+                    style = Typography.bodySmall,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         }
     }

@@ -16,7 +16,7 @@ data class User(
 /**
  * Enumerates the possible roles a user can have in the system.
  *
- * - [COORD]: Coordinator or admin role.
- * - [COLAB]: Collaborator or standard user role.
+ * - [COORDINADOR]: Coordinator or admin role.
+ * - [ASISTENTE / BECARIO]: Collaborator or standard user role.
  */
-enum class UserRole { COORD, COLAB }
+enum class UserRole { COORDINADOR, ASISTENTE, BECARIO }
