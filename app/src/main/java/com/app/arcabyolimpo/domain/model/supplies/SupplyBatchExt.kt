@@ -15,4 +15,5 @@ data class SupplyBatchExt(
 data class Batch(
     val quantity: Int,
     val expirationDate: String,
+    val adquisitionType: String,
 )

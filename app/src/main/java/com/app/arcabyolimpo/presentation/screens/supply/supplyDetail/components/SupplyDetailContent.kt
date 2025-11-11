@@ -42,6 +42,8 @@ fun SupplyDetailContent(
     modifySupplyBatch: () -> Unit,
     deleteSupplyBatch: () -> Unit,
 ) {
+    val batches = supply.batch
+
     Column(
         modifier =
             Modifier
@@ -152,27 +154,25 @@ fun SupplyDetailContent(
             verticalArrangement =
                 Arrangement.spacedBy(0.dp),
         ) {
-            SupplyBatchRow(
-                quantity = 5,
-                date = "23/Octubre/2025",
-                adquisition = "Donación",
-                onModifyClick = modifySupplyBatch,
-                onDeleteClick = deleteSupplyBatch,
-            )
-            SupplyBatchRow(
-                quantity = 10,
-                date = "16/Octubre/2025",
-                adquisition = "Compra",
-                onModifyClick = modifySupplyBatch,
-                onDeleteClick = deleteSupplyBatch,
-            )
-            SupplyBatchRow(
-                quantity = 5,
-                date = "23/Octubre/2025",
-                adquisition = "Donación",
-                onModifyClick = modifySupplyBatch,
-                onDeleteClick = deleteSupplyBatch,
-            )
+            if(batches.isEmpty()) {
+                Text(
+                    text = "No hay lotes del insumo",
+                    color = White,
+                    fontFamily = Poppins,
+                    fontSize = 18.sp,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            } else {
+              batches.forEachIndexed { index, batch ->
+                  SupplyBatchRow(
+                      quantity = batch.quantity,
+                      date = batch.expirationDate,
+                      adquisition = batch.adquisitionType,
+                      onModifyClick = modifySupplyBatch,
+                      onDeleteClick = deleteSupplyBatch,
+                  )
+              }
+            }
         }
 
         Spacer(modifier = Modifier.height(32.dp))

@@ -20,6 +20,7 @@ fun SupplyBatchDto.toDomain(): SupplyBatchExt =
                 Batch(
                     quantity = it.quantity,
                     expirationDate = it.expirationDate,
+                    adquisitionType = it.adquisitionType,
                 )
             } ?: emptyList(),
     )
