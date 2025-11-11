@@ -1,3 +1,8 @@
+## [0.1.0] - 11/11/2025
+
+### Added
+ - Consulting an specific Supply with the batches it is contained into.
+
 ## [0.1.0] - 10/11/2025
 
 ### Fixed
