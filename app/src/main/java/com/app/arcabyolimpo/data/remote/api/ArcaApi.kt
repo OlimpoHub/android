@@ -54,8 +54,8 @@ interface ArcaApi {
     @POST("externalCollabs/update")
     suspend fun updateCollab(@Body collab: ExternalCollabDto): RegisterResponseDto
 
-    @POST("externalCollabs/deleteExternalCollab")
-    suspend fun deleteCollab(@Body data: Map<String, Int>): Map<String, Any>
+    @POST("externalCollabs/deleteExternalCollab/{id}")
+    suspend fun deleteCollab(@Path("id") id: String): Map<String, Any>
 
     @POST("user/recover-password")
     suspend fun recoverPassword(

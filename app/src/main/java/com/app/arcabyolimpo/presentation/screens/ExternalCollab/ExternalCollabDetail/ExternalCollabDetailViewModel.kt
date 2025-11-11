@@ -12,12 +12,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class ExternalCollabDetailUiState(
-    val collab: ExternalCollab? = null,
-    val isLoading: Boolean = false,
-    val error: String? = null
-)
-
 @HiltViewModel
 class ExternalCollabDetailViewModel @Inject constructor(
     private val repository: ExternalCollabRepository,
@@ -51,5 +45,35 @@ class ExternalCollabDetailViewModel @Inject constructor(
                     )
                 }
         }
+    }
+
+    fun deleteCollabById(idString: String) {
+        viewModelScope.launch {
+            try {
+                _uiState.value = _uiState.value.copy(deleteLoading = true, deleteError = null, deleted = false)
+
+                val result = repository.deleteCollab(idString)
+
+                result
+                    .onSuccess {
+                        _uiState.value = _uiState.value.copy(deleteLoading = false, deleted = true)
+                    }
+                    .onFailure { ex ->
+                        _uiState.value = _uiState.value.copy(
+                            deleteLoading = false,
+                            deleteError = ex.message ?: "Error al eliminar"
+                        )
+                    }
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    deleteLoading = false,
+                    deleteError = e.message ?: "Error desconocido"
+                )
+            }
+        }
+    }
+
+    fun resetDeleteState() {
+        _uiState.value = _uiState.value.copy(deleteLoading = false, deleteError = null, deleted = false)
     }
 }

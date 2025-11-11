@@ -36,39 +36,42 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.status.InactiveStat
 fun ExternalCollabDetailContent(
     collab: com.app.arcabyolimpo.domain.model.ExternalCollaborator.ExternalCollab,
     onEditClick: () -> Unit,
-    onDeleteClick: () -> Unit
+    onDeleteClick: () -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         // Profile Photo
         if (collab.photoUrl != null) {
             AsyncImage(
                 model = collab.photoUrl,
                 contentDescription = "Profile Photo",
-                modifier = Modifier
-                    .size(120.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
+                modifier =
+                    Modifier
+                        .size(120.dp)
+                        .clip(CircleShape),
+                contentScale = ContentScale.Crop,
             )
         } else {
             // Placeholder if no photo
             Box(
-                modifier = Modifier
-                    .size(120.dp)
-                    .clip(CircleShape)
-                    .background(Color(0xFF1E293B)),
-                contentAlignment = Alignment.Center
+                modifier =
+                    Modifier
+                        .size(120.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFF1E293B)),
+                contentAlignment = Alignment.Center,
             ) {
                 Text(
                     text = "${collab.firstName.firstOrNull() ?: ""}${collab.lastName.firstOrNull() ?: ""}",
                     color = Color.White,
                     fontSize = 40.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
             }
         }
@@ -80,7 +83,7 @@ fun ExternalCollabDetailContent(
             text = "${collab.firstName} ${collab.lastName} ${collab.secondLastName}",
             color = Color.White,
             fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -104,14 +107,15 @@ fun ExternalCollabDetailContent(
         Spacer(modifier = Modifier.height(32.dp))
 
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Box(
                 modifier = Modifier.weight(1f),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 ModifyButton(
                     onClick = onEditClick,
@@ -120,11 +124,10 @@ fun ExternalCollabDetailContent(
 
             Box(
                 modifier = Modifier.weight(1f),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 DeleteButton(
                     onClick = onDeleteClick,
-                    modifier = Modifier.size(width = 140.dp, height = 40.dp)
                 )
             }
         }
@@ -134,11 +137,10 @@ fun ExternalCollabDetailContent(
 }
 
 // Helper function to format date
-fun formatDate(dateString: String): String {
-    return try {
+fun formatDate(dateString: String): String =
+    try {
         val parts = dateString.split("T")[0].split("-")
         "${parts[2]}/${parts[1]}/${parts[0]}"
     } catch (e: Exception) {
         dateString
     }
-}
