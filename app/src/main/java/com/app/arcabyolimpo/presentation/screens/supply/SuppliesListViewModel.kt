@@ -1,9 +1,8 @@
 package com.app.arcabyolimpo.presentation.screens.supply
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.arcabyolimpo.data.remote.dto.supplies.FilterSuppliesDto
+import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.usecase.supplies.FilterSuppliesUseCase
 import com.app.arcabyolimpo.domain.usecase.supplies.GetFiltersDataUseCase
@@ -94,7 +93,7 @@ class SuppliesListViewModel
             }
         }
 
-        fun filterSupplies(filters: FilterSuppliesDto) {
+        fun filterSupplies(filters: FilterDto) {
             // Guardamos la selección en el UIState
             _uiState.update { it.copy(selectedFilters = filters) }
 
@@ -125,6 +124,18 @@ class SuppliesListViewModel
                         }
                     }
                 }
+            }
+        }
+
+        fun clearFilters() {
+            _uiState.update {
+                it.copy(
+                    selectedFilters =
+                        FilterDto(
+                            filters = emptyMap(),
+                            order = "ASC",
+                        ),
+                )
             }
         }
     }

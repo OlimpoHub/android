@@ -1,6 +1,6 @@
 package com.app.arcabyolimpo.domain.usecase.supplies
 
-import com.app.arcabyolimpo.data.remote.dto.supplies.FilterDto
+import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository

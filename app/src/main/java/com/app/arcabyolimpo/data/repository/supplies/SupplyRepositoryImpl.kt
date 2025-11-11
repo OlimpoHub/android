@@ -2,11 +2,10 @@ package com.app.arcabyolimpo.data.repository.supplies
 
 import com.app.arcabyolimpo.data.mapper.supplies.toDomain
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
-import com.app.arcabyolimpo.data.remote.dto.supplies.FilterDto
+import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
-import jakarta.inject.Singleton
 import javax.inject.Inject
 
 /**

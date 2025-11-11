@@ -10,15 +10,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.app.arcabyolimpo.data.remote.dto.supplies.createFilterSuppliesDto
-import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.FilterIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.SearchIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardIconInput
-import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
 import com.app.arcabyolimpo.presentation.ui.components.organisms.Filter
 import com.app.arcabyolimpo.presentation.ui.components.organisms.SupplyListContent
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
@@ -146,13 +143,13 @@ fun SupplyListScreen(
         Filter(
             data = uiState.filterData!!,
             initialSelected = uiState.selectedFilters,
-            onApply = { selectedMap, order ->
-                val dto = createFilterSuppliesDto(selectedMap, order)
+            onApply = { dto ->
                 viewModel.filterSupplies(dto)
                 showFilter = false
             },
             onDismiss = { showFilter = false },
             onClearFilters = {
+                viewModel.clearFilters()
                 viewModel.loadSuppliesList()
                 showFilter = false
             },

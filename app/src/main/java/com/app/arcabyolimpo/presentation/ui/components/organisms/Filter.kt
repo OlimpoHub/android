@@ -10,13 +10,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.app.arcabyolimpo.data.remote.dto.supplies.FilterDto
-import com.app.arcabyolimpo.data.remote.dto.supplies.createFilterSuppliesDto
+import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
+import com.app.arcabyolimpo.data.remote.dto.filter.createFilterSuppliesDto
 import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.presentation.theme.Typography
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ApplyButton
@@ -28,22 +27,22 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.PlusIcon
 import com.app.arcabyolimpo.ui.theme.HeaderBackground
 import com.app.arcabyolimpo.ui.theme.PlaceholderGray
 import com.app.arcabyolimpo.ui.theme.White
+import kotlin.collections.forEach
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Filter(
     data: FilterData,
     initialSelected: FilterDto,
-    initialFiltersMap: Map<String, List<String>>,
-    onApply: (selectedFilters: Map<String, List<String>>, order: String) -> Unit,
+    onApply: (FilterDto) -> Unit,
     onDismiss: () -> Unit,
     onClearFilters: () -> Unit,
 ) {
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
     val selectedOrder =
-        remember {
-            mutableStateOf(initialSelected.order ?: "ASC")
+        remember(initialSelected.order) {
+            mutableStateOf(initialSelected.order ?: "")
         }
 
     val sections = data.asSections()
@@ -51,9 +50,9 @@ fun Filter(
 
     val selectedMap =
         remember {
-            mutableStateMapOf<String, MutableList<String>>().apply {
+            mutableStateMapOf<String, SnapshotStateList<String>>().apply {
                 sections.forEach { section ->
-                    val initial = initialFiltersMap[section.title].orEmpty()
+                    val initial = initialSelected.filters[section.title].orEmpty()
                     this[section.title] = initial.toMutableStateList()
                 }
             }
@@ -203,9 +202,13 @@ fun Filter(
 
                     ApplyButton(
                         onClick = {
-                            val selectedFilters = selectedMap.mapValues { it.value.toList() }
-                            onApply(selectedFilters, selectedOrder.value)
+                            println("SELECTED MAP : $selectedMap")
+                            println("CATEGORÍAS seleccionadas: ${selectedMap["Categorías"]}")
+                            println("MEDIDAS seleccionadas: ${selectedMap["Medidas"]}")
+                            println("TALLERES seleccionados: ${selectedMap["Talleres"]}")
 
+                            val dto = createFilterSuppliesDto(selectedMap, selectedOrder.value)
+                            onApply(dto)
                             onDismiss()
                         },
                     )
