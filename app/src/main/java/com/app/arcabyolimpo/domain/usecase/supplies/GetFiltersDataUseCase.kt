@@ -1,7 +1,7 @@
 package com.app.arcabyolimpo.domain.usecase.supplies
 
 import com.app.arcabyolimpo.domain.common.Result
-import com.app.arcabyolimpo.domain.model.supplies.FilterData
+import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
 import kotlinx.coroutines.flow.Flow

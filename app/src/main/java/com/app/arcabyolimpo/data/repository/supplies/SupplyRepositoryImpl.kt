@@ -2,8 +2,8 @@ package com.app.arcabyolimpo.data.repository.supplies
 
 import com.app.arcabyolimpo.data.mapper.supplies.toDomain
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
-import com.app.arcabyolimpo.data.remote.dto.supplies.FilterSuppliesDto
-import com.app.arcabyolimpo.domain.model.supplies.FilterData
+import com.app.arcabyolimpo.data.remote.dto.supplies.FilterDto
+import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
 import jakarta.inject.Singleton
@@ -39,7 +39,7 @@ class SupplyRepositoryImpl
 
         override suspend fun getSupplyById(id: String): Supply = api.getSupply(id).toDomain()
 
-        override suspend fun filterSupply(filters: FilterSuppliesDto): List<Supply> {
+        override suspend fun filterSupply(filters: FilterDto): List<Supply> {
             val response = api.filterSupplies(filters)
             println("DEBUG FILTER RESPONSE: $response")
             return response.map { dto ->

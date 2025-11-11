@@ -1,6 +1,6 @@
 package com.app.arcabyolimpo.domain.usecase.supplies
 
-import com.app.arcabyolimpo.data.remote.dto.supplies.FilterSuppliesDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.FilterDto
 import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
@@ -13,9 +13,9 @@ class FilterSuppliesUseCase
     constructor(
         private val repository: SupplyRepository,
     ) {
-        suspend fun filterSupplies(params: FilterSuppliesDto): List<Supply> = repository.filterSupply(params)
+        suspend fun filterSupplies(params: FilterDto): List<Supply> = repository.filterSupply(params)
 
-        operator fun invoke(params: FilterSuppliesDto): Flow<com.app.arcabyolimpo.domain.common.Result<List<Supply>>> =
+        operator fun invoke(params: FilterDto): Flow<com.app.arcabyolimpo.domain.common.Result<List<Supply>>> =
             flow {
                 try {
                     emit(com.app.arcabyolimpo.domain.common.Result.Loading)

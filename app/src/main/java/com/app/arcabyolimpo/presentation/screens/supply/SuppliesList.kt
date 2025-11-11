@@ -10,7 +10,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.app.arcabyolimpo.domain.model.supplies.FilterData
+import com.app.arcabyolimpo.data.remote.dto.supplies.createFilterSuppliesDto
+import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.FilterIcon
@@ -145,13 +146,8 @@ fun SupplyListScreen(
         Filter(
             data = uiState.filterData!!,
             initialSelected = uiState.selectedFilters,
-            initialFiltersMap =
-                mapOf(
-                    "Categorías" to uiState.selectedFilters.categories.orEmpty(),
-                    "Medidas" to uiState.selectedFilters.measures.orEmpty(),
-                    "Talleres" to uiState.selectedFilters.workshops.orEmpty(),
-                ),
-            onApply = { dto ->
+            onApply = { selectedMap, order ->
+                val dto = createFilterSuppliesDto(selectedMap, order)
                 viewModel.filterSupplies(dto)
                 showFilter = false
             },

@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.app.arcabyolimpo.data.remote.dto.supplies.FilterDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.createFilterSuppliesDto
-import com.app.arcabyolimpo.domain.model.supplies.FilterData
+import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.presentation.theme.Typography
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ApplyButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.DeleteAllButton
@@ -33,9 +33,9 @@ import com.app.arcabyolimpo.ui.theme.White
 @Composable
 fun Filter(
     data: FilterData,
-    initialSelected: FilterDto, // <- nuevo parámetro
-    initialFiltersMap: Map<String, List<String>>, // <- este es el nuevo parámetro
-    onApply: (FilterDto) -> Unit,
+    initialSelected: FilterDto,
+    initialFiltersMap: Map<String, List<String>>,
+    onApply: (selectedFilters: Map<String, List<String>>, order: String) -> Unit,
     onDismiss: () -> Unit,
     onClearFilters: () -> Unit,
 ) {
@@ -203,13 +203,9 @@ fun Filter(
 
                     ApplyButton(
                         onClick = {
-                            println("SELECTED MAP : $selectedMap")
-                            println("CATEGORÍAS seleccionadas: ${selectedMap["Categorías"]}")
-                            println("MEDIDAS seleccionadas: ${selectedMap["Medidas"]}")
-                            println("TALLERES seleccionados: ${selectedMap["Talleres"]}")
+                            val selectedFilters = selectedMap.mapValues { it.value.toList() }
+                            onApply(selectedFilters, selectedOrder.value)
 
-                            val dto = createFilterSuppliesDto(selectedMap, selectedOrder.value)
-                            onApply(dto)
                             onDismiss()
                         },
                     )

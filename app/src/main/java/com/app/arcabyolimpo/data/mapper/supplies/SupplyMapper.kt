@@ -1,9 +1,9 @@
 package com.app.arcabyolimpo.data.mapper.supplies
 
-import com.app.arcabyolimpo.data.remote.dto.supplies.FilterSuppliesDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.FilterDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyDto
-import com.app.arcabyolimpo.domain.model.supplies.FilterData
+import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatch
 import kotlin.String
@@ -32,7 +32,7 @@ fun SupplyDto.toDomain(): Supply =
             },
     )
 
-fun FilterSuppliesDto.toDomain(): FilterData {
+fun FilterDto.toDomain(): FilterData {
     val map = mutableMapOf<String, List<String>>()
 
     if (!categories.isNullOrEmpty()) map["Categorías"] = categories

@@ -1,8 +1,8 @@
 package com.app.arcabyolimpo.domain.repository.supplies
 
 import androidx.navigation.NavType
-import com.app.arcabyolimpo.data.remote.dto.supplies.FilterSuppliesDto
-import com.app.arcabyolimpo.domain.model.supplies.FilterData
+import com.app.arcabyolimpo.data.remote.dto.supplies.FilterDto
+import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 import retrofit2.http.Body
 
@@ -18,7 +18,7 @@ interface SupplyRepository {
 
     suspend fun getSupplyById(id: String): Supply
 
-    suspend fun filterSupply(params: FilterSuppliesDto): List<Supply>
+    suspend fun filterSupply(params: FilterDto): List<Supply>
 
     suspend fun getFilterData(): FilterData
 }
