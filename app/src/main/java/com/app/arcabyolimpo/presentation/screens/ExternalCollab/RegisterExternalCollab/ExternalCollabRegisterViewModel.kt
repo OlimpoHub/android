@@ -141,7 +141,7 @@ class ExternalCollabRegisterViewModel @Inject constructor(
         _uiState.value = ExternalCollabRegisterUiState()
     }
 
-    private fun validateForm(): Boolean {
+     fun validateForm(): Boolean {
         val state = _uiState.value
 
         val firstNameError = if (state.firstName.isBlank()) "El nombre es requerido" else null

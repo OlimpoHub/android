@@ -99,7 +99,7 @@ fun ExternalCollabDetailContent(
         InfoCard(label = "Teléfono", value = collab.phone)
         InfoCard(label = "Carrera", value = collab.degree)
         InfoCard(label = "Fecha de Nacimiento", value = formatDate(collab.birthDate))
-        InfoCard(label = "ID de Rol", value = collab.roleId.toString())
+        InfoCard(label = "ID de Rol", value = getRoleName(collab.roleId))
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -140,5 +140,15 @@ fun formatDate(dateString: String): String {
         "${parts[2]}/${parts[1]}/${parts[0]}"
     } catch (e: Exception) {
         dateString
+    }
+}
+
+// Helper function to get role name from ID
+fun getRoleName(roleId: Int): String {
+    return when (roleId) {
+        1 -> "Coordinador"
+        2 -> "Asistente"
+        3 -> "Becario"
+        else -> "Desconocido"
     }
 }
