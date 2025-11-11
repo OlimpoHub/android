@@ -17,6 +17,7 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.FilterIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.SearchIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardIconInput
+import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
 import com.app.arcabyolimpo.presentation.ui.components.organisms.Filter
 import com.app.arcabyolimpo.presentation.ui.components.organisms.SupplyListContent
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
@@ -143,13 +144,20 @@ fun SupplyListScreen(
     if (showFilter && uiState.filterData != null) {
         Filter(
             data = uiState.filterData!!,
+            initialSelected = uiState.selectedFilters,
+            initialFiltersMap =
+                mapOf(
+                    "Categorías" to uiState.selectedFilters.categories.orEmpty(),
+                    "Medidas" to uiState.selectedFilters.measures.orEmpty(),
+                    "Talleres" to uiState.selectedFilters.workshops.orEmpty(),
+                ),
             onApply = { dto ->
                 viewModel.filterSupplies(dto)
                 showFilter = false
             },
             onDismiss = { showFilter = false },
             onClearFilters = {
-                viewModel.loadSuppliesList() // recarga todos los insumos
+                viewModel.loadSuppliesList()
                 showFilter = false
             },
         )

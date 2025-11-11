@@ -95,6 +95,9 @@ class SuppliesListViewModel
         }
 
         fun filterSupplies(filters: FilterSuppliesDto) {
+            // Guardamos la selección en el UIState
+            _uiState.update { it.copy(selectedFilters = filters) }
+
             viewModelScope.launch {
                 filterSuppliesUseCase(filters).collect { result ->
                     when (result) {

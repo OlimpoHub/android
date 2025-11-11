@@ -2,7 +2,7 @@ package com.app.arcabyolimpo.data.remote.dto.supplies
 
 import com.google.gson.annotations.SerializedName
 
-data class FilterSuppliesDto(
+data class FilterDto(
     @SerializedName("categories") val categories: List<String>? = null,
     @SerializedName("measures") val measures: List<String>? = null,
     @SerializedName("workshops") val workshops: List<String>? = null,
@@ -12,7 +12,7 @@ data class FilterSuppliesDto(
 fun createFilterSuppliesDto(
     selectedMap: Map<String, List<String>>,
     order: String? = null,
-): FilterSuppliesDto {
+): FilterDto {
     val dtoMap = mutableMapOf<String, List<String>>()
     selectedMap.forEach { (key, value) ->
         if (value.isNotEmpty()) {
@@ -20,7 +20,7 @@ fun createFilterSuppliesDto(
         }
     }
 
-    return FilterSuppliesDto(
+    return FilterDto(
         categories = dtoMap["Categorías"],
         measures = dtoMap["Medidas"],
         workshops = dtoMap["Talleres"],

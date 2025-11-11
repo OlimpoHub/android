@@ -19,5 +19,11 @@ data class SuppliesListUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val filterData: FilterData? = null,
-    val selectedFilters: FilterSuppliesDto? = null,
+    val selectedFilters: FilterSuppliesDto =
+        FilterSuppliesDto(
+            categories = emptyList(),
+            measures = emptyList(),
+            workshops = emptyList(),
+            order = "ASC",
+        ),
 )

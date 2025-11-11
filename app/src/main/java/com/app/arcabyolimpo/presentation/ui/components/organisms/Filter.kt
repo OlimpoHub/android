@@ -15,7 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.app.arcabyolimpo.data.remote.dto.supplies.FilterSuppliesDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.FilterDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.createFilterSuppliesDto
 import com.app.arcabyolimpo.domain.model.supplies.FilterData
 import com.app.arcabyolimpo.presentation.theme.Typography
@@ -29,27 +29,32 @@ import com.app.arcabyolimpo.ui.theme.HeaderBackground
 import com.app.arcabyolimpo.ui.theme.PlaceholderGray
 import com.app.arcabyolimpo.ui.theme.White
 
-@Suppress("ktlint:standard:function-naming")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Filter(
     data: FilterData,
-    onApply: (FilterSuppliesDto) -> Unit,
+    initialSelected: FilterDto, // <- nuevo parámetro
+    initialFiltersMap: Map<String, List<String>>, // <- este es el nuevo parámetro
+    onApply: (FilterDto) -> Unit,
     onDismiss: () -> Unit,
     onClearFilters: () -> Unit,
 ) {
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
+    val selectedOrder =
+        remember {
+            mutableStateOf(initialSelected.order ?: "ASC")
+        }
 
     val sections = data.asSections()
     println(data)
 
-    // Estado para guardar selecciones
     val selectedMap =
         remember {
             mutableStateMapOf<String, MutableList<String>>().apply {
                 sections.forEach { section ->
-                    this[section.title] = mutableStateListOf()
+                    val initial = initialFiltersMap[section.title].orEmpty()
+                    this[section.title] = initial.toMutableStateList()
                 }
             }
         }
@@ -146,8 +151,6 @@ fun Filter(
                     style = Typography.headlineSmall,
                 )
 
-                val selectedOrder = remember { mutableStateOf("ASC") }
-
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(start = 30.dp),
@@ -206,7 +209,7 @@ fun Filter(
                             println("TALLERES seleccionados: ${selectedMap["Talleres"]}")
 
                             val dto = createFilterSuppliesDto(selectedMap, selectedOrder.value)
-                            onApply(dto) // quien use el componente decide qué hacer
+                            onApply(dto)
                             onDismiss()
                         },
                     )
