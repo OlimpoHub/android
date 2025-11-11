@@ -28,7 +28,7 @@ class WorkshopRepositoryImpl
          *
          * Each item in the response is converted into a [Workshop] domain model.
          * Since this endpoint provides limited data, some fields like
-         * [Workshop.status] or [Workshop.schedule] are initialized as empty.
+         * [Workshop.status] or [Workshop.description] are initialized as empty.
          *
          * @return A list of [Workshop] objects representing the available supplies.
          */
@@ -42,7 +42,7 @@ class WorkshopRepositoryImpl
                     nameWorkshop = dto.name,
                     url = dto.image,
                     status = 0,
-                    schedule = "",
+                    description = "",
                     startHour = "",
                     finishHour = "",
                     date = ""
@@ -80,7 +80,7 @@ class WorkshopRepositoryImpl
                 nameWorkshop = newWorkshop.name,
                 url = newWorkshop.image,
                 status = newWorkshop.status,
-                schedule = newWorkshop.schedule,
+                description = newWorkshop.description,
                 startHour = newWorkshop.startHour,
                 finishHour = newWorkshop.finishHour,
                 date = newWorkshop.date
