@@ -37,16 +37,17 @@ fun SetPasswordButton(
         modifier = Modifier.fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(containerColor = ButtonBlue),
         shape = RoundedCornerShape(cornerRadius),
-        contentPadding = PaddingValues(
-            vertical = 15.dp
-        ),
+        contentPadding =
+            PaddingValues(
+                vertical = 15.dp,
+            ),
     ) {
         Text(
             text = "Establecer Contraseña",
             color = White,
             fontFamily = Poppins,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 16.sp
+            fontSize = 16.sp,
         )
     }
 }

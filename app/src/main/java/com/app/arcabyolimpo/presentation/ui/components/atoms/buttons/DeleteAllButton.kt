@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.ui.theme.DangerGray
 import com.app.arcabyolimpo.ui.theme.PrimaryBlue
+
 /**
  * DeleteAllButton: blue squared button with rounded corners used to save changes in the app.
  *
@@ -37,10 +38,11 @@ fun DeleteAllButton(
         modifier = Modifier.size(width = width, height = height),
         colors = ButtonDefaults.buttonColors(containerColor = DangerGray),
         shape = RoundedCornerShape(cornerRadius),
-        contentPadding = PaddingValues(
-            horizontal = 16.dp,
-            vertical = 8.dp
-        ),
+        contentPadding =
+            PaddingValues(
+                horizontal = 16.dp,
+                vertical = 8.dp,
+            ),
     ) {
         Text(
             text = "Borrar Todo",

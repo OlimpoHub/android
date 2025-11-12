@@ -30,6 +30,41 @@ import com.app.arcabyolimpo.ui.theme.PlaceholderGray
 import com.app.arcabyolimpo.ui.theme.White
 import kotlin.collections.forEach
 
+/**
+ * Displays a modal bottom sheet that allows users to filter and order supplies.
+ *
+ * This composable shows a customizable filter interface where users can:
+ * - Select multiple filter options (e.g., categories, measures, workshops)
+ * - Choose an order for the results (ascending or descending)
+ * - Apply, clear, or dismiss the filter sheet
+ *
+ * The component uses `FilterData` to dynamically build filter sections
+ * and keeps track of selected values using Compose state holders.
+ *
+ * @param data The available filter data grouped by section (e.g., categories, measures, workshops).
+ * @param initialSelected The initial filter and order state applied when the bottom sheet opens.
+ * @param onApply Callback triggered when the user applies filters. Receives a [FilterDto] with selected filters and order.
+ * @param onDismiss Callback triggered when the bottom sheet is dismissed without applying filters.
+ * @param onClearFilters Callback triggered when the user clears all selected filters.
+ *
+ * Example usage:
+ * ```
+ * Filter(
+ *             data = uiState.filterData!!,
+ *             initialSelected = uiState.selectedFilters,
+ *             onApply = { dto ->
+ *                 viewModel.filterSupplies(dto)
+ *                 showFilter = false
+ *             },
+ *             onDismiss = { showFilter = false },
+ *             onClearFilters = {
+ *                 viewModel.clearFilters()
+ *                 viewModel.loadSuppliesList()
+ *                 showFilter = false
+ *             },
+ *         )
+ * ```
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Filter(
@@ -70,7 +105,7 @@ fun Filter(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .heightIn(max = 500.dp), // ajústalo al tamaño que quieras
+                    .heightIn(max = 750.dp), // ajústalo al tamaño que quieras
         ) {
             Column(
                 modifier =
@@ -136,6 +171,8 @@ fun Filter(
                     FilterExpandableSection(
                         title = title,
                         items = items,
+                        // Passes the list of selected items for this section from the shared state map.
+                        // The '!!' ensures the key exists, since all sections were initialized in 'selectedMap'.
                         selectedItems = selectedMap[title]!!,
                     )
                 }
@@ -209,6 +246,10 @@ fun Filter(
 
                     ApplyButton(
                         onClick = {
+                            println("SELECTED MAP : $selectedMap")
+
+                            // Create a FilterDto object from the user's selected filters and order,
+                            // then pass it to the onApply callback to trigger filtering logic in the ViewModel.
                             val dto = createFilterDto(selectedMap, selectedOrder.value)
                             onApply(dto)
                             onDismiss()
@@ -226,6 +267,29 @@ fun Filter(
     }
 }
 
+/**
+ * Displays an expandable section used for filtering options within the filter bottom sheet.
+ *
+ * Each section represents a filter category (e.g., "Categorías", "Medidas", "Talleres")
+ * that can be expanded or collapsed. When expanded, it shows a list of selectable
+ * items with checkboxes, allowing multiple selections.
+ *
+ * The state of selected items is managed externally through the `selectedItems` list,
+ * which is updated whenever the user checks or unchecks an option.
+ *
+ * @param title The title of the filter section (e.g., "Categorías").
+ * @param items The list of available filter options displayed in this section.
+ * @param selectedItems A mutable list that holds the items currently selected by the user.
+ *
+ * Example usage:
+ * ```
+ * FilterExpandableSection(
+ *     title = "Categorías",
+ *     items = listOf("Herramientas", "Materiales", "Seguridad"),
+ *     selectedItems = selectedCategories
+ * )
+ * ```
+ */
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun FilterExpandableSection(

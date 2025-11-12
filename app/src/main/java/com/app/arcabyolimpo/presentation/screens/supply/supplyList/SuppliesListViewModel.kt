@@ -1,4 +1,4 @@
-package com.app.arcabyolimpo.presentation.screens.supply
+package com.app.arcabyolimpo.presentation.screens.supply.supplyList
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -67,6 +67,12 @@ class SuppliesListViewModel
             }
         }
 
+        /**
+         * Loads the available supply filters from the data use case.
+         *
+         * The resulting state is observed by the UI to show loading indicators,
+         * display the filter modal, or surface errors.
+         */
         fun getSupplies() {
             viewModelScope.launch {
                 getFiltersDataUseCase().collect { result ->
@@ -93,6 +99,12 @@ class SuppliesListViewModel
             }
         }
 
+        /**
+         * Applies the selected filters to the supplies list.
+         *
+         * @param filters A FilterDto object that contains the selected filters
+         *                and the sort order.
+         */
         fun filterSupplies(filters: FilterDto) {
             // Guardamos la selección en el UIState
             _uiState.update { it.copy(selectedFilters = filters) }
@@ -127,6 +139,16 @@ class SuppliesListViewModel
             }
         }
 
+        /**
+         * Resets all applied filters to their default state.
+         *
+         * What it does:
+         * 1. Clears any selected filters by replacing them with an empty FilterDto.
+         * 2. Resets the sort order back to "ASC".
+         *
+         * Note: This only resets the UI state's filter selection.
+         *       It does NOT automatically reload the supplies list.
+         */
         fun clearFilters() {
             _uiState.update {
                 it.copy(

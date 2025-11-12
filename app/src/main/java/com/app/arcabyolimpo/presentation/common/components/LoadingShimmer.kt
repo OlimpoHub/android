@@ -54,38 +54,43 @@ import androidx.compose.ui.unit.dp
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun LoadingShimmer(modifier: Modifier = Modifier) {
-    val shimmerColors = listOf(
-        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
-        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.2f),
-        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
-    )
+    val shimmerColors =
+        listOf(
+            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
+            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.2f),
+            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
+        )
 
     val transition = rememberInfiniteTransition(label = "")
-    val translateAnim = transition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1000f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1000),
-            repeatMode = RepeatMode.Restart,
-        ),
-        label = "",
-    )
+    val translateAnim =
+        transition.animateFloat(
+            initialValue = 0f,
+            targetValue = 1000f,
+            animationSpec =
+                infiniteRepeatable(
+                    animation = tween(1000),
+                    repeatMode = RepeatMode.Restart,
+                ),
+            label = "",
+        )
 
-    val brush = Brush.linearGradient(
-        colors = shimmerColors,
-        start = Offset.Zero,
-        end = Offset(x = translateAnim.value, y = translateAnim.value),
-    )
+    val brush =
+        Brush.linearGradient(
+            colors = shimmerColors,
+            start = Offset.Zero,
+            end = Offset(x = translateAnim.value, y = translateAnim.value),
+        )
 
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(12.dp),
-        tonalElevation = 1.dp
+        tonalElevation = 1.dp,
     ) {
         Spacer(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(brush)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .background(brush),
         )
     }
 }

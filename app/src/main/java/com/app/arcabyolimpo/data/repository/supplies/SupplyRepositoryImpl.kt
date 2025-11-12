@@ -5,8 +5,10 @@ import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.domain.model.supplies.Supply
+import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
 import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Retrieves detailed information for a specific supply by its [id].
@@ -18,9 +20,8 @@ import javax.inject.Inject
  * @return A [Supply] object containing detailed supply information.
  */
 
-class SupplyRepositoryImpl
-    @Inject
-    constructor(
+@Singleton
+class SupplyRepositoryImpl @Inject constructor(
         private val api: ArcaApi,
     ) : SupplyRepository {
         override suspend fun getSuppliesList(): List<Supply> {
@@ -40,7 +41,6 @@ class SupplyRepositoryImpl
 
         override suspend fun filterSupply(filters: FilterDto): List<Supply> {
             val response = api.filterSupplies(filters)
-            println("DEBUG FILTER RESPONSE: $response")
             return response.map { dto ->
                 Supply(
                     id = dto.id,
@@ -53,4 +53,9 @@ class SupplyRepositoryImpl
         }
 
         override suspend fun getFilterData(): FilterData = api.getFilterSupplies().toDomain()
+
+        /** -------------------------------------------------------------------------------------- *
+         * getSupplyBatchById -> calls the API to fetch a supply batch by its ID.
+        * --------------------------------------------------------------------------------------- */
+        override suspend fun getSupplyBatchById(id: String): SupplyBatchExt = api.getSupplyBatchById(id).toDomain()
     }

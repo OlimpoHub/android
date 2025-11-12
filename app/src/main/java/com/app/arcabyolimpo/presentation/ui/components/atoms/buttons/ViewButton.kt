@@ -32,25 +32,25 @@ fun ViewButton(
     cornerRadius: Dp = 8.dp,
     width: Dp = 88.dp,
     height: Dp = 32.dp,
-){
+) {
     Button(
         onClick = onClick,
         modifier = Modifier.size(width = width, height = height),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF2844AE)),
+        colors =
+            ButtonDefaults.buttonColors(containerColor = Color(0xFF2844AE)),
         shape = RoundedCornerShape(cornerRadius),
-        contentPadding = PaddingValues(
-            horizontal = 7.dp,
-            vertical = 6.dp
-        ),
-
-        ){
+        contentPadding =
+            PaddingValues(
+                horizontal = 7.dp,
+                vertical = 6.dp,
+            ),
+    ) {
         Text(
             text = "Ver",
             color = Color(0xFFFFF7EB),
             fontFamily = Poppins,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 12.sp
+            fontSize = 12.sp,
         )
     }
 }

@@ -14,10 +14,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -63,12 +66,12 @@ import androidx.compose.runtime.setValue
 @Composable
 fun SupplyCard(
     supply: Supply,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     var isPressed by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(
         targetValue = if (isPressed) 0.95f else 1f,
-        label = ""
+        label = "",
     )
 
     Card(
@@ -126,7 +129,7 @@ fun SupplyCard(
             Divider(
                 color = DangerGray.copy(alpha = 0.3f),
                 thickness = 0.7.dp,
-                modifier = Modifier.padding(horizontal = 12.dp)
+                modifier = Modifier.padding(horizontal = 12.dp),
             )
         }
     }
