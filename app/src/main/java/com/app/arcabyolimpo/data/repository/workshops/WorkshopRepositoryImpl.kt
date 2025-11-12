@@ -58,8 +58,12 @@ class WorkshopRepositoryImpl
      * @return A [Workshop] object containing detailed workshop information.
      */
     override suspend fun getWorkshopsById(id: String): Workshop {
-        return api.getWorkshop(id).toDomain()
+        val response = api.getWorkshop(id)
+        println("Workshop crudo desde API: $response")
+        return response.toDomain()
     }
+
+
 
     /**
      * Post a list of all the data needed for creating a new workshop.

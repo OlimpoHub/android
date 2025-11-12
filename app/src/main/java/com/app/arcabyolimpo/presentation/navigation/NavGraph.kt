@@ -80,13 +80,16 @@ sealed class Screen(
 
     object WorkshopsList : Screen("workshop")
 
-    object WorkshopDetail : Screen("workshop_detail/{id}") {
-        fun createRoute(id: String): String = "workshop_detail/$id"
+    object WorkshopDetail : Screen("workshop/{id}") {
+        fun createRoute(id: String): String = "workshop/$id"
     }
 
     object AddNewWorkshop : Screen("workshop/add")
 
-    object ModifyWorkshops : Screen("workshop/modify/{id}")
+    object ModifyWorkshops : Screen("workshop/modify/{id}") {
+        fun createRoute(id: String) = "workshop/modify/$id"
+    }
+
 
     object BeneficiaryList : Screen("beneficiary")
 
@@ -369,13 +372,14 @@ fun ArcaNavGraph(
         }
 
 
-        composable(route = Screen.WorkshopDetail.route) { backStackEntry ->
-            val workshopId = backStackEntry.arguments?.getString("id") ?: return@composable
-            WorkshopDetailScreen(
-                navController = navController,
-                workshopId = workshopId
-            )
+        composable(
+            route = Screen.WorkshopDetail.route,
+            arguments = listOf(navArgument("id") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val workshopId = backStackEntry.arguments?.getString("id") ?: ""
+            WorkshopDetailScreen(navController, workshopId)
         }
+
 
         /**
          * Workshops Add Screen.
@@ -399,16 +403,17 @@ fun ArcaNavGraph(
         }
 
         composable(
-            route = "${Screen.ModifyWorkshops.route}/{id}",
+            route = Screen.ModifyWorkshops.route,
             arguments = listOf(navArgument("id") { type = NavType.StringType })
-        ) { backStackEntry ->
+        )
+        { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id") ?: ""
             ModifyWorkshopScreen(
-                id = id,
-                navController = navController
+                workshopId = id,
+                navController = navController,
+                viewModel = hiltViewModel()
             )
         }
-
 
         /**
          * Supply List Screen.

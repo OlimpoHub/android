@@ -1,10 +1,13 @@
 package com.app.arcabyolimpo.presentation.screens.workshop
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -21,8 +24,11 @@ import com.app.arcabyolimpo.ui.theme.Background
 fun WorkshopDetailScreen(
     navController: NavHostController,
     workshopId: String,
-    viewModel: WorkshopsListViewModel = hiltViewModel()
+    viewModel: WorkshopDetailViewModel = hiltViewModel()
 ) {
+    val workshop by viewModel.workshop.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
 
     Scaffold(
         containerColor = Background,
@@ -54,7 +60,21 @@ fun WorkshopDetailScreen(
                     .weight(1f),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "Mostrando detalle del taller con ID: $workshopId")
+                when {
+                    isLoading -> CircularProgressIndicator()
+                    errorMessage != null -> Text(text = errorMessage ?: "")
+                    workshop != null -> {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text("Nombre: ${workshop?.nameWorkshop}")
+                            Text("Capacitación: ${workshop?.idTraining}")
+                            Text("Usuario: ${workshop?.idUser}")
+                            Text("Fecha: ${workshop?.date}")
+                            Text("Hora: ${workshop?.startHour} - ${workshop?.finishHour}")
+                            Text("Descripción: ${workshop?.description}")
+                        }
+                    }
+                    else -> Text("No se encontró el taller")
+                }
             }
 
             Row(
@@ -67,7 +87,7 @@ fun WorkshopDetailScreen(
                 DeleteButton(
                     modifier = Modifier.size(width = 112.dp, height = 40.dp),
                     onClick = {
-                        // Add delete function
+                        // Agrega la función de eliminar si quieres
                     }
                 )
 
@@ -76,7 +96,12 @@ fun WorkshopDetailScreen(
                 ModifyButton(
                     modifier = Modifier.size(width = 112.dp, height = 40.dp),
                     onClick = {
-                        navController.navigate("${Screen.ModifyWorkshops.route}/$workshopId")
+                        if (workshopId.isNotBlank()) {
+                            Log.d("WorkshopDetailScreen", "Botón Modificar clickeado, workshop id: $workshopId")
+                            navController.navigate(Screen.ModifyWorkshops.createRoute(workshopId))
+                        } else {
+                            Log.d("WorkshopDetailScreen", "ID del taller es null, no se puede navegar")
+                        }
                     }
                 )
             }

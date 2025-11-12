@@ -9,6 +9,7 @@ import com.app.arcabyolimpo.domain.repository.workshops.WorkshopRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -17,12 +18,6 @@ import kotlinx.coroutines.launch
 class ModifyWorkshopViewModel @Inject constructor(
     private val repository: WorkshopRepository
 ) : ViewModel() {
-
-    private val _uiState = MutableStateFlow(ModifyWorkshopsUiState())
-    val uiState = _uiState.asStateFlow()
-
-    private val _formData = MutableStateFlow(WorkshopFormData())
-    val formData = _formData.asStateFlow()
 
     private val _trainings = MutableStateFlow<List<Training>>(emptyList())
     val trainings = _trainings.asStateFlow()
@@ -33,19 +28,26 @@ class ModifyWorkshopViewModel @Inject constructor(
     private val _fieldErrors = MutableStateFlow<Map<String, Boolean>>(emptyMap())
     val fieldErrors = _fieldErrors.asStateFlow()
 
-    fun loadWorkshopById(id: String) {
+    private val _uiState = MutableStateFlow(ModifyWorkshopsUiState())
+    val uiState: StateFlow<ModifyWorkshopsUiState> = _uiState.asStateFlow()
+
+    private val _formData = MutableStateFlow(WorkshopFormData())
+    val formData: StateFlow<WorkshopFormData> = _formData.asStateFlow()
+
+    fun loadWorkshop(workshopId: String) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
             try {
-                val workshop = repository.getWorkshopsById(id)
+                val workshop = repository.getWorkshopsById(workshopId)
+                workshop?.let { fillFormWithWorkshopData(it) }
                 _uiState.value = _uiState.value.copy(
                     modifyWorkshop = workshop,
                     isLoading = false
                 )
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
-                    error = "Error al cargar el taller: ${e.message}",
-                    isLoading = false
+                    isLoading = false,
+                    error = e.message
                 )
             }
         }
@@ -86,6 +88,7 @@ class ModifyWorkshopViewModel @Inject constructor(
     }
 
     fun fillFormWithWorkshopData(workshop: Workshop) {
+        println("Llenando formData con: $workshop")
         _formData.value = formData.value.copy(
             name = workshop.nameWorkshop ?: "",
             idTraining = workshop.idTraining ?: "",
@@ -97,6 +100,7 @@ class ModifyWorkshopViewModel @Inject constructor(
             image = workshop.url ?: ""
         )
     }
+
 
     private fun validateForm(): Boolean {
         val data = _formData.value
