@@ -26,51 +26,76 @@ import com.app.arcabyolimpo.data.remote.dto.user.UserDto
 import com.app.arcabyolimpo.presentation.ui.components.atoms.status.ActiveStatus
 import com.app.arcabyolimpo.presentation.ui.components.atoms.status.InactiveStatus
 
+/**
+ * Composable that displays a user card with profile information and status.
+ *
+ * This component represents a single user entry in the list, showing:
+ * - The user's profile picture (or initials if no photo is available).
+ * - The user's full name.
+ * - An active/inactive status badge.
+ *
+ * The entire card is clickable and triggers a callback when selected.
+ *
+ * UI details:
+ * - Uses a dark background with slight elevation.
+ * - Displays profile image inside a circular shape.
+ * - Adapts layout spacing and alignment for readability.
+ *
+ * @param user The [UserDto] object containing the user's data.
+ * @param onClick Callback triggered when the card is clicked.
+ */
+
+@Suppress("ktlint:standard:function-naming")
 @Composable
 fun UserCard(
     user: UserDto,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onClick),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color(0xFF040610)
-        )
+        colors =
+            CardDefaults.cardColors(
+                containerColor = Color(0xFF040610),
+            ),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             // Profile Picture
             if (user.foto != null) {
                 AsyncImage(
                     model = user.foto,
                     contentDescription = "Profile Photo",
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop
+                    modifier =
+                        Modifier
+                            .size(48.dp)
+                            .clip(CircleShape),
+                    contentScale = ContentScale.Crop,
                 )
             } else {
                 // Placeholder if no photo
                 Box(
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clip(CircleShape)
-                        .background(Color(0xFF1E293B)),
-                    contentAlignment = Alignment.Center
+                    modifier =
+                        Modifier
+                            .size(48.dp)
+                            .clip(CircleShape)
+                            .background(Color(0xFF1E293B)),
+                    contentAlignment = Alignment.Center,
                 ) {
                     Text(
                         text = "${user.apellidoPaterno.firstOrNull() ?: ""}${user.apellidoMaterno.firstOrNull() ?: ""}",
                         color = Color.White,
                         fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
                 }
             }
@@ -81,17 +106,17 @@ fun UserCard(
                 color = Color.White,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Normal,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             )
 
             // Status badge - Active or Inactive
             if (user.estatus == 1) {
                 ActiveStatus(
-                    modifier = Modifier.padding(0.dp)
+                    modifier = Modifier.padding(0.dp),
                 )
             } else {
                 InactiveStatus(
-                    modifier = Modifier.padding(0.dp)
+                    modifier = Modifier.padding(0.dp),
                 )
             }
         }

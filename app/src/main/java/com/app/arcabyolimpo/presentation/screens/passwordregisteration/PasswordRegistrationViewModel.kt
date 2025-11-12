@@ -12,6 +12,18 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel responsible for handling the logic of the password registration process.
+ *
+ * This ViewModel communicates with the [PostPasswordRegistrationUseCase] to send a new
+ * password registration request and updates the UI state accordingly through a [StateFlow].
+ *
+ * It exposes a read-only [uiState] to the UI layer, which reflects the current state of
+ * the registration process — including loading status, success response, and errors.
+ *
+ * @property postPasswordRegistrationUseCase Use case responsible for executing the password registration logic.
+ */
+
 @HiltViewModel
 class PasswordRegistrationViewModel
 @Inject

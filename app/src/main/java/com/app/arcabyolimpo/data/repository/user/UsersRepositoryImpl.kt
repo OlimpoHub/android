@@ -6,6 +6,8 @@ import com.app.arcabyolimpo.data.remote.dto.user.UserDto
 import com.app.arcabyolimpo.domain.repository.user.UsersRepository
 import javax.inject.Inject
 
+// Repository implementation that interacts with the remote API to fetch user data.
+// Converts the received DTOs into domain models using the user mapper before returning them.
 
 class UsersRepositoryImpl
     @Inject
@@ -14,7 +16,6 @@ class UsersRepositoryImpl
     ) : UsersRepository {
         override suspend fun getUsers(): List<UserDto> {
             val response = api.getAllUsers()
-            return response.map{ it.toDomain() }
+            return response.map { it.toDomain() }
         }
-
-}
+    }

@@ -36,6 +36,22 @@ import com.app.arcabyolimpo.ui.theme.ButtonBlue
 import com.app.arcabyolimpo.ui.theme.ErrorRed
 import com.app.arcabyolimpo.ui.theme.White
 
+/**
+ * Screen that allows users to initiate the password recovery process.
+ *
+ * This screen presents an input for the user’s email address and a button to
+ * trigger the recovery flow via [PasswordRecoveryViewModel]. If successful,
+ * it shows a success message; otherwise, it displays context-specific errors.
+ *
+ * ## Atomic Design Level
+ * **Organism** — Composed of multiple smaller components:
+ * - Atoms: `ReturnIcon`, `MailIcon`, `SendEmailButton`, `StandardInput`
+ * - Molecules: Form layout and success/error feedback
+ *
+ * @param onBackClick Action executed when the back icon is pressed.
+ * @param viewModel Injected [PasswordRecoveryViewModel] that handles recovery logic.
+ */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable
@@ -55,14 +71,14 @@ fun PasswordRecoveryScreen(
                         ReturnIcon(size = 16.dp)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Background,
-                ),
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = Background,
+                    ),
             )
         },
-        containerColor = Background
-    )
-    {   padding ->
+        containerColor = Background,
+    ) { padding ->
         Column(
             modifier =
                 Modifier
@@ -73,14 +89,15 @@ fun PasswordRecoveryScreen(
             Text(
                 text = "El Arca en Querétaro I.A.P",
                 style = Typography.bodyMedium,
-                color = White
+                color = White,
             )
             Spacer(modifier = Modifier.height(20.dp))
             Text(
-                text = "¿Olvidaste \n" +
+                text =
+                    "¿Olvidaste \n" +
                         "tu contraseña?",
                 style = Typography.headlineLarge,
-                color = White
+                color = White,
             )
             Spacer(modifier = Modifier.height(150.dp))
             StandardInput(
@@ -89,18 +106,19 @@ fun PasswordRecoveryScreen(
                 value = email,
                 onValueChange = { email = it },
                 isError = uiState.error != null,
-                errorMessage = when (uiState.error) {
-                                "User not found" -> {
-                                    "Correo no registrado"
-                                }
-                                "Internal server error" -> {
-                                    "Error al enviar correo"
-                                }
-                                else -> {
-                                    uiState.error
-                                }
-                },
-                trailingIcon = { MailIcon() }
+                errorMessage =
+                    when (uiState.error) {
+                        "User not found" -> {
+                            "Correo no registrado"
+                        }
+                        "Internal server error" -> {
+                            "Error al enviar correo"
+                        }
+                        else -> {
+                            uiState.error
+                        }
+                    },
+                trailingIcon = { MailIcon() },
             )
             Spacer(modifier = Modifier.height(37.dp))
             SendEmailButton(
@@ -116,16 +134,15 @@ fun PasswordRecoveryScreen(
                     color = ButtonBlue,
                     style = Typography.bodySmall,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         }
     }
 }
 
-//@Preview(showBackground = true, showSystemUi = true)
-//@Composable
-//fun PasswordRecoveryScreenPreview() {
+// @Preview(showBackground = true, showSystemUi = true)
+// @Composable
+// fun PasswordRecoveryScreenPreview() {
 //    PasswordRecoveryScreen(onBackClick = { }, )
-//}
-
+// }

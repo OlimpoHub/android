@@ -60,9 +60,10 @@ fun SupplyListContent(
         )
 
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .pullRefresh(pullRefreshState),
+        modifier =
+            modifier
+                .fillMaxSize()
+                .pullRefresh(pullRefreshState),
     ) {
         when {
             // Show shimmer placeholders while loading and no data is yet available.
@@ -75,9 +76,10 @@ fun SupplyListContent(
                 ) {
                     items(10) {
                         LoadingShimmer(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(160.dp),
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(160.dp),
                         )
                     }
                 }

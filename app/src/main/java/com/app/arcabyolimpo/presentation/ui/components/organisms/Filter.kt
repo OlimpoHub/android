@@ -125,10 +125,11 @@ fun Filter(
                 )
 
                 HorizontalDivider(
-                    modifier = Modifier
-                        .padding(end = 40.dp),
+                    modifier =
+                        Modifier
+                            .padding(end = 40.dp),
                     thickness = 1.dp,
-                    color = White
+                    color = White,
                 )
 
                 sections.forEach { (title, items) ->
@@ -149,10 +150,11 @@ fun Filter(
                 )
 
                 HorizontalDivider(
-                    modifier = Modifier
-                        .padding(end = 40.dp),
+                    modifier =
+                        Modifier
+                            .padding(end = 40.dp),
                     thickness = 1.dp,
-                    color = White
+                    color = White,
                 )
 
                 Row(
