@@ -8,6 +8,16 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
+/**
+ * Use case responsible for filtering supplies based on the provided parameters.
+ *
+ * This class interacts with the [SupplyRepository] to request filtered supplies
+ * from the data layer according to the filters and order defined in [FilterDto].
+ * It exposes both a suspend function for direct calls and an `invoke` operator
+ * that returns a [Flow] to handle asynchronous UI state updates (Loading, Success, Error).
+ *
+ * @property repository The repository used to fetch filtered supplies from the data source.
+ */
 class FilterSuppliesUseCase
     @Inject
     constructor(

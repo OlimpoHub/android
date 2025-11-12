@@ -18,7 +18,18 @@ data class SuppliesListUiState(
     val suppliesList: List<Supply> = emptyList(),
     val isLoading: Boolean = false,
     val error: String? = null,
+    /**
+     * Optional data used to populate the filter panel for supplies.
+     */
     val filterData: FilterData? = null,
+    /**
+     * Holds the currently selected filters and sorting order.
+     *
+     * - `filters`: Map of filter keys and selected values.
+     * - `order`: Sorting order of the list ("ASC" for ascending, "DESC" for descending).
+     *
+     * This is sent to the ViewModel when applying filters.
+     */
     val selectedFilters: FilterDto =
         FilterDto(
             filters = emptyMap(),
