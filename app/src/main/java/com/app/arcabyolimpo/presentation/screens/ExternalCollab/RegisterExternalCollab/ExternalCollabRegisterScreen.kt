@@ -1,5 +1,6 @@
 package com.app.arcabyolimpo.presentation.screens.ExternalCollab.RegisterExternalCollab
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -12,19 +13,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SaveButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.CancelButton
+import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SaveButton
+import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.CalendarIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.ExitIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.ModalInput
-import androidx.compose.foundation.clickable
-import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.CalendarIcon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExternalCollabRegisterScreen(
     viewModel: ExternalCollabRegisterViewModel = hiltViewModel(),
     onDismiss: () -> Unit,
-    onSuccess: () -> Unit
+    onSuccess: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -56,13 +56,15 @@ fun ExternalCollabRegisterScreen(
                 TextButton(
                     onClick = {
                         datePickerState.selectedDateMillis?.let { millis ->
-                            val date = java.time.Instant.ofEpochMilli(millis)
-                                .atZone(java.time.ZoneId.systemDefault())
-                                .toLocalDate()
+                            val date =
+                                java.time.Instant
+                                    .ofEpochMilli(millis)
+                                    .atZone(java.time.ZoneId.systemDefault())
+                                    .toLocalDate()
                             viewModel.updateBirthDate(date.toString())
                         }
                         showDatePicker = false
-                    }
+                    },
                 ) {
                     Text("OK", color = Color(0xFF3B82F6))
                 }
@@ -72,28 +74,30 @@ fun ExternalCollabRegisterScreen(
                     Text("Cancelar", color = Color.Gray)
                 }
             },
-            colors = DatePickerDefaults.colors(
-                containerColor = Color(0xFF1A1F2E)
-            )
+            colors =
+                DatePickerDefaults.colors(
+                    containerColor = Color(0xFF1A1F2E),
+                ),
         ) {
             DatePicker(
                 state = datePickerState,
-                colors = DatePickerDefaults.colors(
-                    containerColor = Color(0xFF1A1F2E),
-                    titleContentColor = Color.White,
-                    headlineContentColor = Color.White,
-                    weekdayContentColor = Color.White,
-                    subheadContentColor = Color.White,
-                    yearContentColor = Color.White,
-                    currentYearContentColor = Color(0xFF3B82F6),
-                    selectedYearContentColor = Color.White,
-                    selectedYearContainerColor = Color(0xFF3B82F6),
-                    dayContentColor = Color.White,
-                    selectedDayContentColor = Color.White,
-                    selectedDayContainerColor = Color(0xFF3B82F6),
-                    todayContentColor = Color(0xFF3B82F6),
-                    todayDateBorderColor = Color(0xFF3B82F6)
-                )
+                colors =
+                    DatePickerDefaults.colors(
+                        containerColor = Color(0xFF1A1F2E),
+                        titleContentColor = Color.White,
+                        headlineContentColor = Color.White,
+                        weekdayContentColor = Color.White,
+                        subheadContentColor = Color.White,
+                        yearContentColor = Color.White,
+                        currentYearContentColor = Color(0xFF3B82F6),
+                        selectedYearContentColor = Color.White,
+                        selectedYearContainerColor = Color(0xFF3B82F6),
+                        dayContentColor = Color.White,
+                        selectedDayContentColor = Color.White,
+                        selectedDayContainerColor = Color(0xFF3B82F6),
+                        todayContentColor = Color(0xFF3B82F6),
+                        todayDateBorderColor = Color(0xFF3B82F6),
+                    ),
             )
         }
     }
@@ -106,24 +110,25 @@ fun ExternalCollabRegisterScreen(
         sheetState = sheetState,
         containerColor = Color(0xFF040610),
         contentColor = Color.White,
-        dragHandle = null
+        dragHandle = null,
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp),
         ) {
             // Header
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = "Registrar Colaborador",
                     color = Color.White,
                     fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
 
                 IconButton(onClick = {
@@ -138,11 +143,12 @@ fun ExternalCollabRegisterScreen(
 
             // Form content
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f, fill = false)
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .weight(1f, fill = false)
+                        .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 ModalInput(
                     label = "Nombre *",
@@ -150,7 +156,7 @@ fun ExternalCollabRegisterScreen(
                     onValueChange = { viewModel.updateFirstName(it) },
                     placeholder = "Ingresa el nombre",
                     isError = uiState.firstNameError != null,
-                    errorMessage = uiState.firstNameError
+                    errorMessage = uiState.firstNameError,
                 )
 
                 ModalInput(
@@ -159,14 +165,14 @@ fun ExternalCollabRegisterScreen(
                     onValueChange = { viewModel.updateLastName(it) },
                     placeholder = "Ingresa el apellido paterno",
                     isError = uiState.lastNameError != null,
-                    errorMessage = uiState.lastNameError
+                    errorMessage = uiState.lastNameError,
                 )
 
                 ModalInput(
                     label = "Apellido Materno",
                     value = uiState.secondLastName,
                     onValueChange = { viewModel.updateSecondLastName(it) },
-                    placeholder = "Ingresa el apellido materno"
+                    placeholder = "Ingresa el apellido materno",
                 )
 
                 ModalInput(
@@ -175,7 +181,7 @@ fun ExternalCollabRegisterScreen(
                     onValueChange = { viewModel.updateEmail(it) },
                     placeholder = "ejemplo@correo.com",
                     isError = uiState.emailError != null,
-                    errorMessage = uiState.emailError
+                    errorMessage = uiState.emailError,
                 )
 
                 ModalInput(
@@ -184,14 +190,15 @@ fun ExternalCollabRegisterScreen(
                     onValueChange = { viewModel.updatePhone(it) },
                     placeholder = "1234567890",
                     isError = uiState.phoneError != null,
-                    errorMessage = uiState.phoneError
+                    errorMessage = uiState.phoneError,
                 )
 
                 // Date of Birth with Calendar Picker
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { showDatePicker = true }
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .clickable { showDatePicker = true },
                 ) {
                     ModalInput(
                         label = "Fecha de Nacimiento",
@@ -203,9 +210,10 @@ fun ExternalCollabRegisterScreen(
                     // Calendar icon overlay
                     IconButton(
                         onClick = { showDatePicker = true },
-                        modifier = Modifier
-                            .align(Alignment.CenterEnd)
-                            .padding(end = 8.dp, top = 32.dp)
+                        modifier =
+                            Modifier
+                                .align(Alignment.CenterEnd)
+                                .padding(end = 8.dp, top = 32.dp),
                     ) {
                         CalendarIcon(tint = Color(0xFF3B82F6))
                     }
@@ -215,7 +223,7 @@ fun ExternalCollabRegisterScreen(
                     label = "Carrera",
                     value = uiState.degree,
                     onValueChange = { viewModel.updateDegree(it) },
-                    placeholder = "Ingeniería en..."
+                    placeholder = "Ingeniería en...",
                 )
 
                 // Status Toggle - Updated to Blue
@@ -224,25 +232,27 @@ fun ExternalCollabRegisterScreen(
                         text = "Estatus",
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.White,
-                        modifier = Modifier.padding(bottom = 8.dp)
+                        modifier = Modifier.padding(bottom = 8.dp),
                     )
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
                         // Active Button - Blue
                         OutlinedButton(
                             onClick = { viewModel.updateIsActive(true) },
                             modifier = Modifier.weight(1f),
-                            colors = ButtonDefaults.outlinedButtonColors(
-                                containerColor = if (uiState.isActive) Color(0xFF3B82F6) else Color.Transparent,
-                                contentColor = if (uiState.isActive) Color.White else Color(0xFF3B82F6)
-                            ),
-                            border = androidx.compose.foundation.BorderStroke(
-                                1.dp,
-                                if (uiState.isActive) Color(0xFF3B82F6) else Color(0xFF3B82F6).copy(alpha = 0.5f)
-                            )
+                            colors =
+                                ButtonDefaults.outlinedButtonColors(
+                                    containerColor = if (uiState.isActive) Color(0xFF3B82F6) else Color.Transparent,
+                                    contentColor = if (uiState.isActive) Color.White else Color(0xFF3B82F6),
+                                ),
+                            border =
+                                androidx.compose.foundation.BorderStroke(
+                                    1.dp,
+                                    if (uiState.isActive) Color(0xFF3B82F6) else Color(0xFF3B82F6).copy(alpha = 0.5f),
+                                ),
                         ) {
                             Text("Activo")
                         }
@@ -251,14 +261,16 @@ fun ExternalCollabRegisterScreen(
                         OutlinedButton(
                             onClick = { viewModel.updateIsActive(false) },
                             modifier = Modifier.weight(1f),
-                            colors = ButtonDefaults.outlinedButtonColors(
-                                containerColor = if (!uiState.isActive) Color(0xFF3B82F6) else Color.Transparent,
-                                contentColor = if (!uiState.isActive) Color.White else Color(0xFF3B82F6)
-                            ),
-                            border = androidx.compose.foundation.BorderStroke(
-                                1.dp,
-                                if (!uiState.isActive) Color(0xFF3B82F6) else Color(0xFF3B82F6).copy(alpha = 0.5f)
-                            )
+                            colors =
+                                ButtonDefaults.outlinedButtonColors(
+                                    containerColor = if (!uiState.isActive) Color(0xFF3B82F6) else Color.Transparent,
+                                    contentColor = if (!uiState.isActive) Color.White else Color(0xFF3B82F6),
+                                ),
+                            border =
+                                androidx.compose.foundation.BorderStroke(
+                                    1.dp,
+                                    if (!uiState.isActive) Color(0xFF3B82F6) else Color(0xFF3B82F6).copy(alpha = 0.5f),
+                                ),
                         ) {
                             Text("Inactivo")
                         }
@@ -269,15 +281,16 @@ fun ExternalCollabRegisterScreen(
                 if (uiState.successMessage != null) {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color(0xFF22C55E).copy(alpha = 0.2f)
-                        )
+                        colors =
+                            CardDefaults.cardColors(
+                                containerColor = Color(0xFF22C55E).copy(alpha = 0.2f),
+                            ),
                     ) {
                         Text(
                             text = uiState.successMessage ?: "",
                             color = Color(0xFF22C55E),
                             modifier = Modifier.padding(16.dp),
-                            fontWeight = FontWeight.Medium
+                            fontWeight = FontWeight.Medium,
                         )
                     }
                 }
@@ -286,15 +299,16 @@ fun ExternalCollabRegisterScreen(
                 if (uiState.error != null) {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.2f)
-                        )
+                        colors =
+                            CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.2f),
+                            ),
                     ) {
                         Text(
                             text = uiState.error ?: "",
                             color = MaterialTheme.colorScheme.error,
                             modifier = Modifier.padding(16.dp),
-                            fontWeight = FontWeight.Medium
+                            fontWeight = FontWeight.Medium,
                         )
                     }
                 }
@@ -305,26 +319,26 @@ fun ExternalCollabRegisterScreen(
             // Action Buttons
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 Box(
                     modifier = Modifier.weight(1f),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.Center,
                 ) {
                     CancelButton(
                         onClick = {
                             viewModel.resetState()
                             onDismiss()
-                        }
+                        },
                     )
                 }
 
                 Box(
                     modifier = Modifier.weight(1f),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.Center,
                 ) {
                     SaveButton(
-                        onClick = { viewModel.registerCollab() }
+                        onClick = { viewModel.registerCollab() },
                     )
                 }
             }
@@ -333,7 +347,7 @@ fun ExternalCollabRegisterScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
-                    color = Color.White
+                    color = Color.White,
                 )
             }
 

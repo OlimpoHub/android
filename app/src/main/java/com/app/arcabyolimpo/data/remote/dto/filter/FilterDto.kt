@@ -35,7 +35,7 @@ data class FilterDto(
  * @param order Optional sorting order ("ASC" or "DESC") to include in the DTO.
  * @return A [FilterDto] ready to be sent to the API.
  */
-fun createFilterSuppliesDto(
+fun createFilterDto(
     selectedMap: Map<String, MutableList<String>>,
     order: String? = null,
 ): FilterDto {

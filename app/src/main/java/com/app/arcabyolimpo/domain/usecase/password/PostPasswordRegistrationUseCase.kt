@@ -7,6 +7,21 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
+/**
+ * Use case responsible for registering or updating a user's password.
+ *
+ * This class interacts with [PasswordUserRepository] to send the user's email and new password
+ * to the server for account activation or password reset. It returns a [Flow] that emits a [Result]
+ * representing the current state of the operation: loading, success (with the updated password response),
+ * or error (with an exception).
+ *
+ * @property repository Repository interface that manages password-related API interactions.
+ *
+ * @see PasswordUserRepository
+ * @see Result
+ * @see UpdatePassword
+ */
+
 class PostPasswordRegistrationUseCase
     @Inject
     constructor(
