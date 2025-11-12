@@ -149,7 +149,7 @@ fun SupplyDetailContent(
             )
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-                if (!batches.isEmpty()) {
+                if (batches[0].expirationDate != "") {
                     FilterIcon(
                         modifier =
                             Modifier
@@ -169,7 +169,7 @@ fun SupplyDetailContent(
             verticalArrangement =
                 Arrangement.spacedBy(0.dp),
         ) {
-            if(batches.isEmpty()) {
+            if(batches[0].expirationDate == "") {
                 Text(
                     text = "No hay lotes del insumo",
                     color = White,

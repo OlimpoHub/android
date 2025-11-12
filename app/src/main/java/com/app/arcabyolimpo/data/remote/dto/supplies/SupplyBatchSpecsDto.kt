@@ -11,7 +11,7 @@ import com.google.gson.annotations.SerializedName
  * @param adquisicion: String -> acquirement type of the supply batch
  * ---------------------------------------------------------------------------------------------- */
 data class SupplyBatchSpecsDto(
-    @SerializedName("cantidad") val quantity: Int,
-    @SerializedName("FechaCaducidad") val expirationDate: String,
-    @SerializedName("adquisicion") val adquisitionType: String,
+    @SerializedName("cantidad") val quantity: Int?,
+    @SerializedName("FechaCaducidad") val expirationDate: String?,
+    @SerializedName("adquisicion") val adquisitionType: String?,
 )

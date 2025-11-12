@@ -12,21 +12,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
-import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
-import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.SearchIcon
-import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
-import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.FilterIcon
-import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SearchInput
 import com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabList.components.ExternalCollabCard
 import com.app.arcabyolimpo.presentation.screens.ExternalCollab.RegisterExternalCollab.ExternalCollabRegisterScreen
+import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
+import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.FilterIcon
+import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
+import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.SearchIcon
+import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SearchInput
+import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExternalCollabListScreen(
     viewModel: ExternalCollabListViewModel = hiltViewModel(),
     onCollabClick: (String) -> Unit,
-    onAddClick: () -> Unit
+    onAddClick: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
@@ -40,7 +40,7 @@ fun ExternalCollabListScreen(
         containerColor = Color(0xFF040610),
         topBar = {
             Column(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 // First row: Title and Notification
                 TopAppBar(
@@ -49,26 +49,28 @@ fun ExternalCollabListScreen(
                             "Usuarios",
                             color = Color.White,
                             fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
                         )
                     },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color(0xFF040610)
-                    ),
+                    colors =
+                        TopAppBarDefaults.topAppBarColors(
+                            containerColor = Color(0xFF040610),
+                        ),
                     actions = {
                         IconButton(onClick = { /* TODO: Notifications action */ }) {
                             NotificationIcon()
                         }
-                    }
+                    },
                 )
 
                 // Second row: Search input and Filter button
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     SearchInput(
                         value = searchQuery,
@@ -77,12 +79,12 @@ fun ExternalCollabListScreen(
                         modifier = Modifier.weight(1f),
                         trailingIcon = {
                             SearchIcon(tint = Color.White)
-                        }
+                        },
                     )
 
                     IconButton(
                         onClick = { /* TODO: Filter action */ },
-                        modifier = Modifier.size(30.dp)
+                        modifier = Modifier.size(30.dp),
                     ) {
                         FilterIcon()
                     }
@@ -94,33 +96,35 @@ fun ExternalCollabListScreen(
         },
         floatingActionButton = {
             AddButton(
-                onClick = { showRegisterModal = true }
+                onClick = { showRegisterModal = true },
             )
-        }
+        },
     ) { padding ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(padding),
         ) {
             when {
                 uiState.isLoading -> {
                     CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center)
+                        modifier = Modifier.align(Alignment.Center),
                     )
                 }
 
                 uiState.error != null -> {
                     Column(
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        modifier =
+                            Modifier
+                                .align(Alignment.Center)
+                                .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Text(
                             text = "Error: ${uiState.error}",
                             color = Color.White,
-                            style = MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.bodyLarge,
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(onClick = { viewModel.loadCollabs() }) {
@@ -134,7 +138,7 @@ fun ExternalCollabListScreen(
                         text = "No collaborators found",
                         color = Color.White,
                         modifier = Modifier.align(Alignment.Center),
-                        style = MaterialTheme.typography.bodyLarge
+                        style = MaterialTheme.typography.bodyLarge,
                     )
                 }
 
@@ -142,7 +146,7 @@ fun ExternalCollabListScreen(
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
                         // "Voluntarios" header
                         item {
@@ -151,7 +155,7 @@ fun ExternalCollabListScreen(
                                 color = Color.White,
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(vertical = 8.dp)
+                                modifier = Modifier.padding(vertical = 8.dp),
                             )
                         }
 
@@ -159,7 +163,7 @@ fun ExternalCollabListScreen(
                         items(uiState.collabs) { collab ->
                             ExternalCollabCard(
                                 collab = collab,
-                                onClick = { collab.id?.let { onCollabClick(it) } }
+                                onClick = { collab.id?.let { onCollabClick(it) } },
                             )
                         }
                     }
@@ -171,8 +175,8 @@ fun ExternalCollabListScreen(
                 onDismiss = { showRegisterModal = false },
                 onSuccess = {
                     showRegisterModal = false
-                    viewModel.loadCollabs()  // Refresh list
-                }
+                    viewModel.loadCollabs() // Refresh list
+                },
             )
         }
     }

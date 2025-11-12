@@ -21,6 +21,8 @@ import com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabDe
 import com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabList.ExternalCollabListScreen
 import com.app.arcabyolimpo.presentation.screens.ExternalCollab.RegisterExternalCollab.ExternalCollabRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.accountactivation.AccountActivationScreen
+import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
+import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
 import com.app.arcabyolimpo.presentation.screens.home.assistant.CollaboratorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.home.coordinator.CoordinatorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.login.LoginScreen
@@ -28,11 +30,13 @@ import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecove
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
+import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
+import com.app.arcabyolimpo.presentation.screens.user.UserListScreen
 import com.app.arcabyolimpo.presentation.screens.workshop.AddNewWorkshopScreen
 import com.app.arcabyolimpo.presentation.screens.workshop.WorkshopsListScreen
 
@@ -87,6 +91,11 @@ sealed class Screen(
     object BeneficiaryDetail : Screen("beneficiary_detail/{beneficiaryId}") {
         fun createRoute(beneficiaryId: String) = "beneficiary_detail/$beneficiaryId"
     }
+
+    object SupplyDetail : Screen("supply/{idSupply}") {
+        fun createRoute(idSupply: String) = "supply/$idSupply"
+    }
+    object UserList : Screen("user")
 }
 
 /**
@@ -123,6 +132,7 @@ fun ArcaNavGraph(
     /** Defines all navigation. The start destination is the Splash screen. */
     NavHost(
         navController = navController,
+        // TODO: Cambiar a Screen.Splash.route cuando acabe
         startDestination = Screen.SuppliesList.route,
         modifier = modifier,
     ) {
@@ -344,6 +354,17 @@ fun ArcaNavGraph(
             )
         }
 
+        composable(Screen.UserList.route) {
+            UserListScreen(
+                onCollabClick = { id ->
+                    navController.navigate(Screen.ExternalCollabDetail.createRoute(id))
+                },
+                onAddClick = {
+                    navController.navigate(Screen.ExternalCollabRegister.route)
+                },
+            )
+        }
+
         /**
          * Workshops List Screen.
          *
@@ -397,11 +418,36 @@ fun ArcaNavGraph(
         composable(Screen.SuppliesList.route) {
             SupplyListScreen(
                 onSupplyClick = { id ->
-                    navController.navigate("supplyDetail/$id")
+                    navController.navigate("supply/$id")
                 },
             )
         }
 
+        composable(
+            route = Screen.SupplyDetail.route,
+            arguments = listOf(navArgument("idSupply") { type = NavType.StringType }),
+        ) { backStackEntry ->
+            val idSupply = backStackEntry.arguments?.getString("idSupply")
+            SuppliesDetailScreen(
+                idInsumo = idSupply ?: "",
+                onBackClick = { navController.popBackStack() },
+                onClickAddSupplyBatch = {
+                        // TODO: Add when add a supply batch is ready
+                    },
+                onClickDelete = {
+                    // TODO: Add when delete a supply is ready
+                },
+                onClickModify = {
+                    // TODO: Add when delete a supply is ready
+                },
+                modifySupplyBatch = {
+                    // TODO: Add when delete a supply is ready
+                },
+                deleteSupplyBatch = {
+                    // TODO: Add when delete a supply is ready
+                },
+            )
+        }
         /**
          * Beneficiary List Screen.
          *
@@ -412,8 +458,8 @@ fun ArcaNavGraph(
                 onBeneficiaryClick = { beneficiaryId ->
                     navController.navigate(Screen.BeneficiaryDetail.createRoute(beneficiaryId))
                 },
-                onFilterClick = { /* TODO: Lógica de VM */},
-                onNotificationClick = { /* TODO: Lógica de VM */}
+                onFilterClick = { /* TODO: Lógica de VM */ },
+                onNotificationClick = { /* TODO: Lógica de VM */ },
             )
         }
 
@@ -424,12 +470,12 @@ fun ArcaNavGraph(
          */
         composable(
             route = Screen.BeneficiaryDetail.route,
-            arguments = listOf(navArgument("beneficiaryId") { type = NavType.StringType})
+            arguments = listOf(navArgument("beneficiaryId") { type = NavType.StringType }),
         ) {
             BeneficiaryDetailScreen(
                 onBackClick = { navController.popBackStack() },
                 onModifyClick = { /* TODO: Lógica de VM */ },
-                viewModel = hiltViewModel()
+                viewModel = hiltViewModel(),
             )
         }
     }

@@ -1,3 +1,12 @@
+## [0.1.0] - 12/11/2025
+
+### Added
+- Filter and search bar for users
+
+### Updated
+- External collabs screen to user general screen
+
+
 ## [0.1.0] - 11/11/2025
 
 ### Fixed

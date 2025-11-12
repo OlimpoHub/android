@@ -23,6 +23,16 @@ import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.ErrorRed
 import com.app.arcabyolimpo.ui.theme.White
 
+/**
+ * Composable screen displayed when the token verification process fails.
+ *
+ * This screen informs the user that the provided token is invalid and suggests retrying the process.
+ * It includes a top app bar with a back navigation icon and displays error feedback
+ * using appropriate typography and colors.
+ *
+ * @param onBackClick Lambda function triggered when the user taps the back button.
+ */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable

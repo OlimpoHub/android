@@ -1,14 +1,24 @@
 package com.app.arcabyolimpo.data.repository.supplies
 
+import android.content.Context
+import android.net.Uri
 import com.app.arcabyolimpo.data.mapper.supplies.toDomain
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
+import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
 import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.domain.model.supplies.Batch
 import com.app.arcabyolimpo.domain.model.supplies.Supply
+import com.app.arcabyolimpo.domain.model.supplies.SupplyAdd
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
+import com.app.arcabyolimpo.domain.model.supplies.WorkshopCategoryList
 import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.http.Multipart
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -25,6 +35,7 @@ import javax.inject.Singleton
 @Singleton
 class SupplyRepositoryImpl @Inject constructor(
         private val api: ArcaApi,
+        @ApplicationContext private val context: Context
     ) : SupplyRepository {
         override suspend fun getSuppliesList(): List<Supply> {
             val response = api.getSuppliesList()
@@ -78,4 +89,54 @@ class SupplyRepositoryImpl @Inject constructor(
             val body = DeleteDto(id)
             api.deleteOneSupply(body)
         }
+        override suspend fun getWorkshopCategoryList(): Result<WorkshopCategoryList> {
+            return try {
+                val workshopCategoryListDto = api.getWorkshopCategoryList()
+                Result.success(workshopCategoryListDto.toDomain())
+
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+
+        override suspend fun addSupply(supply: SupplyAdd, image: Uri?): Result<Unit> {
+            return try {
+                val imagePart = image?.let {
+                    val input = context.contentResolver.openInputStream(it)
+                    val bytes = input?.readBytes()
+                    input?.close()
+
+                    if (bytes != null) {
+                        val requestFile = bytes.toRequestBody(
+                            context.contentResolver.getType(it)?.toMediaTypeOrNull()
+                        )
+                        MultipartBody.Part.createFormData(
+                            "SupplyImage",
+                            "image.jpg",
+                            requestFile
+                        )
+
+                    } else null
+                }
+
+                val idWorkshop = supply.idWorkshop.toRequestBody("text/plain".toMediaTypeOrNull())
+                val name = supply.name.toRequestBody("text/plain".toMediaTypeOrNull())
+                val measureUnit = supply.measureUnit.toRequestBody("text/plain".toMediaTypeOrNull())
+                val idCategory = supply.idCategory.toRequestBody("text/plain".toMediaTypeOrNull())
+                val status = supply.status.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+
+                api.addSupply(
+                    idWorkshop = idWorkshop,
+                    name = name,
+                    measureUnit = measureUnit,
+                    idCategory = idCategory,
+                    status = status,
+                    image = imagePart
+                )
+                Result.success(Unit)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+
     }
