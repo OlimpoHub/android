@@ -326,7 +326,7 @@ fun ArcaNavGraph(
                 onEditClick = { id ->
                     // TODO: Navigate to edit screen when you create it
                 },
-                onDeleteClick = { navController.navigate(Screen.ExternalCollabList.route) }
+                onDeleteClick = { navController.navigate(Screen.ExternalCollabList.route) },
             )
         }
 

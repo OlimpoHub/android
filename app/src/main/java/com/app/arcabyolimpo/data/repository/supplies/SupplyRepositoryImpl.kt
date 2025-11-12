@@ -42,7 +42,6 @@ class SupplyRepositoryImpl @Inject constructor(
 
         override suspend fun filterSupply(filters: FilterDto): List<Supply> {
             val response = api.filterSupplies(filters)
-            println("DEBUG FILTER RESPONSE: $response")
             return response.map { dto ->
                 Supply(
                     id = dto.id,
