@@ -32,6 +32,7 @@ import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScr
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
 import com.app.arcabyolimpo.presentation.screens.workshop.AddNewWorkshopScreen
+import com.app.arcabyolimpo.presentation.screens.workshop.WorkshopDetailScreen
 import com.app.arcabyolimpo.presentation.screens.workshop.WorkshopsListScreen
 
 /**
@@ -77,6 +78,10 @@ sealed class Screen(
     object SuppliesList : Screen("supply")
 
     object WorkshopsList : Screen("workshop")
+
+    object WorkshopDetail : Screen("workshop_detail/{id}") {
+        fun createRoute(id: String): String = "workshop_detail/$id"
+    }
 
     object AddNewWorkshop : Screen("workshop/add")
 
@@ -354,7 +359,18 @@ fun ArcaNavGraph(
         composable(Screen.WorkshopsList.route) {
             WorkshopsListScreen(
                 navController = navController,
-                workshopClick = {},
+                workshopClick = { id ->
+                    navController.navigate(Screen.WorkshopDetail.createRoute(id))
+                }
+            )
+        }
+
+
+        composable(route = Screen.WorkshopDetail.route) { backStackEntry ->
+            val workshopId = backStackEntry.arguments?.getString("id") ?: return@composable
+            WorkshopDetailScreen(
+                navController = navController,
+                workshopId = workshopId
             )
         }
 
