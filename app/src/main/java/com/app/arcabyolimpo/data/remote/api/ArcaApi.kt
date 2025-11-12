@@ -19,15 +19,20 @@ import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.WorkshopCategoryListDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.AddNewWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -119,4 +124,17 @@ interface ArcaApi {
         @Path("id") id: String,
     ): SupplyBatchDto
 
+    @GET("supplies/workshop/category")
+    suspend fun getWorkshopCategoryList(): WorkshopCategoryListDto
+
+    @Multipart
+    @POST("supplies/add")
+    suspend fun addSupply(
+        @Part("idWorkshop") idWorkshop: RequestBody,
+        @Part("name") name: RequestBody,
+        @Part("measureUnit") measureUnit: RequestBody,
+        @Part("idCategory") idCategory: RequestBody,
+        @Part("status") status: RequestBody,
+        @Part image: MultipartBody.Part?
+    )
 }
