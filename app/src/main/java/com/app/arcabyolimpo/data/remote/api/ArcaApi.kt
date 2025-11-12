@@ -119,4 +119,9 @@ interface ArcaApi {
         @Path("id") id: String,
     ): SupplyBatchDto
 
+    @DELETE("supplyBatch/{id}")
+    suspend fun deleteSupplyBatch(
+        @Path("id") id: String
+    )
+
 }

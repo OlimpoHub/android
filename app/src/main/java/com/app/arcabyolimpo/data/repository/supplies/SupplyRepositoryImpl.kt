@@ -4,6 +4,7 @@ import com.app.arcabyolimpo.data.mapper.supplies.toDomain
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.domain.model.filter.FilterData
+import com.app.arcabyolimpo.domain.model.supplies.Batch
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
 import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
@@ -59,4 +60,14 @@ class SupplyRepositoryImpl @Inject constructor(
          * getSupplyBatchById -> calls the API to fetch a supply batch by its ID.
         * --------------------------------------------------------------------------------------- */
         override suspend fun getSupplyBatchById(id: String): SupplyBatchExt = api.getSupplyBatchById(id).toDomain()
+
+        /**
+         * Deletes a specific supply batch identified by its [id].
+         *
+         * This function calls the remote API to perform the deletion operation.
+         * It does not return any data, but will throw an exception if the request fails.
+         */
+        override suspend fun deleteSupplyBatch(id: String){
+            api.deleteSupplyBatch(id)
+        }
     }
