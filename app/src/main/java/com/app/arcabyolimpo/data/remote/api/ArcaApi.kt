@@ -20,6 +20,7 @@ import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.AddNewWorkshopDto
+import com.app.arcabyolimpo.data.remote.dto.workshops.ModifyWorkshopsDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
@@ -104,6 +105,12 @@ interface ArcaApi {
     suspend fun addWorkshop(
         @Body requestBody: WorkshopDto
     ): AddNewWorkshopDto
+
+    @POST("workshop/modify/{id}")
+    suspend fun modifyWorkshop(
+        @Path("id") id: String,
+        @Body requestBody: WorkshopDto
+    ): ModifyWorkshopsDto
 
     @GET("beneficiary")
     suspend fun getBeneficiariesList(): List<BeneficiariesListDto>

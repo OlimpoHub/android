@@ -11,4 +11,5 @@ interface WorkshopRepository {
 
     suspend fun addWorkshop(newWorkshop: WorkshopDto): Workshop
 
+    suspend fun modifyWorkshops(modifiedWorkshop: WorkshopDto): Workshop
 }
