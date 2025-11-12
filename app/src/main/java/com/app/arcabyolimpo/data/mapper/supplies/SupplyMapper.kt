@@ -26,8 +26,8 @@ fun SupplyDto.toDomain(): Supply =
         batch = batch.flatMap { supplyBatchDto ->
             supplyBatchDto.supplyBatches?.map { spec ->
                 SupplyBatch(
-                    quantity = spec.quantity,
-                    expirationDate = spec.expirationDate
+                    quantity = spec.quantity ?: 0,
+                    expirationDate = spec.expirationDate ?: ""
                 )
             } ?: emptyList()
         }
