@@ -78,7 +78,7 @@ fun WorkshopsListScreen(
                                 shape = MaterialTheme.shapes.medium,
                             ) {
                                 Text(
-                                    text = workshop.nameWorkshop,
+                                    text = workshop.nameWorkshop ?: "Sin nombre",
                                     style = MaterialTheme.typography.titleMedium
                                 )
                             }

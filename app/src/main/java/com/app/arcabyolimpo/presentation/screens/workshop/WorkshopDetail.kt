@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.app.arcabyolimpo.presentation.navigation.Screen
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.DeleteButton
@@ -17,7 +18,12 @@ import com.app.arcabyolimpo.ui.theme.Background
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WorkshopDetailScreen(navController: NavHostController, workshopId: String) {
+fun WorkshopDetailScreen(
+    navController: NavHostController,
+    workshopId: String,
+    viewModel: WorkshopsListViewModel = hiltViewModel()
+) {
+
     Scaffold(
         containerColor = Background,
         topBar = {
@@ -70,7 +76,7 @@ fun WorkshopDetailScreen(navController: NavHostController, workshopId: String) {
                 ModifyButton(
                     modifier = Modifier.size(width = 112.dp, height = 40.dp),
                     onClick = {
-                        // Modify function
+                        navController.navigate("${Screen.ModifyWorkshops.route}/$workshopId")
                     }
                 )
             }

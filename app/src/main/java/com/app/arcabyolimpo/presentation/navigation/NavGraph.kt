@@ -34,6 +34,7 @@ import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerifica
 import com.app.arcabyolimpo.presentation.screens.workshop.AddNewWorkshopScreen
 import com.app.arcabyolimpo.presentation.screens.workshop.WorkshopDetailScreen
 import com.app.arcabyolimpo.presentation.screens.workshop.WorkshopsListScreen
+import com.app.arcabyolimpo.presentation.screens.workshop.ModifyWorkshopScreen
 
 /**
  * Defines all available destinations (routes) in the application.
@@ -84,6 +85,8 @@ sealed class Screen(
     }
 
     object AddNewWorkshop : Screen("workshop/add")
+
+    object ModifyWorkshops : Screen("workshop/modify/{id}")
 
     object BeneficiaryList : Screen("beneficiary")
 
@@ -394,6 +397,18 @@ fun ArcaNavGraph(
                 },
             )
         }
+
+        composable(
+            route = "${Screen.ModifyWorkshops.route}/{id}",
+            arguments = listOf(navArgument("id") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id") ?: ""
+            ModifyWorkshopScreen(
+                id = id,
+                navController = navController
+            )
+        }
+
 
         /**
          * Supply List Screen.
