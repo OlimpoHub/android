@@ -31,6 +31,7 @@ import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
 import com.app.arcabyolimpo.presentation.screens.supply.SupplyListScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
+import com.app.arcabyolimpo.presentation.screens.user.UserListScreen
 import com.app.arcabyolimpo.presentation.screens.workshop.AddNewWorkshopScreen
 import com.app.arcabyolimpo.presentation.screens.workshop.WorkshopsListScreen
 
@@ -83,6 +84,9 @@ sealed class Screen(
     object BeneficiaryList : Screen("beneficiary")
 
     object BeneficiaryDetail : Screen("beneficiary/id")
+
+    object UserList : Screen("user")
+
 }
 
 /**
@@ -119,7 +123,7 @@ fun ArcaNavGraph(
     /** Defines all navigation. The start destination is the Splash screen. */
     NavHost(
         navController = navController,
-        startDestination = Screen.Splash.route,
+        startDestination = Screen.UserList.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -336,6 +340,17 @@ fun ArcaNavGraph(
                 onDismiss = { navController.popBackStack() },
                 onSuccess = {
                     navController.popBackStack()
+                },
+            )
+        }
+
+        composable(Screen.UserList.route) {
+            UserListScreen (
+                onCollabClick = { id ->
+                    navController.navigate(Screen.ExternalCollabDetail.createRoute(id))
+                },
+                onAddClick = {
+                    navController.navigate(Screen.ExternalCollabRegister.route)
                 },
             )
         }

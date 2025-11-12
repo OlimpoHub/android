@@ -18,6 +18,7 @@ import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
+import com.app.arcabyolimpo.data.remote.dto.user.UserDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.AddNewWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
@@ -75,6 +76,9 @@ interface ArcaApi {
     suspend fun updatePassword(
         @Body request: UpdatePasswordDto
     ): Response<UpdatePasswordResponseDto>
+
+    @GET("user")
+    suspend fun getAllUsers(): List<UserDto>
 
     @GET("supplies")
     suspend fun getSuppliesList(): List<SuppliesListDto>

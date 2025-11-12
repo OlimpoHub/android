@@ -5,7 +5,7 @@ data class FilterDto(
     val order: String? = null,
 )
 
-fun createFilterSuppliesDto(
+fun createFilterDto(
     selectedMap: Map<String, MutableList<String>>,
     order: String? = null,
 ): FilterDto {
