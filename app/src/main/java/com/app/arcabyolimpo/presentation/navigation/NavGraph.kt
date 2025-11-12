@@ -28,6 +28,7 @@ import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecove
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
+import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
@@ -83,6 +84,10 @@ sealed class Screen(
     object BeneficiaryList : Screen("beneficiary")
 
     object BeneficiaryDetail : Screen("beneficiary/id")
+
+    object SupplyDetail : Screen("supply/{idSupply}") {
+        fun createRoute(idSupply: String) = "supply/$idSupply"
+    }
 }
 
 /**
@@ -393,8 +398,34 @@ fun ArcaNavGraph(
         composable(Screen.SuppliesList.route) {
             SupplyListScreen(
                 onSupplyClick = { id ->
-                    navController.navigate("supplyDetail/$id")
+                    navController.navigate("supply/$id")
                 },
+            )
+        }
+
+        composable(
+            route = Screen.SupplyDetail.route,
+            arguments = listOf(navArgument("idSupply") { type = NavType.StringType }),
+        ) { backStackEntry ->
+            val idSupply = backStackEntry.arguments?.getString("idSupply")
+            SuppliesDetailScreen(
+                idInsumo = idSupply ?: "",
+                onBackClick = { navController.popBackStack() },
+                onClickAddSupplyBatch = {
+                        // TODO: Add when add a supply batch is ready
+                    },
+                onClickDelete = {
+                    // TODO: Add when delete a supply is ready
+                },
+            onClickModify = {
+                // TODO: Add when modify a supply is ready
+            },
+            modifySupplyBatch = {
+                // TODO: Add when modify a supply batch is ready
+            },
+            deleteSupplyBatch = {
+                // TODO: Add when delete a supply batch is ready
+            },
             )
         }
     }
