@@ -119,7 +119,10 @@ object AppModule {
      */
     @Provides
     @Singleton
-    fun provideSupplyRepository(api: ArcaApi): SupplyRepository = SupplyRepositoryImpl(api)
+    fun provideSupplyRepository(
+        api: ArcaApi,
+        @ApplicationContext context: Context
+    ): SupplyRepository = SupplyRepositoryImpl(api, context)
 
     /**
      * Provides the [WorkshopRepository] implementation.
