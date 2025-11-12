@@ -27,6 +27,7 @@ fun DeleteButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     cornerRadius: Dp = 8.dp,
+    enabled: Boolean = true
 ) {
     val blueColor = Color(0xFF3655C7)
     val whiteColor = Color(0xFFDBD5CC)
@@ -40,6 +41,7 @@ fun DeleteButton(
                 contentColor = blueColor,
             ),
         shape = RoundedCornerShape(cornerRadius),
+        enabled = enabled
     ) {
         Text(
             text = "Eliminar",

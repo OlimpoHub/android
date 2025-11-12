@@ -7,6 +7,8 @@ import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.domain.model.beneficiaries.Beneficiary
 import com.app.arcabyolimpo.domain.repository.beneficiaries.BeneficiaryRepository
 import com.app.arcabyolimpo.data.remote.dto.beneficiaries.BeneficiaryDto
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 
 /**
@@ -59,5 +61,23 @@ class BeneficiaryRepositoryImpl
      */
         override suspend fun getBeneficiaryById(id: String): Beneficiary {
             return api.getBeneficiary(id).toDomain()
+        }
+    /**
+     * Function that calls the API to soft delete a specific beneficiary by its [id].
+     *
+     * @param id The unique identifier of the beneficiary to delete.
+     *
+     */
+        override suspend fun deleteBeneficiary(id: String) {
+            try {
+                val response = api.deleteBeneficiary(id)
+                if (!response.isSuccessful) {
+                    throw HttpException(response)
+                }
+            } catch (e: HttpException) {
+                throw e
+            } catch (e: IOException) {
+                throw e
+            }
         }
 }

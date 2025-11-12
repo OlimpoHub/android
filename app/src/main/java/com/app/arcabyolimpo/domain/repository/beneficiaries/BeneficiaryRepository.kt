@@ -6,4 +6,6 @@ interface BeneficiaryRepository{
     suspend fun getBeneficiariesList(): List<Beneficiary>
 
     suspend fun getBeneficiaryById(id: String): Beneficiary
+
+    suspend fun deleteBeneficiary(id: String)
 }
