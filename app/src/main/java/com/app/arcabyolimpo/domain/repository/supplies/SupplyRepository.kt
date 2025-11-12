@@ -2,6 +2,7 @@ package com.app.arcabyolimpo.domain.repository.supplies
 
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.domain.model.filter.FilterData
+import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatch
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
@@ -18,8 +19,8 @@ interface SupplyRepository {
 
     suspend fun getSupplyById(id: String): Supply
 
-    suspend fun registerSupplyBatch(batch: SupplyBatch): SupplyBatch
-    
+    suspend fun registerSupplyBatch(batch: RegisterSupplyBatch): RegisterSupplyBatch
+
     suspend fun getSupplyBatchById(id: String): SupplyBatchExt
 
     suspend fun filterSupply(params: FilterDto): List<Supply>

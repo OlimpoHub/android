@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -15,7 +17,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -28,9 +29,9 @@ import com.app.arcabyolimpo.ui.theme.HighlightRed
 import com.app.arcabyolimpo.ui.theme.InputBackgroundBlue
 import com.app.arcabyolimpo.ui.theme.InputBackgroundRed
 import com.app.arcabyolimpo.ui.theme.PlaceholderGray
+import com.app.arcabyolimpo.ui.theme.PrimaryBlue
 import com.app.arcabyolimpo.ui.theme.SelectInputBlue
 import com.app.arcabyolimpo.ui.theme.White
-import com.app.arcabyolimpo.ui.theme.PrimaryBlue
 
 /**
  * StandardInput: composable input field with label, placeholder, and optional error handling.
@@ -58,8 +59,8 @@ fun StandardInput(
     visualTransformation: VisualTransformation = VisualTransformation.None,
     trailingIcon: @Composable (() -> Unit)? = null,
     compact: Boolean = false,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
 ) {
-
     var textValue by rememberSaveable { mutableStateOf(value) }
 
     Column(
@@ -75,9 +76,8 @@ fun StandardInput(
         )
 
         OutlinedTextField(
-            value = textValue,
+            value = value,
             onValueChange = {
-                textValue = it
                 onValueChange(it)
             },
             placeholder = {
@@ -98,6 +98,7 @@ fun StandardInput(
             textStyle = LocalTextStyle.current.merge(TextStyle(color = White)),
             trailingIcon = trailingIcon,
             singleLine = true,
+            keyboardOptions = keyboardOptions,
             colors =
                 TextFieldDefaults.colors(
                     focusedContainerColor = InputBackgroundBlue,

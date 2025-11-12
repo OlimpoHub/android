@@ -16,8 +16,6 @@ import com.google.gson.annotations.SerializedName
  * @param SupplyBatchJson: List<SupplyBatchSpecsDto> -> attributes from the supply batch
  */
 data class SupplyBatchDto(
-    @SerializedName("FechaCaducidad") val expirationDate: String,
-    @SerializedName("FechaCompra") val boughtDate: String,
     @SerializedName("idInsumo") val idSupply: String,
     @SerializedName("nombre") val name: String,
     @SerializedName("imagenInsumo") val imageUrl: String,

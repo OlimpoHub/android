@@ -24,8 +24,24 @@ data class Supply(
  * @property expirationDate The expiration date of the batch, formatted as a string.
  */
 data class SupplyBatch(
+    val quantity: Int,
+    val expirationDate: String,
+)
+
+/**
+ * Data class representing a supply batch
+ * with additional information.
+ *
+ * @property supplyId The unique identifier of the supply.
+ * @property quantity The quantity of the supply batch.
+ * @property expirationDate The expiration date of the supply batch.
+ * @property adquisition The type of acquisition for the supply batch.
+ * @property boughtDate The date when the supply batch was bought.
+ */
+data class RegisterSupplyBatch(
     val supplyId: String,
     val quantity: Int,
     val expirationDate: String,
+    val acquisition: String,
     val boughtDate: String,
 )

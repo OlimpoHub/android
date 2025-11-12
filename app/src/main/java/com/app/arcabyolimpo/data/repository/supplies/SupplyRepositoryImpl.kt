@@ -2,12 +2,13 @@ package com.app.arcabyolimpo.data.repository.supplies
 
 import com.app.arcabyolimpo.data.mapper.supplies.toDomain
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
+import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.RegisterSupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
+import com.app.arcabyolimpo.domain.model.filter.FilterData
+import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatch
-import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
-import com.app.arcabyolimpo.domain.model.filter.FilterData
-import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
 import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
 import javax.inject.Inject
@@ -24,7 +25,9 @@ import javax.inject.Singleton
  */
 
 @Singleton
-class SupplyRepositoryImpl @Inject constructor(
+class SupplyRepositoryImpl
+    @Inject
+    constructor(
         private val api: ArcaApi,
     ) : SupplyRepository {
         override suspend fun getSuppliesList(): List<Supply> {
@@ -60,19 +63,34 @@ class SupplyRepositoryImpl @Inject constructor(
 
         /** -------------------------------------------------------------------------------------- *
          * getSupplyBatchById -> calls the API to fetch a supply batch by its ID.
-        * --------------------------------------------------------------------------------------- */
+         * --------------------------------------------------------------------------------------- */
         override suspend fun getSupplyBatchById(id: String): SupplyBatchExt = api.getSupplyBatchById(id).toDomain()
 
-        override suspend fun registerSupplyBatch(batch: SupplyBatch): SupplyBatch {
+        /**
+         * Register a new supply batch in the backend.
+         *
+         * Steps performed:
+         * 1. Map the domain model [RegisterSupplyBatch] into the DTO expected by the API
+         *    ([RegisterSupplyBatchDto]). The DTO uses the JSON keys required by the
+         *    backend (see RegisterSupplyBatchDto @SerializedName annotations).
+         * 2. Call the Retrofit API `api.registerSupplyBatch(dto)` to create the batch.
+         * 3. Convert the response DTO into the domain model and return it.
+         */
+        override suspend fun registerSupplyBatch(batch: RegisterSupplyBatch): RegisterSupplyBatch {
+            // Build DTO matching API contract
             val dto =
-                SupplyBatchDto(
+                RegisterSupplyBatchDto(
+                    supplyId = batch.supplyId,
                     quantity = batch.quantity,
                     expirationDate = batch.expirationDate,
+                    acquisition = batch.acquisition,
                     boughtDate = batch.boughtDate,
-                    supplyId = batch.supplyId,
                 )
 
+            // Execute network request to register the batch
             val responseDto = api.registerSupplyBatch(dto)
+
+            // Map response back to domain model and return
             return responseDto.toDomain()
         }
     }

@@ -1,6 +1,6 @@
 @file:Suppress("ktlint:standard:import-ordering")
 
-package com.app.arcabyolimpo.presentation.screens.supplybatchregister
+package com.app.arcabyolimpo.presentation.screens.supply.supplybatchregister
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,12 +9,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 // Card removed as requested; layout uses plain Column now
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,7 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,28 +30,30 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.app.arcabyolimpo.domain.model.supplies.Supply
-import com.app.arcabyolimpo.presentation.screens.supplybatchregister.SupplyBatchRegisterUiState
-import com.app.arcabyolimpo.presentation.screens.supplybatchregister.SupplyBatchRegisterViewModel
 import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.CancelButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SaveButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SquareAddButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SquareMinusButton
-import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.CalendarIcon
-import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SelectInput
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardInput
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.DateInput
+import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
@@ -65,6 +63,7 @@ import com.app.arcabyolimpo.ui.theme.White
 @Composable
 fun SupplyBatchRegisterScreen(
     onRegisterClick: () -> Unit,
+    onBackClick: () -> Unit,
     viewModel: SupplyBatchRegisterViewModel = hiltViewModel(),
 ) {
     // Use lifecycle-aware state collection (same pattern as SuppliesListScreen)
@@ -84,8 +83,27 @@ fun SupplyBatchRegisterScreen(
                         style = MaterialTheme.typography.titleLarge,
                     )
                 },
+                navigationIcon = {
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            "Back",
+                            tint = White,
+                        )
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Background),
             )
+        },
+        bottomBar = {
+            Column {
+                SupplyBatchRegisterBottomBar( // Botones (Guardar/Cancelar)
+                    uiState = state,
+                    onRegisterClick = { viewModel.registerBatch() },
+                    onBackClick = { viewModel.clearRegisterStatus() },
+                )
+                NavBar() // Barra de navegación
+            }
         },
     ) { padding ->
         // Box to respect the scaffold content padding and mirror SuppliesListScreen layout
@@ -103,10 +121,40 @@ fun SupplyBatchRegisterScreen(
                 onQuantityChanged = { viewModel.onQuantityChanged(it) },
                 onExpirationDateChanged = { viewModel.onExpirationDateChanged(it) },
                 onBoughtDateChanged = { viewModel.onBoughtDateChanged(it) },
-                onRegister = { viewModel.registerBatch() },
-                onClear = { viewModel.clearRegisterStatus() },
+                onIncrementQuantity = { viewModel.onIncrementQuantity() },
+                onDecrementQuantity = { viewModel.onDecrementQuantity() },
             )
         }
+    }
+}
+
+@Suppress("ktlint:standard:function-naming")
+@Composable
+fun SupplyBatchRegisterBottomBar(
+    uiState: SupplyBatchRegisterUiState,
+    onRegisterClick: () -> Unit,
+    onBackClick: () -> Unit,
+) {
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .background(Background)
+                .padding(horizontal = 28.dp, vertical = 12.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        CancelButton(onClick = onBackClick)
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        if (uiState.registerLoading) {
+            CircularProgressIndicator(modifier = Modifier.padding(end = 8.dp))
+        }
+
+        SaveButton(onClick = {
+            if (!uiState.registerLoading && uiState.selectedSupplyId != null) onRegisterClick()
+        })
     }
 }
 
@@ -118,8 +166,8 @@ fun SupplyBatchRegisterContent(
     onQuantityChanged: (String) -> Unit,
     onExpirationDateChanged: (String) -> Unit,
     onBoughtDateChanged: (String) -> Unit,
-    onRegister: () -> Unit,
-    onClear: () -> Unit,
+    onIncrementQuantity: () -> Unit,
+    onDecrementQuantity: () -> Unit,
 ) {
     // Outer column gives spacing from the scaffold content
     Column(
@@ -159,6 +207,7 @@ fun SupplyBatchRegisterContent(
                         onValueChange = onQuantityChanged,
                         modifier = Modifier.weight(0.5f),
                         placeholder = "E.G 10",
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     )
                 }
 
@@ -170,10 +219,7 @@ fun SupplyBatchRegisterContent(
                         Modifier
                             .size(45.dp)
                             .padding(top = 9.dp, bottom = 0.dp),
-                    onClick = {
-                        val current = uiState.quantityInput.toIntOrNull() ?: 0
-                        onQuantityChanged((current + 1).toString())
-                    },
+                    onClick = onIncrementQuantity,
                 )
 
                 SquareMinusButton(
@@ -181,15 +227,11 @@ fun SupplyBatchRegisterContent(
                         Modifier
                             .size(45.dp)
                             .padding(top = 9.dp, bottom = 0.dp),
-                    onClick = {
-                        val current = uiState.quantityInput.toIntOrNull() ?: 0
-                        val next = if (current > 0) current - 1 else 0
-                        onQuantityChanged(next.toString())
-                    },
+                    onClick = onDecrementQuantity,
+                    enabled = uiState.quantityInput.toIntOrNull()?.let { it > 0 } ?: false,
                 )
             }
 
-            // Tipo de adquisición using SelectInput (visual/local for now)
             val acquisitionOptions = listOf("Compra", "Donación", "Transferencia")
             var selectedAcq by remember { mutableStateOf(acquisitionOptions[0]) }
 
@@ -202,48 +244,26 @@ fun SupplyBatchRegisterContent(
                 )
             }
 
-            // Dates row (fecha de compra / fecha de caducidad)
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 CompositionLocalProvider(LocalTextStyle provides Typography.bodyMedium) {
-                    StandardInput(
+                    DateInput(
                         label = "Fecha de Compra",
                         value = uiState.boughtDateInput,
                         onValueChange = onBoughtDateChanged,
-                        modifier = Modifier.weight(0.45f).height(80.dp),
+                        modifier = Modifier.weight(0.45f),
                         placeholder = "DD/MM/YYYY",
-                        trailingIcon = { CalendarIcon(modifier = Modifier.size(20.dp), tint = Color.White, size = 20.dp) },
                     )
                 }
 
                 CompositionLocalProvider(LocalTextStyle provides Typography.bodyMedium) {
-                    StandardInput(
+                    DateInput(
                         label = "Fecha de Caducidad",
                         value = uiState.expirationDateInput,
                         onValueChange = onExpirationDateChanged,
-                        modifier = Modifier.weight(0.45f).height(80.dp),
+                        modifier = Modifier.weight(0.45f),
                         placeholder = "DD/MM/YYYY",
-                        trailingIcon = { CalendarIcon(modifier = Modifier.size(20.dp), tint = Color.White, size = 20.dp) },
                     )
                 }
-            }
-
-            // Actions: centered row with Cancel and Save; mirrors screenshot spacing
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Spacer(modifier = Modifier.weight(1f))
-
-                CancelButton(onClick = onClear)
-
-                if (uiState.registerLoading) {
-                    CircularProgressIndicator(modifier = Modifier.padding(end = 8.dp))
-                }
-
-                SaveButton(onClick = {
-                    if (!uiState.registerLoading && uiState.selectedSupplyId != null) onRegister()
-                })
             }
 
             if (uiState.registerError != null) {
@@ -257,6 +277,7 @@ fun SupplyBatchRegisterContent(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Suppress("ktlint:standard:function-naming")
 @Composable
@@ -281,16 +302,57 @@ fun SupplyBatchRegisterPreview() {
             registerSuccess = false,
         )
 
-    // Use darkTheme=true in preview so the app's Background color (dark palette) is visible
+    // *** MODIFICACIÓN APLICADA AQUÍ ***
     ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false) {
-        SupplyBatchRegisterContent(
-            uiState = sampleState,
-            onSelectSupply = {},
-            onQuantityChanged = {},
-            onExpirationDateChanged = {},
-            onBoughtDateChanged = {},
-            onRegister = {},
-            onClear = {},
-        )
+        // Replicamos la estructura del Scaffold de la pantalla
+        Scaffold(
+            containerColor = Background,
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = "Registrar Lotes",
+                            color = White,
+                            fontFamily = Poppins,
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.titleLarge,
+                        )
+                    },
+                    colors =
+                        TopAppBarDefaults.topAppBarColors(
+                            containerColor = Background,
+                            titleContentColor = PrimaryBlue,
+                        ),
+                )
+            },
+            bottomBar = {
+                Column {
+                    SupplyBatchRegisterBottomBar(
+                        uiState = sampleState,
+                        onRegisterClick = {}, // Acciones de mock
+                        onBackClick = {}, // Acciones de mock
+                    )
+                    NavBar()
+                }
+            },
+        ) { padding ->
+            Box(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(padding)
+                        .padding(8.dp),
+            ) {
+                SupplyBatchRegisterContent(
+                    uiState = sampleState,
+                    onSelectSupply = {},
+                    onQuantityChanged = {},
+                    onExpirationDateChanged = {},
+                    onBoughtDateChanged = {},
+                    onIncrementQuantity = { },
+                    onDecrementQuantity = { },
+                )
+            }
+        }
     }
 }

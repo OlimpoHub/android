@@ -29,6 +29,7 @@ import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordR
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
+import com.app.arcabyolimpo.presentation.screens.supply.supplybatchregister.SupplyBatchRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
 import com.app.arcabyolimpo.presentation.screens.workshop.AddNewWorkshopScreen
@@ -121,7 +122,7 @@ fun ArcaNavGraph(
     /** Defines all navigation. The start destination is the Splash screen. */
     NavHost(
         navController = navController,
-        startDestination = Screen.SuppliesList.route,
+        startDestination = Screen.RegisterBatchSupply.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -329,7 +330,7 @@ fun ArcaNavGraph(
                 onEditClick = { id ->
                     // TODO: Navigate to edit screen when you create it
                 },
-                onDeleteClick = { navController.navigate(Screen.ExternalCollabList.route) }
+                onDeleteClick = { navController.navigate(Screen.ExternalCollabList.route) },
             )
         }
 
@@ -405,6 +406,9 @@ fun ArcaNavGraph(
             SupplyBatchRegisterScreen(
                 onRegisterClick = {
                     // navigate back to the previous screen (or change to navigate(Screen.SuppliesList.route))
+                    navController.popBackStack()
+                },
+                onBackClick = {
                     navController.popBackStack()
                 },
             )

@@ -1,10 +1,10 @@
-package com.app.arcabyolimpo.presentation.screens.supplybatchregister
+package com.app.arcabyolimpo.presentation.screens.supply.supplybatchregister
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.arcabyolimpo.domain.common.Result
-import com.app.arcabyolimpo.domain.model.supplies.SupplyBatch
+import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
 import com.app.arcabyolimpo.domain.usecase.supplies.GetSuppliesListUseCase
 import com.app.arcabyolimpo.domain.usecase.supplies.RegisterSupplyBatchUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,6 +43,28 @@ class SupplyBatchRegisterViewModel
             // Log when ViewModel is created (helps confirm DI/Hilt and screen wiring)
             Log.d(TAG, "init: SupplyBatchRegisterViewModel created - starting loadSuppliesList()")
             loadSuppliesList()
+        }
+
+        private val MAX_QUANTITY = 999999
+
+        fun onIncrementQuantity() {
+            val currentValue = _uiState.value.quantityInput.toIntOrNull() ?: 0
+            val newValue = (currentValue + 1).coerceAtMost(MAX_QUANTITY)
+
+            Log.d(TAG, "onIncrementQuantity: $newValue")
+            _uiState.update {
+                it.copy(quantityInput = newValue.toString())
+            }
+        }
+
+        fun onDecrementQuantity() {
+            val currentValue = _uiState.value.quantityInput.toIntOrNull() ?: 0
+            val newValue = (currentValue - 1).coerceAtLeast(0)
+
+            Log.d(TAG, "onDecrementQuantity: $newValue")
+            _uiState.update {
+                it.copy(quantityInput = newValue.toString())
+            }
         }
 
         // Load supplies list using the same pattern as SuppliesListViewModel: expose isLoading / error
@@ -113,6 +135,7 @@ class SupplyBatchRegisterViewModel
             val quantity = current.quantityInput.toIntOrNull()
             val expiration = current.expirationDateInput
             val bought = current.boughtDateInput
+            val acquisition = current.acquisitionInput
 
             // Log user input state before validation / network call
             Log.d(
@@ -127,11 +150,12 @@ class SupplyBatchRegisterViewModel
             }
 
             val batch =
-                SupplyBatch(
+                RegisterSupplyBatch(
                     supplyId = supplyId,
                     quantity = quantity,
                     expirationDate = expiration,
                     boughtDate = bought,
+                    acquisition = acquisition,
                 )
 
             viewModelScope.launch {
