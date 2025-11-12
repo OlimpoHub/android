@@ -64,7 +64,6 @@ fun BeneficiaryDetailScreen(
             scope.launch {
                 snackbarHostState.showSnackbar("Beneficiario eliminado correctamente")
             }
-            onBackClick()
         }
 
         val error = uiState.deleteError
@@ -116,7 +115,7 @@ fun BeneficiaryDetailContent(
     }
 
     Scaffold(
-        // Conectamos el snackbar al Scaffold
+        // Snackbar connection with the Scaffold
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             TopAppBar(
@@ -136,7 +135,7 @@ fun BeneficiaryDetailContent(
                 }
             )
         },
-        containerColor = Color(0xFF1C1B1F) // Color de fondo oscuro
+        containerColor = Color(0xFF1C1B1F) // Black background
     ) { paddingValues ->
         when {
             uiState.isScreenLoading -> {
@@ -159,7 +158,7 @@ fun BeneficiaryDetailContent(
                         .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Cuando hagan la chamba bien aqui agregan la imagen
+                    // When the proper icon for images is in atoms, implement it here
                     /*
                     Image(
                         painter = painterResource(id = R.drawable.placeholder),
@@ -175,46 +174,44 @@ fun BeneficiaryDetailContent(
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp) // Espacio entre columnas
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        // --- Columna Izquierda ---
                         Column(
                             modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            // APLICAR .orEmpty() para convertir null en ""
+                            // APPLY .orEmpty() to convert null in ""
                             DetailTextRow(label = "Fecha de nacimiento:", value = beneficiary.birthdate.orEmpty())
                             DetailTextRow(label = "Fecha de ingreso:", value = beneficiary.entryDate.orEmpty())
                             StatusField(isActive = beneficiary.status == 0)
                         }
 
-                        // --- Columna Derecha ---
                         Column(
                             modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            // APLICAR .orEmpty()
+                            // APPLY .orEmpty()
                             DetailTextRow(label = "Nombre de beneficiario:", value = beneficiary.name.orEmpty())
                             DetailTextRow(label = "Nombre de tutor:", value = "Nombre Tutor" /* TODO */)
-                            // APLICAR .orEmpty()
+                            // APPLY .orEmpty()
                             DetailTextRow(label = "Relación del tutor:", value = beneficiary.emergencyRelation.orEmpty())
-                            // APLICAR .orEmpty()
+                            // APPLY .orEmpty()
                             DetailTextRow(label = "Número de teléfono:", value = beneficiary.emergencyNumber.orEmpty())
-                            // APLICAR .orEmpty()
+                            // APPLY .orEmpty()
                             DetailTextRow(label = "Discapacidades:", value = beneficiary.disabilities.orEmpty())
                         }
                 }
-                    // Campo Descripcion
+                    // Description Field
                     Spacer(modifier = Modifier.height(16.dp))
                     DetailTextRow(
                         label = "Descripción:",
-                        // APLICAR .orEmpty()
+                        // APPLY .orEmpty()
                         value = beneficiary.details.orEmpty()
                     )
 
                     Spacer(modifier = Modifier.height(32.dp))
 
-                    // Botones de Acción
+                    // Action Button
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -244,7 +241,7 @@ fun StatusField(isActive: Boolean) {
     Column(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
         Text(text = "Estatus:", style = Typography.labelMedium, color = Color.Gray)
 
-        // Lógico condicional para mostrar el átomo correcto
+        // Conditional to show the correct atom
         if (isActive) {
             ActiveStatus(
                 modifier = Modifier.padding(top = 4.dp)
