@@ -25,4 +25,7 @@ interface SupplyRepository {
     suspend fun getFilterData(): FilterData
 
     suspend fun deleteSupplyBatch(id: String)
+
+    // Yo uso Update
+    suspend fun deleteOneSupply(id: String)
 }

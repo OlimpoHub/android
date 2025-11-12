@@ -3,6 +3,7 @@ package com.app.arcabyolimpo.data.repository.supplies
 import com.app.arcabyolimpo.data.mapper.supplies.toDomain
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
 import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.domain.model.supplies.Batch
 import com.app.arcabyolimpo.domain.model.supplies.Supply
@@ -68,5 +69,13 @@ class SupplyRepositoryImpl @Inject constructor(
          */
         override suspend fun deleteSupplyBatch(id: String){
             api.deleteSupplyBatch(id)
+        }
+
+
+    // yo hago un Update
+        override suspend fun deleteOneSupply(id: String) {
+            //Si no devuelvo un valor, ya no pongo el reponse
+            val body = DeleteDto(id)
+            api.deleteOneSupply(body)
         }
     }

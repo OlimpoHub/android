@@ -3,6 +3,7 @@ package com.app.arcabyolimpo.presentation.screens.supply.supplyDetail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.arcabyolimpo.domain.common.Result
+import com.app.arcabyolimpo.domain.usecase.supplies.DeleteOneSupplyUseCase
 import com.app.arcabyolimpo.domain.usecase.supplies.DeleteSupplyBatchUseCase
 import com.app.arcabyolimpo.domain.usecase.supplies.GetSupplyBatchListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,6 +27,7 @@ class SuppliesDetailViewModel
     constructor(
         private val getSupplyBatchListUseCase: GetSupplyBatchListUseCase,
         private val deleteSupplyBatchUseCase: DeleteSupplyBatchUseCase,
+        private val deleteOneSupplyUseCase: DeleteOneSupplyUseCase
     ) : ViewModel() {
         private val _uiState = MutableStateFlow(SuppliesDetailUiState())
         val uiState: StateFlow<SuppliesDetailUiState> = _uiState.asStateFlow()
@@ -96,4 +98,31 @@ class SuppliesDetailViewModel
             }
 
         }
+
+    fun deleteOneSupply(id: String) {
+        viewModelScope.launch {
+            deleteOneSupplyUseCase(id).collect { result ->
+                _uiState.update { state ->
+                    when (result) {
+                        is Result.Loading ->
+                            state.copy(isLoading = true)
+
+                        is Result.Success ->
+                            state.copy(
+                                isLoading = false,
+                                error = null,
+                            )
+
+                        is Result.Error ->
+                            state.copy(
+                                error = result.exception.message,
+                                isLoading = false,
+                            )
+                    }
+                }
+            }
+        }
+
+    }
+
     }
