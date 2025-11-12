@@ -82,10 +82,10 @@ sealed class Screen(
 
     object AddNewWorkshop : Screen("workshop/add")
 
-    object BeneficiaryList : Screen("beneficiary")
+    object BeneficiaryList : Screen("beneficiary_list")
 
-    object BeneficiaryDetail: Screen("beneficiary/{beneficiaryId}") {
-        fun createRoute(beneficiaryId: String) = "beneficiary/$beneficiaryId"
+    object BeneficiaryDetail : Screen("beneficiary_detail/{beneficiaryId}") {
+        fun createRoute(beneficiaryId: String) = "beneficiary_detail/$beneficiaryId"
     }
 }
 
@@ -428,7 +428,8 @@ fun ArcaNavGraph(
         ) {
             BeneficiaryDetailScreen(
                 onBackClick = { navController.popBackStack() },
-                onModifyClick = { /* TODO: Lógica de VM */ }
+                onModifyClick = { /* TODO: Lógica de VM */ },
+                viewModel = hiltViewModel()
             )
         }
     }

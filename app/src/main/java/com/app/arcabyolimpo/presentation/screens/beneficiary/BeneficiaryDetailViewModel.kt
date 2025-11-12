@@ -28,6 +28,7 @@ class BeneficiaryDetailViewModel @Inject constructor(
 
     init {
         beneficiaryId = savedStateHandle.get<String>("beneficiaryId")
+        println("Beneficiary ID recibido: $beneficiaryId")
         if (beneficiaryId != null) {
             loadBeneficiary(beneficiaryId!!)
         } else {

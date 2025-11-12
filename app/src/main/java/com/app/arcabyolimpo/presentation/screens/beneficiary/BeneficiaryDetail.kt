@@ -120,7 +120,7 @@ fun BeneficiaryDetailContent(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             TopAppBar(
-                title = { Text(uiState.beneficiary?.name ?: "Cargando...") },
+                title = { Text("") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent,
                     titleContentColor = Color.White,
@@ -182,8 +182,9 @@ fun BeneficiaryDetailContent(
                             modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            DetailTextRow(label = "Fecha de nacimiento:", value = beneficiary.birthdate)
-                            DetailTextRow(label = "Fecha de ingreso:", value = beneficiary.entryDate)
+                            // APLICAR .orEmpty() para convertir null en ""
+                            DetailTextRow(label = "Fecha de nacimiento:", value = beneficiary.birthdate.orEmpty())
+                            DetailTextRow(label = "Fecha de ingreso:", value = beneficiary.entryDate.orEmpty())
                             StatusField(isActive = beneficiary.status == 0)
                         }
 
@@ -192,18 +193,23 @@ fun BeneficiaryDetailContent(
                             modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            DetailTextRow(label = "Nombre de beneficiario:", value = beneficiary.name)
+                            // APLICAR .orEmpty()
+                            DetailTextRow(label = "Nombre de beneficiario:", value = beneficiary.name.orEmpty())
                             DetailTextRow(label = "Nombre de tutor:", value = "Nombre Tutor" /* TODO */)
-                            DetailTextRow(label = "Relación del tutor:", value = beneficiary.emergencyRelation)
-                            DetailTextRow(label = "Número de teléfono:", value = beneficiary.emergencyNumber)
-                            DetailTextRow(label = "Discapacidades:", value = beneficiary.disabilities)
+                            // APLICAR .orEmpty()
+                            DetailTextRow(label = "Relación del tutor:", value = beneficiary.emergencyRelation.orEmpty())
+                            // APLICAR .orEmpty()
+                            DetailTextRow(label = "Número de teléfono:", value = beneficiary.emergencyNumber.orEmpty())
+                            // APLICAR .orEmpty()
+                            DetailTextRow(label = "Discapacidades:", value = beneficiary.disabilities.orEmpty())
                         }
                 }
                     // Campo Descripcion
                     Spacer(modifier = Modifier.height(16.dp))
                     DetailTextRow(
                         label = "Descripción:",
-                        value = beneficiary.details
+                        // APLICAR .orEmpty()
+                        value = beneficiary.details.orEmpty()
                     )
 
                     Spacer(modifier = Modifier.height(32.dp))
@@ -252,12 +258,28 @@ fun StatusField(isActive: Boolean) {
 }
 
 @Composable
-fun DetailTextRow(label: String, value: String) {
-    Column(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
-        Text(text = label, style = Typography.labelMedium, color = Color.Gray)
-        Text(text = value, style = Typography.bodyLarge, color = Color.White)
+fun DetailTextRow(label: String, value: String?) {
+    val safeValue = value?.ifBlank { "No disponible" } ?: "No disponible"
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 8.dp)
+    ) {
+        Text(
+            text = label,
+            style = Typography.labelMedium,
+            color = Color.Gray
+        )
+        Text(
+            text = safeValue,
+            style = Typography.bodyLarge,
+            color = Color.White
+        )
     }
 }
+
+
 
 @Preview(name = "Activo", showBackground = true, backgroundColor = 0xFF1C1B1F)
 @Composable
