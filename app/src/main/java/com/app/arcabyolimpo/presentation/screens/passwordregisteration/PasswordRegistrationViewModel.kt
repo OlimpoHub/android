@@ -14,37 +14,39 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PasswordRegistrationViewModel
-@Inject
-constructor(
-    private val postPasswordRegistrationUseCase: PostPasswordRegistrationUseCase,
-) : ViewModel() {
-    private val _uiState = MutableStateFlow(PasswordRegistrationUiState())
-    val uiState: StateFlow<PasswordRegistrationUiState> = _uiState.asStateFlow()
+    @Inject
+    constructor(
+        private val postPasswordRegistrationUseCase: PostPasswordRegistrationUseCase,
+    ) : ViewModel() {
+        private val _uiState = MutableStateFlow(PasswordRegistrationUiState())
+        val uiState: StateFlow<PasswordRegistrationUiState> = _uiState.asStateFlow()
 
-    fun postPasswordRegistration(email: String, password: String) {
-        viewModelScope.launch {
-            postPasswordRegistrationUseCase(email, password).collect { result ->
-                _uiState.update { state ->
-                    when (result) {
-                        is Result.Loading ->
-                            state.copy(
-                                isLoading = true,
-                            )
-                        is Result.Success ->
-                            state.copy(
-                                response = result.data,
-                                isLoading = false,
-                                error = null,
-                            )
-                        is Result.Error ->
-                            state.copy(
-                                error = result.exception.message,
-                                isLoading = false,
-                            )
+        fun postPasswordRegistration(
+            email: String,
+            password: String,
+        ) {
+            viewModelScope.launch {
+                postPasswordRegistrationUseCase(email, password).collect { result ->
+                    _uiState.update { state ->
+                        when (result) {
+                            is Result.Loading ->
+                                state.copy(
+                                    isLoading = true,
+                                )
+                            is Result.Success ->
+                                state.copy(
+                                    response = result.data,
+                                    isLoading = false,
+                                    error = null,
+                                )
+                            is Result.Error ->
+                                state.copy(
+                                    error = result.exception.message,
+                                    isLoading = false,
+                                )
+                        }
                     }
                 }
-
             }
         }
     }
-}

@@ -1,8 +1,6 @@
 package com.app.arcabyolimpo.presentation.ui.components.atoms.buttons
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -11,43 +9,47 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.arcabyolimpo.presentation.theme.Poppins
-import com.app.arcabyolimpo.ui.theme.ButtonBlue
-import com.app.arcabyolimpo.ui.theme.White
 
 /**
- * ModifyButton: blue squared button with rounded corners used to modify in the app.
+ * Agregate Button: blue rounded button used to add a new item in the app.
  *
  * @param onClick: () -> Unit -> function to execute when the button is clicked
  * @param cornerRadius: Dp = 8.dp -> how much rounded the corners are
+ * @param width: Dp = 88.dp -> button width
+ * @param height: Dp = 32.dp -> button height
  */
-
 @Composable
-fun SendEmailButton(
+fun AgregateButton(
     onClick: () -> Unit,
     cornerRadius: Dp = 8.dp,
+    width: Dp = 88.dp,
+    height: Dp = 32.dp,
 ) {
     Button(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
-        colors = ButtonDefaults.buttonColors(containerColor = ButtonBlue),
+        modifier = Modifier.size(width = width, height = height),
+        colors =
+            ButtonDefaults.buttonColors(containerColor = Color(0xFF2844AE)),
         shape = RoundedCornerShape(cornerRadius),
         contentPadding =
             PaddingValues(
-                vertical = 15.dp,
+                horizontal = 7.dp,
+                vertical = 6.dp,
             ),
     ) {
         Text(
-            text = "Enviar Correo",
-            color = White,
+            text = "Agregar",
+            color = Color(0xFFFFF7EB),
             fontFamily = Poppins,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 16.sp,
+            fontSize = 12.sp,
         )
     }
 }
@@ -56,9 +58,9 @@ fun SendEmailButton(
     showBackground = true,
 )
 @Composable
-fun SendEmailButtonPreview() {
+fun ViewAgregateButtonPreview() {
     MaterialTheme {
-        SendEmailButton(
+        AgregateButton(
             onClick = { },
         )
     }

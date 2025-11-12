@@ -15,37 +15,36 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AccountActivationViewModel
-@Inject
-constructor(
-    private val postPasswordRecoveryUseCase: PostPasswordRecoveryUseCase,
-) : ViewModel() {
-    private val _uiState = MutableStateFlow(PasswordRecoveryUiState())
-    val uiState: StateFlow<PasswordRecoveryUiState> = _uiState.asStateFlow()
+    @Inject
+    constructor(
+        private val postPasswordRecoveryUseCase: PostPasswordRecoveryUseCase,
+    ) : ViewModel() {
+        private val _uiState = MutableStateFlow(PasswordRecoveryUiState())
+        val uiState: StateFlow<PasswordRecoveryUiState> = _uiState.asStateFlow()
 
-    fun postPasswordRecovery(email: String) {
-        viewModelScope.launch {
-            postPasswordRecoveryUseCase(email).collect { result ->
-                _uiState.update { state ->
-                    when (result) {
-                        is Result.Loading ->
-                            state.copy(
-                                isLoading = true,
-                            )
-                        is Result.Success ->
-                            state.copy(
-                                message = result.data,
-                                isLoading = false,
-                                error = null,
-                            )
-                        is Result.Error ->
-                            state.copy(
-                                error = result.exception.message,
-                                isLoading = false,
-                            )
+        fun postPasswordRecovery(email: String) {
+            viewModelScope.launch {
+                postPasswordRecoveryUseCase(email).collect { result ->
+                    _uiState.update { state ->
+                        when (result) {
+                            is Result.Loading ->
+                                state.copy(
+                                    isLoading = true,
+                                )
+                            is Result.Success ->
+                                state.copy(
+                                    message = result.data,
+                                    isLoading = false,
+                                    error = null,
+                                )
+                            is Result.Error ->
+                                state.copy(
+                                    error = result.exception.message,
+                                    isLoading = false,
+                                )
+                        }
                     }
                 }
-
             }
         }
     }
-}

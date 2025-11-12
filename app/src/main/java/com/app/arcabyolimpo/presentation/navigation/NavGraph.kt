@@ -28,7 +28,7 @@ import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecove
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
-import com.app.arcabyolimpo.presentation.screens.supply.SupplyListScreen
+import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
 import com.app.arcabyolimpo.presentation.screens.workshop.AddNewWorkshopScreen
@@ -119,7 +119,7 @@ fun ArcaNavGraph(
     /** Defines all navigation. The start destination is the Splash screen. */
     NavHost(
         navController = navController,
-        startDestination = Screen.SuppliesList.route,
+        startDestination = Screen.Splash.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
