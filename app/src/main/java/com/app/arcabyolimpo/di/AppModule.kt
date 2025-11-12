@@ -6,15 +6,15 @@ import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.interceptor.AuthInterceptor
 import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
 import com.app.arcabyolimpo.data.remote.interceptor.TokenAuthenticator
+import com.app.arcabyolimpo.data.repository.ExternalCollaborator.ExternalCollabRepositoryImpl
 import com.app.arcabyolimpo.data.repository.auth.UserRepositoryImpl
 import com.app.arcabyolimpo.data.repository.beneficiaries.BeneficiaryRepositoryImpl
 import com.app.arcabyolimpo.data.repository.password.PasswordPasswordUserRepositoryImpl
 import com.app.arcabyolimpo.data.repository.supplies.SupplyRepositoryImpl
 import com.app.arcabyolimpo.data.repository.workshops.WorkshopRepositoryImpl
+import com.app.arcabyolimpo.domain.repository.ExternalCollabRepository.ExternalCollabRepository
 import com.app.arcabyolimpo.domain.repository.auth.UserRepository
 import com.app.arcabyolimpo.domain.repository.beneficiaries.BeneficiaryRepository
-import com.app.arcabyolimpo.data.repository.ExternalCollaborator.ExternalCollabRepositoryImpl
-import com.app.arcabyolimpo.domain.repository.ExternalCollabRepository.ExternalCollabRepository
 import com.app.arcabyolimpo.domain.repository.password.PasswordUserRepository
 import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
 import com.app.arcabyolimpo.domain.repository.workshops.WorkshopRepository
@@ -32,7 +32,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    private const val BASE_URL = "http://10.0.2.2:8080/" // LOCALHOST
+    private const val BASE_URL = "http://10.25.82.118:8080/" // LOCALHOST
 
     /**
      * Provides a configured [OkHttpClient] instance.
@@ -98,15 +98,11 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideExternalCollabRepository(
-        api: ArcaApi,
-    ): ExternalCollabRepository = ExternalCollabRepositoryImpl(api)
+    fun provideExternalCollabRepository(api: ArcaApi): ExternalCollabRepository = ExternalCollabRepositoryImpl(api)
 
     @Provides
     @Singleton
-    fun providePasswordUserRepository(
-        api: ArcaApi
-    ): PasswordUserRepository = PasswordPasswordUserRepositoryImpl(api)
+    fun providePasswordUserRepository(api: ArcaApi): PasswordUserRepository = PasswordPasswordUserRepositoryImpl(api)
 
     /**
      * Provides the [SupplyRepository] implementation.
@@ -121,9 +117,7 @@ object AppModule {
      */
     @Provides
     @Singleton
-    fun provideSupplyRepository(
-        api: ArcaApi
-    ): SupplyRepository = SupplyRepositoryImpl(api)
+    fun provideSupplyRepository(api: ArcaApi): SupplyRepository = SupplyRepositoryImpl(api)
 
     /**
      * Provides the [WorkshopRepository] implementation.
@@ -138,9 +132,7 @@ object AppModule {
      */
     @Provides
     @Singleton
-    fun provideWorkshopRepository(
-        api: ArcaApi
-    ): WorkshopRepository = WorkshopRepositoryImpl(api)
+    fun provideWorkshopRepository(api: ArcaApi): WorkshopRepository = WorkshopRepositoryImpl(api)
 
     /**
      * Provides the [BeneficiaryRepository] implementation.
@@ -155,7 +147,5 @@ object AppModule {
      */
     @Provides
     @Singleton
-    fun provideBeneficiaryRepository(
-        api: ArcaApi
-    ): BeneficiaryRepository = BeneficiaryRepositoryImpl(api)
+    fun provideBeneficiaryRepository(api: ArcaApi): BeneficiaryRepository = BeneficiaryRepositoryImpl(api)
 }
