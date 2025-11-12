@@ -1,6 +1,7 @@
 package com.app.arcabyolimpo.presentation.screens.productbatches.productBatchesList
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -17,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,8 +27,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.app.arcabyolimpo.presentation.screens.productbatches.model.ProductBatchUiModel
 import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
@@ -42,7 +47,12 @@ import com.app.arcabyolimpo.ui.theme.White
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun ProductBatchesListScreen(modifier: Modifier = Modifier) {
+fun ProductBatchesListScreen(
+    modifier: Modifier = Modifier,
+    viewModel: ProductBatchesListViewModel = viewModel(),
+) {
+    val state by viewModel.uiState.collectAsState()
+
     val mockData =
         List(8) {
             ProductBatchUiModel(
@@ -129,18 +139,62 @@ fun ProductBatchesListScreen(modifier: Modifier = Modifier) {
                 }
             }
 
-            LazyColumn(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(0.dp),
-            ) {
-                items(mockData) { batch ->
-                    ProductBatchItem(
-                        batch = batch,
-                        onClick = {},
-                    )
+            when {
+                state.isLoading -> {
+                    Box(
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(padding),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+
+                state.error != null -> {
+                    Box(
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(padding),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            text = "Error: ${state.error}",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                    }
+                }
+
+                state.batches.isEmpty() -> {
+                    Box(
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(padding),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text("No product batches found")
+                    }
+                }
+
+                else -> {
+                    LazyColumn(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp),
+                        verticalArrangement = Arrangement.spacedBy(0.dp),
+                    ) {
+                        items(mockData) { batch ->
+                            ProductBatchItem(
+                                batch = batch,
+                                onClick = {},
+                            )
+                        }
+                    }
                 }
             }
         }
