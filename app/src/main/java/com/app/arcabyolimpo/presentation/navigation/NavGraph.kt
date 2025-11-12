@@ -88,6 +88,10 @@ sealed class Screen(
     object BeneficiaryDetail : Screen("beneficiary_detail/{beneficiaryId}") {
         fun createRoute(beneficiaryId: String) = "beneficiary_detail/$beneficiaryId"
     }
+
+    object SupplyDetail : Screen("supply/{idSupply}") {
+        fun createRoute(idSupply: String) = "supply/$idSupply"
+    }
 }
 
 /**
@@ -418,7 +422,15 @@ fun ArcaNavGraph(
                 onClickDelete = {
                     // TODO: Add when delete a supply is ready
                 },
-            
+                onClickModify = {
+                    // TODO: Add when delete a supply is ready
+                },
+                modifySupplyBatch = {
+                    // TODO: Add when delete a supply is ready
+                },
+                deleteSupplyBatch = {
+                    // TODO: Add when delete a supply is ready
+                },
             )
         }
         /**
