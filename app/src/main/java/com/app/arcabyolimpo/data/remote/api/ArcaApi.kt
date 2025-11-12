@@ -117,7 +117,7 @@ interface ArcaApi {
     suspend fun getBeneficiary(@Path("id") id: String): BeneficiaryDto
 
     @DELETE("beneficiary/{id}")
-    suspend fun deleteBeneficiary(@Path("id") id: String): BeneficiaryDto
+    suspend fun deleteBeneficiary(@Path("id") id: String): Response<Unit>
 
     @GET("supplyBatch/{id}")
     suspend fun getSupplyBatchById(
