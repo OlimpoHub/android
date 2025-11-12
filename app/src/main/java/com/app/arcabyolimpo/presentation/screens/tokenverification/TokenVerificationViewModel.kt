@@ -15,6 +15,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel responsible for managing the state of the Token Verification screen.
+ *
+ * Handles communication between the UI and the domain layer for verifying password reset tokens.
+ */
+
 @HiltViewModel
 class TokenVerificationViewModel
     @Inject
