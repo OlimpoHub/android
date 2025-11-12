@@ -1,11 +1,13 @@
 package com.app.arcabyolimpo.data.mapper.supplies
 
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.AcquisitionDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.RegisterSupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyDto
 import com.app.arcabyolimpo.domain.model.filter.FilterData
+import com.app.arcabyolimpo.domain.model.supplies.Acquisition
 import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatch
@@ -81,4 +83,14 @@ fun RegisterSupplyBatchDto.toDomain(): RegisterSupplyBatch =
         boughtDate = boughtDate,
         supplyId = supplyId,
         acquisition = acquisition,
+    )
+
+/**
+ * Extension function to convert a [SupplyBatchDto] from the data (remote) layer
+ * into a [SupplyBatch] domain model
+ */
+fun AcquisitionDto.toDomain(): Acquisition =
+    Acquisition(
+        id = id,
+        description = description,
     )

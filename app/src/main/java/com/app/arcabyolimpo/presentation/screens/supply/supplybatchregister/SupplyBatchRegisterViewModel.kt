@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
+import com.app.arcabyolimpo.domain.usecase.supplies.GetAcquisitionTypesUseCase
 import com.app.arcabyolimpo.domain.usecase.supplies.GetSuppliesListUseCase
 import com.app.arcabyolimpo.domain.usecase.supplies.RegisterSupplyBatchUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,6 +33,7 @@ class SupplyBatchRegisterViewModel
     constructor(
         private val getSuppliesListUseCase: GetSuppliesListUseCase,
         private val registerSupplyBatchUseCase: RegisterSupplyBatchUseCase,
+        private val getAcquisitionTypesUseCase: GetAcquisitionTypesUseCase,
     ) : ViewModel() {
         // Tag used for Logcat so you can filter logs from this ViewModel while debugging
         private val TAG = "SupplyBatchRegisterVM"
@@ -43,6 +45,7 @@ class SupplyBatchRegisterViewModel
             // Log when ViewModel is created (helps confirm DI/Hilt and screen wiring)
             Log.d(TAG, "init: SupplyBatchRegisterViewModel created - starting loadSuppliesList()")
             loadSuppliesList()
+            loadAcquisitionTypes()
         }
 
         private val MAX_QUANTITY = 999999
@@ -112,8 +115,51 @@ class SupplyBatchRegisterViewModel
             }
         }
 
+        fun loadAcquisitionTypes() {
+            viewModelScope.launch {
+                getAcquisitionTypesUseCase().collect { result ->
+                    when (result) {
+                        is Result.Loading -> Log.d(TAG, "loadAcquisitionTypes: Loading")
+                        is Result.Success ->
+                            Log.d(
+                                TAG,
+                                "loadAcquisitionTypes: Success - received ${result.data.size} acquisition types",
+                            )
+
+                        is Result.Error ->
+                            Log.w(
+                                TAG,
+                                "loadAcquisitionTypes: Error - ${result.exception.message}",
+                            )
+                    }
+
+                    _uiState.update { state ->
+                        when (result) {
+                            is Result.Loading -> state.copy(isLoading = true, error = null)
+                            is Result.Success ->
+                                state.copy(
+                                    acquisitionTypes = result.data,
+                                    isLoading = false,
+                                    error = null,
+                                )
+
+                            is Result.Error ->
+                                state.copy(
+                                    isLoading = false,
+                                    error = result.exception.message,
+                                )
+                        }
+                    }
+                }
+            }
+        }
+
         fun onSelectSupply(id: String) {
             _uiState.update { it.copy(selectedSupplyId = id) }
+        }
+
+        fun onAcquisitionTypeSelected(id: String) {
+            _uiState.update { it.copy(acquisitionInput = id) }
         }
 
         fun onQuantityChanged(value: String) {

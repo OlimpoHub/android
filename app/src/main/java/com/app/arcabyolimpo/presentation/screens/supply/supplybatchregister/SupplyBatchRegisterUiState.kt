@@ -1,5 +1,6 @@
 package com.app.arcabyolimpo.presentation.screens.supply.supplybatchregister
 
+import com.app.arcabyolimpo.domain.model.supplies.Acquisition
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 
 /**
@@ -7,7 +8,7 @@ import com.app.arcabyolimpo.domain.model.supplies.Supply
  */
 data class SupplyBatchRegisterUiState(
     val suppliesList: List<Supply> = emptyList(),
-    // Align naming with SuppliesListUiState (isLoading / error)
+    val acquisitionTypes: List<Acquisition> = emptyList(),
     val isLoading: Boolean = false,
     val error: String? = null,
     val selectedSupplyId: String? = null,

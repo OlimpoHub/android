@@ -45,3 +45,14 @@ data class RegisterSupplyBatch(
     val acquisition: String,
     val boughtDate: String,
 )
+
+/**
+ * Data class representing an acquisition
+ *
+ * @property id The unique identifier of the acquisition
+ * @property description The description of the acquisition.
+ */
+data class Acquisition(
+    val id: String,
+    val description: String,
+)

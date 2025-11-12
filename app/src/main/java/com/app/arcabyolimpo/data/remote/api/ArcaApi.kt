@@ -15,6 +15,7 @@ import com.app.arcabyolimpo.data.remote.dto.password.RecoverPasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.AcquisitionDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.RegisterSupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuppliesListDto
@@ -138,4 +139,7 @@ interface ArcaApi {
     suspend fun getSupplyBatchById(
         @Path("id") id: String,
     ): SupplyBatchDto
+
+    @GET("supplyBatch/acquisition/types")
+    suspend fun getAcquisitionTypes(): List<AcquisitionDto>
 }

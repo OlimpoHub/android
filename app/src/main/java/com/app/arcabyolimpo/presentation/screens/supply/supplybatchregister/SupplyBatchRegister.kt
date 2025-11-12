@@ -123,6 +123,7 @@ fun SupplyBatchRegisterScreen(
                 onBoughtDateChanged = { viewModel.onBoughtDateChanged(it) },
                 onIncrementQuantity = { viewModel.onIncrementQuantity() },
                 onDecrementQuantity = { viewModel.onDecrementQuantity() },
+                onAcquisitionTypeSelected = { viewModel.onAcquisitionTypeSelected(it) },
             )
         }
     }
@@ -168,6 +169,7 @@ fun SupplyBatchRegisterContent(
     onBoughtDateChanged: (String) -> Unit,
     onIncrementQuantity: () -> Unit,
     onDecrementQuantity: () -> Unit,
+    onAcquisitionTypeSelected: (String) -> Unit,
 ) {
     // Outer column gives spacing from the scaffold content
     Column(
@@ -232,15 +234,18 @@ fun SupplyBatchRegisterContent(
                 )
             }
 
-            val acquisitionOptions = listOf("Compra", "Donación", "Transferencia")
-            var selectedAcq by remember { mutableStateOf(acquisitionOptions[0]) }
+            val acquisitionTypes = uiState.acquisitionTypes
+            val selectedAcquisitionName = supplies.firstOrNull { it.id == uiState.acquisitionInput }?.name ?: ""
 
             CompositionLocalProvider(LocalTextStyle provides Typography.bodyMedium) {
                 SelectInput(
                     label = "Tipo de adquisición",
-                    selectedOption = selectedAcq,
-                    options = acquisitionOptions,
-                    onOptionSelected = { selectedAcq = it },
+                    selectedOption = uiState.acquisitionInput,
+                    options = acquisitionTypes.map { it.description },
+                    onOptionSelected = { description ->
+                        val acq = acquisitionTypes.firstOrNull { it.description == description }
+                        if (acq != null) onAcquisitionTypeSelected(acq.id)
+                    },
                 )
             }
 
@@ -251,7 +256,7 @@ fun SupplyBatchRegisterContent(
                         value = uiState.boughtDateInput,
                         onValueChange = onBoughtDateChanged,
                         modifier = Modifier.weight(0.45f),
-                        placeholder = "DD/MM/YYYY",
+                        placeholder = "dd/mm/yyyy",
                     )
                 }
 
@@ -261,7 +266,7 @@ fun SupplyBatchRegisterContent(
                         value = uiState.expirationDateInput,
                         onValueChange = onExpirationDateChanged,
                         modifier = Modifier.weight(0.45f),
-                        placeholder = "DD/MM/YYYY",
+                        placeholder = "dd/mm/yyyy",
                     )
                 }
             }
@@ -293,10 +298,9 @@ fun SupplyBatchRegisterPreview() {
             suppliesList = sampleSupplies,
             isLoading = false,
             error = null,
-            selectedSupplyId = "i1",
-            quantityInput = "10",
-            expirationDateInput = "2026-11-03",
-            boughtDateInput = "2025-11-01",
+            quantityInput = "",
+            expirationDateInput = "",
+            boughtDateInput = "",
             registerLoading = false,
             registerError = null,
             registerSuccess = false,
@@ -351,6 +355,7 @@ fun SupplyBatchRegisterPreview() {
                     onBoughtDateChanged = {},
                     onIncrementQuantity = { },
                     onDecrementQuantity = { },
+                    onAcquisitionTypeSelected = {},
                 )
             }
         }

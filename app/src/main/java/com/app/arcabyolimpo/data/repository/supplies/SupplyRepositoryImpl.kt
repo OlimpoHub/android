@@ -6,6 +6,7 @@ import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.RegisterSupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
 import com.app.arcabyolimpo.domain.model.filter.FilterData
+import com.app.arcabyolimpo.domain.model.supplies.Acquisition
 import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatch
@@ -92,5 +93,20 @@ class SupplyRepositoryImpl
 
             // Map response back to domain model and return
             return responseDto.toDomain()
+        }
+
+        /**
+         * Retrieves the list of acquisition types.
+         *
+         * @return A list of [Acquisition] objects representing different acquisition types.
+         */
+        override suspend fun getAcquisitionTypes(): List<Acquisition> {
+            val response = api.getAcquisitionTypes()
+            return response.map { dto ->
+                Acquisition(
+                    id = dto.id,
+                    description = dto.description,
+                )
+            }
         }
     }
