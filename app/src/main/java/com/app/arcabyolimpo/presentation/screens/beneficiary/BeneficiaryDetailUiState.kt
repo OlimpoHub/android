@@ -4,7 +4,7 @@ import com.app.arcabyolimpo.domain.model.beneficiaries.Beneficiary
 
 
 /*
- * UI state model que representa el estado de la pantalla de Detalle de Beneficiario.
+ * UI state model that represents the state of the beneficiary detail screen.
  */
 data class BeneficiaryDetailUiState (
     val isScreenLoading : Boolean = true,

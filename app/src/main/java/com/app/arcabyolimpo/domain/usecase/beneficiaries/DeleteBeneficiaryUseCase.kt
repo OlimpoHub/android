@@ -10,17 +10,17 @@ import java.io.IOException
 import javax.inject.Inject
 
 /**
- * Caso de Uso para inactivar (soft delete) un beneficiario.
+ * Use case to disable a beneficiary in the system.
  *
- * Inyecta [BeneficiaryRepository] para comunicarse con la capa de datos.
+ * Injects [BeneficiaryRepository] to comunicate with the data cape.
  */
 class DeleteBeneficiaryUseCase @Inject constructor(
     private val repository: BeneficiaryRepository
 ) {
     /**
-     * Sobrecarga el operador 'invoke' para que la clase pueda ser llamada como una funcion.
-     * @param id El ID del beneficiario a inactivar.
-     * @return Un Flow que emite el estado de la operacion.
+     * Overload to operator 'invoke' so the class can be called as a function.
+     * @param id The ID of the beneficiary to delete.
+     * @return A Flow that emits the result of the operation.
      */
      operator fun invoke(id: String): Flow<Result<Unit>> = flow {
          try {
