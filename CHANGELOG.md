@@ -1,10 +1,30 @@
 ## [0.1.0] - 13/11/2025
- - IAdded presentation, data and domain for RegisterSupplyBatch
+
+### Fixed
+- ArcaApi get all external collabs
+- Search users
+- Added presentation, data and domain for RegisterSupplyBatch
+
+## [0.1.0] - 12/11/2025
+
+### Added
+- DeleteOneSupply Button Logic
+- Filter and search bar for users
+- Included internal collaborators in the area of users
+
+### Updated
+- External collabs screen to user general screen
+- External register screen to user register screen
+
 
 ## [0.1.0] - 11/11/2025
 
+### Fixed
+ -  Fixed Main Activity for changes made for supply
+
 ### Added
- - Consulting an specific Supply with the batches it is contained into.
+- Added final comments to the function delete beneficiaries
+- Consulting an specific Supply with the batches it is contained into.
 - Added customization of Snackbar Atom
 
 ## [0.1.0] - 10/11/2025

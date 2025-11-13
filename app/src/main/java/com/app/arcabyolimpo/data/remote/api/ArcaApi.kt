@@ -22,15 +22,29 @@ import com.app.arcabyolimpo.data.remote.dto.supplies.SuccessMessageDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuppliesListDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteResponseDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.SuppliesListDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.WorkshopCategoryListDto
+import com.app.arcabyolimpo.data.remote.dto.user.UserDto
+import com.app.arcabyolimpo.data.remote.dto.user.registeruser.RegisterResponseDto
+import com.app.arcabyolimpo.data.remote.dto.user.registeruser.RegisterUserDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.AddNewWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -51,26 +65,23 @@ interface ArcaApi {
         @Body request: RefreshRequestDto,
     ): RefreshResponseDto
 
-    @GET("externalCollabs/")
-    suspend fun getAllCollabs(): List<ExternalCollabDto>
-
-    @GET("externalCollabs/{id}")
-    suspend fun getCollabById(
+    @GET("user/{id}")
+    suspend fun getUserById(
         @Path("id") id: String,
-    ): List<ExternalCollabDto>
+    ): List<UserDto>
 
-    @POST("externalCollabs/register")
-    suspend fun registerCollab(
-        @Body collab: RegisterExternalCollabDto,
-    ): ExternalCollabDto
+    @POST("user/register")
+    suspend fun registerUser(
+        @Body user: RegisterUserDto,
+    ): UserDto
 
-    @POST("externalCollabs/update")
-    suspend fun updateCollab(
-        @Body collab: ExternalCollabDto,
+    @POST("user/update")
+    suspend fun updateUser(
+        @Body user: UserDto,
     ): RegisterResponseDto
 
-    @POST("externalCollabs/deleteExternalCollab/{id}")
-    suspend fun deleteCollab(
+    @POST("user/delete/{id}")
+    suspend fun deleteUser(
         @Path("id") id: String,
     ): Map<String, Any>
 
@@ -89,6 +100,10 @@ interface ArcaApi {
         @Body request: UpdatePasswordDto,
     ): Response<UpdatePasswordResponseDto>
 
+    @GET("user")
+    suspend fun getAllUsers(): List<UserDto>
+
+    // Supplies --------------------------
     @GET("supplies")
     suspend fun getSuppliesList(): List<SuppliesListDto>
 
@@ -105,6 +120,32 @@ interface ArcaApi {
     @GET("supplies/filter/data")
     suspend fun getFilterSupplies(): GetFiltersDto
 
+    @GET("supplyBatch/{id}")
+    suspend fun getSupplyBatchById(
+        @Path("id") id: String,
+    ): SupplyBatchDto
+
+    @POST("supplyBatch/addBatch")
+    suspend fun registerSupplyBatch(
+        @Body request: RegisterSupplyBatchDto,
+    ): SuccessMessageDto
+
+    @GET("supplyBatch/acquisition/types")
+    suspend fun getAcquisitionTypes(): List<AcquisitionDto>
+    
+    @DELETE("supplyBatch/{id}")
+    suspend fun deleteSupplyBatch(
+        @Path("id") id: String,
+    )
+
+    // My route is a soft delete and an update
+    @POST("supplies/delete")
+    suspend fun deleteOneSupply(
+        @Body requestBody: DeleteDto,
+        // DeleteResponseDto es para la respuesta , para el snackbar
+    ): DeleteResponseDto
+
+    // Workshop ---------------------------
     @GET("workshop")
     suspend fun getWorkshopsList(): List<WorkshopsListDto>
 
@@ -118,6 +159,7 @@ interface ArcaApi {
         @Body requestBody: WorkshopDto,
     ): AddNewWorkshopDto
 
+    // Beneficiary -------------
     @GET("beneficiary")
     suspend fun getBeneficiariesList(): List<BeneficiariesListDto>
 
@@ -126,21 +168,22 @@ interface ArcaApi {
         @Path("id") id: String,
     ): BeneficiaryDto
 
-    @POST("supplyBatch/addBatch")
-    suspend fun registerSupplyBatch(
-        @Body request: RegisterSupplyBatchDto,
-    ): SuccessMessageDto
-
     @DELETE("beneficiary/{id}")
     suspend fun deleteBeneficiary(
         @Path("id") id: String,
-    ): BeneficiaryDto
+    ): Response<Unit>
 
-    @GET("supplyBatch/{id}")
-    suspend fun getSupplyBatchById(
-        @Path("id") id: String,
-    ): SupplyBatchDto
+    @GET("supplies/workshop/category")
+    suspend fun getWorkshopCategoryList(): WorkshopCategoryListDto
 
-    @GET("supplyBatch/acquisition/types")
-    suspend fun getAcquisitionTypes(): List<AcquisitionDto>
+    @Multipart
+    @POST("supplies/add")
+    suspend fun addSupply(
+        @Part("idWorkshop") idWorkshop: RequestBody,
+        @Part("name") name: RequestBody,
+        @Part("measureUnit") measureUnit: RequestBody,
+        @Part("idCategory") idCategory: RequestBody,
+        @Part("status") status: RequestBody,
+        @Part image: MultipartBody.Part?,
+    )
 }

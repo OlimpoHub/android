@@ -12,14 +12,14 @@ data class SupplyBatchExt(
     val workshop: String,
     val category: String,
     val status: Int,
-    val batch: List<Batch>
+    val batch: List<Batch> = emptyList()
 )
 
 /** ---------------------------------------------------------------------------------------------- *
  * Batch -> Secondary class that contains all the extra attributes from a supply batch
  * ---------------------------------------------------------------------------------------------- */
 data class Batch(
-    val quantity: Int,
-    val expirationDate: String,
-    val adquisitionType: String,
+    val quantity: Int = 0,
+    val expirationDate: String = "",
+    val adquisitionType: String = "",
 )
