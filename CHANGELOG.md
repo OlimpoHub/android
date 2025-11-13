@@ -1,5 +1,8 @@
 ## [0.1.0] - 13/11/2025
 
+### Added
+- Added Workshop Card atom.
+- Added screen for view Workshop 
 ### Fixed
 - ArcaApi get all external collabs
 - Search users
