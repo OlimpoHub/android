@@ -6,19 +6,12 @@ import android.util.Log
 import com.app.arcabyolimpo.data.mapper.supplies.toDomain
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.RegisterSupplyBatchDto
-import com.app.arcabyolimpo.data.remote.dto.supplies.SuccessMessageDto
-import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
 import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.domain.model.supplies.Acquisition
 import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
 import com.app.arcabyolimpo.domain.model.supplies.SuccessMessage
-import com.app.arcabyolimpo.domain.model.supplies.Supply
-import com.app.arcabyolimpo.domain.model.supplies.SupplyBatch
-import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
-import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
-import com.app.arcabyolimpo.domain.model.filter.FilterData
-import com.app.arcabyolimpo.domain.model.supplies.Batch
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.domain.model.supplies.SupplyAdd
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
@@ -47,7 +40,7 @@ class SupplyRepositoryImpl
     @Inject
     constructor(
         private val api: ArcaApi,
-        @ApplicationContext private val context: Context
+        @ApplicationContext private val context: Context,
     ) : SupplyRepository {
         override suspend fun getSuppliesList(): List<Supply> {
             val response = api.getSuppliesList()
@@ -126,55 +119,60 @@ class SupplyRepositoryImpl
                 )
             }
         }
+
+        /**
          * Deletes a specific supply batch identified by its [id].
          *
          * This function calls the remote API to perform the deletion operation.
          * It does not return any data, but will throw an exception if the request fails.
          */
-        override suspend fun deleteSupplyBatch(id: String){
+        override suspend fun deleteSupplyBatch(id: String) {
             api.deleteSupplyBatch(id)
         }
 
-
-    // Do a soft delete for supplys
+        // Do a soft delete for supplys
         override suspend fun deleteOneSupply(id: String) {
-            //If I'm not returning a value, I don't include the response
+            // If I'm not returning a value, I don't include the response
             val body = DeleteDto(id)
-            //If you want to check the status of an error
-            //val body = DeleteDto("i33")
+            // If you want to check the status of an error
+            // val body = DeleteDto("i33")
             val result = api.deleteOneSupply(body)
-            Log.d("Validacion","Si llego ")
+            Log.d("Validacion", "Si llego ")
         }
 
-        override suspend fun getWorkshopCategoryList(): Result<WorkshopCategoryList> {
-            return try {
+        override suspend fun getWorkshopCategoryList(): Result<WorkshopCategoryList> =
+            try {
                 val workshopCategoryListDto = api.getWorkshopCategoryList()
                 Result.success(workshopCategoryListDto.toDomain())
-
             } catch (e: Exception) {
                 Result.failure(e)
             }
-        }
 
-        override suspend fun addSupply(supply: SupplyAdd, image: Uri?): Result<Unit> {
-            return try {
-                val imagePart = image?.let {
-                    val input = context.contentResolver.openInputStream(it)
-                    val bytes = input?.readBytes()
-                    input?.close()
+        override suspend fun addSupply(
+            supply: SupplyAdd,
+            image: Uri?,
+        ): Result<Unit> =
+            try {
+                val imagePart =
+                    image?.let {
+                        val input = context.contentResolver.openInputStream(it)
+                        val bytes = input?.readBytes()
+                        input?.close()
 
-                    if (bytes != null) {
-                        val requestFile = bytes.toRequestBody(
-                            context.contentResolver.getType(it)?.toMediaTypeOrNull()
-                        )
-                        MultipartBody.Part.createFormData(
-                            "SupplyImage",
-                            "image.jpg",
-                            requestFile
-                        )
-
-                    } else null
-                }
+                        if (bytes != null) {
+                            val requestFile =
+                                bytes.toRequestBody(
+                                    context.contentResolver.getType(it)?.toMediaTypeOrNull(),
+                                )
+                            MultipartBody.Part.createFormData(
+                                "SupplyImage",
+                                "image.jpg",
+                                requestFile,
+                            )
+                        } else {
+                            null
+                        }
+                    }
 
                 val idWorkshop = supply.idWorkshop.toRequestBody("text/plain".toMediaTypeOrNull())
                 val name = supply.name.toRequestBody("text/plain".toMediaTypeOrNull())
@@ -188,12 +186,10 @@ class SupplyRepositoryImpl
                     measureUnit = measureUnit,
                     idCategory = idCategory,
                     status = status,
-                    image = imagePart
+                    image = imagePart,
                 )
                 Result.success(Unit)
             } catch (e: Exception) {
                 Result.failure(e)
             }
-        }
-
     }

@@ -132,7 +132,7 @@ fun ArcaNavGraph(
     NavHost(
         navController = navController,
         // TODO: Cambiar a Screen.Splash.route cuando acabe
-        startDestination = Screen.UserList.route,
+        startDestination = Screen.SuppliesList.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -430,7 +430,6 @@ fun ArcaNavGraph(
         composable(Screen.RegisterBatchSupply.route) {
             SupplyBatchRegisterScreen(
                 onRegisterClick = {
-                    // navigate back to the previous screen (or change to navigate(Screen.SuppliesList.route))
                     navController.popBackStack()
                 },
                 onBackClick = {
@@ -447,7 +446,7 @@ fun ArcaNavGraph(
                 idInsumo = idSupply ?: "",
                 onBackClick = { navController.popBackStack() },
                 onClickAddSupplyBatch = {
-                    // TODO: Add when add a supply batch is ready
+                    navController.navigate(Screen.RegisterBatchSupply.route)
                 },
                 onClickDelete = {
                     // TODO: Add when delete a supply is ready

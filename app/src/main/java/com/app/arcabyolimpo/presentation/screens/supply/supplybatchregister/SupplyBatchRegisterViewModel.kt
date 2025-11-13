@@ -195,6 +195,14 @@ class SupplyBatchRegisterViewModel
                 return
             }
 
+            if (quantity < 0) {
+                Log.w(TAG, "registerBatch: validation failed - negative quantity not allowed ($quantity)")
+                _uiState.update {
+                    it.copy(registerError = "La cantidad no puede ser negativa")
+                }
+                return
+            }
+
             val batch =
                 RegisterSupplyBatch(
                     supplyId = supplyId,

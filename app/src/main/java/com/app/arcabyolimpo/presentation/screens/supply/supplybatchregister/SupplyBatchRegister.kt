@@ -97,12 +97,18 @@ fun SupplyBatchRegisterScreen(
         },
         bottomBar = {
             Column {
-                SupplyBatchRegisterBottomBar( // Botones (Guardar/Cancelar)
+                SupplyBatchRegisterBottomBar(
                     uiState = state,
-                    onRegisterClick = { viewModel.registerBatch() },
-                    onBackClick = { viewModel.clearRegisterStatus() },
+                    onRegisterClick = {
+                        viewModel.registerBatch()
+                        onRegisterClick()
+                    },
+                    onBackClick = {
+                        viewModel.clearRegisterStatus()
+                        onBackClick()
+                    },
                 )
-                NavBar() // Barra de navegación
+                NavBar()
             }
         },
     ) { padding ->
@@ -206,7 +212,12 @@ fun SupplyBatchRegisterContent(
                     StandardInput(
                         label = "Cantidad",
                         value = uiState.quantityInput,
-                        onValueChange = onQuantityChanged,
+                        onValueChange = { value ->
+                            val intValue = value.toIntOrNull()
+                            if (intValue == null || intValue >= 0) {
+                                onQuantityChanged(value)
+                            }
+                        },
                         modifier = Modifier.weight(0.5f),
                         placeholder = "E.G 10",
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
