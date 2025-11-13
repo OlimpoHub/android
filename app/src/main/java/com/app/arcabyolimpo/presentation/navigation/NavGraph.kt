@@ -60,7 +60,7 @@ sealed class Screen(
 
     object UserRegister : Screen("user_register")
 
-    object UserDetail : Screen("user_detail/{userId}"){
+    object UserDetail : Screen("user_detail/{userId}") {
         fun createRoute(userId: String) = "user_detail/$userId"
     }
 
@@ -141,7 +141,7 @@ fun ArcaNavGraph(
     NavHost(
         navController = navController,
         // TODO: Cambiar a Screen.Splash.route cuando acabe
-        startDestination = Screen.Splash.route,
+        startDestination = Screen.SuppliesList.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -348,10 +348,11 @@ fun ArcaNavGraph(
                 onEditClick = { id ->
                     // TODO: Navigate to edit screen when you create it
                 },
-                onDeleteClick = { navController.navigate(Screen.UserList.route){
-                    popUpTo(Screen.UserList.route) { inclusive = true }
-                }
-                }
+                onDeleteClick = {
+                    navController.navigate(Screen.UserList.route) {
+                        popUpTo(Screen.UserList.route) { inclusive = true }
+                    }
+                },
             )
         }
 

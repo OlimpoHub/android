@@ -99,7 +99,6 @@ object AppModule {
         authPreferences: UserPreferences,
     ): UserRepository = UserRepositoryImpl(api, authPreferences)
 
-
     @Provides
     @Singleton
     fun providePasswordUserRepository(api: ArcaApi): PasswordUserRepository = PasswordUserRepositoryImpl(api)
