@@ -121,7 +121,7 @@ class UserListViewModel
                 val filteredUsers =
                     current.users.filter { user ->
                         val completeName = user.nombre + user.apellidoPaterno + user.apellidoMaterno
-                        completeName.contains(searchInput)
+                        completeName.lowercase().contains(searchInput.lowercase())
                     }
 
                 current.copy(
