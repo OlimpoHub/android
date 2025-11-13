@@ -50,6 +50,12 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
 
+/** ProductBatchRegisterScreen: Composable screen for registering a new product batch.
+ *
+ * @param onBackClick () -> Unit -> callback for back navigation
+ * @param onCreated () -> Unit -> callback when the product batch is successfully created
+ * @param viewModel ProductBatchRegisterViewModel = hiltViewModel() -> ViewModel for managing UI state
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable

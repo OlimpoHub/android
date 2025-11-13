@@ -11,6 +11,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/** ViewModel for ProductBatchRegisterScreen.
+ * @param registerProductBatchUseCase RegisterProductBatchUseCase -> use case to register a new product batch
+*/
 @HiltViewModel
 class ProductBatchRegisterViewModel
     @Inject

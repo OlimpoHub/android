@@ -47,6 +47,14 @@ import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
 
+/** ProductBatchesListScreen: Composable screen displaying a list of product batches.
+ *
+ * @param modifier Modifier = Modifier -> allows layout customization (padding, width, etc.)
+ * @param onBackClick () -> Unit -> callback for back navigation
+ * @param onDetailClick (String) -> Unit -> callback when a product batch is selected for detail view
+ * @param onAddClick () -> Unit -> callback to add a new product batch
+ * @param viewModel ProductBatchesListViewModel = hiltViewModel() -> ViewModel for managing UI state
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable

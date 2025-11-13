@@ -490,6 +490,13 @@ fun ArcaNavGraph(
             )
         }
 
+        /**
+         * Product Batches List Screen.
+         *
+         * Displays a list of product batches and allows navigation to details or registration.
+         * DetailClick -> navigates to ProductBatchDetailScreen
+         * AddClick -> navigates to ProductBatchRegisterScreen
+         */
         composable(Screen.ProductBatchesList.route) {
             ProductBatchesListScreen(
                 onBackClick = { navController.popBackStack() },
@@ -502,6 +509,11 @@ fun ArcaNavGraph(
             )
         }
 
+        /**
+         * Product Batches Detail Screen.
+         *
+         * Displays a view of product batch.
+         */
         composable(
             route = Screen.ProductBatchDetail.route,
             arguments = listOf(navArgument("batchId") { type = NavType.StringType }),
@@ -513,6 +525,11 @@ fun ArcaNavGraph(
             )
         }
 
+        /**
+         * Product Batches Register Screen.
+         *
+         * Allows the registration of a new product batch.
+         */
         composable(Screen.ProductBatchRegister.route) {
             ProductBatchRegisterScreen(
                 onCreated = { navController.popBackStack() },

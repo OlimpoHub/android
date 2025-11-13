@@ -7,6 +7,9 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
+/** Maps a [ProductBatch] domain model to a [ProductBatchUiModel] for UI representation.
+ *  @return ProductBatchUiModel
+*/
 fun ProductBatch.toUiModel(): ProductBatchUiModel {
     val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
 
@@ -32,6 +35,9 @@ fun ProductBatch.toUiModel(): ProductBatchUiModel {
     )
 }
 
+/** Maps a [ProductBatchRegisterUiState] UI state to a [ProductBatch] domain model for business logic.
+ *  @return ProductBatch
+*/
 fun ProductBatchRegisterUiState.toDomain() =
     ProductBatch(
         idProducto = idProducto,

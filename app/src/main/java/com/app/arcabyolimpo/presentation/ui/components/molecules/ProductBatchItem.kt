@@ -29,6 +29,12 @@ import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.DangerGray
 import com.app.arcabyolimpo.ui.theme.White
 
+/** ProductBatchItem: composable displaying a product batch item with image, name, creation date, and quantity.
+ *
+ * @param batch ProductBatchUiModel -> the product batch data to display
+ * @param modifier Modifier = Modifier -> allows layout customization (padding, width, etc.)
+ * @param onClick () -> Unit -> callback when the item is clicked
+ */
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun ProductBatchItem(

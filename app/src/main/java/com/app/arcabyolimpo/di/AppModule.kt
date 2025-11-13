@@ -156,6 +156,7 @@ object AppModule {
     @Singleton
     fun provideUsersRepository(api: ArcaApi): UsersRepository = UsersRepositoryImpl(api)
 
+    /** Provides the [ProductBatchRepository] implementation.*/
     @Provides
     @Singleton
     fun provideProductBatchRepository(api: ArcaApi): ProductBatchRepository = ProductBatchRepositoryImpl(api)

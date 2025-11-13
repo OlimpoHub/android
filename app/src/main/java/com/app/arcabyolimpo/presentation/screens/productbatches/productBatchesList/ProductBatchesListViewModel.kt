@@ -14,6 +14,9 @@ import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
+/** ViewModel for ProductBatchesListScreen.
+ * @param getProductBatchesUseCase GetProductBatchesUseCase -> use case to fetch product batches
+*/
 @HiltViewModel
 class ProductBatchesListViewModel
     @Inject

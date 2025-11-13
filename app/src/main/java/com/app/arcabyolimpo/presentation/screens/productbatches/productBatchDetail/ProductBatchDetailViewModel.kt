@@ -10,6 +10,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/** ViewModel for ProductBatchDetailScreen.
+ * @param getProductBatchUseCase GetProductBatchUseCase -> use case to fetch product batch details
+*/
 @HiltViewModel
 class ProductBatchDetailViewModel
     @Inject

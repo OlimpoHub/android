@@ -54,6 +54,12 @@ import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
 import org.jetbrains.annotations.Async
 
+/** ProductBatchDetailScreen: Composable screen displaying detailed information about a product batch.
+ *
+ * @param batchId String -> ID of the product batch to display
+ * @param onBackClick () -> Unit -> callback for back navigation
+ * @param viewModel ProductBatchDetailViewModel = hiltViewModel() -> ViewModel for managing UI state
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable

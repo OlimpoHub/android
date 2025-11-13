@@ -11,10 +11,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
 
-@Suppress("ktlint:standard:function-naming")
-/**
- * Helper for the Info Rows
+/** InfoRow: composable displaying a label and its corresponding value in a single row.
+ *
+ * @param label String -> the label text to display
+ * @param value String -> the value text to display
  */
+@Suppress("ktlint:standard:function-naming")
 @Composable
 fun InfoRow(
     label: String,
