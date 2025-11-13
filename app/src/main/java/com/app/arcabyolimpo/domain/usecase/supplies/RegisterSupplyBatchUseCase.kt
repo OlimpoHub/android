@@ -2,6 +2,7 @@ package com.app.arcabyolimpo.domain.usecase.supplies
 
 import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
+import com.app.arcabyolimpo.domain.model.supplies.SuccessMessage
 import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -39,7 +40,7 @@ class RegisterSupplyBatchUseCase
          * @param batch The domain model describing the batch to register.
          * @return Flow<Result<RegisterSupplyBatch>> reactive stream of operation status.
          */
-        operator fun invoke(batch: RegisterSupplyBatch): Flow<Result<RegisterSupplyBatch>> =
+        operator fun invoke(batch: RegisterSupplyBatch): Flow<Result<SuccessMessage>> =
             flow {
                 try {
                     emit(Result.Loading)

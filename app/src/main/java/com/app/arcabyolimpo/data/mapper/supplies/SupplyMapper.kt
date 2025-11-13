@@ -4,11 +4,13 @@ import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.AcquisitionDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.RegisterSupplyBatchDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.SuccessMessageDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyDto
 import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.domain.model.supplies.Acquisition
 import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
+import com.app.arcabyolimpo.domain.model.supplies.SuccessMessage
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatch
 import kotlin.String
@@ -93,4 +95,13 @@ fun AcquisitionDto.toDomain(): Acquisition =
     Acquisition(
         id = id,
         description = description,
+    )
+
+/**
+ * Extension function to convert a [SuccessMessageDto] from the data (remote) layer
+ * into a [String] domain model
+ */
+fun SuccessMessageDto.toDomain(): SuccessMessage =
+    SuccessMessage(
+        message = message,
     )

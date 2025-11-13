@@ -1,3 +1,6 @@
+## [0.1.0] - 13/11/2025
+ - IAdded presentation, data and domain for RegisterSupplyBatch
+
 ## [0.1.0] - 11/11/2025
 
 ### Added

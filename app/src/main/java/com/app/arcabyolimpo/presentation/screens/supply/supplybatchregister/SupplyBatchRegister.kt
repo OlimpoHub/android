@@ -235,12 +235,12 @@ fun SupplyBatchRegisterContent(
             }
 
             val acquisitionTypes = uiState.acquisitionTypes
-            val selectedAcquisitionName = supplies.firstOrNull { it.id == uiState.acquisitionInput }?.name ?: ""
+            val selectedAcquisitionName = acquisitionTypes.firstOrNull { it.id == uiState.acquisitionInput }?.description ?: ""
 
             CompositionLocalProvider(LocalTextStyle provides Typography.bodyMedium) {
                 SelectInput(
                     label = "Tipo de adquisición",
-                    selectedOption = uiState.acquisitionInput,
+                    selectedOption = selectedAcquisitionName,
                     options = acquisitionTypes.map { it.description },
                     onOptionSelected = { description ->
                         val acq = acquisitionTypes.firstOrNull { it.description == description }

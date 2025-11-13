@@ -18,6 +18,7 @@ import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.AcquisitionDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.RegisterSupplyBatchDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.SuccessMessageDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuppliesListDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyDto
@@ -128,7 +129,7 @@ interface ArcaApi {
     @POST("supplyBatch/addBatch")
     suspend fun registerSupplyBatch(
         @Body request: RegisterSupplyBatchDto,
-    ): RegisterSupplyBatchDto
+    ): SuccessMessageDto
 
     @DELETE("beneficiary/{id}")
     suspend fun deleteBeneficiary(

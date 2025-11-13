@@ -56,3 +56,12 @@ data class Acquisition(
     val id: String,
     val description: String,
 )
+
+/**
+ * Data class representing a success message.
+ *
+ * @property message The content of the success message.
+ */
+data class SuccessMessage(
+    val message: String,
+)

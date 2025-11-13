@@ -189,9 +189,9 @@ class SupplyBatchRegisterViewModel
                 "registerBatch: called with supplyId=$supplyId, quantity=${current.quantityInput}, expiration=$expiration, bought=$bought",
             )
 
-            if (supplyId.isNullOrBlank() || quantity == null) {
-                Log.w(TAG, "registerBatch: validation failed - supplyId or quantity invalid")
-                _uiState.update { it.copy(registerError = "Seleccione un insumo y coloque una cantidad válida") }
+            if (supplyId.isNullOrEmpty() || quantity == null || acquisition.isNullOrEmpty()) {
+                Log.w(TAG, "registerBatch: validation failed - required fields missing")
+                _uiState.update { it.copy(registerError = "Seleccione un insumo, un tipo de adquisición y coloque una cantidad válida") }
                 return
             }
 

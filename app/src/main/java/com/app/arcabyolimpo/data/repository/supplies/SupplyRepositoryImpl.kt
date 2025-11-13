@@ -4,10 +4,12 @@ import com.app.arcabyolimpo.data.mapper.supplies.toDomain
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.RegisterSupplyBatchDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.SuccessMessageDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
 import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.domain.model.supplies.Acquisition
 import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
+import com.app.arcabyolimpo.domain.model.supplies.SuccessMessage
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatch
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
@@ -77,7 +79,7 @@ class SupplyRepositoryImpl
          * 2. Call the Retrofit API `api.registerSupplyBatch(dto)` to create the batch.
          * 3. Convert the response DTO into the domain model and return it.
          */
-        override suspend fun registerSupplyBatch(batch: RegisterSupplyBatch): RegisterSupplyBatch {
+        override suspend fun registerSupplyBatch(batch: RegisterSupplyBatch): SuccessMessage {
             // Build DTO matching API contract
             val dto =
                 RegisterSupplyBatchDto(
@@ -91,7 +93,7 @@ class SupplyRepositoryImpl
             // Execute network request to register the batch
             val responseDto = api.registerSupplyBatch(dto)
 
-            // Map response back to domain model and return
+            // Convert response DTO into domain model and return it
             return responseDto.toDomain()
         }
 
