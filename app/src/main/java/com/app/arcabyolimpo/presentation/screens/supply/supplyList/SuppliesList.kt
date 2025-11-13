@@ -36,12 +36,14 @@ import com.app.arcabyolimpo.ui.theme.White
  *
  * @param onSupplyClick Callback triggered when a supply item is clicked.
  * Receives the supply ID as a parameter.
+ * @param onAddSupplyClick Callback triggered when the add button is clicked.
  * @param viewModel The [SuppliesListViewModel] used to manage the UI state.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SupplyListScreen(
     onSupplyClick: (String) -> Unit,
+    onAddSupplyClick: () -> Unit,
     viewModel: SuppliesListViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -74,7 +76,7 @@ fun SupplyListScreen(
         containerColor = Background,
         floatingActionButton = {
             AddButton(
-                onClick = { /* Action for add button */ },
+                onClick = onAddSupplyClick,
             )
         },
         topBar = {

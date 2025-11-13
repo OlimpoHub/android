@@ -78,19 +78,8 @@ fun SupplyCard(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .clickable(onClick = onClick)
                 .padding(horizontal = 0.dp, vertical = 0.dp)
-                .scale(scale)
-                .pointerInput(Unit) {
-                    detectTapGestures(
-                        onPress = {
-                            isPressed = true
-                            tryAwaitRelease()
-                            isPressed = false
-                            onClick()
-                        },
-                    )
-                },
+                .scale(scale),
         colors = CardDefaults.cardColors(
             containerColor = Background
         ),

@@ -28,6 +28,9 @@ import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordR
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
+import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
+import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
+import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
@@ -35,6 +38,7 @@ import com.app.arcabyolimpo.presentation.screens.user.UserListScreen
 import com.app.arcabyolimpo.presentation.screens.user.detail.UserDetailScreen
 import com.app.arcabyolimpo.presentation.screens.user.register.UserRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.workshop.AddNewWorkshopScreen
+import com.app.arcabyolimpo.presentation.screens.workshop.WorkshopDetailScreen
 import com.app.arcabyolimpo.presentation.screens.workshop.WorkshopsListScreen
 
 /**
@@ -81,7 +85,13 @@ sealed class Screen(
 
     object WorkshopsList : Screen("workshop")
 
+    object WorkshopDetail : Screen("workshop/{id}") {
+        fun createRoute(id: String): String = "workshop/$id"
+    }
+
     object AddNewWorkshop : Screen("workshop/add")
+
+
 
     object BeneficiaryList : Screen("beneficiary_list")
 
@@ -92,6 +102,8 @@ sealed class Screen(
     object SupplyDetail : Screen("supply/{idSupply}") {
         fun createRoute(idSupply: String) = "supply/$idSupply"
     }
+
+    object SupplyAdd : Screen("supply/add")
 }
 
 /**
@@ -129,7 +141,7 @@ fun ArcaNavGraph(
     NavHost(
         navController = navController,
         // TODO: Cambiar a Screen.Splash.route cuando acabe
-        startDestination = Screen.UserList.route,
+        startDestination = Screen.SuppliesList.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -379,9 +391,21 @@ fun ArcaNavGraph(
         composable(Screen.WorkshopsList.route) {
             WorkshopsListScreen(
                 navController = navController,
-                workshopClick = {},
+                workshopClick = { id ->
+                    navController.navigate(Screen.WorkshopDetail.createRoute(id))
+                }
             )
         }
+
+
+        composable(
+            route = Screen.WorkshopDetail.route,
+            arguments = listOf(navArgument("id") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val workshopId = backStackEntry.arguments?.getString("id") ?: ""
+            WorkshopDetailScreen(navController, workshopId)
+        }
+
 
         /**
          * Workshops Add Screen.
@@ -420,6 +444,9 @@ fun ArcaNavGraph(
                 onSupplyClick = { id ->
                     navController.navigate("supply/$id")
                 },
+                onAddSupplyClick = {
+                    navController.navigate(Screen.SupplyAdd.route)
+                }
             )
         }
 
@@ -476,6 +503,22 @@ fun ArcaNavGraph(
                 onBackClick = { navController.popBackStack() },
                 onModifyClick = { /* TODO: Lógica de VM */ },
                 viewModel = hiltViewModel(),
+            )
+        }
+
+        /**
+         * Add New Supply Screen.
+         *
+         * Pantalla para registrar un nuevo insumo.
+         */
+        composable(Screen.SupplyAdd.route) {
+            SupplyAddScreen(
+                onSaveSuccess = {
+                    navController.popBackStack()
+                },
+                onCancel = {
+                    navController.popBackStack()
+                }
             )
         }
     }
