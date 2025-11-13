@@ -8,9 +8,6 @@ import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.data.remote.dto.password.RecoverPasswordDto
 import com.app.arcabyolimpo.data.remote.dto.beneficiaries.BeneficiariesListDto
 import com.app.arcabyolimpo.data.remote.dto.beneficiaries.BeneficiaryDto
-import com.app.arcabyolimpo.data.remote.dto.ExternalCollaborator.ExternalCollabDto
-import com.app.arcabyolimpo.data.remote.dto.ExternalCollaborator.RegisterExtCollab.RegisterExternalCollabDto
-import com.app.arcabyolimpo.data.remote.dto.ExternalCollaborator.RegisterExtCollab.RegisterResponseDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuppliesListDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyDto
 import com.app.arcabyolimpo.data.remote.dto.password.RecoverPasswordResponseDto
@@ -19,6 +16,8 @@ import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
 import com.app.arcabyolimpo.data.remote.dto.user.UserDto
+import com.app.arcabyolimpo.data.remote.dto.user.registeruser.RegisterResponseDto
+import com.app.arcabyolimpo.data.remote.dto.user.registeruser.RegisterUserDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.AddNewWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
@@ -47,20 +46,20 @@ interface ArcaApi {
         @Body request: RefreshRequestDto,
     ): RefreshResponseDto
 
-    @GET("externalCollabs/")
-    suspend fun getAllCollabs(): List<ExternalCollabDto>
+    @GET("user")
+    suspend fun getAllUsers(): List<UserDto>
 
-    @GET("externalCollabs/{id}")
-    suspend fun getCollabById(@Path("id") id: String): List<ExternalCollabDto>
+    @GET("user/{id}")
+    suspend fun getUserById(@Path("id") id: String): List<UserDto>
 
-    @POST("externalCollabs/register")
-    suspend fun registerCollab(@Body collab: RegisterExternalCollabDto): ExternalCollabDto
+    @POST("user/register")
+    suspend fun registerUser(@Body user: RegisterUserDto): UserDto
 
-    @POST("externalCollabs/update")
-    suspend fun updateCollab(@Body collab: ExternalCollabDto): RegisterResponseDto
+    @POST("user/update")
+    suspend fun updateUser(@Body user: UserDto): RegisterResponseDto
 
-    @POST("externalCollabs/deleteExternalCollab/{id}")
-    suspend fun deleteCollab(@Path("id") id: String): Map<String, Any>
+    @POST("user/delete/{id}")
+    suspend fun deleteUser(@Path("id") id: String): Map<String, Any>
 
     @POST("user/recover-password")
     suspend fun recoverPassword(
@@ -77,8 +76,7 @@ interface ArcaApi {
         @Body request: UpdatePasswordDto
     ): Response<UpdatePasswordResponseDto>
 
-    @GET("user")
-    suspend fun getAllUsers(): List<UserDto>
+
 
     @GET("supplies")
     suspend fun getSuppliesList(): List<SuppliesListDto>

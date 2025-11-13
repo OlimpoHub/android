@@ -19,9 +19,8 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.SearchIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.FilterIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SearchInput
-import com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabList.components.ExternalCollabCard
-import com.app.arcabyolimpo.presentation.screens.ExternalCollab.RegisterExternalCollab.ExternalCollabRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.user.components.UserCard
+import com.app.arcabyolimpo.presentation.screens.user.register.UserRegisterScreen
 import com.app.arcabyolimpo.presentation.ui.components.organisms.Filter
 import com.app.arcabyolimpo.ui.theme.White
 
@@ -165,7 +164,7 @@ fun UserListScreen(
                             if (user.idRol == "2") {
                                 UserCard (
                                     user = user,
-                                    onClick = { onCollabClick(user.idUsuario) }
+                                    onClick = { user.idUsuario?.let { onCollabClick(it) } }
                                 )
                             }
                         }
@@ -195,7 +194,7 @@ fun UserListScreen(
                             if (user.idRol == "3") {
                                 UserCard (
                                     user = user,
-                                    onClick = { onCollabClick(user.idUsuario) }
+                                    onClick = { user.idUsuario?.let { onCollabClick(it) } }
                                 )
                             }
                         }
@@ -208,7 +207,7 @@ fun UserListScreen(
             }
         }
         if (showRegisterModal) {
-            ExternalCollabRegisterScreen(
+            UserRegisterScreen(
                 onDismiss = { showRegisterModal = false },
                 onSuccess = {
                     showRegisterModal = false

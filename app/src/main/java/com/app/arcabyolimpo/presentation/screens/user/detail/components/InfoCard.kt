@@ -1,4 +1,4 @@
-package com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabDetail.components
+package com.app.arcabyolimpo.presentation.screens.user.detail.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

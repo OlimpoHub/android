@@ -1,4 +1,4 @@
-package com.app.arcabyolimpo.presentation.screens.ExternalCollab.RegisterExternalCollab
+package com.app.arcabyolimpo.presentation.screens.user.register
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.border
@@ -31,13 +31,14 @@ import kotlinx.coroutines.launch
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExternalCollabRegisterScreen(
-    viewModel: ExternalCollabRegisterViewModel = hiltViewModel(),
+fun UserRegisterScreen(
+    viewModel: UserRegisterViewModel = hiltViewModel(),
     onDismiss: () -> Unit,
     onSuccess: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val isActiveBoolean = uiState.isActive == 1
 
     // Snackbar state
     val snackbarHostState = remember { SnackbarHostState() }
@@ -295,12 +296,12 @@ fun ExternalCollabRegisterScreen(
                                 onClick = { viewModel.updateIsActive(true) },
                                 modifier = Modifier.weight(1f),
                                 colors = ButtonDefaults.outlinedButtonColors(
-                                    containerColor = if (uiState.isActive) Color(0xFF3B82F6) else Color.Transparent,
-                                    contentColor = if (uiState.isActive) Color.White else Color(0xFF3B82F6)
+                                    containerColor = if (isActiveBoolean) Color(0xFF3B82F6) else Color.Transparent,
+                                    contentColor = if (isActiveBoolean) Color.White else Color(0xFF3B82F6)
                                 ),
                                 border = androidx.compose.foundation.BorderStroke(
                                     1.dp,
-                                    if (uiState.isActive) Color(0xFF3B82F6) else Color(0xFF3B82F6).copy(alpha = 0.5f)
+                                    if (isActiveBoolean) Color(0xFF3B82F6) else Color(0xFF3B82F6).copy(alpha = 0.5f)
                                 )
                             ) {
                                 Text("Activo")
@@ -311,12 +312,12 @@ fun ExternalCollabRegisterScreen(
                                 onClick = { viewModel.updateIsActive(false) },
                                 modifier = Modifier.weight(1f),
                                 colors = ButtonDefaults.outlinedButtonColors(
-                                    containerColor = if (!uiState.isActive) Color(0xFF3B82F6) else Color.Transparent,
-                                    contentColor = if (!uiState.isActive) Color.White else Color(0xFF3B82F6)
+                                    containerColor = if (!isActiveBoolean) Color(0xFF3B82F6) else Color.Transparent,
+                                    contentColor = if (!isActiveBoolean) Color.White else Color(0xFF3B82F6)
                                 ),
                                 border = androidx.compose.foundation.BorderStroke(
                                     1.dp,
-                                    if (!uiState.isActive) Color(0xFF3B82F6) else Color(0xFF3B82F6).copy(alpha = 0.5f)
+                                    if (!isActiveBoolean) Color(0xFF3B82F6) else Color(0xFF3B82F6).copy(alpha = 0.5f)
                                 )
                             ) {
                                 Text("Inactivo")
