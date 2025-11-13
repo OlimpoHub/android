@@ -38,6 +38,14 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.StatusSelector
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
 
+/** ---------------------------------------------------------------------------------------------- *
+ * SupplyAddScreen -> view where all the inputs, buttons and selects are shown with the information
+ * collected by the view model, handles different states and errors.
+ *
+ * @param viewModel: SupplyAddViewModel -> vm for the view in charge of placing the data
+ * @param onSaveSuccess: () -> Unit -> function when the supply is added
+ * @param onCancel: () -> Unit -> function when the user cancels the operation
+ * ---------------------------------------------------------------------------------------------- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SupplyAddScreen(

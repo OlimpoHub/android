@@ -2,6 +2,7 @@ package com.app.arcabyolimpo.presentation.screens.supply.supplyAdd
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.app.arcabyolimpo.domain.model.supplies.SupplyAdd
@@ -13,6 +14,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/** ----------------------------------------------------------------------------------------------- *
+ * SuppliesAddViewModel -> Collects the information for the workshops and categories, then collects
+ * the information sent by the user to create a new Supply
+ *
+ * @param getWorkshopCategoryInfoUseCase -> fetch all categories and workshops
+ * @param addSuppliesUseCase -> in charge of sending the new supply to create it
+ * @return ViewModel
+ * ----------------------------------------------------------------------------------------------- */
+@HiltViewModel
 class SupplyAddViewModel @Inject constructor(
     private val getWorkshopCategoryInfoUseCase: GetWorkshopCategoryInfoUseCase,
     private val addSuppliesUseCase: AddSupplyUseCase,

@@ -2,6 +2,7 @@
 
 ### Added
 - Filter and search bar for users
+- US to add a new supply with an image
 
 ### Updated
 - External collabs screen to user general screen

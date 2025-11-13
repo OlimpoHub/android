@@ -76,7 +76,7 @@ fun SupplyListScreen(
         containerColor = Background,
         floatingActionButton = {
             AddButton(
-                onClick = { onAddSupplyClick },
+                onClick = onAddSupplyClick,
             )
         },
         topBar = {

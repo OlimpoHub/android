@@ -69,7 +69,10 @@ class SupplyRepositoryImpl @Inject constructor(
          * getSupplyBatchById -> calls the API to fetch a supply batch by its ID.
         * --------------------------------------------------------------------------------------- */
         override suspend fun getSupplyBatchById(id: String): SupplyBatchExt = api.getSupplyBatchById(id).toDomain()
-
+        /** -------------------------------------------------------------------------------------- *
+         * getWorkshopCategoryList -> calls the API to fetch every workshop and category id's and
+         * names.
+         * -------------------------------------------------------------------------------------- */
         override suspend fun getWorkshopCategoryList(): Result<WorkshopCategoryList> {
             return try {
                 val workshopCategoryListDto = api.getWorkshopCategoryList()
@@ -79,7 +82,9 @@ class SupplyRepositoryImpl @Inject constructor(
                 Result.failure(e)
             }
         }
-
+        /** -------------------------------------------------------------------------------------- *
+         * addSupply -> calls the API to add a new Supply and handles the image to rename it
+         * -------------------------------------------------------------------------------------- */
         override suspend fun addSupply(supply: SupplyAdd, image: Uri?): Result<Unit> {
             return try {
                 val imagePart = image?.let {
@@ -92,7 +97,7 @@ class SupplyRepositoryImpl @Inject constructor(
                             context.contentResolver.getType(it)?.toMediaTypeOrNull()
                         )
                         MultipartBody.Part.createFormData(
-                            "SupplyImage",
+                            "imagenInsumo",
                             "image.jpg",
                             requestFile
                         )
@@ -112,7 +117,7 @@ class SupplyRepositoryImpl @Inject constructor(
                     measureUnit = measureUnit,
                     idCategory = idCategory,
                     status = status,
-                    image = imagePart
+                    imagenInsumo = imagePart
                 )
                 Result.success(Unit)
             } catch (e: Exception) {
