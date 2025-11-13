@@ -30,6 +30,7 @@ import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
+import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
@@ -59,7 +60,7 @@ sealed class Screen(
 
     object UserRegister : Screen("user_register")
 
-    object UserDetail : Screen("user_detail/{userId}"){
+    object UserDetail : Screen("user_detail/{userId}") {
         fun createRoute(userId: String) = "user_detail/$userId"
     }
 
@@ -94,6 +95,8 @@ sealed class Screen(
     object SupplyDetail : Screen("supply/{idSupply}") {
         fun createRoute(idSupply: String) = "supply/$idSupply"
     }
+
+    object SupplyAdd : Screen("supply/add")
 }
 
 /**
@@ -337,10 +340,11 @@ fun ArcaNavGraph(
                 onEditClick = { id ->
                     // TODO: Navigate to edit screen when you create it
                 },
-                onDeleteClick = { navController.navigate(Screen.UserList.route){
-                    popUpTo(Screen.UserList.route) { inclusive = true }
-                }
-                }
+                onDeleteClick = {
+                    navController.navigate(Screen.UserList.route) {
+                        popUpTo(Screen.UserList.route) { inclusive = true }
+                    }
+                },
             )
         }
 
@@ -420,6 +424,9 @@ fun ArcaNavGraph(
                 onSupplyClick = { id ->
                     navController.navigate("supply/$id")
                 },
+                onAddSupplyClick = {
+                    navController.navigate(Screen.SupplyAdd.route)
+                }
             )
         }
 
@@ -432,8 +439,8 @@ fun ArcaNavGraph(
                 idInsumo = idSupply ?: "",
                 onBackClick = { navController.popBackStack() },
                 onClickAddSupplyBatch = {
-                        // TODO: Add when add a supply batch is ready
-                    },
+                    // TODO: Add when add a supply batch is ready
+                },
                 onClickDelete = {
                     // TODO: Add when delete a supply is ready
                 },
@@ -476,6 +483,22 @@ fun ArcaNavGraph(
                 onBackClick = { navController.popBackStack() },
                 onModifyClick = { /* TODO: Lógica de VM */ },
                 viewModel = hiltViewModel(),
+            )
+        }
+
+        /**
+         * Add New Supply Screen.
+         *
+         * Pantalla para registrar un nuevo insumo.
+         */
+        composable(Screen.SupplyAdd.route) {
+            SupplyAddScreen(
+                onSaveSuccess = {
+                    navController.popBackStack()
+                },
+                onCancel = {
+                    navController.popBackStack()
+                }
             )
         }
     }

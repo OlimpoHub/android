@@ -2,6 +2,7 @@ package com.app.arcabyolimpo.presentation.screens.supply.supplyAdd
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.app.arcabyolimpo.domain.model.supplies.SupplyAdd
@@ -13,6 +14,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/** ----------------------------------------------------------------------------------------------- *
+ * SuppliesAddViewModel -> Collects the information for the workshops and categories, then collects
+ * the information sent by the user to create a new Supply
+ *
+ * @param getWorkshopCategoryInfoUseCase -> fetch all categories and workshops
+ * @param addSuppliesUseCase -> in charge of sending the new supply to create it
+ * @return ViewModel
+ * ----------------------------------------------------------------------------------------------- */
+@HiltViewModel
 class SupplyAddViewModel @Inject constructor(
     private val getWorkshopCategoryInfoUseCase: GetWorkshopCategoryInfoUseCase,
     private val addSuppliesUseCase: AddSupplyUseCase,
@@ -47,16 +57,28 @@ class SupplyAddViewModel @Inject constructor(
         }
     }
 
-    fun onNameChange(name: String) { _uiState.update { it.copy(name = name) } }
-    fun onUnitMeasureChange(measureUnit: String) { _uiState.update { it.copy(measureUnit = measureUnit) } }
-    fun onImageSelected(uri: Uri?) { _uiState.update { it.copy(selectedImage = uri) } }
-    fun onStatusChange(newStatus: Int) { _uiState.update { it.copy(status = newStatus) } }
-    fun onWorkshopSelected(idWorkshop: String) { _uiState.update { it.copy(selectedWorkshop = idWorkshop) } }
-    fun onCategorySelected(idCategory: String) { _uiState.update { it.copy(selectedCategory = idCategory) } }
+    fun onNameChange(name: String) {
+        _uiState.update { it.copy(name = name) }
+    }
+    fun onUnitMeasureChange(measureUnit: String) {
+        _uiState.update { it.copy(measureUnit = measureUnit) }
+    }
+    fun onImageSelected(uri: Uri?) {
+        _uiState.update { it.copy(selectedImage = uri) }
+    }
+    fun onStatusChange(newStatus: Int) {
+        _uiState.update { it.copy(status = newStatus) }
+    }
+    fun onWorkshopSelected(idWorkshop: String) {
+        _uiState.update { it.copy(selectedWorkshopId = idWorkshop) }
+    }
+    fun onCategorySelected(idCategory: String) {
+        _uiState.update { it.copy(selectedCategoryId = idCategory) }
+    }
     fun onSaveClick() {
         val state = _uiState.value
 
-        if (state.name.isBlank() || state.selectedWorkshop == null || state.selectedCategory == null) {
+        if (state.name.isBlank() || state.selectedWorkshopId == null || state.selectedCategoryId == null) {
             _uiState.update { it.copy(error = "Completa todos los campos") }
             return
         }
@@ -65,10 +87,10 @@ class SupplyAddViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
 
             val supply = SupplyAdd(
-                idWorkshop = state.selectedWorkshop,
+                idWorkshop = state.selectedWorkshopId,
                 name = state.name,
                 measureUnit = state.measureUnit,
-                idCategory = state.selectedCategory,
+                idCategory = state.selectedCategoryId,
                 status = state.status
             )
 

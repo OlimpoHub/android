@@ -1,8 +1,15 @@
+## [0.1.0] - 13/11/2025
+
+### Fixed
+- ArcaApi get all external collabs
+- Search users
+
 ## [0.1.0] - 12/11/2025
 
 ### Added
 - DeleteOneSupply Button Logic
 - Filter and search bar for users
+- US to add a new supply with an image
 - Included internal collaborators in the area of users
 
 ### Updated
