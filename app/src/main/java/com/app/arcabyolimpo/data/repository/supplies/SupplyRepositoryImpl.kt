@@ -2,11 +2,14 @@ package com.app.arcabyolimpo.data.repository.supplies
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import com.app.arcabyolimpo.data.mapper.supplies.toDomain
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
 import com.app.arcabyolimpo.domain.model.filter.FilterData
+import com.app.arcabyolimpo.domain.model.supplies.Batch
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.domain.model.supplies.SupplyAdd
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
@@ -69,6 +72,27 @@ class SupplyRepositoryImpl @Inject constructor(
          * getSupplyBatchById -> calls the API to fetch a supply batch by its ID.
         * --------------------------------------------------------------------------------------- */
         override suspend fun getSupplyBatchById(id: String): SupplyBatchExt = api.getSupplyBatchById(id).toDomain()
+
+        /**
+         * Deletes a specific supply batch identified by its [id].
+         *
+         * This function calls the remote API to perform the deletion operation.
+         * It does not return any data, but will throw an exception if the request fails.
+         */
+        override suspend fun deleteSupplyBatch(id: String){
+            api.deleteSupplyBatch(id)
+        }
+
+
+    // Do a soft delete for supplys
+        override suspend fun deleteOneSupply(id: String) {
+            //If I'm not returning a value, I don't include the response
+            val body = DeleteDto(id)
+            //If you want to check the status of an error
+            //val body = DeleteDto("i33")
+            val result = api.deleteOneSupply(body)
+            Log.d("Validacion","Si llego ")
+        }
         /** -------------------------------------------------------------------------------------- *
          * getWorkshopCategoryList -> calls the API to fetch every workshop and category id's and
          * names.
