@@ -18,6 +18,8 @@ import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
 import com.app.arcabyolimpo.domain.model.auth.UserRole
 import com.app.arcabyolimpo.presentation.common.components.LoadingShimmer
 import com.app.arcabyolimpo.presentation.screens.accountactivation.AccountActivationScreen
+import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
+import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
 import com.app.arcabyolimpo.presentation.screens.home.assistant.CollaboratorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.home.coordinator.CoordinatorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.login.LoginScreen
@@ -25,7 +27,10 @@ import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecove
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
-import com.app.arcabyolimpo.presentation.screens.supply.SupplyListScreen
+import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
+import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
+import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
+import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
 import com.app.arcabyolimpo.presentation.screens.user.UserListScreen
@@ -80,11 +85,15 @@ sealed class Screen(
 
     object AddNewWorkshop : Screen("workshop/add")
 
-    object BeneficiaryList : Screen("beneficiary")
+    object BeneficiaryList : Screen("beneficiary_list")
 
-    object BeneficiaryDetail : Screen("beneficiary/id")
+    object BeneficiaryDetail : Screen("beneficiary_detail/{beneficiaryId}") {
+        fun createRoute(beneficiaryId: String) = "beneficiary_detail/$beneficiaryId"
+    }
 
-
+    object SupplyDetail : Screen("supply/{idSupply}") {
+        fun createRoute(idSupply: String) = "supply/$idSupply"
+    }
 }
 
 /**
@@ -121,7 +130,8 @@ fun ArcaNavGraph(
     /** Defines all navigation. The start destination is the Splash screen. */
     NavHost(
         navController = navController,
-        startDestination = Screen.UserList.route,
+        // TODO: Cambiar a Screen.Splash.route cuando acabe
+        startDestination = Screen.SuppliesList.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -346,7 +356,7 @@ fun ArcaNavGraph(
         }
 
         composable(Screen.UserList.route) {
-            UserListScreen (
+            UserListScreen(
                 onCollabClick = { id ->
                     navController.navigate(Screen.UserDetail.createRoute(id))
                 },
@@ -409,8 +419,64 @@ fun ArcaNavGraph(
         composable(Screen.SuppliesList.route) {
             SupplyListScreen(
                 onSupplyClick = { id ->
-                    navController.navigate("supplyDetail/$id")
+                    navController.navigate("supply/$id")
                 },
+            )
+        }
+
+        composable(
+            route = Screen.SupplyDetail.route,
+            arguments = listOf(navArgument("idSupply") { type = NavType.StringType }),
+        ) { backStackEntry ->
+            val idSupply = backStackEntry.arguments?.getString("idSupply")
+            SuppliesDetailScreen(
+                idInsumo = idSupply ?: "",
+                onBackClick = { navController.popBackStack() },
+                onClickAddSupplyBatch = {
+                        // TODO: Add when add a supply batch is ready
+                    },
+                onClickDelete = {
+                    // TODO: Add when delete a supply is ready
+                },
+                onClickModify = {
+                    // TODO: Add when delete a supply is ready
+                },
+                modifySupplyBatch = {
+                    // TODO: Add when delete a supply is ready
+                },
+                deleteSupplyBatch = {
+                    // TODO: Add when delete a supply is ready
+                },
+            )
+        }
+        /**
+         * Beneficiary List Screen.
+         *
+         * Shows the grid of beneficiaries.
+         */
+        composable(Screen.BeneficiaryList.route) {
+            BeneficiaryList(
+                onBeneficiaryClick = { beneficiaryId ->
+                    navController.navigate(Screen.BeneficiaryDetail.createRoute(beneficiaryId))
+                },
+                onFilterClick = { /* TODO: Lógica de VM */ },
+                onNotificationClick = { /* TODO: Lógica de VM */ },
+            )
+        }
+
+        /**
+         * Beneficiary Detail Screen.
+         *
+         * Shows the details of a beneficiary and allows the function to eliminate them, others functionality are in progress.
+         */
+        composable(
+            route = Screen.BeneficiaryDetail.route,
+            arguments = listOf(navArgument("beneficiaryId") { type = NavType.StringType }),
+        ) {
+            BeneficiaryDetailScreen(
+                onBackClick = { navController.popBackStack() },
+                onModifyClick = { /* TODO: Lógica de VM */ },
+                viewModel = hiltViewModel(),
             )
         }
     }

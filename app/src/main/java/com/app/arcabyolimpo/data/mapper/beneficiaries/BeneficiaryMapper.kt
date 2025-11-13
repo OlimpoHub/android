@@ -10,16 +10,16 @@ import com.app.arcabyolimpo.domain.model.beneficiaries.Beneficiary
  */
 fun BeneficiaryDto.toDomain(): Beneficiary {
     return Beneficiary(
-        id = id,
-        name = name.replaceFirstChar { it.uppercase() },
-        birthdate = birthdate,
-        emergencyNumber = emergencyNumber,
-        emergencyName = emergencyName,
-        emergencyRelation = emergencyRelation,
-        details = details,
-        entryDate = entryDate,
-        image = image,
-        disabilities = disabilities,
-        status = status
+        id = id.orEmpty(),
+        name = name?.replaceFirstChar { it.uppercase() }.orEmpty(),
+        birthdate = birthdate.orEmpty(),
+        emergencyNumber = emergencyNumber.orEmpty(),
+        emergencyName = emergencyName.orEmpty(),
+        emergencyRelation = emergencyRelation.orEmpty(),
+        details = details.orEmpty(),
+        entryDate = entryDate.orEmpty(),
+        image = image.orEmpty(),
+        disabilities = disabilities.orEmpty(),
+        status = status ?: 0
     )
 }

@@ -8,12 +8,12 @@ import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
 import com.app.arcabyolimpo.data.remote.interceptor.TokenAuthenticator
 import com.app.arcabyolimpo.data.repository.auth.UserRepositoryImpl
 import com.app.arcabyolimpo.data.repository.beneficiaries.BeneficiaryRepositoryImpl
-import com.app.arcabyolimpo.data.repository.password.PasswordPasswordUserRepositoryImpl
+import com.app.arcabyolimpo.data.repository.password.PasswordUserRepositoryImpl
 import com.app.arcabyolimpo.data.repository.supplies.SupplyRepositoryImpl
+import com.app.arcabyolimpo.data.repository.user.UsersRepositoryImpl
 import com.app.arcabyolimpo.data.repository.workshops.WorkshopRepositoryImpl
 import com.app.arcabyolimpo.domain.repository.auth.UserRepository
 import com.app.arcabyolimpo.domain.repository.beneficiaries.BeneficiaryRepository
-import com.app.arcabyolimpo.data.repository.user.UsersRepositoryImpl
 import com.app.arcabyolimpo.domain.repository.password.PasswordUserRepository
 import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
 import com.app.arcabyolimpo.domain.repository.user.UsersRepository
@@ -99,9 +99,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providePasswordUserRepository(
-        api: ArcaApi
-    ): PasswordUserRepository = PasswordPasswordUserRepositoryImpl(api)
+    fun providePasswordUserRepository(api: ArcaApi): PasswordUserRepository = PasswordUserRepositoryImpl(api)
 
     /**
      * Provides the [SupplyRepository] implementation.
@@ -117,8 +115,9 @@ object AppModule {
     @Provides
     @Singleton
     fun provideSupplyRepository(
-        api: ArcaApi
-    ): SupplyRepository = SupplyRepositoryImpl(api)
+        api: ArcaApi,
+        @ApplicationContext context: Context
+    ): SupplyRepository = SupplyRepositoryImpl(api, context)
 
     /**
      * Provides the [WorkshopRepository] implementation.
@@ -133,9 +132,7 @@ object AppModule {
      */
     @Provides
     @Singleton
-    fun provideWorkshopRepository(
-        api: ArcaApi
-    ): WorkshopRepository = WorkshopRepositoryImpl(api)
+    fun provideWorkshopRepository(api: ArcaApi): WorkshopRepository = WorkshopRepositoryImpl(api)
 
     /**
      * Provides the [BeneficiaryRepository] implementation.
@@ -150,13 +147,9 @@ object AppModule {
      */
     @Provides
     @Singleton
-    fun provideBeneficiaryRepository(
-        api: ArcaApi
-    ): BeneficiaryRepository = BeneficiaryRepositoryImpl(api)
+    fun provideBeneficiaryRepository(api: ArcaApi): BeneficiaryRepository = BeneficiaryRepositoryImpl(api)
 
     @Provides
     @Singleton
-    fun provideUsersRepository(
-        api: ArcaApi
-    ): UsersRepository = UsersRepositoryImpl(api)
+    fun provideUsersRepository(api: ArcaApi): UsersRepository = UsersRepositoryImpl(api)
 }

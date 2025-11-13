@@ -24,6 +24,8 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -31,7 +33,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.app.arcabyolimpo.presentation.ui.components.molecules.BeneficiaryCard
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
+
+data class BeneficiaryDemo(
+    val id: String,
+    val name: String
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,7 +50,13 @@ fun BeneficiaryList(
     onNotificationClick: () -> Unit
 ) {
     // Datos de ejemplo (se remplaza con datos del ViewModel)
-    val beneficiaries = listOf("John Smith 1", "John Smith 2", "John Smith 3", "John Smith 4")
+    val beneficiaries = listOf(
+        BeneficiaryDemo("0f12b075-bd1d-11f0-b6b8-020161fa237d", "John Smith 1"),
+        BeneficiaryDemo("127fd0f3-bd1e-11f0-b6b8-020161fa237d", "John Smith 2"),
+        BeneficiaryDemo("73aab7d7-bd1a-11f0-b6b8-020161fa237d", "John Smith 3"),
+        BeneficiaryDemo("ad469db9-bd1b-11f0-b6b8-020161fa237d", "John Smith 4")
+    )
+    var searchText by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
@@ -78,15 +93,17 @@ fun BeneficiaryList(
                 .padding(horizontal = 16.dp)
                 .fillMaxSize()
         ) {
-            // Barra de Búsqueda (Simplificada)
             TextField(
-                value = "",
-                onValueChange = {},
+                value = searchText,
+                onValueChange = { searchText = it },
                 label = { Text("Buscar") },
-                leadingIcon = { Icon(
-                    painter = painterResource(id = R.drawable.ic_search_icon),
-                    contentDescription = null) },
-                modifier = Modifier.fillMaxWidth(),
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_search_icon),
+                        contentDescription = null
+                    )
+                },
+                modifier = Modifier.fillMaxWidth()
                 // Aquí se aplican estilo de atoms
             )
 
@@ -98,9 +115,10 @@ fun BeneficiaryList(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(beneficiaries.size) { index ->
+                    val beneficiary = beneficiaries[index]
                     BeneficiaryCard(
-                        name = beneficiaries[index],
-                        onClick = { onBeneficiaryClick(beneficiaries[index]) }
+                        name = beneficiary.name,
+                        onClick = { onBeneficiaryClick(beneficiary.id) }
                     )
                 }
             }

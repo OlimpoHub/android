@@ -2,8 +2,8 @@ package com.app.arcabyolimpo.presentation.screens.passwordrecovery
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.arcabyolimpo.domain.usecase.password.PostPasswordRecoveryUseCase
 import com.app.arcabyolimpo.domain.common.Result
+import com.app.arcabyolimpo.domain.usecase.password.PostPasswordRecoveryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,6 +11,18 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+/**
+ * ViewModel responsible for handling the password recovery logic.
+ *
+ * It communicates with the domain layer via the [PostPasswordRecoveryUseCase] to
+ * send password recovery requests and updates the UI state accordingly.
+ *
+ * The ViewModel exposes a [StateFlow] of [PasswordRecoveryUiState] that the UI
+ * observes to reflect loading, success, or error states.
+ *
+ * @property postPasswordRecoveryUseCase Use case that handles the password recovery request logic.
+ */
 
 @HiltViewModel
 class PasswordRecoveryViewModel
@@ -43,7 +55,6 @@ class PasswordRecoveryViewModel
                                 )
                         }
                     }
-
                 }
             }
         }

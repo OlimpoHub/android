@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.presentation.common.components.ErrorView
 import com.app.arcabyolimpo.presentation.common.components.LoadingShimmer
-import com.app.arcabyolimpo.presentation.ui.components.molecules.SupplyCard
+import com.app.arcabyolimpo.presentation.screens.supply.supplyList.components.SupplyCard
 
 /**
  * Displays the main content of the Supplies List screen.
@@ -52,6 +52,7 @@ fun SupplyListContent(
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+
     // Remember the state for the pull-to-refresh component.
     val pullRefreshState =
         rememberPullRefreshState(
@@ -60,9 +61,10 @@ fun SupplyListContent(
         )
 
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .pullRefresh(pullRefreshState),
+        modifier =
+            modifier
+                .fillMaxSize()
+                .pullRefresh(pullRefreshState),
     ) {
         when {
             // Show shimmer placeholders while loading and no data is yet available.
@@ -75,9 +77,10 @@ fun SupplyListContent(
                 ) {
                     items(10) {
                         LoadingShimmer(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(160.dp),
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(160.dp),
                         )
                     }
                 }

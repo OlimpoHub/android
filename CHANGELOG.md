@@ -1,3 +1,22 @@
+## [0.1.0] - 12/11/2025
+
+### Added
+- Filter and search bar for users
+
+### Updated
+- External collabs screen to user general screen
+
+
+## [0.1.0] - 11/11/2025
+
+### Fixed
+ -  Fixed Main Activity for changes made for supply
+
+### Added
+- Added final comments to the function delete beneficiaries
+- Consulting an specific Supply with the batches it is contained into.
+- Added customization of Snackbar Atom
+
 ## [0.1.0] - 10/11/2025
 
 ### Fixed
