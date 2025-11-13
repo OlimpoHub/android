@@ -70,7 +70,7 @@ fun SuppliesDetailScreen(
     deleteSupplyBatch: () -> Unit,
     viewModel: SuppliesDetailViewModel = hiltViewModel(),
 ) {
-    val navController = rememberNavController()
+    //val navController = rememberNavController()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -90,6 +90,7 @@ fun SuppliesDetailScreen(
         if (uiState.snackbarVisible == true){
             // show snackbar as a suspend function
             scope.launch {
+
                 val result =
                 snackbarHostState.showSnackbar(
                     SnackbarVisualsWithError(
@@ -99,7 +100,12 @@ fun SuppliesDetailScreen(
                 )
                 when (result){
                     SnackbarResult.Dismissed -> {
-                        navController.popBackStack()
+                        //Tell the VM that the visible snackbar is finished
+                        viewModel.onSnackbarShown()
+
+                        //Navigate back as soon as the snack bar is empty
+                        onBackClick()
+                        //navController.popBackStack()
                     }
                     SnackbarResult.ActionPerformed -> {}
                 }

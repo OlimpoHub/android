@@ -109,6 +109,24 @@ class SuppliesDetailViewModel
             }
         }
 
+        fun onSnackbarShown() {
+            _uiState.update { state ->
+                state.copy(
+                    snackbarVisible = false,
+                )
+            }
+        }
+
+        /** ------------------------------------------------------------------------------------------ *
+         * deleteOneSupply -> Do a soft deletes a specific supply using its ID. The function updates the
+         * UI state to reflect loading, success, or error states.
+         *
+         * After successful soft delte, you can optionally trigger a refresh of the supply list
+         * to reflect the latest state.
+         *
+         * @param id: String -> ID of the supply batch to delete.
+         * ------------------------------------------------------------------------------------------ */
+
         fun deleteOneSupply(id: String) {
             viewModelScope.launch {
                 deleteOneSupplyUseCase(id).collect { result ->

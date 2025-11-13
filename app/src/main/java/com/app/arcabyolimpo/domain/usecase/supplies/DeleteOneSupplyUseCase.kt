@@ -13,8 +13,8 @@ constructor(
     private val repository: SupplyRepository
 ){
 
-    // Si yo hago un Update?
-    //Jala el Id y invoca el flow
+
+    //Pull the ID and invoke the flow
     operator fun invoke(id: String): Flow<Result<Unit>> =
         flow{
             try{

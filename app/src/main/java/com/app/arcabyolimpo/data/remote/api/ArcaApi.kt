@@ -125,7 +125,7 @@ interface ArcaApi {
         @Path("id") id: String
     )
 
-    // mi ruta es un soft delete un update
+    // My route is a soft delete and an update
     @POST("supplies/delete")
     suspend fun deleteOneSupply(
         @Body requestBody: DeleteDto

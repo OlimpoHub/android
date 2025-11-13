@@ -84,10 +84,11 @@ class SupplyRepositoryImpl @Inject constructor(
         }
 
 
-    // yo hago un Update
+    // Do a soft delete for supplys
         override suspend fun deleteOneSupply(id: String) {
-            //Si no devuelvo un valor, ya no pongo el reponse
+            //If I'm not returning a value, I don't include the response
             val body = DeleteDto(id)
+            //If you want to check the status of an error
             //val body = DeleteDto("i33")
             val result = api.deleteOneSupply(body)
             Log.d("Validacion","Si llego ")
