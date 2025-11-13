@@ -3,7 +3,8 @@ package com.app.arcabyolimpo.data.remote.dto.user
 import com.google.gson.annotations.SerializedName
 
 data class UserDto(
-    @SerializedName("idUsuario") val idUsuario: String,
+    @SerializedName("idUsuario") val idUsuario: String? = null,
+
     @SerializedName("idRol") val idRol: String,
     @SerializedName("nombre") val nombre: String,
     @SerializedName("apellidoPaterno") val apellidoPaterno: String,

@@ -1,8 +1,5 @@
 package com.app.arcabyolimpo.data.remote.api
 
-import com.app.arcabyolimpo.data.remote.dto.ExternalCollaborator.ExternalCollabDto
-import com.app.arcabyolimpo.data.remote.dto.ExternalCollaborator.RegisterExtCollab.RegisterExternalCollabDto
-import com.app.arcabyolimpo.data.remote.dto.ExternalCollaborator.RegisterExtCollab.RegisterResponseDto
 import com.app.arcabyolimpo.data.remote.dto.auth.LoginRequestDto
 import com.app.arcabyolimpo.data.remote.dto.auth.LoginResponseDto
 import com.app.arcabyolimpo.data.remote.dto.auth.RefreshRequestDto
@@ -23,6 +20,8 @@ import com.app.arcabyolimpo.data.remote.dto.supplies.SuppliesListDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyDto
 import com.app.arcabyolimpo.data.remote.dto.user.UserDto
+import com.app.arcabyolimpo.data.remote.dto.user.registeruser.RegisterResponseDto
+import com.app.arcabyolimpo.data.remote.dto.user.registeruser.RegisterUserDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.AddNewWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
@@ -60,25 +59,17 @@ interface ArcaApi {
     @GET("externalCollabs/")
     suspend fun getAllCollabs(): List<ExternalCollabDto>
 
-    @GET("externalCollabs/{id}")
-    suspend fun getCollabById(
-        @Path("id") id: String,
-    ): List<ExternalCollabDto>
+    @GET("user/{id}")
+    suspend fun getUserById(@Path("id") id: String): List<UserDto>
 
-    @POST("externalCollabs/register")
-    suspend fun registerCollab(
-        @Body collab: RegisterExternalCollabDto,
-    ): ExternalCollabDto
+    @POST("user/register")
+    suspend fun registerUser(@Body user: RegisterUserDto): UserDto
 
-    @POST("externalCollabs/update")
-    suspend fun updateCollab(
-        @Body collab: ExternalCollabDto,
-    ): RegisterResponseDto
+    @POST("user/update")
+    suspend fun updateUser(@Body user: UserDto): RegisterResponseDto
 
-    @POST("externalCollabs/deleteExternalCollab/{id}")
-    suspend fun deleteCollab(
-        @Path("id") id: String,
-    ): Map<String, Any>
+    @POST("user/delete/{id}")
+    suspend fun deleteUser(@Path("id") id: String): Map<String, Any>
 
     @POST("user/recover-password")
     suspend fun recoverPassword(

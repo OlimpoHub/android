@@ -1,4 +1,4 @@
-package com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabDetail.components
+package com.app.arcabyolimpo.presentation.screens.user.detail.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,51 +25,49 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.app.arcabyolimpo.data.remote.dto.user.UserDto
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.DeleteButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ModifyButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.status.ActiveStatus
 import com.app.arcabyolimpo.presentation.ui.components.atoms.status.InactiveStatus
 
 @Composable
-fun ExternalCollabDetailContent(
-    collab: com.app.arcabyolimpo.domain.model.ExternalCollaborator.ExternalCollab,
+fun UserDetailContent(
+    collab: UserDto,
     onEditClick: () -> Unit,
-    onDeleteClick: () -> Unit,
+    onDeleteClick: () -> Unit
 ) {
     Column(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Profile Photo
-        if (collab.photoUrl != null) {
+        if (collab.foto != null) {
             AsyncImage(
-                model = collab.photoUrl,
+                model = collab.foto,
                 contentDescription = "Profile Photo",
-                modifier =
-                    Modifier
-                        .size(120.dp)
-                        .clip(CircleShape),
-                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
             )
         } else {
             // Placeholder if no photo
             Box(
-                modifier =
-                    Modifier
-                        .size(120.dp)
-                        .clip(CircleShape)
-                        .background(Color(0xFF1E293B)),
-                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(CircleShape)
+                    .background(Color(0xFF1E293B)),
+                contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "${collab.firstName.firstOrNull() ?: ""}${collab.lastName.firstOrNull() ?: ""}",
+                    text = "${collab.nombre.firstOrNull() ?: ""}${collab.apellidoPaterno.firstOrNull() ?: ""}",
                     color = Color.White,
                     fontSize = 40.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.Bold
                 )
             }
         }
@@ -80,16 +76,16 @@ fun ExternalCollabDetailContent(
 
         // Full Name
         Text(
-            text = "${collab.firstName} ${collab.lastName} ${collab.secondLastName}",
+            text = "${collab.nombre} ${collab.apellidoPaterno} ${collab.apellidoMaterno}",
             color = Color.White,
             fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.Bold
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         // Status Badge
-        if (collab.isActive) {
+        if (collab.estatus == 1) {
             ActiveStatus()
         } else {
             InactiveStatus()
@@ -98,24 +94,23 @@ fun ExternalCollabDetailContent(
         Spacer(modifier = Modifier.height(32.dp))
 
         // Information Cards
-        InfoCard(label = "Correo Electrónico", value = collab.email)
-        InfoCard(label = "Teléfono", value = collab.phone)
-        InfoCard(label = "Carrera", value = collab.degree)
-        InfoCard(label = "Fecha de Nacimiento", value = formatDate(collab.birthDate))
-        InfoCard(label = "ID de Rol", value = collab.roleId.toString())
+        InfoCard(label = "Correo Electrónico", value = collab.correoElectronico)
+        InfoCard(label = "Teléfono", value = collab.telefono)
+        InfoCard(label = "Carrera", value = collab.carrera)
+        InfoCard(label = "Fecha de Nacimiento", value = formatDate(collab.fechaNacimiento))
+        InfoCard(label = "ID de Rol", value = getRoleName(collab.idRol))
 
         Spacer(modifier = Modifier.height(32.dp))
 
         Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Box(
                 modifier = Modifier.weight(1f),
-                contentAlignment = Alignment.Center,
+                contentAlignment = Alignment.Center
             ) {
                 ModifyButton(
                     onClick = onEditClick,
@@ -124,10 +119,11 @@ fun ExternalCollabDetailContent(
 
             Box(
                 modifier = Modifier.weight(1f),
-                contentAlignment = Alignment.Center,
+                contentAlignment = Alignment.Center
             ) {
                 DeleteButton(
                     onClick = onDeleteClick,
+                    modifier = Modifier.size(width = 140.dp, height = 40.dp)
                 )
             }
         }
@@ -137,10 +133,21 @@ fun ExternalCollabDetailContent(
 }
 
 // Helper function to format date
-fun formatDate(dateString: String): String =
-    try {
+fun formatDate(dateString: String): String {
+    return try {
         val parts = dateString.split("T")[0].split("-")
         "${parts[2]}/${parts[1]}/${parts[0]}"
     } catch (e: Exception) {
         dateString
     }
+}
+
+// Helper function to get role name from ID
+fun getRoleName(roleId: String?): String {
+    return when (roleId) {
+        "1" -> "Coordinador"
+        "2" -> "Asistente"
+        "3" -> "Becario"
+        else -> "Desconocido"
+    }
+}

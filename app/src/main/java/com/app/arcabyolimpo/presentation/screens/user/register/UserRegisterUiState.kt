@@ -1,6 +1,6 @@
-package com.app.arcabyolimpo.presentation.screens.ExternalCollab.RegisterExternalCollab
+package com.app.arcabyolimpo.presentation.screens.user.register
 
-data class ExternalCollabRegisterUiState(
+data class UserRegisterUiState (
     val firstName: String = "",
     val lastName: String = "",
     val secondLastName: String = "",
@@ -8,8 +8,8 @@ data class ExternalCollabRegisterUiState(
     val phone: String = "",
     val birthDate: String = "",
     val degree: String = "",
-    val roleId: Int = 3, // Default to external collaborator role
-    val isActive: Boolean = true,
+    val roleId: String = "3",
+    val isActive: Int = 1,
     val photoUrl: String? = null,
 
     val isLoading: Boolean = false,
@@ -22,4 +22,5 @@ data class ExternalCollabRegisterUiState(
     val lastNameError: String? = null,
     val emailError: String? = null,
     val phoneError: String? = null
-)
+    )
+
