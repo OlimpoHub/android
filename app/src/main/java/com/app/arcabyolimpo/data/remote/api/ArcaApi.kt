@@ -15,11 +15,12 @@ import com.app.arcabyolimpo.data.remote.dto.password.RecoverPasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
+import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
-import com.app.arcabyolimpo.data.remote.dto.supplies.WorkshopCategoryListDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuppliesListDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.WorkshopCategoryListDto
 import com.app.arcabyolimpo.data.remote.dto.user.UserDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.AddNewWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
@@ -153,6 +154,9 @@ interface ArcaApi {
         @Part("measureUnit") measureUnit: RequestBody,
         @Part("idCategory") idCategory: RequestBody,
         @Part("status") status: RequestBody,
-        @Part image: MultipartBody.Part?
+        @Part image: MultipartBody.Part?,
     )
+
+    @GET("productBatch/")
+    suspend fun getProductBatches(): List<ProductBatchDto>
 }

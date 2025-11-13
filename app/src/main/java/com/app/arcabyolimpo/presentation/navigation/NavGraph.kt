@@ -29,10 +29,9 @@ import com.app.arcabyolimpo.presentation.screens.login.LoginScreen
 import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecoveryScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
+import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchesList.ProductBatchesListScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
-import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
-import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
@@ -95,7 +94,10 @@ sealed class Screen(
     object SupplyDetail : Screen("supply/{idSupply}") {
         fun createRoute(idSupply: String) = "supply/$idSupply"
     }
+
     object UserList : Screen("user")
+
+    object ProductBatchesList : Screen("product_batches")
 }
 
 /**
@@ -133,7 +135,7 @@ fun ArcaNavGraph(
     NavHost(
         navController = navController,
         // TODO: Cambiar a Screen.Splash.route cuando acabe
-        startDestination = Screen.SuppliesList.route,
+        startDestination = Screen.ProductBatchesList.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -432,8 +434,8 @@ fun ArcaNavGraph(
                 idInsumo = idSupply ?: "",
                 onBackClick = { navController.popBackStack() },
                 onClickAddSupplyBatch = {
-                        // TODO: Add when add a supply batch is ready
-                    },
+                    // TODO: Add when add a supply batch is ready
+                },
                 onClickDelete = {
                     // TODO: Add when delete a supply is ready
                 },
@@ -477,6 +479,10 @@ fun ArcaNavGraph(
                 onModifyClick = { /* TODO: Lógica de VM */ },
                 viewModel = hiltViewModel(),
             )
+        }
+
+        composable(Screen.ProductBatchesList.route) {
+            ProductBatchesListScreen()
         }
     }
 }

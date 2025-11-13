@@ -27,9 +27,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.app.arcabyolimpo.presentation.screens.productbatches.model.ProductBatchUiModel
 import com.app.arcabyolimpo.presentation.theme.Poppins
@@ -49,27 +49,9 @@ import com.app.arcabyolimpo.ui.theme.White
 @Composable
 fun ProductBatchesListScreen(
     modifier: Modifier = Modifier,
-    viewModel: ProductBatchesListViewModel = viewModel(),
+    viewModel: ProductBatchesListViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
-
-    val mockData =
-        List(8) {
-            ProductBatchUiModel(
-                idProducto = "p${it + 1}",
-                nombre = "Galletas de Chocolate",
-                precioUnitario = "1.00",
-                descripcion = "Galletas",
-                imagen = "", // La URL de la imagen
-                disponible = true,
-                idInventario = "inv${it + 1}",
-                precioVenta = "1.50",
-                cantidadProducida = 31,
-                fechaCaducidad = "2026-01-01T06:00:00.000Z",
-                fechaRealizacion = "2025-12-20T06:00:00.000Z", // Fecha de la imagen
-            )
-        }
-
     var text by remember { mutableStateOf("") }
 
     Scaffold(
@@ -188,7 +170,7 @@ fun ProductBatchesListScreen(
                                 .padding(top = 8.dp),
                         verticalArrangement = Arrangement.spacedBy(0.dp),
                     ) {
-                        items(mockData) { batch ->
+                        items(state.batches) { batch ->
                             ProductBatchItem(
                                 batch = batch,
                                 onClick = {},
@@ -198,17 +180,5 @@ fun ProductBatchesListScreen(
                 }
             }
         }
-    }
-}
-
-@Suppress("ktlint:standard:function-naming")
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewProductBatchesListScreen() {
-    ArcaByOlimpoTheme(
-        darkTheme = true,
-        dynamicColor = false,
-    ) {
-        ProductBatchesListScreen()
     }
 }

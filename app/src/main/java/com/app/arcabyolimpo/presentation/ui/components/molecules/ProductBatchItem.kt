@@ -86,7 +86,7 @@ fun ProductBatchItem(
                         style = MaterialTheme.typography.bodySmall,
                     )
                     Text(
-                        text = "Creación: ${batch.fechaRealizacion.substring(0, 10)}",
+                        text = "Creación: ${batch.fechaRealizacionFormatted.substring(0, 10)}",
                         style = MaterialTheme.typography.bodySmall,
                         color = White.copy(alpha = 0.8f),
                         fontSize = 14.sp,
