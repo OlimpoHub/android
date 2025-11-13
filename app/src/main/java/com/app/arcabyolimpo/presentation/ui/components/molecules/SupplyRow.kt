@@ -1,4 +1,4 @@
-package com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.components
+package com.app.arcabyolimpo.presentation.ui.components.molecules
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

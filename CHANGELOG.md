@@ -9,6 +9,7 @@
 ### Added
 - DeleteOneSupply Button Logic
 - Filter and search bar for users
+- US to add a new supply with an image
 - Included internal collaborators in the area of users
 
 ### Updated
