@@ -128,6 +128,7 @@ fun SuppliesDetailScreen(
             )
     }
 
+
     Scaffold(
 
         snackbarHost = {
@@ -205,7 +206,10 @@ fun SuppliesDetailScreen(
                         },
                         onClickModify = onClickModify,
                         modifySupplyBatch = modifySupplyBatch,
-                        deleteSupplyBatch = deleteSupplyBatch,
+                        deleteSupplyBatch = { idBatch ->
+                            viewModel.selectedBatchId = idBatch
+                            viewModel.toggledecisionDialog(showdecisionDialog = true)
+                        },
                     )
                 }
             }

@@ -54,7 +54,7 @@ fun SupplyDetailContent(
     onClickDelete: () -> Unit,
     onClickModify: () -> Unit,
     modifySupplyBatch: () -> Unit,
-    deleteSupplyBatch: () -> Unit,
+    deleteSupplyBatch: (String) -> Unit,
 ) {
     val batches = supply.batch
 
@@ -186,7 +186,7 @@ fun SupplyDetailContent(
                       date = batch.expirationDate,
                       adquisition = batch.adquisitionType,
                       onModifyClick = modifySupplyBatch,
-                      onDeleteClick = deleteSupplyBatch,
+                      onDeleteClick = { deleteSupplyBatch(batch.id) },
                   )
               }
             }

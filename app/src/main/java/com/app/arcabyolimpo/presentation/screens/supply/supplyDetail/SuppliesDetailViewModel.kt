@@ -3,6 +3,7 @@ package com.app.arcabyolimpo.presentation.screens.supply.supplyDetail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.arcabyolimpo.domain.common.Result
+import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
 import com.app.arcabyolimpo.domain.usecase.supplies.DeleteOneSupplyUseCase
 import com.app.arcabyolimpo.domain.usecase.supplies.DeleteSupplyBatchUseCase
 import com.app.arcabyolimpo.domain.usecase.supplies.GetSupplyBatchListUseCase
@@ -32,6 +33,9 @@ class SuppliesDetailViewModel
         private val _uiState = MutableStateFlow(SuppliesDetailUiState())
         val uiState: StateFlow<SuppliesDetailUiState> = _uiState.asStateFlow()
 
+        private var currentSupplyId: String? = null
+        var selectedBatchId: String? = null
+
     /** ------------------------------------------------------------------------------------------ *
      * getSupply -> receives the id of a supply then uses the US and updates the status of the views
      * marking it as loading, error or success.
@@ -39,6 +43,7 @@ class SuppliesDetailViewModel
      * @param id: String -> ID of the supply
      * ------------------------------------------------------------------------------------------ */
     fun getSupply(id: String) {
+        currentSupplyId = id
             viewModelScope.launch {
                 getSupplyBatchListUseCase(id).collect { result ->
                     _uiState.update { state ->
@@ -78,25 +83,27 @@ class SuppliesDetailViewModel
                 deleteSupplyBatchUseCase(id).collect { result ->
                     _uiState.update { state ->
                         when (result) {
-                            is Result.Loading ->
-                                state.copy(isLoading = true)
-
-                            is Result.Success ->
+                            is Result.Loading -> state.copy(isLoading = true)
+                            is Result.Success -> {
+                                // Refresh data automatically
+                                currentSupplyId?.let { getSupply(it) }
                                 state.copy(
+                                    decisionDialogVisible = false,
+                                    snackbarVisible = true,
                                     isLoading = false,
-                                    error = null,
+                                    error = null
                                 )
-
-                            is Result.Error ->
-                                state.copy(
-                                    error = result.exception.message,
-                                    isLoading = false,
-                                )
+                            }
+                            is Result.Error -> state.copy(
+                                decisionDialogVisible = false,
+                                snackbarVisible = true,
+                                error = result.exception.message,
+                                isLoading = false
+                            )
                         }
                     }
                 }
             }
-
         }
 
         fun toggledecisionDialog(showdecisionDialog: Boolean) {

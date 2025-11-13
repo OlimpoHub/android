@@ -19,6 +19,7 @@ data class SupplyBatchExt(
  * Batch -> Secondary class that contains all the extra attributes from a supply batch
  * ---------------------------------------------------------------------------------------------- */
 data class Batch(
+    val id: String = "",
     val quantity: Int = 0,
     val expirationDate: String = "",
     val adquisitionType: String = "",
