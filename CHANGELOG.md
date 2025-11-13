@@ -1,6 +1,7 @@
 ## [0.1.0] - 12/11/2025
 
 ### Added
+- DeleteOneSupply Button Logic
 - Filter and search bar for users
 - Included internal collaborators in the area of users
 
