@@ -95,7 +95,6 @@ sealed class Screen(
     object SupplyDetail : Screen("supply/{idSupply}") {
         fun createRoute(idSupply: String) = "supply/$idSupply"
     }
-    object UserList : Screen("user")
 
     object SupplyAdd : Screen("supply/add")
 }

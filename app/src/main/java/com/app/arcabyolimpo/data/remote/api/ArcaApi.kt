@@ -56,8 +56,9 @@ interface ArcaApi {
     ): RefreshResponseDto
 
     // External Collabs ----------------
-    @GET("externalCollabs/")
-    suspend fun getAllCollabs(): List<ExternalCollabDto>
+    // Didnt find the Dto???????
+    // @GET("externalCollabs/")
+    // suspend fun getAllCollabs(): List<ExternalCollabDto>
 
     @GET("user/{id}")
     suspend fun getUserById(@Path("id") id: String): List<UserDto>
