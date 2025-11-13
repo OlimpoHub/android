@@ -1,8 +1,5 @@
 package com.app.arcabyolimpo.data.remote.api
 
-import com.app.arcabyolimpo.data.remote.dto.ExternalCollaborator.ExternalCollabDto
-import com.app.arcabyolimpo.data.remote.dto.ExternalCollaborator.RegisterExtCollab.RegisterExternalCollabDto
-import com.app.arcabyolimpo.data.remote.dto.ExternalCollaborator.RegisterExtCollab.RegisterResponseDto
 import com.app.arcabyolimpo.data.remote.dto.auth.LoginRequestDto
 import com.app.arcabyolimpo.data.remote.dto.auth.LoginResponseDto
 import com.app.arcabyolimpo.data.remote.dto.auth.RefreshRequestDto
@@ -15,12 +12,16 @@ import com.app.arcabyolimpo.data.remote.dto.password.RecoverPasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteResponseDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
-import com.app.arcabyolimpo.data.remote.dto.supplies.WorkshopCategoryListDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuppliesListDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.WorkshopCategoryListDto
 import com.app.arcabyolimpo.data.remote.dto.user.UserDto
+import com.app.arcabyolimpo.data.remote.dto.user.registeruser.RegisterResponseDto
+import com.app.arcabyolimpo.data.remote.dto.user.registeruser.RegisterUserDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.AddNewWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
@@ -54,26 +55,23 @@ interface ArcaApi {
         @Body request: RefreshRequestDto,
     ): RefreshResponseDto
 
-    @GET("externalCollabs/")
-    suspend fun getAllCollabs(): List<ExternalCollabDto>
-
-    @GET("externalCollabs/{id}")
-    suspend fun getCollabById(
+    @GET("user/{id}")
+    suspend fun getUserById(
         @Path("id") id: String,
-    ): List<ExternalCollabDto>
+    ): List<UserDto>
 
-    @POST("externalCollabs/register")
-    suspend fun registerCollab(
-        @Body collab: RegisterExternalCollabDto,
-    ): ExternalCollabDto
+    @POST("user/register")
+    suspend fun registerUser(
+        @Body user: RegisterUserDto,
+    ): UserDto
 
-    @POST("externalCollabs/update")
-    suspend fun updateCollab(
-        @Body collab: ExternalCollabDto,
+    @POST("user/update")
+    suspend fun updateUser(
+        @Body user: UserDto,
     ): RegisterResponseDto
 
-    @POST("externalCollabs/deleteExternalCollab/{id}")
-    suspend fun deleteCollab(
+    @POST("user/delete/{id}")
+    suspend fun deleteUser(
         @Path("id") id: String,
     ): Map<String, Any>
 
@@ -95,6 +93,7 @@ interface ArcaApi {
     @GET("user")
     suspend fun getAllUsers(): List<UserDto>
 
+    // Supplies --------------------------
     @GET("supplies")
     suspend fun getSuppliesList(): List<SuppliesListDto>
 
@@ -111,6 +110,24 @@ interface ArcaApi {
     @GET("supplies/filter/data")
     suspend fun getFilterSupplies(): GetFiltersDto
 
+    @GET("supplyBatch/{id}")
+    suspend fun getSupplyBatchById(
+        @Path("id") id: String,
+    ): SupplyBatchDto
+
+    @DELETE("supplyBatch/{id}")
+    suspend fun deleteSupplyBatch(
+        @Path("id") id: String,
+    )
+
+    // My route is a soft delete and an update
+    @POST("supplies/delete")
+    suspend fun deleteOneSupply(
+        @Body requestBody: DeleteDto,
+        // DeleteResponseDto es para la respuesta , para el snackbar
+    ): DeleteResponseDto
+
+    // Workshop ---------------------------
     @GET("workshop")
     suspend fun getWorkshopsList(): List<WorkshopsListDto>
 
@@ -124,6 +141,7 @@ interface ArcaApi {
         @Body requestBody: WorkshopDto,
     ): AddNewWorkshopDto
 
+    // Beneficiary -------------
     @GET("beneficiary")
     suspend fun getBeneficiariesList(): List<BeneficiariesListDto>
 
@@ -137,11 +155,6 @@ interface ArcaApi {
         @Path("id") id: String,
     ): Response<Unit>
 
-    @GET("supplyBatch/{id}")
-    suspend fun getSupplyBatchById(
-        @Path("id") id: String,
-    ): SupplyBatchDto
-
     @GET("supplies/workshop/category")
     suspend fun getWorkshopCategoryList(): WorkshopCategoryListDto
 
@@ -153,6 +166,6 @@ interface ArcaApi {
         @Part("measureUnit") measureUnit: RequestBody,
         @Part("idCategory") idCategory: RequestBody,
         @Part("status") status: RequestBody,
-        @Part image: MultipartBody.Part?
+        @Part image: MultipartBody.Part?,
     )
 }

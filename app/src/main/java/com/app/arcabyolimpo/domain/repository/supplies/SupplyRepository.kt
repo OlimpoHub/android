@@ -3,6 +3,7 @@ package com.app.arcabyolimpo.domain.repository.supplies
 import android.net.Uri
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.domain.model.filter.FilterData
+import com.app.arcabyolimpo.domain.model.supplies.Batch
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.domain.model.supplies.SupplyAdd
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
@@ -26,6 +27,10 @@ interface SupplyRepository {
 
     suspend fun getFilterData(): FilterData
 
+    suspend fun deleteSupplyBatch(id: String)
+
+    // Yo uso Update
+    suspend fun deleteOneSupply(id: String)
     suspend fun getWorkshopCategoryList(): Result<WorkshopCategoryList>
 
     suspend fun addSupply(

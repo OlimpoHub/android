@@ -1,4 +1,4 @@
-package com.app.arcabyolimpo.data.remote.dto.ExternalCollaborator.RegisterExtCollab
+package com.app.arcabyolimpo.data.remote.dto.user.registeruser
 
 import com.google.gson.annotations.SerializedName
 

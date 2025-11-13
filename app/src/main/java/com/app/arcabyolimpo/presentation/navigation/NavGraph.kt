@@ -17,9 +17,6 @@ import androidx.navigation.navDeepLink
 import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
 import com.app.arcabyolimpo.domain.model.auth.UserRole
 import com.app.arcabyolimpo.presentation.common.components.LoadingShimmer
-import com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabDetail.ExternalCollabDetailScreen
-import com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabList.ExternalCollabListScreen
-import com.app.arcabyolimpo.presentation.screens.ExternalCollab.RegisterExternalCollab.ExternalCollabRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.accountactivation.AccountActivationScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
@@ -31,12 +28,12 @@ import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordR
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
-import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
-import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
 import com.app.arcabyolimpo.presentation.screens.user.UserListScreen
+import com.app.arcabyolimpo.presentation.screens.user.detail.UserDetailScreen
+import com.app.arcabyolimpo.presentation.screens.user.register.UserRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.workshop.AddNewWorkshopScreen
 import com.app.arcabyolimpo.presentation.screens.workshop.WorkshopDetailScreen
 import com.app.arcabyolimpo.presentation.screens.workshop.WorkshopsListScreen
@@ -57,13 +54,13 @@ sealed class Screen(
 
     object AccountActivation : Screen("account-activation")
 
-    object ExternalCollabList : Screen("external_collab_list")
+    object UserList : Screen("user")
 
-    object ExternalCollabDetail : Screen("external_collab_detail/{collabId}") {
-        fun createRoute(collabId: String) = "external_collab_detail/$collabId"
+    object UserRegister : Screen("user_register")
+
+    object UserDetail : Screen("user_detail/{userId}") {
+        fun createRoute(userId: String) = "user_detail/$userId"
     }
-
-    object ExternalCollabRegister : Screen("external_collab_register")
 
     object TokenVerification : Screen("user/verify-token?token={token}") {
         fun createRoute(token: String) = "user/verify-token?token=$token"
@@ -102,7 +99,6 @@ sealed class Screen(
     object SupplyDetail : Screen("supply/{idSupply}") {
         fun createRoute(idSupply: String) = "supply/$idSupply"
     }
-    object UserList : Screen("user")
 }
 
 /**
@@ -140,7 +136,7 @@ fun ArcaNavGraph(
     NavHost(
         navController = navController,
         // TODO: Cambiar a Screen.Splash.route cuando acabe
-        startDestination = Screen.SuppliesList.route,
+        startDestination = Screen.UserList.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -325,35 +321,39 @@ fun ArcaNavGraph(
             CollaboratorHomeScreen()
         }
 
-        composable(Screen.ExternalCollabList.route) {
-            ExternalCollabListScreen(
+        composable(Screen.UserList.route) {
+            UserListScreen(
                 onCollabClick = { id ->
-                    navController.navigate(Screen.ExternalCollabDetail.createRoute(id))
+                    navController.navigate(Screen.UserDetail.createRoute(id))
                 },
                 onAddClick = {
-                    navController.navigate(Screen.ExternalCollabRegister.route)
+                    navController.navigate(Screen.UserRegister.route)
                 },
             )
         }
 
-        /** External Collaborator Detail Screen */
+        /** User Detail Screen */
         composable(
-            route = Screen.ExternalCollabDetail.route,
-            arguments = listOf(navArgument("collabId") { type = NavType.StringType }),
+            route = Screen.UserDetail.route,
+            arguments = listOf(navArgument("userId") { type = NavType.StringType }),
         ) { backStackEntry ->
-            val collabId = backStackEntry.arguments?.getString("collabId")
-            ExternalCollabDetailScreen(
+            val userId = backStackEntry.arguments?.getString("userId")
+            UserDetailScreen(
                 onBackClick = { navController.popBackStack() },
                 onEditClick = { id ->
                     // TODO: Navigate to edit screen when you create it
                 },
-                onDeleteClick = { navController.navigate(Screen.ExternalCollabList.route) },
+                onDeleteClick = {
+                    navController.navigate(Screen.UserList.route) {
+                        popUpTo(Screen.UserList.route) { inclusive = true }
+                    }
+                },
             )
         }
 
-        /** External Collaborator Register Screen */
-        composable(Screen.ExternalCollabRegister.route) {
-            ExternalCollabRegisterScreen(
+        /** User Register Screen */
+        composable(Screen.UserRegister.route) {
+            UserRegisterScreen(
                 onDismiss = { navController.popBackStack() },
                 onSuccess = {
                     navController.popBackStack()
@@ -364,10 +364,10 @@ fun ArcaNavGraph(
         composable(Screen.UserList.route) {
             UserListScreen(
                 onCollabClick = { id ->
-                    navController.navigate(Screen.ExternalCollabDetail.createRoute(id))
+                    navController.navigate(Screen.UserDetail.createRoute(id))
                 },
                 onAddClick = {
-                    navController.navigate(Screen.ExternalCollabRegister.route)
+                    navController.navigate(Screen.UserRegister.route)
                 },
             )
         }
@@ -451,8 +451,8 @@ fun ArcaNavGraph(
                 idInsumo = idSupply ?: "",
                 onBackClick = { navController.popBackStack() },
                 onClickAddSupplyBatch = {
-                        // TODO: Add when add a supply batch is ready
-                    },
+                    // TODO: Add when add a supply batch is ready
+                },
                 onClickDelete = {
                     // TODO: Add when delete a supply is ready
                 },
