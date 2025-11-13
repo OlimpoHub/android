@@ -32,7 +32,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    private const val BASE_URL = "http://10.0.2.2:8080/" // LOCALHOST
+    private const val BASE_URL = "http://10.0.2.2:8081/" // LOCALHOST
 
     /**
      * Provides a configured [OkHttpClient] instance.
@@ -96,7 +96,6 @@ object AppModule {
         authPreferences: UserPreferences,
     ): UserRepository = UserRepositoryImpl(api, authPreferences)
 
-
     @Provides
     @Singleton
     fun providePasswordUserRepository(api: ArcaApi): PasswordUserRepository = PasswordUserRepositoryImpl(api)
@@ -116,7 +115,7 @@ object AppModule {
     @Singleton
     fun provideSupplyRepository(
         api: ArcaApi,
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
     ): SupplyRepository = SupplyRepositoryImpl(api, context)
 
     /**

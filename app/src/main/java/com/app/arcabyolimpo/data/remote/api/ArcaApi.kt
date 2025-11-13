@@ -15,10 +15,10 @@ import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteResponseDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
-import com.app.arcabyolimpo.data.remote.dto.supplies.WorkshopCategoryListDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuppliesListDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.WorkshopCategoryListDto
 import com.app.arcabyolimpo.data.remote.dto.user.UserDto
 import com.app.arcabyolimpo.data.remote.dto.user.registeruser.RegisterResponseDto
 import com.app.arcabyolimpo.data.remote.dto.user.registeruser.RegisterUserDto
@@ -55,22 +55,25 @@ interface ArcaApi {
         @Body request: RefreshRequestDto,
     ): RefreshResponseDto
 
-    // External Collabs ----------------
-    // Didnt find the Dto???????
-    // @GET("externalCollabs/")
-    // suspend fun getAllCollabs(): List<ExternalCollabDto>
-
     @GET("user/{id}")
-    suspend fun getUserById(@Path("id") id: String): List<UserDto>
+    suspend fun getUserById(
+        @Path("id") id: String,
+    ): List<UserDto>
 
     @POST("user/register")
-    suspend fun registerUser(@Body user: RegisterUserDto): UserDto
+    suspend fun registerUser(
+        @Body user: RegisterUserDto,
+    ): UserDto
 
     @POST("user/update")
-    suspend fun updateUser(@Body user: UserDto): RegisterResponseDto
+    suspend fun updateUser(
+        @Body user: UserDto,
+    ): RegisterResponseDto
 
     @POST("user/delete/{id}")
-    suspend fun deleteUser(@Path("id") id: String): Map<String, Any>
+    suspend fun deleteUser(
+        @Path("id") id: String,
+    ): Map<String, Any>
 
     @POST("user/recover-password")
     suspend fun recoverPassword(
@@ -87,10 +90,10 @@ interface ArcaApi {
         @Body request: UpdatePasswordDto,
     ): Response<UpdatePasswordResponseDto>
 
-    // Supplies --------------------------
     @GET("user")
     suspend fun getAllUsers(): List<UserDto>
 
+    // Supplies --------------------------
     @GET("supplies")
     suspend fun getSuppliesList(): List<SuppliesListDto>
 
@@ -114,15 +117,15 @@ interface ArcaApi {
 
     @DELETE("supplyBatch/{id}")
     suspend fun deleteSupplyBatch(
-        @Path("id") id: String
+        @Path("id") id: String,
     )
 
     // My route is a soft delete and an update
     @POST("supplies/delete")
     suspend fun deleteOneSupply(
-        @Body requestBody: DeleteDto
+        @Body requestBody: DeleteDto,
         // DeleteResponseDto es para la respuesta , para el snackbar
-    ) : DeleteResponseDto
+    ): DeleteResponseDto
 
     // Workshop ---------------------------
     @GET("workshop")
@@ -151,7 +154,6 @@ interface ArcaApi {
     suspend fun deleteBeneficiary(
         @Path("id") id: String,
     ): Response<Unit>
-
 
     @GET("supplies/workshop/category")
     suspend fun getWorkshopCategoryList(): WorkshopCategoryListDto
