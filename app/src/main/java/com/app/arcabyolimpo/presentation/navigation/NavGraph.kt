@@ -30,6 +30,7 @@ import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
+import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
@@ -481,7 +482,7 @@ fun ArcaNavGraph(
          * Shows the grid of beneficiaries.
          */
         composable(Screen.BeneficiaryList.route) {
-            BeneficiaryList(
+            BeneficiaryListScreen(
                 onBeneficiaryClick = { beneficiaryId ->
                     navController.navigate(Screen.BeneficiaryDetail.createRoute(beneficiaryId))
                 },
