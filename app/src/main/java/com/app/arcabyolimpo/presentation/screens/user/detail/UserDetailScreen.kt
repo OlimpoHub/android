@@ -1,4 +1,4 @@
-package com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabDetail
+package com.app.arcabyolimpo.presentation.screens.user.detail
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.rememberScaffoldState
@@ -11,15 +11,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabDetail.components.ExternalCollabDetailContent
+import com.app.arcabyolimpo.presentation.screens.user.detail.components.UserDetailContent
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.ReturnIcon
+
+
 
 @Suppress("ktlint:standard:function-naming")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExternalCollabDetailScreen(
-    viewModel: ExternalCollabDetailViewModel = hiltViewModel(),
+fun UserDetailScreen(
+    viewModel: UserDetailViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
     onEditClick: (String) -> Unit = {},
     onDeleteClick: () -> Unit = {},
@@ -98,9 +100,9 @@ fun ExternalCollabDetailScreen(
                 }
 
                 uiState.collab != null -> {
-                    ExternalCollabDetailContent(
+                    UserDetailContent(
                         collab = uiState.collab!!,
-                        onEditClick = { uiState.collab?.id?.let { onEditClick(it.toString()) } },
+                        onEditClick = { uiState.collab?.idUsuario?.let { onEditClick(it.toString()) } },
                         onDeleteClick = { showConfirmDialog = true }
                     )
                 }
@@ -112,7 +114,7 @@ fun ExternalCollabDetailScreen(
                     onConfirmation = {
                         showConfirmDialog = false
                         // lanzar delete
-                        uiState.collab?.id?.toString()?.let { idStr ->
+                        uiState.collab?.idUsuario?.toString()?.let { idStr ->
                             viewModel.deleteCollabById(idStr)
                         }
                     },

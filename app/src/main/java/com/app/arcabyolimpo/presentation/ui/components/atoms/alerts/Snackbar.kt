@@ -118,15 +118,17 @@ fun Snackbarcustom(
     modifier: Modifier,
     ifSucces: Boolean? = true,
 ) {
+    var snackbartitle = title
     Snackbar(
         containerColor =
             if (ifSucces == true) {
                 ButtonBlue
             } else {
+                snackbartitle= "Error"
                 ErrorRed
             },
     ) {
-        Text(title)
+        Text(snackbartitle)
     }
 }
 

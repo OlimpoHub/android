@@ -17,16 +17,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.app.arcabyolimpo.presentation.screens.ExternalCollab.ExternalCollabList.components.ExternalCollabCard
-import com.app.arcabyolimpo.presentation.screens.ExternalCollab.RegisterExternalCollab.ExternalCollabRegisterScreen
-import com.app.arcabyolimpo.presentation.screens.user.components.UserCard
-import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
-import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ModifyButton
-import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.FilterIcon
-import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
-import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.SearchIcon
-import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SearchInput
 import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
+import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
+import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.SearchIcon
+import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
+import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.FilterIcon
+import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SearchInput
+import com.app.arcabyolimpo.presentation.screens.user.components.UserCard
+import com.app.arcabyolimpo.presentation.screens.user.register.UserRegisterScreen
 import com.app.arcabyolimpo.presentation.ui.components.organisms.Filter
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.PlaceholderGray
@@ -240,12 +238,12 @@ fun UserListScreen(
                         ) {
                             when (selectedTabIndex) {
                                 0 -> {
-                                    // Asistentes
-                                    items(uiState.searchedUsers) { user ->
+                                    // List of collaborators
+                                    items(uiState.users) { user ->
                                         if (user.idRol == "2") {
-                                            UserCard(
+                                            UserCard (
                                                 user = user,
-                                                onClick = { onCollabClick(user.idUsuario) },
+                                                onClick = { user.idUsuario?.let { onCollabClick(it) } }
                                             )
 
                                             Box(
@@ -267,13 +265,12 @@ fun UserListScreen(
 
                                 1 -> {
                                     // Colaboradores
-                                    items(uiState.searchedUsers) { user ->
+                                    items(uiState.users) { user ->
                                         if (user.idRol == "3") {
-                                            UserCard(
+                                            UserCard (
                                                 user = user,
-                                                onClick = { onCollabClick(user.idUsuario) },
+                                                onClick = { user.idUsuario?.let { onCollabClick(it) } }
                                             )
-
                                             Box(
                                                 modifier = Modifier.fillMaxWidth(),
                                                 contentAlignment = Alignment.Center,
@@ -297,7 +294,7 @@ fun UserListScreen(
             }
         }
         if (showRegisterModal) {
-            ExternalCollabRegisterScreen(
+            UserRegisterScreen(
                 onDismiss = { showRegisterModal = false },
                 onSuccess = {
                     showRegisterModal = false
