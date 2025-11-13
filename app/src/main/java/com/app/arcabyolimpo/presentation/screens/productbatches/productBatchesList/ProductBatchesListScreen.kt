@@ -10,8 +10,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -49,6 +52,9 @@ import com.app.arcabyolimpo.ui.theme.White
 @Composable
 fun ProductBatchesListScreen(
     modifier: Modifier = Modifier,
+    onBackClick: () -> Unit,
+    onDetailClick: (String) -> Unit,
+    onAddClick: () -> Unit,
     viewModel: ProductBatchesListViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -60,7 +66,7 @@ fun ProductBatchesListScreen(
             NavBar()
         },
         floatingActionButton = {
-            AddButton(onClick = {})
+            AddButton(onClick = { onAddClick() })
         },
         topBar = {
             TopAppBar(
@@ -76,6 +82,15 @@ fun ProductBatchesListScreen(
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
                     )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            "Back",
+                            tint = White,
+                        )
+                    }
                 },
                 actions = {
                     NotificationIcon(
@@ -173,7 +188,7 @@ fun ProductBatchesListScreen(
                         items(state.batches) { batch ->
                             ProductBatchItem(
                                 batch = batch,
-                                onClick = {},
+                                onClick = { onDetailClick(batch.idInventario) },
                             )
                         }
                     }

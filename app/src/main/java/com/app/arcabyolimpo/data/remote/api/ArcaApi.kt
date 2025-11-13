@@ -159,4 +159,14 @@ interface ArcaApi {
 
     @GET("productBatch/")
     suspend fun getProductBatches(): List<ProductBatchDto>
+
+    @GET("productBatch/{id}")
+    suspend fun getProductBatch(
+        @Path("id") id: String,
+    ): ProductBatchDto
+
+    @POST("productBatch/")
+    suspend fun addProductBatch(
+        @Body batch: ProductBatchDto,
+    )
 }

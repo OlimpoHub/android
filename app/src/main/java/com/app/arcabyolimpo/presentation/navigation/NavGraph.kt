@@ -29,6 +29,8 @@ import com.app.arcabyolimpo.presentation.screens.login.LoginScreen
 import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecoveryScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
+import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchDetail.ProductBatchDetailScreen
+import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchRegister.ProductBatchRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchesList.ProductBatchesListScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
@@ -98,6 +100,12 @@ sealed class Screen(
     object UserList : Screen("user")
 
     object ProductBatchesList : Screen("product_batches")
+
+    object ProductBatchDetail : Screen("product_batch_detail/{batchId}") {
+        fun createRoute(batchId: String) = "product_batch_detail/$batchId"
+    }
+
+    object ProductBatchRegister : Screen("product_batch_register")
 }
 
 /**
@@ -482,7 +490,33 @@ fun ArcaNavGraph(
         }
 
         composable(Screen.ProductBatchesList.route) {
-            ProductBatchesListScreen()
+            ProductBatchesListScreen(
+                onBackClick = { navController.popBackStack() },
+                onDetailClick = { id ->
+                    navController.navigate(Screen.ProductBatchDetail.createRoute(id))
+                },
+                onAddClick = {
+                    navController.navigate(Screen.ProductBatchRegister.route)
+                },
+            )
+        }
+
+        composable(
+            route = Screen.ProductBatchDetail.route,
+            arguments = listOf(navArgument("batchId") { type = NavType.StringType }),
+        ) { backStackEntry ->
+            val batchId = backStackEntry.arguments?.getString("batchId") ?: ""
+            ProductBatchDetailScreen(
+                batchId = batchId,
+                onBackClick = { navController.popBackStack() },
+            )
+        }
+
+        composable(Screen.ProductBatchRegister.route) {
+            ProductBatchRegisterScreen(
+                onCreated = { navController.popBackStack() },
+                onBackClick = { navController.popBackStack() },
+            )
         }
     }
 }

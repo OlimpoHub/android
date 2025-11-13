@@ -57,42 +57,4 @@ class ProductBatchesListViewModel
                 }
             }
         }
-
-        // Used only for testing with mock data
-        private fun loadMockData() {
-            viewModelScope.launch {
-                try {
-                    delay(1000)
-
-                    val mockList =
-                        List(8) {
-                            ProductBatchUiModel(
-                                idProducto = "p1",
-                                nombre = "Lija",
-                                precioUnitario = "26.00",
-                                descripcion = "Lija fina",
-                                imagen = "https://upload.wikimedia.org/wikipedia/commons/5/56/Sandpaper_grades_p120.jpg",
-                                disponible = 1,
-                                idInventario = "90ff826c-fade-426d-ae43-212390b4dd84",
-                                precioVentaFormatted = "$20.50 MXN",
-                                cantidadProducida = 30,
-                                fechaCaducidadFormatted = "01 05 2025",
-                                fechaRealizacionFormatted = "04 11 2025",
-                            )
-                        }
-
-                    _uiState.value =
-                        ProductBatchesUiState(
-                            isLoading = false,
-                            batches = mockList,
-                        )
-                } catch (e: Exception) {
-                    _uiState.value =
-                        ProductBatchesUiState(
-                            isLoading = false,
-                            error = e.message ?: "Error desconocido, intenta de nuevo",
-                        )
-                }
-            }
-        }
     }

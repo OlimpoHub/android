@@ -11,7 +11,7 @@ data class ProductBatchUiModel(
     val precioUnitario: String,
     val descripcion: String,
     val imagen: String?,
-    val disponible: Int,
+    val disponible: String,
     val idInventario: String,
     val precioVentaFormatted: String,
     val cantidadProducida: Int,

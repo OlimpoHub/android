@@ -17,3 +17,18 @@ fun ProductBatchDto.toDomain(): ProductBatch =
         fechaCaducidad = fechaCaducidad,
         fechaRealizacion = fechaRealizacion,
     )
+
+fun ProductBatch.toDto(): ProductBatchDto =
+    ProductBatchDto(
+        idProducto = idProducto,
+        nombre = nombre,
+        precioUnitario = precioUnitario,
+        descripcion = descripcion,
+        imagen = imagen,
+        disponible = disponible,
+        idInventario = idInventario,
+        precioVenta = precioVenta,
+        cantidadProducida = cantidadProducida,
+        fechaCaducidad = fechaCaducidad,
+        fechaRealizacion = fechaRealizacion,
+    )
