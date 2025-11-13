@@ -6,6 +6,7 @@ import com.app.arcabyolimpo.data.remote.dto.auth.RefreshRequestDto
 import com.app.arcabyolimpo.data.remote.dto.auth.RefreshResponseDto
 import com.app.arcabyolimpo.data.remote.dto.beneficiaries.BeneficiariesListDto
 import com.app.arcabyolimpo.data.remote.dto.beneficiaries.BeneficiaryDto
+import com.app.arcabyolimpo.data.remote.dto.beneficiaries.GetBeneficiariesDisabilitiesDto
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.data.remote.dto.password.RecoverPasswordDto
 import com.app.arcabyolimpo.data.remote.dto.password.RecoverPasswordResponseDto
@@ -155,6 +156,9 @@ interface ArcaApi {
         @Path("id") id: String,
     ): Response<Unit>
 
+    @GET("beneficiary/categories")
+    suspend fun getDisabilities(): GetBeneficiariesDisabilitiesDto
+
     @GET("supplies/workshop/category")
     suspend fun getWorkshopCategoryList(): WorkshopCategoryListDto
 
@@ -166,6 +170,6 @@ interface ArcaApi {
         @Part("unidadMedida") measureUnit: RequestBody,
         @Part("idCategoria") idCategory: RequestBody,
         @Part("status") status: RequestBody,
-        @Part imagenInsumo: MultipartBody.Part?
+        @Part imagenInsumo: MultipartBody.Part?,
     )
 }

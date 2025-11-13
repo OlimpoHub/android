@@ -27,10 +27,8 @@ import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecove
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
-import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
-import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
-import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
 import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
+import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
@@ -141,7 +139,7 @@ fun ArcaNavGraph(
     NavHost(
         navController = navController,
         // TODO: Cambiar a Screen.Splash.route cuando acabe
-        startDestination = Screen.SuppliesList.route,
+        startDestination = Screen.BeneficiaryList.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -446,7 +444,7 @@ fun ArcaNavGraph(
                 },
                 onAddSupplyClick = {
                     navController.navigate(Screen.SupplyAdd.route)
-                }
+                },
             )
         }
 
@@ -518,7 +516,7 @@ fun ArcaNavGraph(
                 },
                 onCancel = {
                     navController.popBackStack()
-                }
+                },
             )
         }
     }

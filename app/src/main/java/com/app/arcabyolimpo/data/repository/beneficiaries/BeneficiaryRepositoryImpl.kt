@@ -6,6 +6,7 @@ import com.app.arcabyolimpo.data.mapper.workshops.toDomain
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.dto.beneficiaries.BeneficiaryDto
 import com.app.arcabyolimpo.domain.model.beneficiaries.Beneficiary
+import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.domain.repository.beneficiaries.BeneficiaryRepository
 import retrofit2.HttpException
 import java.io.IOException
@@ -80,4 +81,6 @@ class BeneficiaryRepositoryImpl
                 throw e
             }
         }
+
+        override suspend fun getDisabilitiesData(): FilterData = api.getDisabilities().toDomain()
     }
