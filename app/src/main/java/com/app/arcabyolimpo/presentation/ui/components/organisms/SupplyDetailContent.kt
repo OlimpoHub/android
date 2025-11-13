@@ -201,9 +201,12 @@ fun SupplyDetailContent(
                 Arrangement
                     .spacedBy(24.dp, Alignment.CenterHorizontally),
         ) {
-            DeleteButton(
-                onClick = onClickDelete,
-            )
+            // Only add the delete button if the status is Active
+            if (supply.status == 1) {
+                DeleteButton(
+                    onClick = onClickDelete,
+                )
+            }
             ModifyButton(
                 onClick = onClickModify,
             )
