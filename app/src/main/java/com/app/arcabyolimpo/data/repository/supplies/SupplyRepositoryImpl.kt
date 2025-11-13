@@ -2,6 +2,7 @@ package com.app.arcabyolimpo.data.repository.supplies
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import com.app.arcabyolimpo.data.mapper.supplies.toDomain
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
@@ -87,8 +88,11 @@ class SupplyRepositoryImpl @Inject constructor(
         override suspend fun deleteOneSupply(id: String) {
             //Si no devuelvo un valor, ya no pongo el reponse
             val body = DeleteDto(id)
-            api.deleteOneSupply(body)
+            //val body = DeleteDto("i33")
+            val result = api.deleteOneSupply(body)
+            Log.d("Validacion","Si llego ")
         }
+
         override suspend fun getWorkshopCategoryList(): Result<WorkshopCategoryList> {
             return try {
                 val workshopCategoryListDto = api.getWorkshopCategoryList()

@@ -99,30 +99,44 @@ class SuppliesDetailViewModel
 
         }
 
-    fun deleteOneSupply(id: String) {
-        viewModelScope.launch {
-            deleteOneSupplyUseCase(id).collect { result ->
-                _uiState.update { state ->
-                    when (result) {
-                        is Result.Loading ->
-                            state.copy(isLoading = true)
-
-                        is Result.Success ->
-                            state.copy(
-                                isLoading = false,
-                                error = null,
-                            )
-
-                        is Result.Error ->
-                            state.copy(
-                                error = result.exception.message,
-                                isLoading = false,
-                            )
-                    }
+        fun toggledecisionDialog(showdecisionDialog: Boolean) {
+            viewModelScope.launch {
+                _uiState.update {state ->
+                    state.copy(
+                        decisionDialogVisible = showdecisionDialog,
+                    )
                 }
             }
         }
 
-    }
+        fun deleteOneSupply(id: String) {
+            viewModelScope.launch {
+                deleteOneSupplyUseCase(id).collect { result ->
+                    _uiState.update { state ->
+                        when (result) {
+                            is Result.Loading ->
+                                state.copy(isLoading = true)
+
+                            is Result.Success ->
+                                state.copy(
+                                    decisionDialogVisible = false,
+                                    snackbarVisible = true,
+                                    isLoading = false,
+                                    error = null,
+                                )
+
+                            is Result.Error ->
+                                state.copy(
+                                    decisionDialogVisible = false,
+                                    snackbarVisible = true,
+                                    error = result.exception.message,
+                                    isLoading = false,
+                                )
+                        }
+                    }
+                }
+            }
+
+        }
 
     }

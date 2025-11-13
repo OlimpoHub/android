@@ -17,7 +17,6 @@ import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteResponseDto
-import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.WorkshopCategoryListDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuppliesListDto
@@ -127,7 +126,7 @@ interface ArcaApi {
     )
 
     // mi ruta es un soft delete un update
-    @DELETE("supplies/delete")
+    @POST("supplies/delete")
     suspend fun deleteOneSupply(
         @Body requestBody: DeleteDto
         // DeleteResponseDto es para la respuesta , para el snackbar
