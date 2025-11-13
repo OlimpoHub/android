@@ -1,9 +1,12 @@
 package com.app.arcabyolimpo.domain.repository.supplies
 
+import android.net.Uri
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.domain.model.supplies.Supply
+import com.app.arcabyolimpo.domain.model.supplies.SupplyAdd
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
+import com.app.arcabyolimpo.domain.model.supplies.WorkshopCategoryList
 
 /**
  * Retrieves detailed information for a specific supply by its [id].
@@ -22,4 +25,11 @@ interface SupplyRepository {
     suspend fun filterSupply(params: FilterDto): List<Supply>
 
     suspend fun getFilterData(): FilterData
+
+    suspend fun getWorkshopCategoryList(): Result<WorkshopCategoryList>
+
+    suspend fun addSupply(
+        supply: SupplyAdd,
+        image: Uri?
+    ): Result<Unit>
 }

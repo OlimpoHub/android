@@ -41,7 +41,7 @@ fun SelectInput(
     onOptionSelected: (String) -> Unit,
     modifier: Modifier = Modifier,
     isError: Boolean = false,
-    errorMessage: String? = null
+    errorMessage: String? = null,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 
@@ -60,7 +60,7 @@ fun SelectInput(
         ExposedDropdownMenuBox(
             expanded = isExpanded,
             onExpandedChange = { isExpanded = !isExpanded },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             OutlinedTextField(
                 value = selectedOption,
@@ -71,32 +71,34 @@ fun SelectInput(
                 placeholder = {
                     Text(
                         text = "Selecciona una opción",
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                     )
                 },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
                 shape = RoundedCornerShape(12.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = if (isError) InputBackgroundRed else InputBackgroundBlue,
-                    unfocusedContainerColor = if (isError) InputBackgroundRed else InputBackgroundBlue,
-                    errorContainerColor = InputBackgroundRed,
-                    focusedIndicatorColor = if (isError) HighlightRed else SelectInputBlue,
-                    unfocusedIndicatorColor = if (isError) HighlightRed else HighlightInputBlue,
-                    cursorColor = MaterialTheme.colorScheme.primary,
-                    focusedTextColor = White,
-                    unfocusedTextColor = White,
-                    focusedPlaceholderColor = White.copy(alpha = 0.6f),
-                    unfocusedPlaceholderColor = White.copy(alpha = 0.6f),
-                ),
-                modifier = Modifier
-                    .menuAnchor()
-                    .fillMaxWidth()
-                    .padding(top = 4.dp)
+                colors =
+                    TextFieldDefaults.colors(
+                        focusedContainerColor = if (isError) InputBackgroundRed else InputBackgroundBlue,
+                        unfocusedContainerColor = if (isError) InputBackgroundRed else InputBackgroundBlue,
+                        errorContainerColor = InputBackgroundRed,
+                        focusedIndicatorColor = if (isError) HighlightRed else SelectInputBlue,
+                        unfocusedIndicatorColor = if (isError) HighlightRed else HighlightInputBlue,
+                        cursorColor = MaterialTheme.colorScheme.primary,
+                        focusedTextColor = White,
+                        unfocusedTextColor = White,
+                        focusedPlaceholderColor = White.copy(alpha = 0.6f),
+                        unfocusedPlaceholderColor = White.copy(alpha = 0.6f),
+                    ),
+                modifier =
+                    Modifier
+                        .menuAnchor()
+                        .fillMaxWidth()
+                        .padding(top = 4.dp),
             )
 
             ExposedDropdownMenu(
                 expanded = isExpanded,
-                onDismissRequest = { isExpanded = false }
+                onDismissRequest = { isExpanded = false },
             ) {
                 options.forEach { option ->
                     DropdownMenuItem(
@@ -105,7 +107,7 @@ fun SelectInput(
                             onOptionSelected(option)
                             isExpanded = false
                         },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
                     )
                 }
             }
@@ -134,14 +136,14 @@ fun PreviewSelectInputWithLabel() {
         dynamicColor = false,
     ) {
         androidx.compose.foundation.layout.Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
         ) {
             SelectInput(
                 label = "Selecciona una opción",
                 selectedOption = selected,
                 options = sampleOptions,
                 onOptionSelected = { selected = it },
-                modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp)
+                modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
             )
         }
     }

@@ -30,6 +30,22 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardInpu
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
 
+/**
+ * Composable screen for registering a new password to activate a user account.
+ *
+ * This screen allows users to create and confirm a new password after receiving
+ * an account activation link or recovery email. It includes input validation,
+ * error handling, and feedback on success.
+ *
+ * The screen observes state updates from [PasswordRegistrationViewModel] and navigates
+ * to the success destination when the password registration process completes successfully.
+ *
+ * @param email The user's email address used for password registration.
+ * @param onBackClick Callback triggered when the user taps the back navigation button.
+ * @param onPasswordRegistrationSucessClick Callback invoked when password registration succeeds.
+ * @param viewModel The [PasswordRegistrationViewModel] providing state and business logic.
+ */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable

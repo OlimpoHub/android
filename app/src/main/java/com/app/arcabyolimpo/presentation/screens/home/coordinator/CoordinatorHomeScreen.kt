@@ -39,6 +39,10 @@ fun CoordinatorHomeScreen(
         Button(onClick = { navController.navigate(Screen.WorkshopsList.route) }) {
             Text("Talleres")
         }
+        Spacer(modifier = Modifier.height(12.dp))
+        Button(onClick = { navController.navigate(Screen.BeneficiaryList.route) }) {
+            Text("Beneficiarios")
+        }
         Button(onClick = { sessionViewModel.logout() }) {
             Text("Cerrar sesión")
         }

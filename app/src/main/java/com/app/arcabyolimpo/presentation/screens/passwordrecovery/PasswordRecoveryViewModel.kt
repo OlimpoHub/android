@@ -12,6 +12,18 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel responsible for handling the password recovery logic.
+ *
+ * It communicates with the domain layer via the [PostPasswordRecoveryUseCase] to
+ * send password recovery requests and updates the UI state accordingly.
+ *
+ * The ViewModel exposes a [StateFlow] of [PasswordRecoveryUiState] that the UI
+ * observes to reflect loading, success, or error states.
+ *
+ * @property postPasswordRecoveryUseCase Use case that handles the password recovery request logic.
+ */
+
 @HiltViewModel
 class PasswordRecoveryViewModel
     @Inject
