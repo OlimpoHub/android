@@ -89,29 +89,4 @@ class WorkshopRepositoryImpl
         )
     }
 
-    override suspend fun modifyWorkshops(modifiedWorkshop: WorkshopDto): Workshop {
-        val workshopId = modifiedWorkshop.id ?: throw IllegalArgumentException("Workshop ID cannot be null")
-
-        val response = api.modifyWorkshop(
-            id = workshopId,
-            requestBody = modifiedWorkshop
-        )
-        if (response.success) {
-            return Workshop(
-                id = workshopId,
-                idTraining = modifiedWorkshop.idTraining,
-                idUser = modifiedWorkshop.idUser,
-                nameWorkshop = modifiedWorkshop.name,
-                url = modifiedWorkshop.image,
-                status = modifiedWorkshop.status,
-                description = modifiedWorkshop.description,
-                startHour = modifiedWorkshop.startHour,
-                finishHour = modifiedWorkshop.finishHour,
-                date = modifiedWorkshop.date
-            )
-        } else {
-            throw Exception(response.message)
-        }
-    }
-
 }

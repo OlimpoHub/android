@@ -87,7 +87,7 @@ fun WorkshopDetailScreen(
                 DeleteButton(
                     modifier = Modifier.size(width = 112.dp, height = 40.dp),
                     onClick = {
-                        // Agrega la función de eliminar si quieres
+
                     }
                 )
 
@@ -96,12 +96,6 @@ fun WorkshopDetailScreen(
                 ModifyButton(
                     modifier = Modifier.size(width = 112.dp, height = 40.dp),
                     onClick = {
-                        if (workshopId.isNotBlank()) {
-                            Log.d("WorkshopDetailScreen", "Botón Modificar clickeado, workshop id: $workshopId")
-                            navController.navigate(Screen.ModifyWorkshops.createRoute(workshopId))
-                        } else {
-                            Log.d("WorkshopDetailScreen", "ID del taller es null, no se puede navegar")
-                        }
                     }
                 )
             }
