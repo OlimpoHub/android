@@ -38,6 +38,7 @@ import com.app.arcabyolimpo.presentation.screens.user.UserListScreen
 import com.app.arcabyolimpo.presentation.screens.user.detail.UserDetailScreen
 import com.app.arcabyolimpo.presentation.screens.user.register.UserRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.workshop.AddNewWorkshopScreen
+import com.app.arcabyolimpo.presentation.screens.workshop.WorkshopDetailScreen
 import com.app.arcabyolimpo.presentation.screens.workshop.WorkshopsListScreen
 
 /**
@@ -84,7 +85,13 @@ sealed class Screen(
 
     object WorkshopsList : Screen("workshop")
 
+    object WorkshopDetail : Screen("workshop/{id}") {
+        fun createRoute(id: String): String = "workshop/$id"
+    }
+
     object AddNewWorkshop : Screen("workshop/add")
+
+
 
     object BeneficiaryList : Screen("beneficiary_list")
 
@@ -384,9 +391,21 @@ fun ArcaNavGraph(
         composable(Screen.WorkshopsList.route) {
             WorkshopsListScreen(
                 navController = navController,
-                workshopClick = {},
+                workshopClick = { id ->
+                    navController.navigate(Screen.WorkshopDetail.createRoute(id))
+                }
             )
         }
+
+
+        composable(
+            route = Screen.WorkshopDetail.route,
+            arguments = listOf(navArgument("id") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val workshopId = backStackEntry.arguments?.getString("id") ?: ""
+            WorkshopDetailScreen(navController, workshopId)
+        }
+
 
         /**
          * Workshops Add Screen.
