@@ -4,8 +4,8 @@ import com.app.arcabyolimpo.data.remote.dto.ExternalCollaborator.ExternalCollabD
 import com.app.arcabyolimpo.data.remote.dto.ExternalCollaborator.RegisterExtCollab.RegisterExternalCollabDto
 import com.app.arcabyolimpo.domain.model.ExternalCollaborator.ExternalCollab
 
-fun ExternalCollabDto.toDomain(): ExternalCollab {
-    return ExternalCollab(
+fun ExternalCollabDto.toDomain(): ExternalCollab =
+    ExternalCollab(
         id = idUsuario,
         roleId = idRol?.toIntOrNull() ?: 0,
         firstName = nombre,
@@ -16,13 +16,12 @@ fun ExternalCollabDto.toDomain(): ExternalCollab {
         email = correoElectronico,
         phone = telefono,
         isActive = estatus == 1,
-        photoUrl = foto
+        photoUrl = foto,
     )
-}
 
 // Domain → DTO (for sending to API)
-fun ExternalCollab.toDto(): ExternalCollabDto {
-    return ExternalCollabDto(
+fun ExternalCollab.toDto(): ExternalCollabDto =
+    ExternalCollabDto(
         idUsuario = "0",
         idRol = this.roleId.toString(),
         nombre = this.firstName,
@@ -37,12 +36,11 @@ fun ExternalCollab.toDto(): ExternalCollabDto {
         reglamentoInterno = null,
         copiaINE = null,
         avisoConfidencialidad = null,
-        foto = this.photoUrl
+        foto = this.photoUrl,
     )
-}
 
-fun ExternalCollab.toRegisterDto(): RegisterExternalCollabDto {
-    return RegisterExternalCollabDto(
+fun ExternalCollab.toRegisterDto(): RegisterExternalCollabDto =
+    RegisterExternalCollabDto(
         roleId = this.roleId.toString(),
         name = this.firstName,
         lastName = this.lastName,
@@ -54,9 +52,8 @@ fun ExternalCollab.toRegisterDto(): RegisterExternalCollabDto {
         status = if (this.isActive) 1 else 0,
         internalRegulation = null,
         idCopy = null,
-        confidentialityNotice = null
+        confidentialityNotice = null,
     )
-}
 
 private fun formatDateForBackend(dateString: String): String {
     if (dateString.isBlank()) return ""

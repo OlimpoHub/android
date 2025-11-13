@@ -29,20 +29,23 @@ fun SearchInput(
                 color = Color.White.copy(alpha = 0.6f),
             )
         },
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(top = 4.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp),
         shape = RoundedCornerShape(12.dp),
         textStyle = TextStyle(color = Color.White),
         trailingIcon = trailingIcon,
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color(0xFF0F142C),
-            unfocusedContainerColor = Color(0xFF0F142C),
-            focusedIndicatorColor = Color(0xFF3253D1),
-            unfocusedIndicatorColor = Color(0xFF3253D1),
-            cursorColor = Color.White,
-            focusedTextColor = Color.White,
-            unfocusedTextColor = Color.White,
-        ),
+        singleLine = true,
+        colors =
+            TextFieldDefaults.colors(
+                focusedContainerColor = Color(0xFF0F142C),
+                unfocusedContainerColor = Color(0xFF0F142C),
+                focusedIndicatorColor = Color(0xFF3253D1),
+                unfocusedIndicatorColor = Color(0xFF3253D1),
+                cursorColor = Color.White,
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
+            ),
     )
 }
