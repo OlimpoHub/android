@@ -162,12 +162,12 @@ interface ArcaApi {
     @Multipart
     @POST("supplies/add")
     suspend fun addSupply(
-        @Part("idWorkshop") idWorkshop: RequestBody,
-        @Part("name") name: RequestBody,
-        @Part("measureUnit") measureUnit: RequestBody,
-        @Part("idCategory") idCategory: RequestBody,
+        @Part("idTaller") idWorkshop: RequestBody,
+        @Part("nombre") name: RequestBody,
+        @Part("unidadMedida") measureUnit: RequestBody,
+        @Part("idCategoria") idCategory: RequestBody,
         @Part("status") status: RequestBody,
-        @Part image: MultipartBody.Part?,
+        @Part imagenInsumo: MultipartBody.Part?
     )
 
     @GET("productBatch/")

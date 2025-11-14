@@ -1,19 +1,51 @@
 package com.app.arcabyolimpo.data.mapper.workshops
 
-import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
-import com.app.arcabyolimpo.domain.model.supplies.Supply
-import com.app.arcabyolimpo.domain.model.supplies.SupplyBatch
+import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopFormData
 import com.app.arcabyolimpo.domain.model.workshops.Workshop
 
 /**
- * Extension function to convert a [WorkshopDto] from the data (remote) layer
- * into a [Workshop] domain model. This mapping ensures the domain layer remains
- * independent from data transfer object (DTO) structures.
+ * Converts a [WorkshopDto] (from API) to a [Workshop] (domain model).
  */
 fun WorkshopDto.toDomain(): Workshop {
     return Workshop(
-        id = id, /** id of the workshop, it is a uuid */
+        id = id ?: "",
+        idTraining = idTraining ?: "",
+        idUser = idUser ?: "",
+        nameWorkshop = (name ?: "").replaceFirstChar { it.uppercase() },
+        url = image ?: "",
+        startHour = startHour ?: "",
+        finishHour = finishHour ?: "",
+        status = status,
+        description = description ?: "",
+        date = date ?: ""
+    )
+}
+
+/**
+ * Converts a [WorkshopFormData] (form submission) to a [WorkshopDto] (for API).
+ */
+fun WorkshopFormData.toWorkshopDto() = WorkshopDto(
+    id = id ?: "",
+    idTraining = idTraining ?: "",
+    idUser = idUser ?: "",
+    name = name ?: "",
+    startHour = startHour ?: "",
+    finishHour = finishHour ?: "",
+    description = description ?: "",
+    date = date ?: "",
+    image = image ?: "",
+    status = 1
+)
+
+
+/**
+ * Converts a [WorkshopFormData] directly to a [Workshop] (domain model).
+ * Useful for showing previews or local data handling.
+ */
+fun WorkshopFormData.toDomain(): Workshop {
+    return Workshop(
+        id = id,
         idTraining = idTraining,
         idUser = idUser,
         nameWorkshop = name.replaceFirstChar { it.uppercase() },
@@ -23,6 +55,5 @@ fun WorkshopDto.toDomain(): Workshop {
         status = status,
         description = description,
         date = date
-
     )
 }

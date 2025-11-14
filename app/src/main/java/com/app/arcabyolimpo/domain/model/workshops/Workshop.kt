@@ -18,14 +18,14 @@ import com.app.arcabyolimpo.domain.model.supplies.SupplyBatch
  */
 
 data class Workshop(
-    val id: String,
-    val idTraining: String,
-    val idUser: String,
-    val nameWorkshop: String,
-    val url: String,
-    val startHour: String,
-    val finishHour: String,
+    val id: String?,
+    val idTraining: String?,
+    val idUser: String?,
+    val nameWorkshop: String?,
+    val url: String?,
+    val startHour: String?,
+    val finishHour: String?,
     val status: Int,
-    val description: String,
-    val date: String
+    val description: String?,
+    val date: String?
 )

@@ -1,8 +1,12 @@
 ## [0.1.0] - 13/11/2025
 
+### Added
+- Added Workshop Card atom.
+- Added screen for view Workshop 
 ### Fixed
 - ArcaApi get all external collabs
 - Search users
+- Fix snackbar for register new workshops
 
 ## [0.1.0] - 12/11/2025
 
@@ -10,6 +14,7 @@
 - Consult Product Batches + Register ViewModel and Screen
 - DeleteOneSupply Button Logic
 - Filter and search bar for users
+- US to add a new supply with an image
 - Included internal collaborators in the area of users
 
 ### Updated

@@ -11,4 +11,7 @@ interface WorkshopRepository {
 
     suspend fun addWorkshop(newWorkshop: WorkshopDto): Workshop
 
+
+    companion object
+
 }
