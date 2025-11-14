@@ -36,15 +36,15 @@ class BeneficiaryRepositoryImpl
             val response = api.getBeneficiariesList()
             return response.map { dto ->
                 Beneficiary(
-                    id = dto.id,
-                    name = dto.name,
+                    id = dto.id.orEmpty(),
+                    name = dto.name.orEmpty(),
                     birthdate = "",
                     emergencyNumber = "",
                     emergencyName = "",
                     emergencyRelation = "",
                     details = "",
                     entryDate = "",
-                    image = dto.image,
+                    image = dto.image.orEmpty(),
                     disabilities = "",
                     status = 0,
                 )
