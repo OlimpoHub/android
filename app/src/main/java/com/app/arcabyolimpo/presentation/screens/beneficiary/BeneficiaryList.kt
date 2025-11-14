@@ -1,10 +1,5 @@
 package com.app.arcabyolimpo.presentation.screens.beneficiary
-/*
-Acalaracion de Ricardo: Muchas de las cosas que se estan haciendo aqui no estan incluyendo muchos de
-los atomos creados, pero el motivo es que eso no me toca a mi, yo cree la screen para que se pudiese
-trabajar en mi propia HS, como tal arreglar esta screen va al que le toque la historia de consultar
-beneficiarios.
- */
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
