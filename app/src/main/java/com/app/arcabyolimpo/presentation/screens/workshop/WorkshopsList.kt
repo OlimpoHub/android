@@ -1,5 +1,19 @@
 package com.app.arcabyolimpo.presentation.screens.workshop
 
+<<<<<<< HEAD
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
+=======
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -8,11 +22,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+>>>>>>> e29f30cf4a8bed0e5adf733def3ca65ec5893679
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.app.arcabyolimpo.presentation.navigation.Screen
+import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.FilterIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
@@ -21,7 +37,11 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
 import com.app.arcabyolimpo.presentation.ui.components.molecules.WorkshopCard
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import com.app.arcabyolimpo.ui.theme.Background
+<<<<<<< HEAD
+import kotlinx.coroutines.launch
+=======
 import com.app.arcabyolimpo.ui.theme.White
+>>>>>>> e29f30cf4a8bed0e5adf733def3ca65ec5893679
 
 /**
  * Composable screen that displays the list of workshops.
@@ -45,6 +65,41 @@ fun WorkshopsListScreen(
     navController: NavHostController,
     workshopClick: (String) -> Unit,
     viewModel: WorkshopsListViewModel = hiltViewModel()
+<<<<<<< HEAD
+)  {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
+    val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+    val snackbarMessage = savedStateHandle?.get<String>("snackbarMessage")
+    val snackbarSuccess = savedStateHandle?.get<Boolean>("snackbarSuccess") ?: true
+
+    LaunchedEffect(snackbarMessage) {
+        snackbarMessage?.let {
+            scope.launch {
+                snackbarHostState.showSnackbar(it)
+            }
+            savedStateHandle.remove<String>("snackbarMessage")
+            savedStateHandle.remove<Boolean>("snackbarSuccess")
+        }
+    }
+
+    Scaffold(
+        containerColor = Background,
+        snackbarHost = {
+            SnackbarHost(snackbarHostState) { data ->
+                Snackbarcustom(
+                    title = data.visuals.message,
+                    modifier = Modifier.padding(16.dp),
+                    ifSucces = snackbarSuccess
+                )
+            }
+        },
+        floatingActionButton = {
+            AddButton(
+                onClick = {
+=======
 ) {
     ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false) {
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -53,6 +108,7 @@ fun WorkshopsListScreen(
             containerColor = Background,
             floatingActionButton = {
                 AddButton(onClick = {
+>>>>>>> e29f30cf4a8bed0e5adf733def3ca65ec5893679
                     navController.navigate(Screen.AddNewWorkshop.route)
                 })
             },
@@ -83,6 +139,16 @@ fun WorkshopsListScreen(
                     /** Notification Icon. NON FUNCTIONAL */
                     NotificationIcon()
                 }
+<<<<<<< HEAD
+            )
+        }
+    ){ padding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+=======
                 Row(
                     modifier =
                         Modifier
@@ -154,6 +220,7 @@ fun WorkshopsListScreen(
                     }
                 }
             }
+>>>>>>> e29f30cf4a8bed0e5adf733def3ca65ec5893679
         }
     }
 }

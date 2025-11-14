@@ -6,6 +6,7 @@
 ### Fixed
 - ArcaApi get all external collabs
 - Search users
+- Fix snackbar for register new workshops
 
 ## [0.1.0] - 12/11/2025
 
