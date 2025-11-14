@@ -13,6 +13,7 @@ import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchDto
+import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchRegisterDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteResponseDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
@@ -167,7 +168,7 @@ interface ArcaApi {
         @Part("unidadMedida") measureUnit: RequestBody,
         @Part("idCategoria") idCategory: RequestBody,
         @Part("status") status: RequestBody,
-        @Part imagenInsumo: MultipartBody.Part?
+        @Part imagenInsumo: MultipartBody.Part?,
     )
 
     @GET("productBatch/")
@@ -180,6 +181,6 @@ interface ArcaApi {
 
     @POST("productBatch/")
     suspend fun addProductBatch(
-        @Body batch: ProductBatchDto,
+        @Body batch: ProductBatchRegisterDto,
     )
 }
