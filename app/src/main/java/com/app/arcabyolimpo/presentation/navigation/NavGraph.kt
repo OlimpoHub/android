@@ -92,7 +92,6 @@ sealed class Screen(
     object AddNewWorkshop : Screen("workshop/add")
 
 
-
     object BeneficiaryList : Screen("beneficiary_list")
 
     object BeneficiaryDetail : Screen("beneficiary_detail/{beneficiaryId}") {
@@ -427,6 +426,7 @@ fun ArcaNavGraph(
                 },
             )
         }
+
 
         /**
          * Supply List Screen.

@@ -52,6 +52,7 @@ fun WorkshopsListScreen(
 ) {
     ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false) {
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+        val searchText by viewModel.searchQuery.collectAsState()
 
         Scaffold(
             containerColor = Background,
@@ -104,12 +105,13 @@ fun WorkshopsListScreen(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ){
-                    /** Search input. NON FUNCTIONAL */
+
                     SearchInput(
-                        "",
-                        onValueChange = {},
+                        value = searchText,
+                        onValueChange = { viewModel.onSearchQueryChange(it) },
                         modifier = Modifier.weight(1f)
                     )
+
                     Spacer(modifier = Modifier.width(28.dp))
                     /** Filter icon. NON FUNCTIONAL */
                     FilterIcon()

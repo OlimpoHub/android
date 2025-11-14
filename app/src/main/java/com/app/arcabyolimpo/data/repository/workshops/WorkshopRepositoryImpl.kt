@@ -89,4 +89,9 @@ class WorkshopRepositoryImpl
         )
     }
 
+    override suspend fun searchWorkshop(name: String): List<Workshop> {
+        val response = api.searchWorkshops(name)
+        return response.map { it.toDomain() }
+    }
+
 }
