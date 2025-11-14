@@ -168,4 +168,16 @@ interface ArcaApi {
         @Part("status") status: RequestBody,
         @Part imagenInsumo: MultipartBody.Part?
     )
+
+    @Multipart
+    @POST("product/add")
+    suspend fun addProduct(
+        @Part("idTaller") idWorkshop: RequestBody,
+        @Part("Nombre") name: RequestBody,
+        @Part("PrecioUnitario") unitaryPrice: RequestBody,
+        @Part("idCategoria") idCategory: RequestBody,
+        @Part("Descripcion") description: RequestBody,
+        @Part("Disponible") status: RequestBody,
+        @Part image: MultipartBody.Part?
+    )
 }

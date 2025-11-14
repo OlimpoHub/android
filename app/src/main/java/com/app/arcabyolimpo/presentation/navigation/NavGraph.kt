@@ -30,6 +30,7 @@ import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
+import com.app.arcabyolimpo.presentation.screens.product.ProductAddScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
@@ -104,6 +105,8 @@ sealed class Screen(
     }
 
     object SupplyAdd : Screen("supply/add")
+
+    object ProductAdd : Screen("product/add")
 }
 
 /**
@@ -141,7 +144,7 @@ fun ArcaNavGraph(
     NavHost(
         navController = navController,
         // TODO: Cambiar a Screen.Splash.route cuando acabe
-        startDestination = Screen.SuppliesList.route,
+        startDestination = Screen.ProductAdd.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -513,6 +516,17 @@ fun ArcaNavGraph(
          */
         composable(Screen.SupplyAdd.route) {
             SupplyAddScreen(
+                onSaveSuccess = {
+                    navController.popBackStack()
+                },
+                onCancel = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable(Screen.ProductAdd.route) {
+            ProductAddScreen(
                 onSaveSuccess = {
                     navController.popBackStack()
                 },
