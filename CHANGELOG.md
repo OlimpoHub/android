@@ -3,6 +3,8 @@
 ### Added
 - Added Workshop Card atom.
 - Added screen for view Workshop 
+- Added function for searching workshops by name.
+
 ### Fixed
 - ArcaApi get all external collabs
 - Search users

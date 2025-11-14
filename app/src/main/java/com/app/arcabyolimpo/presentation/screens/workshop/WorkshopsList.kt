@@ -24,7 +24,6 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
 import com.app.arcabyolimpo.presentation.ui.components.molecules.WorkshopCard
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import com.app.arcabyolimpo.ui.theme.Background
-import com.app.arcabyolimpo.ui.theme.White
 
 /**
  * Composable screen that displays the list of workshops.
@@ -105,7 +104,7 @@ fun WorkshopsListScreen(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ){
-
+                    /** Search input */
                     SearchInput(
                         value = searchText,
                         onValueChange = { viewModel.onSearchQueryChange(it) },
