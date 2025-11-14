@@ -3,10 +3,13 @@ package com.app.arcabyolimpo.presentation.screens.workshop
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -40,6 +43,7 @@ import com.app.arcabyolimpo.ui.theme.White
  * @param viewModel The [WorkshopsListViewModel] used to manage the UI state.
  */
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WorkshopsListScreen(
     navController: NavHostController,
@@ -51,10 +55,38 @@ fun WorkshopsListScreen(
 
         Scaffold(
             containerColor = Background,
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = "Talleres",
+                            style = MaterialTheme.typography.headlineLarge,
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = { navController.navigate(Screen.CoordinatorHome.route) }) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "Regresar",
+                                tint = Color.White
+                            )
+                        }
+                    },
+                    actions = {
+                        Box(modifier = Modifier.padding(end = 30.dp)) {
+                            NotificationIcon()
+                        }
+                    }
+                )
+            },
             floatingActionButton = {
-                AddButton(onClick = {
-                    navController.navigate(Screen.AddNewWorkshop.route)
-                })
+                AddButton(
+                    onClick = {
+                        navController.navigate(Screen.AddNewWorkshop.route)
+                    }
+                )
             },
             bottomBar = { NavBar() }
         ) { padding ->
@@ -62,33 +94,14 @@ fun WorkshopsListScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
-                    .padding(top = 24.dp)
+                    .padding(top = 8.dp)
             ) {
                 Row(
                     modifier =
                         Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 30.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ){
-                    /** Title of the page */
-                    Text(
-                        text = "Talleres",
-                        style = MaterialTheme.typography.headlineLarge,
-                        color = White,
-                        modifier = Modifier.padding(bottom = 16.dp),
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.width(200.dp))
-                    /** Notification Icon. NON FUNCTIONAL */
-                    NotificationIcon()
-                }
-                Row(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 30.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            .padding(horizontal = 35.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ){
                     /** Search input. NON FUNCTIONAL */
@@ -97,7 +110,7 @@ fun WorkshopsListScreen(
                         onValueChange = {},
                         modifier = Modifier.weight(1f)
                     )
-                    Spacer(modifier = Modifier.width(16.dp))
+                    Spacer(modifier = Modifier.width(28.dp))
                     /** Filter icon. NON FUNCTIONAL */
                     FilterIcon()
                 }
