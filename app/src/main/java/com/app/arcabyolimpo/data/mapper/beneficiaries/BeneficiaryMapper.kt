@@ -9,9 +9,15 @@ import com.app.arcabyolimpo.domain.model.beneficiaries.Beneficiary
  * independent from data transfer object (DTO) structures.
  */
 fun BeneficiaryDto.toDomain(): Beneficiary {
+    val fullName = listOfNotNull(
+        firstName,
+        paternalName,
+        maternalName
+    ).joinToString(" ").trim()
+        .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
     return Beneficiary(
         id = id.orEmpty(),
-        name = name?.replaceFirstChar { it.uppercase() }.orEmpty(),
+        name = fullName.ifEmpty { "Nombre no disponible" },
         birthdate = birthdate.orEmpty(),
         emergencyNumber = emergencyNumber.orEmpty(),
         emergencyName = emergencyName.orEmpty(),

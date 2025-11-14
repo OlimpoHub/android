@@ -35,9 +35,15 @@ class BeneficiaryRepositoryImpl
         override suspend fun getBeneficiariesList(): List<Beneficiary> {
             val response = api.getBeneficiariesList()
             return response.map { dto ->
+                val fullName = listOfNotNull(
+                    dto.firstName,
+                    dto.paternalName,
+                    dto.maternalName
+                ).joinToString(" ").trim()
+
                 Beneficiary(
                     id = dto.id.orEmpty(),
-                    name = dto.name.orEmpty(),
+                    name = fullName.ifEmpty{ "Nombre no disponible" },
                     birthdate = "",
                     emergencyNumber = "",
                     emergencyName = "",
