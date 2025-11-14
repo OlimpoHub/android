@@ -26,6 +26,9 @@ import com.app.arcabyolimpo.presentation.screens.login.LoginScreen
 import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecoveryScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
+import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchDetail.ProductBatchDetailScreen
+import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchRegister.ProductBatchRegisterScreen
+import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchesList.ProductBatchesListScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
@@ -104,6 +107,16 @@ sealed class Screen(
     }
 
     object SupplyAdd : Screen("supply/add")
+
+    //object UserList : Screen("user")
+
+    object ProductBatchesList : Screen("product_batches")
+
+    object ProductBatchDetail : Screen("product_batch_detail/{batchId}") {
+        fun createRoute(batchId: String) = "product_batch_detail/$batchId"
+    }
+
+    object ProductBatchRegister : Screen("product_batch_register")
 }
 
 /**
@@ -519,6 +532,53 @@ fun ArcaNavGraph(
                 onCancel = {
                     navController.popBackStack()
                 }
+            )
+        }
+
+        /**
+         * Product Batches List Screen.
+         *
+         * Displays a list of product batches and allows navigation to details or registration.
+         * DetailClick -> navigates to ProductBatchDetailScreen
+         * AddClick -> navigates to ProductBatchRegisterScreen
+         */
+        composable(Screen.ProductBatchesList.route) {
+            ProductBatchesListScreen(
+                onBackClick = { navController.popBackStack() },
+                onDetailClick = { id ->
+                    navController.navigate(Screen.ProductBatchDetail.createRoute(id))
+                },
+                onAddClick = {
+                    navController.navigate(Screen.ProductBatchRegister.route)
+                },
+            )
+        }
+
+        /**
+         * Product Batches Detail Screen.
+         *
+         * Displays a view of product batch.
+         */
+        composable(
+            route = Screen.ProductBatchDetail.route,
+            arguments = listOf(navArgument("batchId") { type = NavType.StringType }),
+        ) { backStackEntry ->
+            val batchId = backStackEntry.arguments?.getString("batchId") ?: ""
+            ProductBatchDetailScreen(
+                batchId = batchId,
+                onBackClick = { navController.popBackStack() },
+            )
+        }
+
+        /**
+         * Product Batches Register Screen.
+         *
+         * Allows the registration of a new product batch.
+         */
+        composable(Screen.ProductBatchRegister.route) {
+            ProductBatchRegisterScreen(
+                onCreated = { navController.popBackStack() },
+                onBackClick = { navController.popBackStack() },
             )
         }
     }

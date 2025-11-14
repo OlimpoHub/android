@@ -9,15 +9,18 @@ import com.app.arcabyolimpo.data.remote.interceptor.TokenAuthenticator
 import com.app.arcabyolimpo.data.repository.auth.UserRepositoryImpl
 import com.app.arcabyolimpo.data.repository.beneficiaries.BeneficiaryRepositoryImpl
 import com.app.arcabyolimpo.data.repository.password.PasswordUserRepositoryImpl
+import com.app.arcabyolimpo.data.repository.productbatches.ProductBatchRepositoryImpl
 import com.app.arcabyolimpo.data.repository.supplies.SupplyRepositoryImpl
 import com.app.arcabyolimpo.data.repository.user.UsersRepositoryImpl
 import com.app.arcabyolimpo.data.repository.workshops.WorkshopRepositoryImpl
 import com.app.arcabyolimpo.domain.repository.auth.UserRepository
 import com.app.arcabyolimpo.domain.repository.beneficiaries.BeneficiaryRepository
 import com.app.arcabyolimpo.domain.repository.password.PasswordUserRepository
+import com.app.arcabyolimpo.domain.repository.productbatches.ProductBatchRepository
 import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
 import com.app.arcabyolimpo.domain.repository.user.UsersRepository
 import com.app.arcabyolimpo.domain.repository.workshops.WorkshopRepository
+import com.app.arcabyolimpo.domain.usecase.productbatches.GetProductBatchesUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -151,4 +154,9 @@ object AppModule {
     @Provides
     @Singleton
     fun provideUsersRepository(api: ArcaApi): UsersRepository = UsersRepositoryImpl(api)
+
+    /** Provides the [ProductBatchRepository] implementation.*/
+    @Provides
+    @Singleton
+    fun provideProductBatchRepository(api: ArcaApi): ProductBatchRepository = ProductBatchRepositoryImpl(api)
 }
