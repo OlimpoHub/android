@@ -95,7 +95,6 @@ sealed class Screen(
     object AddNewWorkshop : Screen("workshop/add")
 
 
-
     object BeneficiaryList : Screen("beneficiary_list")
 
     object BeneficiaryDetail : Screen("beneficiary_detail/{beneficiaryId}") {
@@ -410,7 +409,17 @@ fun ArcaNavGraph(
             )
         }
 
-
+        /**
+         * Workshops Detail Screen.
+         *
+         * This composable represents the screen where users can view and interact with
+         * the detail of a workshop.
+         *
+         * It connects to the [WorkshopDetailScreen] composable, which displays the UI and
+         * interacts with its corresponding [WorkshopDetailViewModel] to handle data fetching,
+         * loading states, and errors.
+         *
+         */
         composable(
             route = Screen.WorkshopDetail.route,
             arguments = listOf(navArgument("id") { type = NavType.StringType })
@@ -440,6 +449,7 @@ fun ArcaNavGraph(
                 },
             )
         }
+
 
         /**
          * Supply List Screen.

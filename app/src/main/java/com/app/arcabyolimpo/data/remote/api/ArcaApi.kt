@@ -129,8 +129,14 @@ interface ArcaApi {
     ): DeleteResponseDto
 
     // Workshop ---------------------------
+
     @GET("workshop")
     suspend fun getWorkshopsList(): List<WorkshopsListDto>
+
+    @GET("workshop/search")
+    suspend fun searchWorkshops(
+        @Query("nameWorkshop") name: String
+    ): List<WorkshopDto>
 
     @GET("workshop/{id}")
     suspend fun getWorkshop(
