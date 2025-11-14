@@ -23,7 +23,7 @@ data class BeneficiaryDto (
     @SerializedName("apellidoPaterno") val paternalName: String?,
     @SerializedName("apellidoMaterno") val maternalName: String?,
     @SerializedName("fechaNacimiento") val birthdate: String?,
-    @SerializedName("numeroContactoEmergencia") val emergencyNumber: String?,
+    @SerializedName("numeroEmergencia") val emergencyNumber: String?,
     @SerializedName("nombreContactoEmergencia") val emergencyName: String?,
     @SerializedName("relacionContactoEmergencia") val emergencyRelation: String?,
     @SerializedName("descripcion") val details: String?,

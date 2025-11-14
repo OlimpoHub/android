@@ -1,3 +1,11 @@
+## [0.1.0] - 14/11/2025
+
+### Fixed
+ - Information fetched from the backend for consultBeneficiaries
+
+### Added
+ - Added logic for consultBeneficiaries
+
 ## [0.1.0] - 13/11/2025
 
 ### Added

@@ -183,7 +183,7 @@ fun BeneficiaryDetailContent(
                             // APPLY .orEmpty() to convert null in ""
                             DetailTextRow(label = "Fecha de nacimiento:", value = beneficiary.birthdate.orEmpty())
                             DetailTextRow(label = "Fecha de ingreso:", value = beneficiary.entryDate.orEmpty())
-                            StatusField(isActive = beneficiary.status == 0)
+                            StatusField(isActive = beneficiary.status == 1)
                         }
 
                         Column(
@@ -192,7 +192,7 @@ fun BeneficiaryDetailContent(
                         ) {
                             // APPLY .orEmpty()
                             DetailTextRow(label = "Nombre de beneficiario:", value = beneficiary.name.orEmpty())
-                            DetailTextRow(label = "Nombre de tutor:", value = "Nombre Tutor" /* TODO */)
+                            DetailTextRow(label = "Nombre de tutor:", value = beneficiary.emergencyName.orEmpty())
                             // APPLY .orEmpty()
                             DetailTextRow(label = "Relación del tutor:", value = beneficiary.emergencyRelation.orEmpty())
                             // APPLY .orEmpty()
