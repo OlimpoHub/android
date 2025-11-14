@@ -4,6 +4,7 @@ import com.app.arcabyolimpo.data.remote.dto.auth.LoginRequestDto
 import com.app.arcabyolimpo.data.remote.dto.auth.LoginResponseDto
 import com.app.arcabyolimpo.data.remote.dto.auth.RefreshRequestDto
 import com.app.arcabyolimpo.data.remote.dto.auth.RefreshResponseDto
+import com.app.arcabyolimpo.data.remote.dto.beneficiaries.AddNewBeneficiaryDto
 import com.app.arcabyolimpo.data.remote.dto.beneficiaries.BeneficiariesListDto
 import com.app.arcabyolimpo.data.remote.dto.beneficiaries.BeneficiaryDto
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
@@ -154,6 +155,11 @@ interface ArcaApi {
     suspend fun deleteBeneficiary(
         @Path("id") id: String,
     ): Response<Unit>
+
+    @POST("beneficiary/create")
+    suspend fun addBeneficiary(
+        @Body requestBody: BeneficiaryDto,
+    ): AddNewBeneficiaryDto
 
     @GET("supplies/workshop/category")
     suspend fun getWorkshopCategoryList(): WorkshopCategoryListDto

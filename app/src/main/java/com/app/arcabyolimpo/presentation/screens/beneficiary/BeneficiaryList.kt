@@ -39,7 +39,10 @@ import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.app.arcabyolimpo.domain.model.beneficiaries.Beneficiary
+import com.app.arcabyolimpo.presentation.navigation.Screen
+import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
 
 /**
  * This composable acts as the main screen, inecting the ViewModel
@@ -47,6 +50,7 @@ import com.app.arcabyolimpo.domain.model.beneficiaries.Beneficiary
  */
 @Composable
 fun BeneficiaryListScreen(
+    navController: NavHostController,
     onBeneficiaryClick: (String) -> Unit,
     onFilterClick: () -> Unit,
     onNotificationClick: () -> Unit,
@@ -59,7 +63,10 @@ fun BeneficiaryListScreen(
         onSearchTextChange = viewModel::onSearchTextChange,
         onBeneficiaryClick = onBeneficiaryClick,
         onFilterClick = onFilterClick,
-        onNotificationClick = onNotificationClick
+        onNotificationClick = onNotificationClick,
+        onAddBeneficiaryClick = {
+            navController.navigate(Screen.AddNewBeneficiary.route)
+        }
     )
 }
 
@@ -74,7 +81,8 @@ fun BeneficiaryList(
     onSearchTextChange: (String) -> Unit,
     onBeneficiaryClick: (String) -> Unit,
     onFilterClick: () -> Unit,
-    onNotificationClick: () -> Unit
+    onNotificationClick: () -> Unit,
+    onAddBeneficiaryClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -95,6 +103,9 @@ fun BeneficiaryList(
                     }
                 }
             )
+        },
+        floatingActionButton = {
+            AddButton(onClick = onAddBeneficiaryClick)
         },
         containerColor = Color(0xFF1C1B1F)
     ) { paddingValues ->
@@ -191,7 +202,8 @@ fun BeneficiaryListPreview() {
             onSearchTextChange = {},
             onBeneficiaryClick = {},
             onFilterClick = {},
-            onNotificationClick = {}
+            onNotificationClick = {},
+            onAddBeneficiaryClick = {}
         )
     }
 }

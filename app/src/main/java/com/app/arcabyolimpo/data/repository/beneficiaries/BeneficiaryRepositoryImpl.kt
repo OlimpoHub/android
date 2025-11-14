@@ -86,4 +86,29 @@ class BeneficiaryRepositoryImpl
                 throw e
             }
         }
+
+        override suspend fun addBeneficiary(newBeneficiary: BeneficiaryDto): Beneficiary {
+            val response = api.addBeneficiary(newBeneficiary)
+
+            val fullName = listOfNotNull(
+                newBeneficiary.firstName,
+                newBeneficiary.paternalName,
+                newBeneficiary.maternalName
+            ).joinToString(" ").trim()
+                .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+
+            return Beneficiary(
+                id = newBeneficiary.id.orEmpty(),
+                name = fullName.ifEmpty { "Nombre no disponible" },
+                birthdate = newBeneficiary.birthdate.orEmpty(),
+                emergencyNumber = newBeneficiary.emergencyNumber.orEmpty(),
+                emergencyName = newBeneficiary.emergencyName.orEmpty(),
+                emergencyRelation = newBeneficiary.emergencyRelation.orEmpty(),
+                details = newBeneficiary.details.orEmpty(),
+                entryDate = newBeneficiary.entryDate.orEmpty(),
+                image = newBeneficiary.image.orEmpty(),
+                disabilities = newBeneficiary.disabilities.orEmpty(),
+                status = newBeneficiary.status ?: 1
+            )
+        }
     }
