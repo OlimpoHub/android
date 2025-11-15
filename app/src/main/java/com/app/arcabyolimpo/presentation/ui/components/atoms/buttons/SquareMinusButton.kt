@@ -45,6 +45,9 @@ fun SquareMinusButton(
         colors =
             ButtonDefaults.buttonColors(
                 containerColor = White,
+                disabledContainerColor = White,
+                contentColor = PrimaryBlue,
+                disabledContentColor = PrimaryBlue,
             ),
         elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
     ) {

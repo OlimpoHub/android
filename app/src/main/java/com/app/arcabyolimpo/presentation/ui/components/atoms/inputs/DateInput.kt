@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.CalendarIcon
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
+import com.app.arcabyolimpo.ui.theme.White
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -51,7 +52,7 @@ fun DateInput(
             .onFocusChanged { if (it.isFocused) focusManager.clearFocus() },
         trailingIcon = {
             IconButton(onClick = { showPicker = true }) {
-                CalendarIcon(tint = MaterialTheme.colorScheme.onSurface)
+                CalendarIcon(tint = White)
             }
         },
     )

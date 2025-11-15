@@ -20,22 +20,20 @@ import com.app.arcabyolimpo.presentation.common.components.LoadingShimmer
 import com.app.arcabyolimpo.presentation.screens.accountactivation.AccountActivationScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
+import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
 import com.app.arcabyolimpo.presentation.screens.home.assistant.CollaboratorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.home.coordinator.CoordinatorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.login.LoginScreen
 import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecoveryScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
+import com.app.arcabyolimpo.presentation.screens.product.ProductAddScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchDetail.ProductBatchDetailScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchRegister.ProductBatchRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchesList.ProductBatchesListScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
-import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
-import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
-import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
-import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
-import com.app.arcabyolimpo.presentation.screens.product.ProductAddScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
+import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplybatchregister.SupplyBatchRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
@@ -97,7 +95,6 @@ sealed class Screen(
 
     object AddNewWorkshop : Screen("workshop/add")
 
-
     object BeneficiaryList : Screen("beneficiary_list")
 
     object RegisterBatchSupply : Screen("register-batch-supply/{supplyId}") {
@@ -114,7 +111,7 @@ sealed class Screen(
 
     object SupplyAdd : Screen("supply/add")
 
-    //object UserList : Screen("user")
+    // object UserList : Screen("user")
 
     object ProductBatchesList : Screen("product_batches")
 
@@ -162,7 +159,7 @@ fun ArcaNavGraph(
     NavHost(
         navController = navController,
         // TODO: Cambiar a Screen.Splash.route cuando acabe
-        startDestination = Screen.Splash.route,
+        startDestination = Screen.SuppliesList.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -415,7 +412,7 @@ fun ArcaNavGraph(
                 navController = navController,
                 workshopClick = { id ->
                     navController.navigate(Screen.WorkshopDetail.createRoute(id))
-                }
+                },
             )
         }
 
@@ -432,12 +429,11 @@ fun ArcaNavGraph(
          */
         composable(
             route = Screen.WorkshopDetail.route,
-            arguments = listOf(navArgument("id") { type = NavType.StringType })
+            arguments = listOf(navArgument("id") { type = NavType.StringType }),
         ) { backStackEntry ->
             val workshopId = backStackEntry.arguments?.getString("id") ?: ""
             WorkshopDetailScreen(navController, workshopId)
         }
-
 
         /**
          * Workshops Add Screen.
@@ -460,7 +456,6 @@ fun ArcaNavGraph(
             )
         }
 
-
         /**
          * Supply List Screen.
          *
@@ -479,7 +474,7 @@ fun ArcaNavGraph(
                 },
                 onAddSupplyClick = {
                     navController.navigate(Screen.SupplyAdd.route)
-                }
+                },
             )
         }
 
@@ -567,7 +562,7 @@ fun ArcaNavGraph(
                 },
                 onCancel = {
                     navController.popBackStack()
-                }
+                },
             )
         }
 
@@ -625,7 +620,7 @@ fun ArcaNavGraph(
                 },
                 onCancel = {
                     navController.popBackStack()
-                }
+                },
             )
         }
     }
