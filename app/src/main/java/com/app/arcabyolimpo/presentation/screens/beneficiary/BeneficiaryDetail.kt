@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -50,7 +51,10 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDial
 import com.app.arcabyolimpo.presentation.ui.components.atoms.status.ActiveStatus
 import com.app.arcabyolimpo.presentation.ui.components.atoms.status.InactiveStatus
 import com.app.arcabyolimpo.domain.model.beneficiaries.Beneficiary
+import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
+import com.app.arcabyolimpo.presentation.ui.components.molecules.TextValue
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
+import com.app.arcabyolimpo.ui.theme.Background
 import kotlinx.coroutines.launch
 
 @Composable
@@ -121,7 +125,7 @@ fun BeneficiaryDetailContent(
     }
 
     Scaffold(
-        // Snackbar connection with the Scaffold
+        containerColor = Background,
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             TopAppBar(
@@ -141,7 +145,7 @@ fun BeneficiaryDetailContent(
                 }
             )
         },
-        containerColor = Color(0xFF1C1B1F) // Black background
+        bottomBar = { NavBar() }
     ) { paddingValues ->
         when {
             uiState.isScreenLoading -> {
@@ -161,81 +165,110 @@ fun BeneficiaryDetailContent(
                         .padding(paddingValues)
                         .padding(horizontal = 24.dp)
                         .fillMaxSize()
-                        .verticalScroll(rememberScrollState()),
-                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                   Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .verticalScroll(rememberScrollState()),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Column(
-                            modifier = Modifier.weight(1f),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            Image(
-                                painter = rememberAsyncImagePainter(
-                                    model = beneficiary.image,
-                                    placeholder = painterResource(id = R.drawable.ic_beneficiary_icon),
-                                    error = painterResource(id = R.drawable.img_arca_logo)
-                                ),
-                                contentDescription = "Foto de $beneficiary.name",
-                                modifier = Modifier
-                                    .size(150.dp)
-                                    .clip(RoundedCornerShape(16.dp)),
-                                contentScale = ContentScale.Crop
-                            )
-                            // APPLY .orEmpty() to convert null in ""
-                            DetailTextRow(label = "Fecha de nacimiento:", value = beneficiary.birthdate.orEmpty())
-                            DetailTextRow(label = "Fecha de ingreso:", value = beneficiary.entryDate.orEmpty())
-                            StatusField(isActive = beneficiary.status == 1)
+                            Column(
+                                modifier = Modifier.weight(1f),
+                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                Image(
+                                    painter = rememberAsyncImagePainter(
+                                        model = beneficiary.image,
+                                        placeholder = painterResource(id = R.drawable.ic_beneficiary_icon),
+                                        error = painterResource(id = R.drawable.img_arca_logo)
+                                    ),
+                                    contentDescription = "Foto de ${beneficiary.name}",
+                                    modifier = Modifier
+                                        .size(150.dp)
+                                        .clip(RoundedCornerShape(16.dp)),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+
+                            Column(
+                                modifier = Modifier.weight(1f),
+                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                TextValue(label = "Nombre del beneficiario", value = beneficiary.name.orEmpty())
+                                TextValue(label = "Nombre de tutor", value = beneficiary.emergencyName.orEmpty())
+                            }
                         }
 
-                        Column(
-                            modifier = Modifier.weight(1f),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            // APPLY .orEmpty()
-                            DetailTextRow(label = "Nombre de beneficiario:", value = beneficiary.name.orEmpty())
-                            DetailTextRow(label = "Nombre de tutor:", value = beneficiary.emergencyName.orEmpty())
-                            // APPLY .orEmpty()
-                            DetailTextRow(label = "Relación del tutor:", value = beneficiary.emergencyRelation.orEmpty())
-                            // APPLY .orEmpty()
-                            DetailTextRow(label = "Número de teléfono:", value = beneficiary.emergencyNumber.orEmpty())
-                            // APPLY .orEmpty()
-                            DetailTextRow(label = "Discapacidades:", value = beneficiary.disabilities.orEmpty())
+                            Column(modifier = Modifier.weight(1f)) {
+                                TextValue(label = "Fecha de nacimiento", value = beneficiary.birthdate.orEmpty())
+                            }
+                            Column(modifier = Modifier.weight(1f)) {
+                                TextValue(label = "Relación del tutor", value = beneficiary.emergencyRelation.orEmpty())
+                            }
                         }
-                }
-                    // Description Field
-                    Spacer(modifier = Modifier.height(16.dp))
-                    DetailTextRow(
-                        label = "Descripción:",
-                        // APPLY .orEmpty()
-                        value = beneficiary.details.orEmpty()
-                    )
 
-                    Spacer(modifier = Modifier.height(32.dp))
+                       Spacer(modifier = Modifier.height(16.dp))
 
-                    // Action Button
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                TextValue(label = "Fecha de ingreso", value = beneficiary.entryDate.orEmpty())
+                            }
+                            Column(modifier = Modifier.weight(1f)) {
+                                TextValue(label = "Número de teléfono", value = beneficiary.emergencyNumber.orEmpty())
+                            }
+                        }
+                       Spacer(modifier = Modifier.height(16.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                StatusField(isActive = beneficiary.status == 1)
+                            }
+                            Column(modifier = Modifier.weight(1f)) {
+                                TextValue(label = "Discapacidades", value = beneficiary.disabilities.orEmpty())
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                        TextValue(label = "Descripción", value = beneficiary.details.orEmpty())
+                    }
+
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         DeleteButton(
-                            onClick = onShowDialog,
-                            modifier = Modifier.weight(1f),
-                            cornerRadius = 100.dp,
-                            enabled = !uiState.isDeleting
+                            modifier = Modifier.size(width = 112.dp, height = 40.dp),
+                            onClick = { onShowDialog() }
                         )
+
+                        Spacer(modifier = Modifier.width(16.dp))
+
                         ModifyButton(
-                            onClick = onModifyClick,
-                            modifier = Modifier.weight(1f),
-                            cornerRadius = 100.dp,
-                            enabled = !uiState.isDeleting
+                            modifier = Modifier.size(width = 112.dp, height = 40.dp),
+                            onClick = onModifyClick
                         )
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
                 }
             }
         }
