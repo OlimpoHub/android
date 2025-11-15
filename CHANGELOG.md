@@ -1,12 +1,30 @@
+## [0.1.0] - 15/11/2025
+
+### Added
+- Added function to the delete products button
+
+## [0.1.0] - 14/11/2025
+
+### Fixed
+ - Information fetched from the backend for consultBeneficiaries
+
+### Added
+ - Added logic for consultBeneficiaries
+ - Added on detailBeneficiary so that it receives a URL as image from the backend and puts it on display
+
 ## [0.1.0] - 13/11/2025
 
 ### Added
+- RegisterProduct screen implementation.
 - Added Workshop Card atom.
 - Added screen for view Workshop 
+- Added function for searching workshops by name.
 - Added US to Register Product Batches
+
 ### Fixed
 - ArcaApi get all external collabs
 - Search users
+- Added presentation, data and domain for RegisterSupplyBatch
 - Fix snackbar for register new workshops
 - Fix error of implementation in Input atoms
 

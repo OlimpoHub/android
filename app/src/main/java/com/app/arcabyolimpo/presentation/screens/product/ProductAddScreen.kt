@@ -1,4 +1,4 @@
-package com.app.arcabyolimpo.presentation.screens.supply.supplyAdd
+package com.app.arcabyolimpo.presentation.screens.product
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -28,9 +28,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddViewModel
 import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.CancelButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SaveButton
+import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.DescriptionInput
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.ImageUploadInput
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardInput
 import com.app.arcabyolimpo.presentation.ui.components.molecules.SelectObjectInput
@@ -38,18 +40,21 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.StatusSelector
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
 
-/** ---------------------------------------------------------------------------------------------- *
- * SupplyAddScreen -> view where all the inputs, buttons and selects are shown with the information
- * collected by the view model, handles different states and errors.
+/**
+ * ProductAddScreen -> The main composable view for adding a new product.
  *
- * @param viewModel: SupplyAddViewModel -> vm for the view in charge of placing the data
- * @param onSaveSuccess: () -> Unit -> function when the supply is added
- * @param onCancel: () -> Unit -> function when the user cancels the operation
- * ---------------------------------------------------------------------------------------------- */
+ * It displays all necessary input fields driven by the [AddProductViewModel] state.
+ * It handles side effects like navigation and showing [Toast] messages based on the
+ * success or error status from the UI state.
+ *
+ * @param viewModel The Hilt-injected [AddProductViewModel] providing UI state and handling input events.
+ * @param onSaveSuccess Lambda function executed when the product is successfully added.
+ * @param onCancel Lambda function executed when the user cancels the operation.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SupplyAddScreen(
-    viewModel: SupplyAddViewModel = hiltViewModel(),
+fun ProductAddScreen(
+    viewModel: AddProductViewModel = hiltViewModel(),
     onSaveSuccess: () -> Unit,
     onCancel: () -> Unit,
 ) {
@@ -62,7 +67,7 @@ fun SupplyAddScreen(
     ) {
         when {
             uiState.success -> {
-                Toast.makeText(context, "Insumo agregado con éxito", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Producto agregado con éxito", Toast.LENGTH_SHORT).show()
                 onSaveSuccess()
             }
             uiState.error != null -> {
@@ -77,7 +82,7 @@ fun SupplyAddScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Registrar Insumo",
+                        text = "Registrar Producto",
                         color = White,
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Bold,
@@ -85,7 +90,7 @@ fun SupplyAddScreen(
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Background // O el color que prefieras para la barra
+                    containerColor = Background
                 )
             )
         }
@@ -102,7 +107,7 @@ fun SupplyAddScreen(
                 label = "Nombre",
                 value = uiState.name,
                 onValueChange = viewModel::onNameChange,
-                placeholder = "Harina de trigo",
+                placeholder = "Galletas de chocolate",
                 isError = uiState.error?.contains("Nombre") == true
             )
 
@@ -111,6 +116,13 @@ fun SupplyAddScreen(
                 value = uiState.selectedImage,
                 onValueChange = viewModel::onImageSelected,
                 isError = uiState.error?.contains("Imagen") == true
+            )
+
+            StandardInput(
+                label = "Precio Unitario",
+                value = uiState.unitaryPrice,
+                onValueChange = viewModel::onUnitaryPriceChange,
+                placeholder = "pesos"
             )
 
             SelectObjectInput(
@@ -124,7 +136,7 @@ fun SupplyAddScreen(
             )
 
             SelectObjectInput(
-                label = "Selecciona la categoría del insumo",
+                label = "Selecciona la categoría del producto",
                 // ... (el resto de los campos igual) ...
                 options = uiState.categories,
                 selectedId = uiState.selectedCategoryId,
@@ -134,17 +146,18 @@ fun SupplyAddScreen(
                 isError = uiState.error?.contains("Categoría") == true
             )
 
-            StandardInput(
-                label = "Unidad de medida",
-                value = uiState.measureUnit,
-                onValueChange = viewModel::onUnitMeasureChange,
-                placeholder = "gramos"
-            )
-
             StatusSelector(
                 status = uiState.status,
                 onStatusChange = viewModel::onStatusChange,
                 modifier = Modifier.padding(vertical = 4.dp)
+            )
+
+
+            DescriptionInput(
+                value = uiState.description,
+                onValueChange =viewModel::onDescriptionChange,
+                widthFraction = 0.92f,
+                maxWidthDp = 560.dp
             )
 
             Spacer(Modifier.height(16.dp))
@@ -158,7 +171,7 @@ fun SupplyAddScreen(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically,
 
-                ) {
+            ) {
                 if (uiState.isLoading) {
                     CircularProgressIndicator()
                 } else {

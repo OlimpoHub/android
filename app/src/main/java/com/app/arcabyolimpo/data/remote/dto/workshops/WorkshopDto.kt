@@ -21,7 +21,7 @@ data class WorkshopDto(
     @SerializedName("idTaller") val id: String?,
     @SerializedName("idCapacitacion") val idTraining: String?,
     @SerializedName("idUsuario") val idUser: String?,
-    @SerializedName("url") val image: String?,
+    @SerializedName("URL") val image: String?,
     @SerializedName("nombreTaller") val name: String?,
     @SerializedName("horaEntrada") val startHour: String?,
     @SerializedName("horaSalida") val finishHour: String?,
