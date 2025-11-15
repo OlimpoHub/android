@@ -33,6 +33,7 @@ import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
+import com.app.arcabyolimpo.presentation.screens.product.ProductAddScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
@@ -116,6 +117,8 @@ sealed class Screen(
     }
 
     object ProductBatchRegister : Screen("product_batch_register")
+
+    object ProductAdd : Screen("product/add")
 }
 
 /**
@@ -589,6 +592,17 @@ fun ArcaNavGraph(
             ProductBatchRegisterScreen(
                 onCreated = { navController.popBackStack() },
                 onBackClick = { navController.popBackStack() },
+            )
+        }
+
+        composable(Screen.ProductAdd.route) {
+            ProductAddScreen(
+                onSaveSuccess = {
+                    navController.popBackStack()
+                },
+                onCancel = {
+                    navController.popBackStack()
+                }
             )
         }
     }
