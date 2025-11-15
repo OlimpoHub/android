@@ -35,6 +35,7 @@ import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailSc
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
 import com.app.arcabyolimpo.presentation.screens.product.ProductAddScreen
+import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDeleteTestScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
@@ -120,6 +121,8 @@ sealed class Screen(
     object ProductBatchRegister : Screen("product_batch_register")
 
     object ProductAdd : Screen("product/add")
+
+    object ProductDeleteTest : Screen("test_delete_product")
 }
 
 /**
@@ -606,5 +609,15 @@ fun ArcaNavGraph(
                 }
             )
         }
+
+        composable(Screen.ProductDeleteTest.route) {
+            ProductDeleteTestScreen(
+                onDeleted = {
+                    navController.popBackStack()
+                },
+            )
+        }
+
     }
 }
+
