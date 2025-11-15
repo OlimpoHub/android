@@ -43,7 +43,7 @@ fun WorkshopCard(
     Card(
         modifier =
             Modifier
-                .width(340.dp)
+                .width(345.dp)
                 .height(110.dp)
                 .clickable(onClick = onClick),
 
