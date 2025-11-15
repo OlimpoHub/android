@@ -174,4 +174,5 @@ object AppModule {
     @Provides
     @Singleton
     fun provideProductBatchRepository(api: ArcaApi): ProductBatchRepository = ProductBatchRepositoryImpl(api)
+
 }
