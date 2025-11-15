@@ -19,12 +19,14 @@
 - Added Workshop Card atom.
 - Added screen for view Workshop 
 - Added function for searching workshops by name.
+- Added US to Register Product Batches
 
 ### Fixed
 - ArcaApi get all external collabs
 - Search users
 - Added presentation, data and domain for RegisterSupplyBatch
 - Fix snackbar for register new workshops
+- Fix error of implementation in Input atoms
 
 ## [0.1.0] - 12/11/2025
 

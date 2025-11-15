@@ -28,6 +28,7 @@ import com.app.arcabyolimpo.ui.theme.HighlightInputBlue
 import com.app.arcabyolimpo.ui.theme.HighlightRed
 import com.app.arcabyolimpo.ui.theme.InputBackgroundBlue
 import com.app.arcabyolimpo.ui.theme.InputBackgroundRed
+import com.app.arcabyolimpo.ui.theme.PlaceholderGray
 import com.app.arcabyolimpo.ui.theme.SelectInputBlue
 import com.app.arcabyolimpo.ui.theme.White
 
@@ -36,6 +37,7 @@ import com.app.arcabyolimpo.ui.theme.White
 @Composable
 fun SelectInput(
     label: String = "Selecciona",
+    placeholder: String = "Selecciona una opción",
     selectedOption: String,
     options: List<String>,
     onOptionSelected: (String) -> Unit,
@@ -53,7 +55,7 @@ fun SelectInput(
     ) {
         Text(
             text = label,
-            style = MaterialTheme.typography.bodyMedium,
+            style = Typography.bodyMedium,
             color = White,
         )
 
@@ -70,8 +72,8 @@ fun SelectInput(
                 isError = isError,
                 placeholder = {
                     Text(
-                        text = "Selecciona una opción",
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                        text = placeholder,
+                        color = PlaceholderGray,
                     )
                 },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },

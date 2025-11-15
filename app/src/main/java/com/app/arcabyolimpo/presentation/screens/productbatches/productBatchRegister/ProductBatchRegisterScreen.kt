@@ -65,6 +65,7 @@ fun ProductBatchRegisterScreen(
     viewModel: ProductBatchRegisterViewModel = hiltViewModel(),
 ) {
     val state = viewModel.uiState
+    val products = listOf("p1", "p2", "p3") // Replace with fetchAllProducts
 
     Scaffold(
         containerColor = Background,
@@ -101,11 +102,15 @@ fun ProductBatchRegisterScreen(
         ) {
             Spacer(modifier = Modifier.height(8.dp))
 
+            Row(modifier = Modifier.padding(vertical = 40.dp)) {}
+
             SelectInput(
                 label = "Selecciona el producto",
-                selectedOption = "",
-                options = listOf(),
-                onOptionSelected = {},
+                placeholder = "Producto",
+                selectedOption = state.idProducto,
+                options = products,
+                onOptionSelected = { viewModel.onFieldChange("idProducto", it) },
+                modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
             )
 
             ImageUploadInput(
@@ -116,67 +121,94 @@ fun ProductBatchRegisterScreen(
 
             StandardInput(
                 label = "Precio de venta",
-                value = "",
-                onValueChange = {},
+                value = state.precioVenta,
+                onValueChange = {
+                    viewModel.onFieldChange("precioVenta", it)
+                },
                 placeholder = "0.00",
+                keyboardType = KeyboardType.Decimal,
             )
 
             NumberStepper(
                 label = "Cantidad producida",
-                value = "",
-                onValueChange = {},
-                onIncrement = {},
-                onDecrement = {},
-            )
-
-            NumberStepper(
-                label = "Cantidad vendida",
-                value = "",
-                onValueChange = {},
-                onIncrement = {},
-                onDecrement = {},
+                value = state.cantidadProducida,
+                onValueChange = {
+                    viewModel.onFieldChange("cantidadProducida", it)
+                },
+                onIncrement = {
+                    val newVal = (state.cantidadProducida.toIntOrNull() ?: 0) + 1
+                    viewModel.onFieldChange("cantidadProducida", newVal.toString())
+                },
+                onDecrement = {
+                    val current = state.cantidadProducida.toIntOrNull() ?: 0
+                    if (current > 0) {
+                        viewModel.onFieldChange("cantidadProducida", (current - 1).toString())
+                    }
+                },
             )
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    DateInput(
-                        label = "Fecha de Elaboración",
-                        value = "",
-                        onValueChange = {},
-                        modifier = Modifier.fillMaxWidth(),
+                DateInput(
+                    label = "Fecha de Elaboración",
+                    value = state.fechaRealizacion,
+                    onValueChange = {
+                        viewModel.onFieldChange("fechaRealizacion", it)
+                    },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                )
+                DateInput(
+                    label = "Fecha de Caducidad",
+                    value = state.fechaCaducidad,
+                    onValueChange = {
+                        viewModel.onFieldChange("fechaCaducidad", it)
+                    },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                Column(
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .padding(horizontal = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    CancelButton(
+                        onClick = onBackClick,
                     )
                 }
-
-                Column(modifier = Modifier.weight(1f)) {
-                    DateInput(
-                        label = "Fecha de Caducidad",
-                        value = "",
-                        onValueChange = {},
-                        modifier = Modifier.fillMaxWidth(),
+                Column(
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .padding(horizontal = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    SaveButton(
+                        onClick = {
+                            viewModel.register(onSuccess = onCreated)
+                        },
                     )
                 }
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
-        }
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 16.dp), // Padding
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            CancelButton(
-                onClick = onBackClick,
-                modifier = Modifier.weight(1f),
-            )
-
-            SaveButton(
-                onClick = onCreated,
-            )
         }
     }
 }
@@ -185,7 +217,7 @@ fun ProductBatchRegisterScreen(
 @Composable
 private fun NumberStepper(
     label: String,
-    placeholder: String = "000",
+    placeholder: String = "0",
     value: String,
     onValueChange: (String) -> Unit,
     onIncrement: () -> Unit,
@@ -202,6 +234,7 @@ private fun NumberStepper(
             onValueChange = onValueChange,
             value = value,
             placeholder = placeholder,
+            keyboardType = KeyboardType.Number,
         )
         SquareMinusButton(
             onClick = onDecrement,
