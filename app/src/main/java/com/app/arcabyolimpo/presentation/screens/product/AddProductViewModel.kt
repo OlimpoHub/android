@@ -13,18 +13,35 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel responsible for managing the state and business logic of the 'Add Product' screen.
+ *
+ * It handles loading necessary data (workshops, categories), capturing user input,
+ * validating the data, and triggering the use case to save the new product.
+ *
+ * @property getWorkshopCategoryInfoUseCase Use case to fetch lists for dropdown menus.
+ * @property addProductUseCase Use case to save the new product data to the repository.
+ */
 @HiltViewModel
 class AddProductViewModel @Inject constructor(
     private val getWorkshopCategoryInfoUseCase: GetWorkshopCategoryInfoUseCase,
     private val addProductUseCase: AddProductUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ProductAddUiState())
+
+    /**
+     * Exposes the current [ProductAddUiState] as a read-only StateFlow for the UI to observe.
+     */
     val uiState = _uiState.asStateFlow()
 
     init {
         loadDropDownData()
     }
 
+    /**
+     * Fetches the list of available workshops and categories needed for the dropdown menus.
+     * Updates the [_uiState] with the loaded data or an error message.
+     */
     private fun loadDropDownData() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
@@ -48,6 +65,7 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
+    // --------------------------- Input Handlers ---------------------------
     fun onNameChange(name: String) {
         _uiState.update { it.copy(name = name) }
     }
@@ -69,6 +87,14 @@ class AddProductViewModel @Inject constructor(
     fun onDescriptionChange(description: String) {
         _uiState.update { it.copy(description = description) }
     }
+
+    /**
+     * Handles the click event for the 'Save' button.
+     *
+     * Performs final validation and, if successful, creates a [ProductAdd] object
+     * and calls the [addProductUseCase] to save the product.
+     * Updates the UI state with [isLoading], [success], or [error] status.
+     */
     fun onSaveClick() {
         val state = _uiState.value
 

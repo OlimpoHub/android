@@ -40,14 +40,17 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.StatusSelector
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
 
-/** ---------------------------------------------------------------------------------------------- *
- * SupplyAddScreen -> view where all the inputs, buttons and selects are shown with the information
- * collected by the view model, handles different states and errors.
+/**
+ * ProductAddScreen -> The main composable view for adding a new product.
  *
- * @param viewModel: SupplyAddViewModel -> vm for the view in charge of placing the data
- * @param onSaveSuccess: () -> Unit -> function when the supply is added
- * @param onCancel: () -> Unit -> function when the user cancels the operation
- * ---------------------------------------------------------------------------------------------- */
+ * It displays all necessary input fields driven by the [AddProductViewModel] state.
+ * It handles side effects like navigation and showing [Toast] messages based on the
+ * success or error status from the UI state.
+ *
+ * @param viewModel The Hilt-injected [AddProductViewModel] providing UI state and handling input events.
+ * @param onSaveSuccess Lambda function executed when the product is successfully added.
+ * @param onCancel Lambda function executed when the user cancels the operation.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductAddScreen(

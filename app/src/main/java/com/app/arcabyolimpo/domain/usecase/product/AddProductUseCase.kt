@@ -3,11 +3,13 @@ package com.app.arcabyolimpo.domain.usecase.product
 import com.app.arcabyolimpo.domain.model.product.ProductAdd
 import com.app.arcabyolimpo.domain.repository.product.ProductRepository
 import javax.inject.Inject
-/** ---------------------------------------------------------------------------------------------- *
- * AddSupplyUseCase -> Use case that receives the Supply and its image to send it to the db
+
+/**
+ * Use case responsible for managing the logic of adding a new product.
+ * It validates the input data and delegates the storage operation to the [ProductRepository].
  *
- * @param repository: SupplyRepository -> repository where the api calls is found
- * ---------------------------------------------------------------------------------------------- */
+ * @property repository The repository that handles the actual data operation.
+ */
 class AddProductUseCase @Inject constructor(
     private val repository: ProductRepository
 ) {

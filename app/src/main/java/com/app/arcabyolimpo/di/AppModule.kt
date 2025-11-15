@@ -123,6 +123,12 @@ object AppModule {
         @ApplicationContext context: Context,
     ): SupplyRepository = SupplyRepositoryImpl(api, context)
 
+    /**
+     * Provides the [ProductRepository] implementation.
+     *
+     * @param api The [ArcaApi] instance used to perform network requests.
+     * @return A singleton instance of [ProductRepositoryImpl].
+     */
     @Provides
     @Singleton
     fun provideProductRepository(

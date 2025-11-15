@@ -3,10 +3,13 @@ package com.app.arcabyolimpo.presentation.screens.product
 import android.net.Uri
 import com.app.arcabyolimpo.domain.model.supplies.CategoryInfo
 import com.app.arcabyolimpo.domain.model.supplies.WorkshopInfo
-/** ---------------------------------------------------------------------------------------------- *
- * SuppliesAddUiState -> Data class with states that the view can have, such as the loading state
- * or an error had happen.
- * ---------------------------------------------------------------------------------------------- */
+
+/**
+ * ProductAddUiState -> Data class that holds the current state of the UI for the
+ * product addition screen.
+ *
+ * It contains all the data fields that the user can add as well as UI-specific states.
+ */
 data class ProductAddUiState(
     val workshops: List<WorkshopInfo> = emptyList(),
     val categories: List<CategoryInfo> = emptyList(),
