@@ -108,12 +108,6 @@ fun ProductBatchRegisterScreen(
                 onOptionSelected = {},
             )
 
-            ImageUploadInput(
-                label = "Imagen del producto",
-                value = null,
-                onValueChange = {},
-            )
-
             StandardInput(
                 label = "Precio de venta",
                 value = "",
