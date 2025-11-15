@@ -1,125 +1,211 @@
 package com.app.arcabyolimpo.presentation.screens.beneficiary
-/*
-Acalaracion de Ricardo: Muchas de las cosas que se estan haciendo aqui no estan incluyendo muchos de
-los atomos creados, pero el motivo es que eso no me toca a mi, yo cree la screen para que se pudiese
-trabajar en mi propia HS, como tal arreglar esta screen va al que le toque la historia de consultar
-beneficiarios.
- */
+
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import com.app.arcabyolimpo.R
-import com.app.arcabyolimpo.presentation.theme.Typography
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.app.arcabyolimpo.presentation.ui.components.molecules.BeneficiaryCard
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.font.FontWeight
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import com.app.arcabyolimpo.domain.model.beneficiaries.Beneficiary
+import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
+import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
+import com.app.arcabyolimpo.ui.theme.Background
+import com.app.arcabyolimpo.presentation.navigation.Screen
+import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.FilterIcon
+import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
+import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SearchInput
 
+/**
+ * This composable acts as the main screen, inecting the ViewModel
+ * and collecting the UI state to pass to the stateless UI.
+ */
+@Composable
+fun BeneficiaryListScreen(
+    onBeneficiaryClick: (String) -> Unit,
+    onFilterClick: () -> Unit,
+    onNotificationClick: () -> Unit,
+    viewModel: BeneficiaryListViewModel = hiltViewModel()
+) {
+    val state by viewModel.uiState.collectAsState()
 
-data class BeneficiaryDemo(
-    val id: String,
-    val name: String
-)
+    BeneficiaryList(
+        state = state,
+        onSearchTextChange = viewModel::onSearchTextChange,
+        onBeneficiaryClick = onBeneficiaryClick,
+        onFilterClick = onFilterClick,
+        onNotificationClick = onNotificationClick
+    )
+}
 
+/**
+ * This is the stateless UI composable for the Beneficiary List.
+ * It only receives state and hoists events.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BeneficiaryList(
-    onBeneficiaryClick: (String) -> Unit, // Pasa el ID del beneficiario
+    state: BeneficiaryListUiState,
+    onSearchTextChange: (String) -> Unit,
+    onBeneficiaryClick: (String) -> Unit,
     onFilterClick: () -> Unit,
     onNotificationClick: () -> Unit
 ) {
-    // Datos de ejemplo (se remplaza con datos del ViewModel)
-    val beneficiaries = listOf(
-        BeneficiaryDemo("0f12b075-bd1d-11f0-b6b8-020161fa237d", "John Smith 1"),
-        BeneficiaryDemo("127fd0f3-bd1e-11f0-b6b8-020161fa237d", "John Smith 2"),
-        BeneficiaryDemo("73aab7d7-bd1a-11f0-b6b8-020161fa237d", "John Smith 3"),
-        BeneficiaryDemo("ad469db9-bd1b-11f0-b6b8-020161fa237d", "John Smith 4")
-    )
-    var searchText by remember { mutableStateOf("") }
-
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Beneficiarios", style = Typography.headlineMedium.copy()) },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent,
-                    titleContentColor = Color.White,
-                    actionIconContentColor = Color.White
-                ),
-                actions = {
-                    IconButton(onClick = onNotificationClick) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_notification_icon),
-                            contentDescription = "Notificaciones",
-                            tint = Color.White.copy()
-                        )
-                    }
-                    IconButton(onClick = onFilterClick) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_filter_icon),
-                            contentDescription = "Filtrar",
-                            tint = Color.White.copy()
-                        )
-                    }
-                }
-            )
-        },
-        containerColor = Color(0xFF1C1B1F)
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp)
-                .fillMaxSize()
-        ) {
-            TextField(
-                value = searchText,
-                onValueChange = { searchText = it },
-                label = { Text("Buscar") },
-                leadingIcon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_search_icon),
-                        contentDescription = null
+    ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Scaffold(
+                containerColor = Background,
+                topBar = {
+                    TopAppBar(
+                        title = {
+                            Text(
+                                text = "Beneficiarios",
+                                style = MaterialTheme.typography.headlineLarge,
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold
+                            )
+                        },
+                        navigationIcon = {
+                            IconButton(onClick = { /* TODO: agregar ruta*/}) {
+                                Icon(
+                                    imageVector = Icons.Default.ArrowBack,
+                                    contentDescription = "Regresar",
+                                    tint = Color.White
+                                )
+                            }
+                        },
+                        actions = {
+                            Box(modifier = Modifier.padding(end = 28.dp)) {
+                                NotificationIcon()
+                            }
+                        }
                     )
                 },
-                modifier = Modifier.fillMaxWidth()
-                // Aquí se aplican estilo de atoms
-            )
-
-            // Cuadricula de Beneficiarios
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                contentPadding = PaddingValues(vertical = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(beneficiaries.size) { index ->
-                    val beneficiary = beneficiaries[index]
-                    BeneficiaryCard(
-                        name = beneficiary.name,
-                        onClick = { onBeneficiaryClick(beneficiary.id) }
+                floatingActionButton = {
+                    AddButton(
+                        onClick = { /* TODO: agregar beneficiario */ }
                     )
+                },
+                bottomBar = {
+                    Box(modifier = Modifier.padding(bottom = 8.dp)) {
+                        NavBar()
+                    }
+                }
+            ) { padding ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(
+                            top = padding.calculateTopPadding(),
+                            bottom = padding.calculateBottomPadding()
+                        )
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                start = 30.dp,
+                                end = 30.dp,
+                                bottom = 12.dp
+                            ),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        SearchInput(
+                            value = "",
+                            onValueChange = {},
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 20.dp)
+                        )
+
+                        FilterIcon(
+                            modifier = Modifier
+                                .padding(start = 16.dp)
+                        )
+                    }
+
+                    when {
+                        state.isLoading -> {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 20.dp)
+                                    .wrapContentWidth(Alignment.CenterHorizontally)
+                            )
+
+                        }
+
+                        state.error != null -> {
+                            Text(
+                                text = state.error,
+                                color = Color.Red,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentWidth(Alignment.CenterHorizontally)
+                            )
+
+                        }
+
+                        else -> {
+                            LazyVerticalGrid(
+                                columns = GridCells.Fixed(2),
+                                contentPadding = PaddingValues(vertical = 16.dp),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .weight(1f)
+                            ) {
+                                items(
+                                    items = state.beneficiaries,
+                                    key = { beneficiary -> beneficiary.id }
+                                ) { beneficiary ->
+                                    BeneficiaryCard(
+                                        name = beneficiary.name,
+                                        onClick = { onBeneficiaryClick(beneficiary.id) },
+                                        cardModifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 8.dp)
+                                            .height(160.dp),
+                                        contentPadding = PaddingValues(
+                                            vertical = 20.dp,
+                                            horizontal = 40.dp
+                                        )
+                                    )
+                                }
+
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -129,8 +215,22 @@ fun BeneficiaryList(
 @Preview(showBackground = true, backgroundColor = 0xFF1C1B1F)
 @Composable
 fun BeneficiaryListPreview() {
+    val navController = androidx.navigation.compose.rememberNavController()
+
+    // Mock state
+    val previewState = BeneficiaryListUiState(
+        beneficiaries = listOf(
+            Beneficiary("1", "John Smith 1", "", "", "", "", "", "", "", "", 1),
+            Beneficiary("2", "John Smith 2", "", "", "", "", "", "", "", "", 1),
+            Beneficiary("3", "John Smith 3", "", "", "", "", "", "", "", "", 1),
+            Beneficiary("4", "John Smith 4", "", "", "", "", "", "", "", "", 1)
+        )
+    )
+
     ArcaByOlimpoTheme {
         BeneficiaryList(
+            state = previewState,
+            onSearchTextChange = {},
             onBeneficiaryClick = {},
             onFilterClick = {},
             onNotificationClick = {}

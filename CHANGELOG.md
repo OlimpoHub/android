@@ -1,3 +1,12 @@
+## [0.1.0] - 14/11/2025
+
+### Fixed
+ - Information fetched from the backend for consultBeneficiaries
+
+### Added
+ - Added logic for consultBeneficiaries
+ - Added on detailBeneficiary so that it receives a URL as image from the backend and puts it on display
+
 ## [0.1.0] - 13/11/2025
 
 ### Added

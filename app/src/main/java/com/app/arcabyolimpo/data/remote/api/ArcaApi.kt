@@ -149,7 +149,7 @@ interface ArcaApi {
     ): AddNewWorkshopDto
 
     // Beneficiary -------------
-    @GET("beneficiary")
+    @GET("beneficiary/list")
     suspend fun getBeneficiariesList(): List<BeneficiariesListDto>
 
     @GET("beneficiary/{id}")
