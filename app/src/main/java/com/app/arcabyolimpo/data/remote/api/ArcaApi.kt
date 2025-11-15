@@ -13,6 +13,7 @@ import com.app.arcabyolimpo.data.remote.dto.password.RecoverPasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
+import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteResponseDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
@@ -129,8 +130,14 @@ interface ArcaApi {
     ): DeleteResponseDto
 
     // Workshop ---------------------------
+
     @GET("workshop")
     suspend fun getWorkshopsList(): List<WorkshopsListDto>
+
+    @GET("workshop/search")
+    suspend fun searchWorkshops(
+        @Query("nameWorkshop") name: String
+    ): List<WorkshopDto>
 
     @GET("workshop/{id}")
     suspend fun getWorkshop(
@@ -173,5 +180,30 @@ interface ArcaApi {
         @Part("idCategoria") idCategory: RequestBody,
         @Part("status") status: RequestBody,
         @Part imagenInsumo: MultipartBody.Part?
+    )
+
+    @GET("productBatch/")
+    suspend fun getProductBatches(): List<ProductBatchDto>
+
+    @GET("productBatch/{id}")
+    suspend fun getProductBatch(
+        @Path("id") id: String,
+    ): ProductBatchDto
+
+    @POST("productBatch/")
+    suspend fun addProductBatch(
+        @Body batch: ProductBatchDto,
+    )
+
+    @Multipart
+    @POST("product/add")
+    suspend fun addProduct(
+        @Part("idTaller") idWorkshop: RequestBody,
+        @Part("Nombre") name: RequestBody,
+        @Part("PrecioUnitario") unitaryPrice: RequestBody,
+        @Part("idCategoria") idCategory: RequestBody,
+        @Part("Descripcion") description: RequestBody,
+        @Part("Disponible") status: RequestBody,
+        @Part image: MultipartBody.Part?
     )
 }

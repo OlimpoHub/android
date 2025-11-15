@@ -6,7 +6,9 @@ import com.google.gson.annotations.SerializedName
  * DTO representing detailed information of a beneficiary received from the API.
  *
  * @param id The unique identifier of the beneficiary.
- * @param name The name of the new beneficiary.
+ * @param firstName The first name of the beneficiary.
+ * @param paternalName The paternal name (surname) of the beneficiary.
+ * @param maternalName The maternal name (surname) of the beneficiary.
  * @param birthdate The birthdate of the beneficiary.
  * @param emergencyNumber The emergency contact number of the beneficiary.
  * @param emergencyName The name of the beneficiary's emergency contact.
@@ -23,7 +25,7 @@ data class BeneficiaryDto (
     @SerializedName("apellidoPaterno") val paternalName: String?,
     @SerializedName("apellidoMaterno") val maternalName: String?,
     @SerializedName("fechaNacimiento") val birthdate: String?,
-    @SerializedName("numeroContactoEmergencia") val emergencyNumber: String?,
+    @SerializedName("numeroEmergencia") val emergencyNumber: String?,
     @SerializedName("nombreContactoEmergencia") val emergencyName: String?,
     @SerializedName("relacionContactoEmergencia") val emergencyRelation: String?,
     @SerializedName("descripcion") val details: String?,
