@@ -188,4 +188,16 @@ interface ArcaApi {
     suspend fun addProductBatch(
         @Body batch: ProductBatchDto,
     )
+
+    @Multipart
+    @POST("product/add")
+    suspend fun addProduct(
+        @Part("idTaller") idWorkshop: RequestBody,
+        @Part("Nombre") name: RequestBody,
+        @Part("PrecioUnitario") unitaryPrice: RequestBody,
+        @Part("idCategoria") idCategory: RequestBody,
+        @Part("Descripcion") description: RequestBody,
+        @Part("Disponible") status: RequestBody,
+        @Part image: MultipartBody.Part?
+    )
 }

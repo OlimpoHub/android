@@ -10,6 +10,7 @@
 ## [0.1.0] - 13/11/2025
 
 ### Added
+- RegisterProduct screen implementation.
 - Added Workshop Card atom.
 - Added screen for view Workshop 
 - Added function for searching workshops by name.
