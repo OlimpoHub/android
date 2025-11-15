@@ -5,6 +5,7 @@
 
 ### Added
  - Added logic for consultBeneficiaries
+ - Added on detailBeneficiary so that it receives a URL as image from the backend and puts it on display
 
 ## [0.1.0] - 13/11/2025
 

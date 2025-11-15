@@ -1,5 +1,6 @@
 package com.app.arcabyolimpo.presentation.screens.beneficiary
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,7 +10,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,12 +33,15 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.rememberAsyncImagePainter
 import com.app.arcabyolimpo.R
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.DeleteButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ModifyButton
@@ -158,18 +164,6 @@ fun BeneficiaryDetailContent(
                         .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // When the proper icon for images is in atoms, implement it here
-                    /*
-                    Image(
-                        painter = painterResource(id = R.drawable.placeholder),
-                        contentDescription = "Foto de $beneficiaryName",
-                        modifier = Modifier
-                            .size(150.dp)
-                            .clip(RoundedCornerShape(16.dp)),
-                        contentScale = ContentScale.Crop
-                    )
-                    */
-
                     Spacer(modifier = Modifier.height(24.dp))
 
                     Row(
@@ -180,6 +174,18 @@ fun BeneficiaryDetailContent(
                             modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
+                            Image(
+                                painter = rememberAsyncImagePainter(
+                                    model = beneficiary.image,
+                                    placeholder = painterResource(id = R.drawable.ic_beneficiary_icon),
+                                    error = painterResource(id = R.drawable.img_arca_logo)
+                                ),
+                                contentDescription = "Foto de $beneficiary.name",
+                                modifier = Modifier
+                                    .size(150.dp)
+                                    .clip(RoundedCornerShape(16.dp)),
+                                contentScale = ContentScale.Crop
+                            )
                             // APPLY .orEmpty() to convert null in ""
                             DetailTextRow(label = "Fecha de nacimiento:", value = beneficiary.birthdate.orEmpty())
                             DetailTextRow(label = "Fecha de ingreso:", value = beneficiary.entryDate.orEmpty())
