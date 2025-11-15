@@ -139,40 +139,40 @@ class SupplyRepositoryImpl
             val result = api.deleteOneSupply(body)
             Log.d("Validacion", "Si llego ")
         }
-
-        override suspend fun getWorkshopCategoryList(): Result<WorkshopCategoryList> =
-            try {
+        /** -------------------------------------------------------------------------------------- *
+         * getWorkshopCategoryList -> calls the API to fetch every workshop and category id's and
+         * names.
+         * -------------------------------------------------------------------------------------- */
+        override suspend fun getWorkshopCategoryList(): Result<WorkshopCategoryList> {
+            return try {
                 val workshopCategoryListDto = api.getWorkshopCategoryList()
                 Result.success(workshopCategoryListDto.toDomain())
             } catch (e: Exception) {
                 Result.failure(e)
             }
+        }
+        /** -------------------------------------------------------------------------------------- *
+         * addSupply -> calls the API to add a new Supply and handles the image to rename it
+         * -------------------------------------------------------------------------------------- */
+        override suspend fun addSupply(supply: SupplyAdd, image: Uri?): Result<Unit> {
+            return try {
+                val imagePart = image?.let {
+                    val input = context.contentResolver.openInputStream(it)
+                    val bytes = input?.readBytes()
+                    input?.close()
 
-        override suspend fun addSupply(
-            supply: SupplyAdd,
-            image: Uri?,
-        ): Result<Unit> =
-            try {
-                val imagePart =
-                    image?.let {
-                        val input = context.contentResolver.openInputStream(it)
-                        val bytes = input?.readBytes()
-                        input?.close()
+                    if (bytes != null) {
+                        val requestFile = bytes.toRequestBody(
+                            context.contentResolver.getType(it)?.toMediaTypeOrNull()
+                        )
+                        MultipartBody.Part.createFormData(
+                            "imagenInsumo",
+                            "image.jpg",
+                            requestFile
+                        )
 
-                        if (bytes != null) {
-                            val requestFile =
-                                bytes.toRequestBody(
-                                    context.contentResolver.getType(it)?.toMediaTypeOrNull(),
-                                )
-                            MultipartBody.Part.createFormData(
-                                "SupplyImage",
-                                "image.jpg",
-                                requestFile,
-                            )
-                        } else {
-                            null
-                        }
-                    }
+                    } else null
+                }
 
                 val idWorkshop = supply.idWorkshop.toRequestBody("text/plain".toMediaTypeOrNull())
                 val name = supply.name.toRequestBody("text/plain".toMediaTypeOrNull())
@@ -186,7 +186,7 @@ class SupplyRepositoryImpl
                     measureUnit = measureUnit,
                     idCategory = idCategory,
                     status = status,
-                    image = imagePart,
+                    imagenInsumo = imagePart
                 )
                 Result.success(Unit)
             } catch (e: Exception) {

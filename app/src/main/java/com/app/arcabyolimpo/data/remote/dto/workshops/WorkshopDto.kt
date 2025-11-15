@@ -18,14 +18,14 @@ import com.google.gson.annotations.SerializedName
  * @param date The day when the workshop is going to take place.
  */
 data class WorkshopDto(
-    @SerializedName("idTaller") val id: String,
-    @SerializedName("idCapacitacion") val idTraining: String,
-    @SerializedName("idUsuario") val idUser: String,
-    @SerializedName("url") val image: String,
-    @SerializedName("nombreTaller") val name: String,
-    @SerializedName("horaEntrada") val startHour: String,
-    @SerializedName("horaSalida") val finishHour: String,
+    @SerializedName("idTaller") val id: String?,
+    @SerializedName("idCapacitacion") val idTraining: String?,
+    @SerializedName("idUsuario") val idUser: String?,
+    @SerializedName("URL") val image: String?,
+    @SerializedName("nombreTaller") val name: String?,
+    @SerializedName("horaEntrada") val startHour: String?,
+    @SerializedName("horaSalida") val finishHour: String?,
     @SerializedName("estatus") val status: Int,
-    @SerializedName("descripcion") val description: String,
-    @SerializedName("fecha") val date: String
+    @SerializedName("descripcion") val description: String?,
+    @SerializedName("fecha") val date: String?
 )

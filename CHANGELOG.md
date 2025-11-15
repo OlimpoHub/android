@@ -1,15 +1,33 @@
+## [0.1.0] - 14/11/2025
+
+### Fixed
+ - Information fetched from the backend for consultBeneficiaries
+
+### Added
+ - Added logic for consultBeneficiaries
+ - Added on detailBeneficiary so that it receives a URL as image from the backend and puts it on display
+
 ## [0.1.0] - 13/11/2025
+
+### Added
+- RegisterProduct screen implementation.
+- Added Workshop Card atom.
+- Added screen for view Workshop 
+- Added function for searching workshops by name.
 
 ### Fixed
 - ArcaApi get all external collabs
 - Search users
 - Added presentation, data and domain for RegisterSupplyBatch
+- Fix snackbar for register new workshops
 
 ## [0.1.0] - 12/11/2025
 
 ### Added
+- Consult Product Batches + Register ViewModel and Screen
 - DeleteOneSupply Button Logic
 - Filter and search bar for users
+- US to add a new supply with an image
 - Included internal collaborators in the area of users
 
 ### Updated

@@ -268,21 +268,29 @@ fun AddNewWorkshopScreen(
 
                     LaunchedEffect(uiState.isSuccess) {
                         if (uiState.isSuccess) {
-                            scope.launch {
-                                snackbarHostState.showSnackbar("Taller registrado correctamente")
-                            }
-
                             viewModel.resetForm()
+                            navController.previousBackStackEntry
+                                ?.savedStateHandle
+                                ?.set("snackbarMessage", "Taller registrado correctamente")
+                            navController.previousBackStackEntry
+                                ?.savedStateHandle
+                                ?.set("snackbarSuccess", true)
+                            navController.popBackStack()
                         }
                     }
 
                     LaunchedEffect(uiState.error) {
-                        if (uiState.error != null) {
-                            scope.launch {
-                                snackbarHostState.showSnackbar("Error: ${uiState.error}")
-                            }
+                        uiState.error?.let { error ->
+                            navController.previousBackStackEntry
+                                ?.savedStateHandle
+                                ?.set("snackbarMessage", "Error: $error")
+                            navController.previousBackStackEntry
+                                ?.savedStateHandle
+                                ?.set("snackbarSuccess", false)
+                            navController.popBackStack()
                         }
                     }
+
 
                     Spacer(modifier = Modifier.height(80.dp))
                 }

@@ -4,9 +4,7 @@ import com.app.arcabyolimpo.data.mapper.supplies.toDomain
 import com.app.arcabyolimpo.data.mapper.workshops.toDomain
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
-import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.domain.model.workshops.Workshop
-import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
 import com.app.arcabyolimpo.domain.repository.workshops.WorkshopRepository
 
 import javax.inject.Inject
@@ -23,68 +21,84 @@ class WorkshopRepositoryImpl
         private val api: ArcaApi
     ) : WorkshopRepository {
 
-        /**
-         * Retrieves a list of all available supplies from the API.
-         *
-         * Each item in the response is converted into a [Workshop] domain model.
-         * Since this endpoint provides limited data, some fields like
-         * [Workshop.status] or [Workshop.description] are initialized as empty.
-         *
-         * @return A list of [Workshop] objects representing the available supplies.
-         */
-        override suspend fun getWorkshopsList(): List<Workshop> {
-            val response = api.getWorkshopsList()
-            return response.map { dto ->
-                Workshop(
-                    id = dto.id,
-                    idTraining = dto.idTraining,
-                    idUser = dto.idUser,
-                    nameWorkshop = dto.name,
-                    url = dto.image,
-                    status = 0,
-                    description = "",
-                    startHour = "",
-                    finishHour = "",
-                    date = ""
-                )
-            }
-        }
-
-        /**
-         * Retrieves detailed information for a specific workshop by its [id].
-         *
-         * This function calls the API to obtain the corresponding [WorkshopDto]
-         * and converts it into a [Workshop] domain model using the [toDomain] mapper.
-         *
-         * @param id The unique identifier of the workshop to retrieve.
-         * @return A [Workshop] object containing detailed workshop information.
-         */
-        override suspend fun getWorkshopsById(id: String): Workshop {
-            return api.getWorkshop(id).toDomain()
-        }
-
-        /**
-         * Post a list of all the data needed for creating a new workshop.
-         *
-         * Each item in the response is converted into a [Workshop] domain model.
-         * All the data is established to have al the para meters of [Workshop]
-         *
-         * @return A new [Workshop] object representing a new generation of a workshop.
-         */
-        override suspend fun addWorkshop(newWorkshop: WorkshopDto): Workshop {
-            val response = api.addWorkshop(newWorkshop)
-            return Workshop(
-                id = newWorkshop.id,
-                idTraining = newWorkshop.idTraining,
-                idUser = newWorkshop.idUser,
-                nameWorkshop = newWorkshop.name,
-                url = newWorkshop.image,
-                status = newWorkshop.status,
-                description = newWorkshop.description,
-                startHour = newWorkshop.startHour,
-                finishHour = newWorkshop.finishHour,
-                date = newWorkshop.date
+    /**
+     * Retrieves a list of all available supplies from the API.
+     *
+     * Each item in the response is converted into a [Workshop] domain model.
+     * Since this endpoint provides limited data, some fields like
+     * [Workshop.status] or [Workshop.description] are initialized as empty.
+     *
+     * @return A list of [Workshop] objects representing the available supplies.
+     */
+    override suspend fun getWorkshopsList(): List<Workshop> {
+        val response = api.getWorkshopsList()
+        return response.map { dto ->
+            Workshop(
+                id = dto.id,
+                idTraining = dto.idTraining,
+                idUser = dto.idUser,
+                nameWorkshop = dto.name,
+                url = dto.image,
+                status = 0,
+                description = "",
+                startHour = "",
+                finishHour = "",
+                date = ""
             )
         }
+    }
+
+    /**
+     * Retrieves detailed information for a specific workshop by its [id].
+     *
+     * This function calls the API to obtain the corresponding [WorkshopDto]
+     * and converts it into a [Workshop] domain model using the [toDomain] mapper.
+     *
+     * @param id The unique identifier of the workshop to retrieve.
+     * @return A [Workshop] object containing detailed workshop information.
+     */
+    override suspend fun getWorkshopsById(id: String): Workshop {
+        val response = api.getWorkshop(id)
+        println("Workshop crudo desde API: $response")
+        return response.toDomain()
+    }
+
+    /**
+     * Post a list of all the data needed for creating a new workshop.
+     *
+     * Each item in the response is converted into a [Workshop] domain model.
+     * All the data is established to have al the para meters of [Workshop]
+     *
+     * @return A new [Workshop] object representing a new generation of a workshop.
+     */
+    override suspend fun addWorkshop(newWorkshop: WorkshopDto): Workshop {
+        val response = api.addWorkshop(newWorkshop)
+        return Workshop(
+            id = newWorkshop.id,
+            idTraining = newWorkshop.idTraining,
+            idUser = newWorkshop.idUser,
+            nameWorkshop = newWorkshop.name,
+            url = newWorkshop.image,
+            status = newWorkshop.status,
+            description = newWorkshop.description,
+            startHour = newWorkshop.startHour,
+            finishHour = newWorkshop.finishHour,
+            date = newWorkshop.date
+        )
+    }
+
+    /**
+     * Retrieves the information for a specific workshop by its [name].
+     *
+     * This function calls the API to obtain the corresponding [WorkshopDto]
+     * and converts it into a [Workshop] domain model using the [toDomain] mapper.
+     *
+     * @param name The name of the workshop to retrieve.
+     * @return A [Workshop] object containing detailed workshop information.
+     */
+    override suspend fun searchWorkshop(name: String): List<Workshop> {
+        val response = api.searchWorkshops(name)
+        return response.map { it.toDomain() }
+    }
 
 }

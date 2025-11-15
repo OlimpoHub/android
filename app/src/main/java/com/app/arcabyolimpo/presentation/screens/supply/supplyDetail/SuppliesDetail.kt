@@ -35,7 +35,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.app.arcabyolimpo.presentation.common.components.ErrorView
 import com.app.arcabyolimpo.presentation.common.components.LoadingShimmer
-import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.components.SupplyDetailContent
+import com.app.arcabyolimpo.presentation.ui.components.organisms.SupplyDetailContent
 import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.SnackbarVisualsWithError

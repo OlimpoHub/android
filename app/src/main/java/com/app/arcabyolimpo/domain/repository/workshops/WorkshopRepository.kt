@@ -11,4 +11,8 @@ interface WorkshopRepository {
 
     suspend fun addWorkshop(newWorkshop: WorkshopDto): Workshop
 
+    suspend fun searchWorkshop(name: String): List<Workshop>
+
+    companion object
+
 }
