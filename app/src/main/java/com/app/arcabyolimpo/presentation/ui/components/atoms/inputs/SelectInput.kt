@@ -54,7 +54,7 @@ fun SelectInput(
         Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface,
+            color = White,
         )
 
         ExposedDropdownMenuBox(

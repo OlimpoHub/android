@@ -23,6 +23,7 @@
 ### Fixed
 - ArcaApi get all external collabs
 - Search users
+- Added presentation, data and domain for RegisterSupplyBatch
 - Fix snackbar for register new workshops
 
 ## [0.1.0] - 12/11/2025
