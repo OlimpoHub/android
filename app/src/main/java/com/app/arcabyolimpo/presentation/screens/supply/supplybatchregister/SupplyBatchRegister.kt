@@ -50,28 +50,64 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardInpu
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.SnackbarVisualsWithError
+import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.DateInput
 import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun SupplyBatchRegisterScreen(
+    supplyId: String,
     onRegisterClick: () -> Unit,
     onBackClick: () -> Unit,
     viewModel: SupplyBatchRegisterViewModel = hiltViewModel(),
 ) {
     // Use lifecycle-aware state collection (same pattern as SuppliesListScreen)
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
+    LaunchedEffect(supplyId) {
+        if (supplyId.isNotEmpty()) {
+            viewModel.onSelectSupply(supplyId)
+        }
+    }
+    LaunchedEffect(state.registerSuccess) {
+        if (state.registerSuccess) {
+            scope.launch {
+                snackbarHostState.showSnackbar(
+                    SnackbarVisualsWithError(
+                        message = "Lote registrado correctamente",
+                        isError = false,
+                    ),
+                )
+            }
+        }
+    }
     // Match the outer structure/style of SuppliesListScreen: Scaffold with TopAppBar
     Scaffold(
         containerColor = Background,
+        snackbarHost = {
+            SnackbarHost(snackbarHostState) { data ->
+                Snackbarcustom(
+                    data.visuals.message.toString(),
+                    modifier = Modifier,
+                    ifSucces = true,
+                )
+            }
+        },
         topBar = {
             TopAppBar(
                 title = {

@@ -86,7 +86,9 @@ sealed class Screen(
 
     object BeneficiaryList : Screen("beneficiary_list")
 
-    object RegisterBatchSupply : Screen("register-batch-supply")
+    object RegisterBatchSupply : Screen("register-batch-supply/{supplyId}") {
+        fun createRoute(supplyId: String) = "register-batch-supply/$supplyId"
+    }
 
     object BeneficiaryDetail : Screen("beneficiary_detail/{beneficiaryId}") {
         fun createRoute(beneficiaryId: String) = "beneficiary_detail/$beneficiaryId"
@@ -427,8 +429,14 @@ fun ArcaNavGraph(
             )
         }
 
-        composable(Screen.RegisterBatchSupply.route) {
+        composable(
+            Screen.RegisterBatchSupply.route,
+            arguments = listOf(navArgument("supplyId") { type = NavType.StringType }),
+        ) { backStackEntry ->
+            val supplyId = backStackEntry.arguments?.getString("supplyId") ?: ""
+
             SupplyBatchRegisterScreen(
+                supplyId = supplyId,
                 onRegisterClick = {
                     navController.popBackStack()
                 },
@@ -446,7 +454,7 @@ fun ArcaNavGraph(
                 idInsumo = idSupply ?: "",
                 onBackClick = { navController.popBackStack() },
                 onClickAddSupplyBatch = {
-                    navController.navigate(Screen.RegisterBatchSupply.route)
+                    navController.navigate(Screen.RegisterBatchSupply.createRoute(idSupply ?: ""))
                 },
                 onClickDelete = {
                     // TODO: Add when delete a supply is ready
