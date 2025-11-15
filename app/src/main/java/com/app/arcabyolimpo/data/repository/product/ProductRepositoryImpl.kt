@@ -10,6 +10,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.HttpException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -77,5 +78,18 @@ class ProductRepositoryImpl @Inject constructor(
             Result.failure(e)
         }
 
+    }
+    /**
+     * deleteProduct.
+     * Deletes a product by its id by calling the API.
+     *
+     * @param id The id of the product to delete.
+     * @throws HttpException if the response is not successful.
+     */
+    override suspend fun deleteProduct(id: String) {
+        val response = api.deleteProduct(id)
+        if (!response.isSuccessful) {
+            throw HttpException(response)
+        }
     }
 }

@@ -1,3 +1,8 @@
+## [0.1.0] - 15/11/2025
+
+### Added
+- Added function to the delete products button
+
 ## [0.1.0] - 13/11/2025
 
 ### Added

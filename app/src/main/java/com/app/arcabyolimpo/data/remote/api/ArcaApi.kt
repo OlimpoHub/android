@@ -39,6 +39,7 @@ import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
+
 /**
  * Defines the remote API endpoints.
  *
@@ -188,6 +189,7 @@ interface ArcaApi {
     suspend fun addProductBatch(
         @Body batch: ProductBatchDto,
     )
+    // Products --------------------------
 
     @Multipart
     @POST("product/add")
@@ -200,4 +202,10 @@ interface ArcaApi {
         @Part("Disponible") status: RequestBody,
         @Part image: MultipartBody.Part?
     )
+
+    @DELETE("product/{idProduct}")
+    suspend fun deleteProduct(
+        @Path("idProduct") idProduct: String,
+    ): Response<Unit>
+
 }
