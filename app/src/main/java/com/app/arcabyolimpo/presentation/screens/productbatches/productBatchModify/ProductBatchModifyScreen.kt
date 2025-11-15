@@ -22,13 +22,16 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.CancelButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ModifyButton
+import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SaveButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.DateInput
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SelectInput
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardInput
@@ -40,12 +43,13 @@ import com.app.arcabyolimpo.ui.theme.White
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun ProductBatchModify(
+fun ProductBatchModifyScreen(
     onBackClick: () -> Unit,
     onModified: () -> Unit,
     viewModel: ProductBatchModifyViewModel = hiltViewModel(),
 ) {
     // val state = viewModel.uiState
+    // val products = listOf("p1", "p2", "p3")
 
     Scaffold(
         containerColor = Background,
@@ -91,9 +95,11 @@ fun ProductBatchModify(
 
             SelectInput(
                 label = "Selecciona el producto",
+                placeholder = "Producto",
                 selectedOption = "",
                 options = listOf(),
                 onOptionSelected = {},
+                modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
             )
 
             StandardInput(
@@ -101,6 +107,7 @@ fun ProductBatchModify(
                 value = "",
                 onValueChange = {},
                 placeholder = "0.00",
+                keyboardType = KeyboardType.Decimal,
             )
 
             NumberStepper(
@@ -123,26 +130,28 @@ fun ProductBatchModify(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    DateInput(
-                        label = "Fecha de Elaboración",
-                        value = "",
-                        onValueChange = {},
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                }
+                DateInput(
+                    label = "Fecha de Elaboración",
+                    value = "",
+                    onValueChange = {},
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                )
 
-                Column(modifier = Modifier.weight(1f)) {
-                    DateInput(
-                        label = "Fecha de Caducidad",
-                        value = "",
-                        onValueChange = {},
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                }
+                DateInput(
+                    label = "Fecha de Caducidad",
+                    value = "",
+                    onValueChange = {},
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
         }
         Row(
             modifier =
@@ -151,14 +160,28 @@ fun ProductBatchModify(
                     .padding(horizontal = 24.dp, vertical = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            CancelButton(
-                onClick = onBackClick,
-                modifier = Modifier.weight(1f),
-            )
-
-            ModifyButton(
-                onClick = onModified,
-            )
+            Column(
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .padding(horizontal = 8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                CancelButton(
+                    onClick = onBackClick,
+                )
+            }
+            Column(
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .padding(horizontal = 8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                ModifyButton(
+                    onClick = onModified,
+                )
+            }
         }
     }
 }
