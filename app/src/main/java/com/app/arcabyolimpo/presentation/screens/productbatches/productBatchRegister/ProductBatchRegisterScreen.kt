@@ -37,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.CancelButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ModifyButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SaveButton
@@ -47,6 +48,7 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.ImageUploadI
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SelectInput
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardInput
 import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
+import com.app.arcabyolimpo.presentation.ui.components.molecules.NumberStepper
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
 
@@ -74,6 +76,13 @@ fun ProductBatchRegisterScreen(
                     Text(
                         text = "Registrar Lote",
                         color = White,
+                        fontFamily = Poppins,
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.headlineLarge,
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
                     )
                 },
                 navigationIcon = {
@@ -172,42 +181,5 @@ fun ProductBatchRegisterScreen(
                 onClick = onCreated,
             )
         }
-    }
-}
-
-@Suppress("ktlint:standard:function-naming")
-@Composable
-private fun NumberStepper(
-    label: String,
-    placeholder: String = "000",
-    value: String,
-    onValueChange: (String) -> Unit,
-    onIncrement: () -> Unit,
-    onDecrement: () -> Unit,
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        StandardInput(
-            label = label,
-            modifier = Modifier.weight(1f),
-            onValueChange = onValueChange,
-            value = value,
-            placeholder = placeholder,
-        )
-        SquareMinusButton(
-            onClick = onDecrement,
-            modifier =
-                Modifier
-                    .offset(y = 12.dp),
-        )
-        SquareAddButton(
-            onClick = onIncrement,
-            modifier =
-                Modifier
-                    .offset(y = 12.dp),
-        )
     }
 }
