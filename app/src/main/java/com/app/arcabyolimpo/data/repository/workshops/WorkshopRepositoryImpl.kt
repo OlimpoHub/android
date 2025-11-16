@@ -35,7 +35,6 @@ class WorkshopRepositoryImpl
         return response.map { dto ->
             Workshop(
                 id = dto.id,
-                idTraining = dto.idTraining,
                 idUser = dto.idUser,
                 nameWorkshop = dto.name,
                 url = dto.image,
@@ -43,7 +42,8 @@ class WorkshopRepositoryImpl
                 description = "",
                 startHour = "",
                 finishHour = "",
-                date = ""
+                date = "",
+                videoTraining = ""
             )
         }
     }
@@ -75,7 +75,6 @@ class WorkshopRepositoryImpl
         val response = api.addWorkshop(newWorkshop)
         return Workshop(
             id = newWorkshop.id,
-            idTraining = newWorkshop.idTraining,
             idUser = newWorkshop.idUser,
             nameWorkshop = newWorkshop.name,
             url = newWorkshop.image,
@@ -83,7 +82,8 @@ class WorkshopRepositoryImpl
             description = newWorkshop.description,
             startHour = newWorkshop.startHour,
             finishHour = newWorkshop.finishHour,
-            date = newWorkshop.date
+            date = newWorkshop.date,
+            videoTraining = newWorkshop.videoTraining
         )
     }
 

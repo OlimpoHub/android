@@ -51,42 +51,8 @@ class AddNewWorkshopViewModel @Inject constructor(
     private val _fieldErrors = MutableStateFlow<Map<String, Boolean>>(emptyMap())
     val fieldErrors: StateFlow<Map<String, Boolean>> = _fieldErrors.asStateFlow()
 
-    /** Mock Data - deleting in the future */
-    private val _trainings = MutableStateFlow<List<Training>>(emptyList())
-    val trainings: StateFlow<List<Training>> = _trainings.asStateFlow()
     private val _users = MutableStateFlow<List<User>>(emptyList())
     val users: StateFlow<List<User>> = _users.asStateFlow()
-
-    /** Mock Data - deleting in the future */
-    fun loadTrainings() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-
-            try {
-                val mockTrainings = listOf(
-                    Training(
-                        id = "a6a4dc6e-29f3-4c34-bd3c-4c8c74a5a550",
-                        name = "Panadería"
-                    ),
-                    Training(
-                        id = "f05468dc-bda0-11f0-b6b8-020161fa237d",
-                        name = "Repostería"
-                    ),
-                    Training(
-                        id = "f0546abd-bda0-11f0-b6b8-020161fa237d",
-                        name = "Cocina"
-                    )
-                )
-                _trainings.value = mockTrainings
-                _uiState.update { it.copy(isLoading = false) }
-            } catch (e: Exception) {
-                _uiState.update { it.copy(
-                    isLoading = false,
-                    error = "Error al cargar capacitaciones: ${e.message}"
-                ) }
-            }
-        }
-    }
 
     /** Mock Data - deleting in the future */
     fun loadUsers() {
@@ -131,7 +97,6 @@ class AddNewWorkshopViewModel @Inject constructor(
         viewModelScope.launch {
             val workshopDto = WorkshopDto(
                 id = UUID.randomUUID().toString(),
-                idTraining = _formData.value.idTraining,
                 name = _formData.value.name,
                 startHour = _formData.value.startHour,
                 finishHour = _formData.value.finishHour,
@@ -139,7 +104,8 @@ class AddNewWorkshopViewModel @Inject constructor(
                 idUser = _formData.value.idUser,
                 description = _formData.value.description,
                 date = _formData.value.date,
-                image = _formData.value.image
+                image = _formData.value.image,
+                videoTraining = _formData.value.videoTraining
             )
 
             postAddNewWorkshop(workshopDto).collect { result ->
@@ -190,12 +156,12 @@ class AddNewWorkshopViewModel @Inject constructor(
         val dateRegex = Regex("^\\d{4}-\\d{2}-\\d{2}$")
 
         if (data.name.isBlank()) errors["name"] = true
-        if (data.idTraining.isBlank()) errors["idTraining"] = true
         if (data.startHour.isBlank()) errors["startHour"] = true
         if (data.finishHour.isBlank()) errors["finishHour"] = true
         if (data.date.isBlank()) errors["date"] = true
         if (data.description.isBlank()) errors["description"] = true
         if (data.idUser.isBlank()) errors["idUser"] = true
+        if (data.videoTraining.isBlank()) errors["videoTrainings"] = true
 
         if (data.startHour.isNotBlank() && !hourRegex.matches(data.startHour)) {
             errors["startHour"] = true

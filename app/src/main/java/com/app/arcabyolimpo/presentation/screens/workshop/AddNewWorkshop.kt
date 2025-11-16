@@ -56,7 +56,6 @@ fun AddNewWorkshopScreen(
     ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false) {
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
         val formData by viewModel.formData.collectAsState()
-        val trainings by viewModel.trainings.collectAsStateWithLifecycle()
         val users by viewModel.users.collectAsStateWithLifecycle()
         val fieldErrors by viewModel.fieldErrors.collectAsStateWithLifecycle()
 
@@ -66,7 +65,6 @@ fun AddNewWorkshopScreen(
         val scope = rememberCoroutineScope()
 
         LaunchedEffect(Unit) {
-            viewModel.loadTrainings()
             viewModel.loadUsers()
         }
 
@@ -113,23 +111,6 @@ fun AddNewWorkshopScreen(
                     onValueChange = { viewModel.updateFormData { copy(name = it) } },
                     isError = fieldErrors["name"] == true,
                     errorMessage = null,
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                /** Trainings */
-                SelectInput(
-                    label = "Capacitación",
-                    selectedOption =
-                        trainings.firstOrNull { it.id == formData.idTraining }?.name
-                            ?: "",
-                    options = trainings.map { it.name },
-                    onOptionSelected = { selectedName ->
-                        val selectedTraining = trainings.find { it.name == selectedName }
-                        viewModel.updateFormData { copy(idTraining = selectedTraining?.id ?: "") }
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    isError = fieldErrors["idTraining"] == true,
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -208,7 +189,17 @@ fun AddNewWorkshopScreen(
                     modifier = Modifier.fillMaxWidth(),
                     isError = fieldErrors["idUser"] == true,
                 )
+                Spacer(modifier = Modifier.height(12.dp))
 
+                /** Video Training */
+                StandardInput(
+                    label = "Video de Capacitación",
+                    placeholder = "https://videocapacitacion.com",
+                    value = formData.videoTraining,
+                    onValueChange = { viewModel.updateFormData { copy(videoTraining = it) } },
+                    isError = fieldErrors["videoTraining"] == true,
+                    errorMessage = null,
+                )
                 Spacer(modifier = Modifier.height(12.dp))
 
                 /** Upload image */
