@@ -46,7 +46,6 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.ProductItem
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
 
-// ---------- ROUTE: se usa en el NavGraph (no cambies la firma) ----------
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun ProductsListRoute(
@@ -65,7 +64,6 @@ fun ProductsListRoute(
     )
 }
 
-// ---------- UI pura, basada en ProductBatchesListScreen ----------
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable
@@ -77,7 +75,6 @@ fun ProductsListScreen(
     onAddClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    // Lista filtrada según el texto de búsqueda
     val filteredProducts = remember(state.searchQuery, state.products) {
         val q = state.searchQuery.trim()
         if (q.isEmpty()) {
@@ -145,7 +142,6 @@ fun ProductsListScreen(
                     .padding(padding)
                     .padding(horizontal = 16.dp),
         ) {
-            // --- Search + Filter como en productBatches ---
             Row(
                 modifier =
                     Modifier
@@ -257,7 +253,6 @@ fun ProductItem(
                     .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            // Aquí podrías poner la imagen redonda después
             Column(
                 modifier = Modifier.weight(1f),
             ) {

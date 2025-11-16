@@ -28,12 +28,12 @@ import com.app.arcabyolimpo.ui.theme.DangerGray
 import com.app.arcabyolimpo.ui.theme.White
 
 /**
- * ProductItem: ítem de la lista de productos.
+ * ProductItem: Item from the product list.
  *
- * @param name Nombre del producto.
- * @param unitaryPrice Precio unitario (ya formateado como texto).
- * @param workshopName Nombre del taller (puede ser null).
- * @param onClick Acción al presionar el botón "Ver".
+@param name Product name.
+@param unitaryPrice Unit price (already formatted as text).
+@param workshopName Workshop name (can be null).
+@param onClick Action taken when the "View" button is pressed.
  */
 @Suppress("ktlint:standard:function-naming")
 @Composable
@@ -68,7 +68,6 @@ fun ProductItem(
                         .padding(horizontal = 16.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                // Círculo gris como placeholder de imagen (igual que el Figma)
                 androidx.compose.foundation.layout.Box(
                     modifier =
                         Modifier
