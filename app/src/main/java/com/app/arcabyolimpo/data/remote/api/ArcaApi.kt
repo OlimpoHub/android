@@ -12,9 +12,10 @@ import com.app.arcabyolimpo.data.remote.dto.password.RecoverPasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
-import com.app.arcabyolimpo.data.remote.dto.supplies.AcquisitionDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchDto
+import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchModifyDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchRegisterDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.AcquisitionDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteResponseDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
@@ -38,10 +39,10 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
-
 
 /**
  * Defines the remote API endpoints.
@@ -147,7 +148,7 @@ interface ArcaApi {
 
     @GET("workshop/search")
     suspend fun searchWorkshops(
-        @Query("nameWorkshop") name: String
+        @Query("nameWorkshop") name: String,
     ): List<WorkshopDto>
 
     @GET("workshop/{id}")
@@ -200,6 +201,13 @@ interface ArcaApi {
     suspend fun addProductBatch(
         @Body batch: ProductBatchRegisterDto,
     )
+
+    @PUT("productBatch/{id}")
+    suspend fun modifyProductBatch(
+        @Path("id") id: String,
+        @Body batch: ProductBatchModifyDto,
+    )
+
     // Products --------------------------
 
     @Multipart
@@ -211,12 +219,11 @@ interface ArcaApi {
         @Part("idCategoria") idCategory: RequestBody,
         @Part("Descripcion") description: RequestBody,
         @Part("Disponible") status: RequestBody,
-        @Part image: MultipartBody.Part?
+        @Part image: MultipartBody.Part?,
     )
 
     @DELETE("product/{idProduct}")
     suspend fun deleteProduct(
         @Path("idProduct") idProduct: String,
     ): Response<Unit>
-
 }

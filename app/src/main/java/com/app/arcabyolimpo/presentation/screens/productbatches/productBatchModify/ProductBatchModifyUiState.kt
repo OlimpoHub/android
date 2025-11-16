@@ -1,4 +1,9 @@
 package com.app.arcabyolimpo.presentation.screens.productbatches.productBatchModify
 
-class ProductBatchModifyUiState {
-}
+data class ProductBatchModifyUiState(
+    val precioVenta: String = "",
+    val cantidadProducida: String = "",
+    val fechaCaducidad: String = "",
+    val fechaRealizacion: String = "",
+    val error: String? = null,
+)

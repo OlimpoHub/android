@@ -46,10 +46,10 @@ import com.app.arcabyolimpo.ui.theme.White
 fun ProductBatchModifyScreen(
     onBackClick: () -> Unit,
     onModified: () -> Unit,
+    batchId: String,
     viewModel: ProductBatchModifyViewModel = hiltViewModel(),
 ) {
-    // val state = viewModel.uiState
-    // val products = listOf("p1", "p2", "p3")
+    val state = viewModel.uiState
 
     Scaffold(
         containerColor = Background,
@@ -93,37 +93,30 @@ fun ProductBatchModifyScreen(
         ) {
             Spacer(modifier = Modifier.height(8.dp))
 
-            SelectInput(
-                label = "Selecciona el producto",
-                placeholder = "Producto",
-                selectedOption = "",
-                options = listOf(),
-                onOptionSelected = {},
-                modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
-            )
+            Row(modifier = Modifier.padding(vertical = 40.dp)) {}
 
             StandardInput(
                 label = "Precio de venta",
-                value = "",
-                onValueChange = {},
+                value = state.precioVenta,
+                onValueChange = { viewModel.onFieldChange("precioVenta", it) },
                 placeholder = "0.00",
                 keyboardType = KeyboardType.Decimal,
             )
 
             NumberStepper(
                 label = "Cantidad producida",
-                value = "",
-                onValueChange = {},
-                onIncrement = {},
-                onDecrement = {},
-            )
-
-            NumberStepper(
-                label = "Cantidad vendida",
-                value = "",
-                onValueChange = {},
-                onIncrement = {},
-                onDecrement = {},
+                value = state.cantidadProducida,
+                onValueChange = { viewModel.onFieldChange("cantidadProducida", it) },
+                onIncrement = {
+                    val newVal = (state.cantidadProducida.toIntOrNull() ?: 0) + 1
+                    viewModel.onFieldChange("cantidadProducida", newVal.toString())
+                },
+                onDecrement = {
+                    val current = state.cantidadProducida.toIntOrNull() ?: 0
+                    if (current > 0) {
+                        viewModel.onFieldChange("cantidadProducida", (current - 1).toString())
+                    }
+                },
             )
 
             Row(
@@ -132,8 +125,8 @@ fun ProductBatchModifyScreen(
             ) {
                 DateInput(
                     label = "Fecha de Elaboración",
-                    value = "",
-                    onValueChange = {},
+                    value = state.fechaRealizacion,
+                    onValueChange = { viewModel.onFieldChange("fechaRealizacion", it) },
                     modifier =
                         Modifier
                             .fillMaxWidth()
@@ -142,8 +135,8 @@ fun ProductBatchModifyScreen(
 
                 DateInput(
                     label = "Fecha de Caducidad",
-                    value = "",
-                    onValueChange = {},
+                    value = state.fechaCaducidad,
+                    onValueChange = { viewModel.onFieldChange("fechaCaducidad", it) },
                     modifier =
                         Modifier
                             .fillMaxWidth()
@@ -152,35 +145,41 @@ fun ProductBatchModifyScreen(
             }
 
             Spacer(modifier = Modifier.height(24.dp))
-        }
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            Column(
+
+            Row(
                 modifier =
                     Modifier
-                        .weight(1f)
-                        .padding(horizontal = 8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                CancelButton(
-                    onClick = onBackClick,
-                )
-            }
-            Column(
-                modifier =
-                    Modifier
-                        .weight(1f)
-                        .padding(horizontal = 8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                ModifyButton(
-                    onClick = onModified,
-                )
+                Column(
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .padding(horizontal = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    CancelButton(
+                        onClick = onBackClick,
+                    )
+                }
+                Column(
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .padding(horizontal = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    ModifyButton(
+                        onClick = {
+                            viewModel.modify(
+                                id = batchId,
+                                onSuccess = onModified,
+                            )
+                        },
+                    )
+                }
             }
         }
     }
