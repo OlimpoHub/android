@@ -210,7 +210,6 @@ fun ProductBatchDetailScreen(
                                 viewModel.toggledecisionDialog(
                                     showdecisionDialog = true,
                                 )
-                                onBackClick()
                             },
                             modifier = Modifier.weight(1f),
                         )
@@ -232,6 +231,7 @@ fun ProductBatchDetailScreen(
                 onConfirmation = {
                     viewModel.deleteBatch(batchId)
                     viewModel.toggledecisionDialog(false)
+                    onBackClick()
                 },
                 dialogTitle = "¿Estas seguro de eliminar este Lote?",
                 dialogText = "Esta accion no podra revertirce",
