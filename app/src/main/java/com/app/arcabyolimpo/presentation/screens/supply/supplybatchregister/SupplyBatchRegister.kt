@@ -256,7 +256,7 @@ fun SupplyBatchRegisterContent(
                         },
                         modifier = Modifier.weight(0.5f),
                         placeholder = "E.G 10",
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        keyboardType = KeyboardType.Number,
                     )
                 }
 
