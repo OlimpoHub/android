@@ -1,3 +1,8 @@
+## [0.1.0] - 16/11/2025
+
+### Added
+- Added products search
+
 ## [0.1.0] - 15/11/2025
 
 ### Added

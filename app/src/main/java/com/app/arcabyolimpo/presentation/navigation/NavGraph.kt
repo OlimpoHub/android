@@ -35,6 +35,7 @@ import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailSc
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
 import com.app.arcabyolimpo.presentation.screens.product.ProductAddScreen
+import com.app.arcabyolimpo.presentation.screens.product.list.ProductsListRoute
 import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDeleteTestScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
@@ -607,6 +608,13 @@ fun ArcaNavGraph(
                 onCancel = {
                     navController.popBackStack()
                 }
+            )
+        }
+
+        composable("products_list") {
+            ProductsListRoute(
+                onProductClick = { /* ir a detalle si quieres */ },
+                onBackClick = { navController.popBackStack() }
             )
         }
 
