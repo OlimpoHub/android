@@ -233,8 +233,8 @@ fun ProductBatchDetailScreen(
                     viewModel.toggledecisionDialog(false)
                     onBackClick()
                 },
-                dialogTitle = "¿Estas seguro de eliminar este Lote?",
-                dialogText = "Esta accion no podra revertirce",
+                dialogTitle = "¿Estás seguro de eliminar este Lote?",
+                dialogText = "Esta accion no podrá revertirse",
                 confirmText = "Confirmar",
                 dismissText = "Cancelar",
             )

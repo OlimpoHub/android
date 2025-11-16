@@ -1,4 +1,12 @@
 ## [0.1.0] - 15/11/2025
+
+### Added
+- Added US to Delete Product Batches
+
+### Fixed
+- Refreshing on Product Batches List
+
+## [0.1.0] - 15/11/2025
 ### Fixed
 - Fixed error from standard input attibutes into register supply batch screen
 
