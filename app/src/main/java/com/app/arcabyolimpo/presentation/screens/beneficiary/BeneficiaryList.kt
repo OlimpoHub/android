@@ -140,8 +140,8 @@ fun BeneficiaryList(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         SearchInput(
-                            value = "",
-                            onValueChange = {},
+                            value = state.searchText,
+                            onValueChange = onSearchTextChange,
                             modifier = Modifier
                                 .weight(1f)
                                 .padding(end = 20.dp)

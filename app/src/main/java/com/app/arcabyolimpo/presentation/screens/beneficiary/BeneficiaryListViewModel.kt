@@ -9,6 +9,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import com.app.arcabyolimpo.domain.common.Result
+import com.app.arcabyolimpo.domain.usecase.beneficiaries.SearchBeneficiariesUseCase
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -18,7 +22,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BeneficiaryListViewModel @Inject constructor(
-    private val getBeneficiariesListUseCase: GetBeneficiariesListUseCase
+    private val getBeneficiariesListUseCase: GetBeneficiariesListUseCase,
+    private val searchBeneficiariesUseCase: SearchBeneficiariesUseCase
 ) : ViewModel() {
 
     // Internal state for the full list from the API
@@ -40,9 +45,7 @@ class BeneficiaryListViewModel @Inject constructor(
     ) { beneficiaries, text, isLoading, error ->
         BeneficiaryListUiState(
             isLoading = isLoading,
-            beneficiaries = beneficiaries.filter {
-                it.name.contains(text, ignoreCase = true)
-            },
+            beneficiaries = beneficiaries,
             error = error,
             searchText = text
         )
@@ -56,6 +59,18 @@ class BeneficiaryListViewModel @Inject constructor(
     init {
         // Load data when the ViewModel is created
         getBeneficiaries()
+        _searchText
+            .drop(1)
+            .debounce(350L)
+            .distinctUntilChanged()
+            .onEach { text ->
+                if (text.isBlank()) {
+                    getBeneficiaries()
+                } else {
+                    performSearch(text)
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     /**
@@ -81,8 +96,30 @@ class BeneficiaryListViewModel @Inject constructor(
     }
 
     /**
-     * Updates the search text.
-     * The UI state will automatically recombine and filter the list.
+     * Function for the search.
+     * Calls the UseCase and updates the UI state accordingly.
+     */
+    private fun performSearch(query: String) {
+        searchBeneficiariesUseCase(query).onEach { result ->
+            when (result) {
+                is Result.Loading -> {
+                    _isLoading.update { true }
+                    _error.update { null }
+                }
+                is Result.Success -> {
+                    _isLoading.update { false }
+                    _beneficiaries.update { result.data }
+                }
+                is Result.Error -> {
+                    _isLoading.update { false }
+                    _error.update { result.exception.message ?: "Error en la busqueda" }
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    /**
+     * Its called from the UI when text changes
      */
     fun onSearchTextChange(text: String) {
         _searchText.update { text }
