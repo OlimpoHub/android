@@ -143,7 +143,7 @@ interface ArcaApi {
     ): AddNewWorkshopDto
 
     // Beneficiary -------------
-    @GET("beneficiary")
+    @GET("beneficiary/list")
     suspend fun getBeneficiariesList(): List<BeneficiariesListDto>
 
     @GET("beneficiary/{id}")
@@ -158,6 +158,11 @@ interface ArcaApi {
 
     @GET("beneficiary/categories")
     suspend fun getDisabilities(): GetBeneficiariesDisabilitiesDto
+
+    @POST("beneficiary/filter")
+    suspend fun filterBeneficiaries(
+        @Body params: FilterDto,
+    ): List<BeneficiaryDto>
 
     @GET("supplies/workshop/category")
     suspend fun getWorkshopCategoryList(): WorkshopCategoryListDto

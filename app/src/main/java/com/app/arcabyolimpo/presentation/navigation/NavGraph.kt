@@ -20,6 +20,7 @@ import com.app.arcabyolimpo.presentation.common.components.LoadingShimmer
 import com.app.arcabyolimpo.presentation.screens.accountactivation.AccountActivationScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
+import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
 import com.app.arcabyolimpo.presentation.screens.home.assistant.CollaboratorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.home.coordinator.CoordinatorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.login.LoginScreen
@@ -89,8 +90,6 @@ sealed class Screen(
 
     object AddNewWorkshop : Screen("workshop/add")
 
-
-
     object BeneficiaryList : Screen("beneficiary_list")
 
     object BeneficiaryDetail : Screen("beneficiary_detail/{beneficiaryId}") {
@@ -138,8 +137,7 @@ fun ArcaNavGraph(
     /** Defines all navigation. The start destination is the Splash screen. */
     NavHost(
         navController = navController,
-        // TODO: Cambiar a Screen.Splash.route cuando acabe
-        startDestination = Screen.BeneficiaryList.route,
+        startDestination = Screen.Splash.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -391,19 +389,17 @@ fun ArcaNavGraph(
                 navController = navController,
                 workshopClick = { id ->
                     navController.navigate(Screen.WorkshopDetail.createRoute(id))
-                }
+                },
             )
         }
 
-
         composable(
             route = Screen.WorkshopDetail.route,
-            arguments = listOf(navArgument("id") { type = NavType.StringType })
+            arguments = listOf(navArgument("id") { type = NavType.StringType }),
         ) { backStackEntry ->
             val workshopId = backStackEntry.arguments?.getString("id") ?: ""
             WorkshopDetailScreen(navController, workshopId)
         }
-
 
         /**
          * Workshops Add Screen.
@@ -479,7 +475,7 @@ fun ArcaNavGraph(
          * Shows the grid of beneficiaries.
          */
         composable(Screen.BeneficiaryList.route) {
-            BeneficiaryList(
+            BeneficiaryListScreen(
                 onBeneficiaryClick = { beneficiaryId ->
                     navController.navigate(Screen.BeneficiaryDetail.createRoute(beneficiaryId))
                 },

@@ -20,5 +20,5 @@ import com.google.gson.annotations.SerializedName
  * @property disabilities Optional list of disabilities names that can be used to filter beneficiaries.
  */
 data class GetBeneficiariesDisabilitiesDto(
-    @SerializedName("disabilities") val disabilities: List<String>? = null,
+    @SerializedName("discapacidad") val disabilities: List<String>? = null,
 )

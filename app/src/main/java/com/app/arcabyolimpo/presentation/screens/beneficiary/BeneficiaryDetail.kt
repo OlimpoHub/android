@@ -1,5 +1,6 @@
 package com.app.arcabyolimpo.presentation.screens.beneficiary
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,7 +10,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,20 +33,23 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.rememberAsyncImagePainter
 import com.app.arcabyolimpo.R
-import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.DeleteButton
-import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ModifyButton
+import com.app.arcabyolimpo.domain.model.beneficiaries.Beneficiary
 import com.app.arcabyolimpo.presentation.theme.Typography
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
+import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.DeleteButton
+import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ModifyButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.status.ActiveStatus
 import com.app.arcabyolimpo.presentation.ui.components.atoms.status.InactiveStatus
-import com.app.arcabyolimpo.domain.model.beneficiaries.Beneficiary
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import kotlinx.coroutines.launch
 
@@ -51,7 +57,7 @@ import kotlinx.coroutines.launch
 fun BeneficiaryDetailScreen(
     onBackClick: () -> Unit,
     onModifyClick: () -> Unit,
-    viewModel: BeneficiaryDetailViewModel = hiltViewModel()
+    viewModel: BeneficiaryDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -85,9 +91,10 @@ fun BeneficiaryDetailScreen(
         },
         onDeleteClick = viewModel::onDeleteClicked,
         onShowDialog = { showDeleteDialog = true },
-        onDismissDialog = { showDeleteDialog = false }
+        onDismissDialog = { showDeleteDialog = false },
     )
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BeneficiaryDetailContent(
@@ -98,7 +105,7 @@ fun BeneficiaryDetailContent(
     onModifyClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onShowDialog: () -> Unit,
-    onDismissDialog: () -> Unit
+    onDismissDialog: () -> Unit,
 ) {
     if (showDeleteDialog) {
         DecisionDialog(
@@ -110,7 +117,7 @@ fun BeneficiaryDetailContent(
                 onDeleteClick()
             },
             confirmText = "Confirmar",
-            dismissText = "Cancelar"
+            dismissText = "Cancelar",
         )
     }
 
@@ -120,22 +127,23 @@ fun BeneficiaryDetailContent(
         topBar = {
             TopAppBar(
                 title = { Text("") },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent,
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White
-                ),
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent,
+                        titleContentColor = Color.White,
+                        navigationIconContentColor = Color.White,
+                    ),
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_return_icon),
-                            contentDescription = "Volver"
+                            contentDescription = "Volver",
                         )
                     }
-                }
+                },
             )
         },
-        containerColor = Color(0xFF1C1B1F) // Black background
+        containerColor = Color(0xFF1C1B1F), // Black background
     ) { paddingValues ->
         when {
             uiState.isScreenLoading -> {
@@ -151,48 +159,51 @@ fun BeneficiaryDetailContent(
             uiState.beneficiary != null -> {
                 val beneficiary = uiState.beneficiary
                 Column(
-                    modifier = Modifier
-                        .padding(paddingValues)
-                        .padding(horizontal = 24.dp)
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState()),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier =
+                        Modifier
+                            .padding(paddingValues)
+                            .padding(horizontal = 24.dp)
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    // When the proper icon for images is in atoms, implement it here
-                    /*
-                    Image(
-                        painter = painterResource(id = R.drawable.placeholder),
-                        contentDescription = "Foto de $beneficiaryName",
-                        modifier = Modifier
-                            .size(150.dp)
-                            .clip(RoundedCornerShape(16.dp)),
-                        contentScale = ContentScale.Crop
-                    )
-                    */
-
                     Spacer(modifier = Modifier.height(24.dp))
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
                         Column(
                             modifier = Modifier.weight(1f),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
+                            Image(
+                                painter =
+                                    rememberAsyncImagePainter(
+                                        model = beneficiary.image,
+                                        placeholder = painterResource(id = R.drawable.ic_beneficiary_icon),
+                                        error = painterResource(id = R.drawable.img_arca_logo),
+                                    ),
+                                contentDescription = "Foto de $beneficiary.name",
+                                modifier =
+                                    Modifier
+                                        .size(150.dp)
+                                        .clip(RoundedCornerShape(16.dp)),
+                                contentScale = ContentScale.Crop,
+                            )
                             // APPLY .orEmpty() to convert null in ""
                             DetailTextRow(label = "Fecha de nacimiento:", value = beneficiary.birthdate.orEmpty())
                             DetailTextRow(label = "Fecha de ingreso:", value = beneficiary.entryDate.orEmpty())
-                            StatusField(isActive = beneficiary.status == 0)
+                            StatusField(isActive = beneficiary.status == 1)
                         }
 
                         Column(
                             modifier = Modifier.weight(1f),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
                             // APPLY .orEmpty()
                             DetailTextRow(label = "Nombre de beneficiario:", value = beneficiary.name.orEmpty())
-                            DetailTextRow(label = "Nombre de tutor:", value = "Nombre Tutor" /* TODO */)
+                            DetailTextRow(label = "Nombre de tutor:", value = beneficiary.emergencyName.orEmpty())
                             // APPLY .orEmpty()
                             DetailTextRow(label = "Relación del tutor:", value = beneficiary.emergencyRelation.orEmpty())
                             // APPLY .orEmpty()
@@ -200,13 +211,13 @@ fun BeneficiaryDetailContent(
                             // APPLY .orEmpty()
                             DetailTextRow(label = "Discapacidades:", value = beneficiary.disabilities.orEmpty())
                         }
-                }
+                    }
                     // Description Field
                     Spacer(modifier = Modifier.height(16.dp))
                     DetailTextRow(
                         label = "Descripción:",
                         // APPLY .orEmpty()
-                        value = beneficiary.details.orEmpty()
+                        value = beneficiary.details.orEmpty(),
                     )
 
                     Spacer(modifier = Modifier.height(32.dp))
@@ -214,19 +225,19 @@ fun BeneficiaryDetailContent(
                     // Action Button
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
                         DeleteButton(
                             onClick = onShowDialog,
                             modifier = Modifier.weight(1f),
                             cornerRadius = 100.dp,
-                            enabled = !uiState.isDeleting
+                            enabled = !uiState.isDeleting,
                         )
                         ModifyButton(
                             onClick = onModifyClick,
                             modifier = Modifier.weight(1f),
                             cornerRadius = 100.dp,
-                            enabled = !uiState.isDeleting
+                            enabled = !uiState.isDeleting,
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
@@ -244,68 +255,72 @@ fun StatusField(isActive: Boolean) {
         // Conditional to show the correct atom
         if (isActive) {
             ActiveStatus(
-                modifier = Modifier.padding(top = 4.dp)
+                modifier = Modifier.padding(top = 4.dp),
             )
         } else {
             InactiveStatus(
-                modifier = Modifier.padding(top = 4.dp)
+                modifier = Modifier.padding(top = 4.dp),
             )
         }
     }
 }
 
 @Composable
-fun DetailTextRow(label: String, value: String?) {
+fun DetailTextRow(
+    label: String,
+    value: String?,
+) {
     val safeValue = value?.ifBlank { "No disponible" } ?: "No disponible"
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 8.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp),
     ) {
         Text(
             text = label,
             style = Typography.labelMedium,
-            color = Color.Gray
+            color = Color.Gray,
         )
         Text(
             text = safeValue,
             style = Typography.bodyLarge,
-            color = Color.White
+            color = Color.White,
         )
     }
 }
-
-
 
 @Preview(name = "Activo", showBackground = true, backgroundColor = 0xFF1C1B1F)
 @Composable
 fun BeneficiaryDetailPreviewActive() {
     ArcaByOlimpoTheme {
         BeneficiaryDetailContent(
-            uiState = BeneficiaryDetailUiState(
-                isScreenLoading = false,
-                beneficiary = Beneficiary(
-                    id = "1",
-                    name = "Jiafei Daidai",
-                    birthdate = "01/01/1990",
-                    emergencyNumber = "1234567890",
-                    emergencyName = "Juan",
-                    emergencyRelation = "Padre",
-                    details = "Detalles del beneficiario",
-                    entryDate = "01/01/2023",
-                    image = "",
-                    disabilities = "Sí",
-                    status = 1
-                )
-            ),
+            uiState =
+                BeneficiaryDetailUiState(
+                    isScreenLoading = false,
+                    beneficiary =
+                        Beneficiary(
+                            id = "1",
+                            name = "Jiafei Daidai",
+                            birthdate = "01/01/1990",
+                            emergencyNumber = "1234567890",
+                            emergencyName = "Juan",
+                            emergencyRelation = "Padre",
+                            details = "Detalles del beneficiario",
+                            entryDate = "01/01/2023",
+                            image = "",
+                            disabilities = "Sí",
+                            status = 1,
+                        ),
+                ),
             snackbarHostState = remember { SnackbarHostState() },
             showDeleteDialog = false,
             onBackClick = {},
             onModifyClick = {},
             onDeleteClick = {},
             onShowDialog = {},
-            onDismissDialog = {}
+            onDismissDialog = {},
         )
     }
 }
@@ -315,29 +330,31 @@ fun BeneficiaryDetailPreviewActive() {
 fun BeneficiaryDetailPreviewInactive() {
     ArcaByOlimpoTheme {
         BeneficiaryDetailContent(
-            uiState = BeneficiaryDetailUiState(
-                isScreenLoading = false,
-                beneficiary = Beneficiary(
-                    id = "1",
-                    name = "Jiafei Daidai",
-                    birthdate = "01/01/1990",
-                    emergencyNumber = "1234567890",
-                    emergencyName = "Juan",
-                    emergencyRelation = "Padre",
-                    details = "Detalles del beneficiario",
-                    entryDate = "01/01/2023",
-                    image = "",
-                    disabilities = "Sí",
-                    status = 0
-                )
-            ),
+            uiState =
+                BeneficiaryDetailUiState(
+                    isScreenLoading = false,
+                    beneficiary =
+                        Beneficiary(
+                            id = "1",
+                            name = "Jiafei Daidai",
+                            birthdate = "01/01/1990",
+                            emergencyNumber = "1234567890",
+                            emergencyName = "Juan",
+                            emergencyRelation = "Padre",
+                            details = "Detalles del beneficiario",
+                            entryDate = "01/01/2023",
+                            image = "",
+                            disabilities = "Sí",
+                            status = 0,
+                        ),
+                ),
             snackbarHostState = remember { SnackbarHostState() },
             showDeleteDialog = false,
             onBackClick = {},
             onModifyClick = {},
             onDeleteClick = {},
             onShowDialog = {},
-            onDismissDialog = {}
+            onDismissDialog = {},
         )
     }
 }

@@ -3,12 +3,9 @@ package com.app.arcabyolimpo.presentation.screens.beneficiary
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.arcabyolimpo.data.remote.dto.beneficiaries.GetBeneficiariesDisabilitiesDto
-import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.usecase.beneficiaries.DeleteBeneficiaryUseCase
 import com.app.arcabyolimpo.domain.usecase.beneficiaries.GetBeneficiaryUseCase
-import com.app.arcabyolimpo.domain.usecase.beneficiaries.GetDisabilitesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,7 +21,6 @@ class BeneficiaryDetailViewModel
         private val getBeneficiaryUseCase: GetBeneficiaryUseCase,
         private val deleteBeneficiaryUseCase: DeleteBeneficiaryUseCase,
         private val savedStateHandle: SavedStateHandle,
-        private val getDisabilities: GetDisabilitesUseCase,
     ) : ViewModel() {
         private val _uiState = MutableStateFlow(BeneficiaryDetailUiState())
         val uiState: StateFlow<BeneficiaryDetailUiState> = _uiState.asStateFlow()
@@ -93,49 +89,5 @@ class BeneficiaryDetailViewModel
 
         fun onDeletionErrorShown() {
             _uiState.update { it.copy(deleteError = null) }
-        }
-
-        /**
-         * Loads the available supply filters from the data use case.
-         *
-         * The resulting state is observed by the UI to show loading indicators,
-         * display the filter modal, or surface errors.
-         */
-        fun getBeneficiaries() {
-            viewModelScope.launch {
-                getDisabilities().collect { result ->
-                    _uiState.update { state ->
-                        when (result) {
-                            is Result.Loading ->
-                                state.copy(isScreenLoading = true)
-
-                            is Result.Success ->
-                                state.copy(
-                                    filterData = result.data,
-                                    isScreenLoading = false,
-                                    screenError = null,
-                                )
-
-                            is Result.Error ->
-                                state.copy(
-                                    screenError = result.exception.message,
-                                    isScreenLoading = false,
-                                )
-                        }
-                    }
-                }
-            }
-        }
-
-        fun clearFilters() {
-            _uiState.update {
-                it.copy(
-                    selectedFilters =
-                        FilterDto(
-                            filters = emptyMap(),
-                            order = "ASC",
-                        ),
-                )
-            }
         }
     }
