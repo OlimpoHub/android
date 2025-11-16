@@ -35,4 +35,8 @@ class ProductBatchRepositoryImpl(
             batch = dto,
         )
     }
+
+    override suspend fun deleteProductBatch(id: String) {
+        api.deleteProductBatch(id)
+    }
 }

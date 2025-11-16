@@ -11,4 +11,5 @@ data class ProductBatchDetailUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val batch: ProductBatchUiModel? = null,
+    val decisionDialogVisible: Boolean = false,
 )

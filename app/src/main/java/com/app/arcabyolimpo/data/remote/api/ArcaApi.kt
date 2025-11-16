@@ -208,6 +208,11 @@ interface ArcaApi {
         @Body batch: ProductBatchModifyDto,
     )
 
+    @DELETE("productBatch/{id}")
+    suspend fun deleteProductBatch(
+        @Path("id") id: String,
+    )
+
     // Products --------------------------
 
     @Multipart

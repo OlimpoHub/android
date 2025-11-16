@@ -43,6 +43,7 @@ import coil.compose.AsyncImage
 import com.app.arcabyolimpo.presentation.common.components.ErrorView
 import com.app.arcabyolimpo.presentation.common.components.LoadingShimmer
 import com.app.arcabyolimpo.presentation.theme.Poppins
+import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.DeleteButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ModifyButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
@@ -205,7 +206,12 @@ fun ProductBatchDetailScreen(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
                         DeleteButton(
-                            onClick = {},
+                            onClick = {
+                                viewModel.toggledecisionDialog(
+                                    showdecisionDialog = true,
+                                )
+                                onBackClick()
+                            },
                             modifier = Modifier.weight(1f),
                         )
                         ModifyButton(
@@ -217,6 +223,21 @@ fun ProductBatchDetailScreen(
                     }
                 }
             }
+        }
+        if (state.decisionDialogVisible) {
+            DecisionDialog(
+                onDismissRequest = {
+                    viewModel.toggledecisionDialog(false)
+                },
+                onConfirmation = {
+                    viewModel.deleteBatch(batchId)
+                    viewModel.toggledecisionDialog(false)
+                },
+                dialogTitle = "¿Estas seguro de eliminar este Lote?",
+                dialogText = "Esta accion no podra revertirce",
+                confirmText = "Confirmar",
+                dismissText = "Cancelar",
+            )
         }
     }
 }
