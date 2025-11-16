@@ -17,7 +17,6 @@ import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.ui.theme.PrimaryBlue
 import com.app.arcabyolimpo.ui.theme.White
 
-
 /**
  * A small square button component that displays a "-" symbol.
  *
@@ -33,17 +32,22 @@ import com.app.arcabyolimpo.ui.theme.White
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun SquareMinusButton(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.size(32.dp),
     onClick: () -> Unit,
+    enabled: Boolean = true,
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier.size(32.dp),
+        modifier = modifier,
+        enabled = enabled,
         shape = RoundedCornerShape(8.dp),
         contentPadding = PaddingValues(0.dp),
         colors =
             ButtonDefaults.buttonColors(
                 containerColor = White,
+                disabledContainerColor = White,
+                contentColor = PrimaryBlue,
+                disabledContentColor = PrimaryBlue,
             ),
         elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
     ) {

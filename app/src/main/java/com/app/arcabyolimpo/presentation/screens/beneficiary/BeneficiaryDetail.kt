@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -43,21 +44,24 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.app.arcabyolimpo.R
-import com.app.arcabyolimpo.domain.model.beneficiaries.Beneficiary
-import com.app.arcabyolimpo.presentation.theme.Typography
-import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.DeleteButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ModifyButton
+import com.app.arcabyolimpo.presentation.theme.Typography
+import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
 import com.app.arcabyolimpo.presentation.ui.components.atoms.status.ActiveStatus
 import com.app.arcabyolimpo.presentation.ui.components.atoms.status.InactiveStatus
+import com.app.arcabyolimpo.domain.model.beneficiaries.Beneficiary
+import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
+import com.app.arcabyolimpo.presentation.ui.components.molecules.TextValue
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
+import com.app.arcabyolimpo.ui.theme.Background
 import kotlinx.coroutines.launch
 
 @Composable
 fun BeneficiaryDetailScreen(
     onBackClick: () -> Unit,
     onModifyClick: () -> Unit,
-    viewModel: BeneficiaryDetailViewModel = hiltViewModel(),
+    viewModel: BeneficiaryDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -91,10 +95,9 @@ fun BeneficiaryDetailScreen(
         },
         onDeleteClick = viewModel::onDeleteClicked,
         onShowDialog = { showDeleteDialog = true },
-        onDismissDialog = { showDeleteDialog = false },
+        onDismissDialog = { showDeleteDialog = false }
     )
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BeneficiaryDetailContent(
@@ -105,7 +108,7 @@ fun BeneficiaryDetailContent(
     onModifyClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onShowDialog: () -> Unit,
-    onDismissDialog: () -> Unit,
+    onDismissDialog: () -> Unit
 ) {
     if (showDeleteDialog) {
         DecisionDialog(
@@ -117,33 +120,32 @@ fun BeneficiaryDetailContent(
                 onDeleteClick()
             },
             confirmText = "Confirmar",
-            dismissText = "Cancelar",
+            dismissText = "Cancelar"
         )
     }
 
     Scaffold(
-        // Snackbar connection with the Scaffold
+        containerColor = Background,
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = { Text("") },
-                colors =
-                    TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color.Transparent,
-                        titleContentColor = Color.White,
-                        navigationIconContentColor = Color.White,
-                    ),
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White
+                ),
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_return_icon),
-                            contentDescription = "Volver",
+                            contentDescription = "Volver"
                         )
                     }
-                },
+                }
             )
         },
-        containerColor = Color(0xFF1C1B1F), // Black background
+        bottomBar = { NavBar() }
     ) { paddingValues ->
         when {
             uiState.isScreenLoading -> {
@@ -159,88 +161,114 @@ fun BeneficiaryDetailContent(
             uiState.beneficiary != null -> {
                 val beneficiary = uiState.beneficiary
                 Column(
-                    modifier =
-                        Modifier
-                            .padding(paddingValues)
-                            .padding(horizontal = 24.dp)
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState()),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .padding(horizontal = 24.dp)
+                        .fillMaxSize()
                 ) {
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                   Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .verticalScroll(rememberScrollState()),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Column(
-                            modifier = Modifier.weight(1f),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            Image(
-                                painter =
-                                    rememberAsyncImagePainter(
+                            Column(
+                                modifier = Modifier.weight(1f),
+                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                Image(
+                                    painter = rememberAsyncImagePainter(
                                         model = beneficiary.image,
                                         placeholder = painterResource(id = R.drawable.ic_beneficiary_icon),
-                                        error = painterResource(id = R.drawable.img_arca_logo),
+                                        error = painterResource(id = R.drawable.img_arca_logo)
                                     ),
-                                contentDescription = "Foto de $beneficiary.name",
-                                modifier =
-                                    Modifier
+                                    contentDescription = "Foto de ${beneficiary.name}",
+                                    modifier = Modifier
                                         .size(150.dp)
                                         .clip(RoundedCornerShape(16.dp)),
-                                contentScale = ContentScale.Crop,
-                            )
-                            // APPLY .orEmpty() to convert null in ""
-                            DetailTextRow(label = "Fecha de nacimiento:", value = beneficiary.birthdate.orEmpty())
-                            DetailTextRow(label = "Fecha de ingreso:", value = beneficiary.entryDate.orEmpty())
-                            StatusField(isActive = beneficiary.status == 1)
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+
+                            Column(
+                                modifier = Modifier.weight(1f),
+                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                TextValue(label = "Nombre del beneficiario", value = beneficiary.name.orEmpty())
+                                TextValue(label = "Nombre de tutor", value = beneficiary.emergencyName.orEmpty())
+                            }
                         }
 
-                        Column(
-                            modifier = Modifier.weight(1f),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            // APPLY .orEmpty()
-                            DetailTextRow(label = "Nombre de beneficiario:", value = beneficiary.name.orEmpty())
-                            DetailTextRow(label = "Nombre de tutor:", value = beneficiary.emergencyName.orEmpty())
-                            // APPLY .orEmpty()
-                            DetailTextRow(label = "Relación del tutor:", value = beneficiary.emergencyRelation.orEmpty())
-                            // APPLY .orEmpty()
-                            DetailTextRow(label = "Número de teléfono:", value = beneficiary.emergencyNumber.orEmpty())
-                            // APPLY .orEmpty()
-                            DetailTextRow(label = "Discapacidades:", value = beneficiary.disabilities.orEmpty())
+                            Column(modifier = Modifier.weight(1f)) {
+                                TextValue(label = "Fecha de nacimiento", value = beneficiary.birthdate.orEmpty())
+                            }
+                            Column(modifier = Modifier.weight(1f)) {
+                                TextValue(label = "Relación del tutor", value = beneficiary.emergencyRelation.orEmpty())
+                            }
                         }
+
+                       Spacer(modifier = Modifier.height(16.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                TextValue(label = "Fecha de ingreso", value = beneficiary.entryDate.orEmpty())
+                            }
+                            Column(modifier = Modifier.weight(1f)) {
+                                TextValue(label = "Número de teléfono", value = beneficiary.emergencyNumber.orEmpty())
+                            }
+                        }
+                       Spacer(modifier = Modifier.height(16.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                StatusField(isActive = beneficiary.status == 1)
+                            }
+                            Column(modifier = Modifier.weight(1f)) {
+                                TextValue(label = "Discapacidades", value = beneficiary.disabilities.orEmpty())
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                        TextValue(label = "Descripción", value = beneficiary.details.orEmpty())
                     }
-                    // Description Field
-                    Spacer(modifier = Modifier.height(16.dp))
-                    DetailTextRow(
-                        label = "Descripción:",
-                        // APPLY .orEmpty()
-                        value = beneficiary.details.orEmpty(),
-                    )
 
-                    Spacer(modifier = Modifier.height(32.dp))
-
-                    // Action Button
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         DeleteButton(
-                            onClick = onShowDialog,
-                            modifier = Modifier.weight(1f),
-                            cornerRadius = 100.dp,
-                            enabled = !uiState.isDeleting,
+                            modifier = Modifier.size(width = 112.dp, height = 40.dp),
+                            onClick = { onShowDialog() }
                         )
+
+                        Spacer(modifier = Modifier.width(16.dp))
+
                         ModifyButton(
-                            onClick = onModifyClick,
-                            modifier = Modifier.weight(1f),
-                            cornerRadius = 100.dp,
-                            enabled = !uiState.isDeleting,
+                            modifier = Modifier.size(width = 112.dp, height = 40.dp),
+                            onClick = onModifyClick
                         )
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
                 }
             }
         }
@@ -255,72 +283,68 @@ fun StatusField(isActive: Boolean) {
         // Conditional to show the correct atom
         if (isActive) {
             ActiveStatus(
-                modifier = Modifier.padding(top = 4.dp),
+                modifier = Modifier.padding(top = 4.dp)
             )
         } else {
             InactiveStatus(
-                modifier = Modifier.padding(top = 4.dp),
+                modifier = Modifier.padding(top = 4.dp)
             )
         }
     }
 }
 
 @Composable
-fun DetailTextRow(
-    label: String,
-    value: String?,
-) {
+fun DetailTextRow(label: String, value: String?) {
     val safeValue = value?.ifBlank { "No disponible" } ?: "No disponible"
 
     Column(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 8.dp)
     ) {
         Text(
             text = label,
             style = Typography.labelMedium,
-            color = Color.Gray,
+            color = Color.Gray
         )
         Text(
             text = safeValue,
             style = Typography.bodyLarge,
-            color = Color.White,
+            color = Color.White
         )
     }
 }
+
+
 
 @Preview(name = "Activo", showBackground = true, backgroundColor = 0xFF1C1B1F)
 @Composable
 fun BeneficiaryDetailPreviewActive() {
     ArcaByOlimpoTheme {
         BeneficiaryDetailContent(
-            uiState =
-                BeneficiaryDetailUiState(
-                    isScreenLoading = false,
-                    beneficiary =
-                        Beneficiary(
-                            id = "1",
-                            name = "Jiafei Daidai",
-                            birthdate = "01/01/1990",
-                            emergencyNumber = "1234567890",
-                            emergencyName = "Juan",
-                            emergencyRelation = "Padre",
-                            details = "Detalles del beneficiario",
-                            entryDate = "01/01/2023",
-                            image = "",
-                            disabilities = "Sí",
-                            status = 1,
-                        ),
-                ),
+            uiState = BeneficiaryDetailUiState(
+                isScreenLoading = false,
+                beneficiary = Beneficiary(
+                    id = "1",
+                    name = "Jiafei Daidai",
+                    birthdate = "01/01/1990",
+                    emergencyNumber = "1234567890",
+                    emergencyName = "Juan",
+                    emergencyRelation = "Padre",
+                    details = "Detalles del beneficiario",
+                    entryDate = "01/01/2023",
+                    image = "",
+                    disabilities = "Sí",
+                    status = 1
+                )
+            ),
             snackbarHostState = remember { SnackbarHostState() },
             showDeleteDialog = false,
             onBackClick = {},
             onModifyClick = {},
             onDeleteClick = {},
             onShowDialog = {},
-            onDismissDialog = {},
+            onDismissDialog = {}
         )
     }
 }
@@ -330,31 +354,29 @@ fun BeneficiaryDetailPreviewActive() {
 fun BeneficiaryDetailPreviewInactive() {
     ArcaByOlimpoTheme {
         BeneficiaryDetailContent(
-            uiState =
-                BeneficiaryDetailUiState(
-                    isScreenLoading = false,
-                    beneficiary =
-                        Beneficiary(
-                            id = "1",
-                            name = "Jiafei Daidai",
-                            birthdate = "01/01/1990",
-                            emergencyNumber = "1234567890",
-                            emergencyName = "Juan",
-                            emergencyRelation = "Padre",
-                            details = "Detalles del beneficiario",
-                            entryDate = "01/01/2023",
-                            image = "",
-                            disabilities = "Sí",
-                            status = 0,
-                        ),
-                ),
+            uiState = BeneficiaryDetailUiState(
+                isScreenLoading = false,
+                beneficiary = Beneficiary(
+                    id = "1",
+                    name = "Jiafei Daidai",
+                    birthdate = "01/01/1990",
+                    emergencyNumber = "1234567890",
+                    emergencyName = "Juan",
+                    emergencyRelation = "Padre",
+                    details = "Detalles del beneficiario",
+                    entryDate = "01/01/2023",
+                    image = "",
+                    disabilities = "Sí",
+                    status = 0
+                )
+            ),
             snackbarHostState = remember { SnackbarHostState() },
             showDeleteDialog = false,
             onBackClick = {},
             onModifyClick = {},
             onDeleteClick = {},
             onShowDialog = {},
-            onDismissDialog = {},
+            onDismissDialog = {}
         )
     }
 }

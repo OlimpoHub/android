@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:standard:no-wildcard-imports")
+
 package com.app.arcabyolimpo.presentation.screens.workshop
 
 import android.net.Uri
@@ -15,22 +17,21 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.app.arcabyolimpo.presentation.navigation.Screen
-import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardInput
-import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SelectInput
-import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.ImageUploadInput
-import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
-import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SaveButton
-import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.CancelButton
-import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.CalendarIcon
-import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardIconInput
-import com.app.arcabyolimpo.ui.theme.Background
-import com.app.arcabyolimpo.ui.theme.White
-import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
+import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.CancelButton
+import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SaveButton
+import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.CalendarIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.DescriptionInput
+import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.ImageUploadInput
+import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SelectInput
+import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardIconInput
+import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardInput
+import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
+import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
+import com.app.arcabyolimpo.ui.theme.Background
+import com.app.arcabyolimpo.ui.theme.White
 import kotlinx.coroutines.launch
-
 
 /**
  * Composable screen that displays the registrations of new workshops.
@@ -50,7 +51,7 @@ import kotlinx.coroutines.launch
 fun AddNewWorkshopScreen(
     navController: NavHostController,
     viewModel: AddNewWorkshopViewModel = hiltViewModel(),
-    onSuccess: (() -> Unit)? = null
+    onSuccess: (() -> Unit)? = null,
 ) {
     ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false) {
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -75,20 +76,21 @@ fun AddNewWorkshopScreen(
                 SnackbarHost(snackbarHostState) { data ->
                     Snackbarcustom(
                         title = data.visuals.message,
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.padding(16.dp),
                     )
                 }
             },
-            bottomBar = { NavBar() }
+            bottomBar = { NavBar() },
         ) { padding ->
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(padding)
+                        .verticalScroll(rememberScrollState())
+                        .padding(16.dp),
                 verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start
+                horizontalAlignment = Alignment.Start,
             ) {
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -98,7 +100,7 @@ fun AddNewWorkshopScreen(
                     style = MaterialTheme.typography.headlineLarge,
                     color = White,
                     modifier = Modifier.padding(bottom = 16.dp),
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -110,7 +112,7 @@ fun AddNewWorkshopScreen(
                     value = formData.name,
                     onValueChange = { viewModel.updateFormData { copy(name = it) } },
                     isError = fieldErrors["name"] == true,
-                    errorMessage = null
+                    errorMessage = null,
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -118,21 +120,22 @@ fun AddNewWorkshopScreen(
                 /** Trainings */
                 SelectInput(
                     label = "Capacitación",
-                    selectedOption = trainings.firstOrNull { it.id == formData.idTraining }?.name
-                        ?: "",
+                    selectedOption =
+                        trainings.firstOrNull { it.id == formData.idTraining }?.name
+                            ?: "",
                     options = trainings.map { it.name },
                     onOptionSelected = { selectedName ->
                         val selectedTraining = trainings.find { it.name == selectedName }
                         viewModel.updateFormData { copy(idTraining = selectedTraining?.id ?: "") }
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    isError = fieldErrors["idTraining"] == true
+                    isError = fieldErrors["idTraining"] == true,
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     /** Start Hour */
                     StandardIconInput(
@@ -145,7 +148,7 @@ fun AddNewWorkshopScreen(
                         trailingIcon = {
                             CalendarIcon(tint = MaterialTheme.colorScheme.onSurface)
                         },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
                     )
 
                     /** Finish Hour*/
@@ -159,7 +162,7 @@ fun AddNewWorkshopScreen(
                         trailingIcon = {
                             CalendarIcon(tint = MaterialTheme.colorScheme.onSurface)
                         },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
                     )
                 }
 
@@ -172,7 +175,7 @@ fun AddNewWorkshopScreen(
                     value = formData.date,
                     onValueChange = { viewModel.updateFormData { copy(date = it) } },
                     isError = fieldErrors["date"] == true,
-                    errorMessage = null
+                    errorMessage = null,
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -184,7 +187,7 @@ fun AddNewWorkshopScreen(
                     value = formData.description,
                     onValueChange = { viewModel.updateFormData { copy(description = it) } },
                     isError = fieldErrors["description"] == true,
-                    errorMessage = null
+                    errorMessage = null,
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -192,8 +195,10 @@ fun AddNewWorkshopScreen(
                 /** User */
                 SelectInput(
                     label = "Usuario",
-                    selectedOption = users.firstOrNull { it.id == formData.idUser }
-                        ?.let { "${it.name} ${it.lastName}" } ?: "",
+                    selectedOption =
+                        users
+                            .firstOrNull { it.id == formData.idUser }
+                            ?.let { "${it.name} ${it.lastName}" } ?: "",
                     options = users.map { "${it.name} ${it.lastName}" },
                     onOptionSelected = { selectedName ->
                         val selectedUser =
@@ -201,7 +206,7 @@ fun AddNewWorkshopScreen(
                         viewModel.updateFormData { copy(idUser = selectedUser?.id ?: "") }
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    isError = fieldErrors["idUser"] == true
+                    isError = fieldErrors["idUser"] == true,
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -216,7 +221,7 @@ fun AddNewWorkshopScreen(
                         viewModel.updateFormData { copy(image = uri?.toString().orEmpty()) }
                     },
                     isError = false,
-                    errorMessage = null
+                    errorMessage = null,
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -225,12 +230,12 @@ fun AddNewWorkshopScreen(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-
                     /** Cancel */
                     CancelButton(
-                        modifier = Modifier
-                            .size(width = 112.dp, height = 40.dp),
-                        onClick = { navController.navigate(Screen.WorkshopsList.route) }
+                        modifier =
+                            Modifier
+                                .size(width = 112.dp, height = 40.dp),
+                        onClick = { navController.navigate(Screen.WorkshopsList.route) },
                     )
 
                     Spacer(modifier = Modifier.width(16.dp))
@@ -239,7 +244,7 @@ fun AddNewWorkshopScreen(
                     SaveButton(
                         onClick = { showConfirmDialog = true },
                         width = 112.dp,
-                        height = 40.dp
+                        height = 40.dp,
                     )
 
                     if (showConfirmDialog) {
@@ -257,28 +262,35 @@ fun AddNewWorkshopScreen(
                             dialogTitle = "Confirmar registro",
                             dialogText = "¿Deseas registrar este taller? Asegúrate de que todos los datos sean correctos.",
                             confirmText = "Confirmar",
-                            dismissText = "Cancelar"
+                            dismissText = "Cancelar",
                         )
                     }
 
                     LaunchedEffect(uiState.isSuccess) {
                         if (uiState.isSuccess) {
-                            scope.launch {
-                                snackbarHostState.showSnackbar("Taller registrado correctamente")
-                            }
-
                             viewModel.resetForm()
+                            navController.previousBackStackEntry
+                                ?.savedStateHandle
+                                ?.set("snackbarMessage", "Taller registrado correctamente")
+                            navController.previousBackStackEntry
+                                ?.savedStateHandle
+                                ?.set("snackbarSuccess", true)
+                            navController.popBackStack()
                         }
                     }
-
 
                     LaunchedEffect(uiState.error) {
-                        if (uiState.error != null) {
-                            scope.launch {
-                                snackbarHostState.showSnackbar("Error: ${uiState.error}")
-                            }
+                        uiState.error?.let { error ->
+                            navController.previousBackStackEntry
+                                ?.savedStateHandle
+                                ?.set("snackbarMessage", "Error: $error")
+                            navController.previousBackStackEntry
+                                ?.savedStateHandle
+                                ?.set("snackbarSuccess", false)
+                            navController.popBackStack()
                         }
                     }
+
 
                     Spacer(modifier = Modifier.height(80.dp))
                 }

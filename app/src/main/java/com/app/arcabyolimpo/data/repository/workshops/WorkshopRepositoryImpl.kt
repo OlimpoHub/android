@@ -63,8 +63,6 @@ class WorkshopRepositoryImpl
         return response.toDomain()
     }
 
-
-
     /**
      * Post a list of all the data needed for creating a new workshop.
      *
@@ -87,6 +85,20 @@ class WorkshopRepositoryImpl
             finishHour = newWorkshop.finishHour,
             date = newWorkshop.date
         )
+    }
+
+    /**
+     * Retrieves the information for a specific workshop by its [name].
+     *
+     * This function calls the API to obtain the corresponding [WorkshopDto]
+     * and converts it into a [Workshop] domain model using the [toDomain] mapper.
+     *
+     * @param name The name of the workshop to retrieve.
+     * @return A [Workshop] object containing detailed workshop information.
+     */
+    override suspend fun searchWorkshop(name: String): List<Workshop> {
+        val response = api.searchWorkshops(name)
+        return response.map { it.toDomain() }
     }
 
 }
