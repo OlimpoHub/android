@@ -28,19 +28,15 @@ import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecove
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
 import com.app.arcabyolimpo.presentation.screens.product.ProductAddScreen
+import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDeleteTestScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchDetail.ProductBatchDetailScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchRegister.ProductBatchRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchesList.ProductBatchesListScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
-import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
-import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
-import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
-import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
-import com.app.arcabyolimpo.presentation.screens.product.ProductAddScreen
-import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDeleteTestScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
+import com.app.arcabyolimpo.presentation.screens.supply.supplybatchmodify.SupplyBatchModifyScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplybatchregister.SupplyBatchRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
@@ -130,6 +126,10 @@ sealed class Screen(
     object ProductAdd : Screen("product/add")
 
     object ProductDeleteTest : Screen("test_delete_product")
+
+    object SupplyBatchModify : Screen("supply_batch_modify/{id}") {
+        fun createRoute(id: String) = "supply_batch_modify/$id"
+    }
 }
 
 /**
@@ -486,6 +486,17 @@ fun ArcaNavGraph(
             )
         }
 
+        /**
+         * Supply Batch Register Screen.
+         *
+         * This composable represents the screen where users can view and interact with
+         * the register of a new supply batch.
+         *
+         * It connects to the [SupplyBatchRegisterScreen] composable, which displays the UI and
+         * interacts with its corresponding [SupplyBatchRegisterViewModel] to handle data fetching,
+         * loading states, and errors.
+         *
+         */
         composable(
             Screen.RegisterBatchSupply.route,
             arguments = listOf(navArgument("supplyId") { type = NavType.StringType }),
@@ -502,6 +513,22 @@ fun ArcaNavGraph(
                 },
             )
         }
+
+        composable(
+            Screen.SupplyBatchModify.route,
+            arguments = listOf(navArgument("id") { type = NavType.StringType }),
+        ) {
+            SupplyBatchModifyScreen(
+                supplyBatchId = id,
+                onUpdateClick = {
+                    navController.popBackStack()
+                },
+                onBackClick = {
+                    navController.popBackStack()
+                },
+            )
+        }
+
         composable(
             route = Screen.SupplyDetail.route,
             arguments = listOf(navArgument("idSupply") { type = NavType.StringType }),
@@ -639,7 +666,5 @@ fun ArcaNavGraph(
                 },
             )
         }
-
     }
 }
-

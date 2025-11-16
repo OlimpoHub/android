@@ -1,22 +1,16 @@
-@file:Suppress("ktlint:standard:import-ordering")
-
-package com.app.arcabyolimpo.presentation.screens.supply.supplybatchregister
+package com.app.arcabyolimpo.presentation.screens.supply.supplybatchmodify
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 // Card removed as requested; layout uses plain Column now
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import com.app.arcabyolimpo.presentation.theme.Typography
-import com.app.arcabyolimpo.ui.theme.ErrorRed
 import com.app.arcabyolimpo.ui.theme.PrimaryBlue
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -24,13 +18,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.background
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
@@ -43,22 +34,15 @@ import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.CancelButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SaveButton
-import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SquareAddButton
-import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SquareMinusButton
-import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SelectInput
-import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardInput
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
+import com.app.arcabyolimpo.presentation.screens.supply.supplybatchregister.SupplyBatchRegisterUiState
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.SnackbarVisualsWithError
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
-import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.DateInput
 import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
 import com.app.arcabyolimpo.presentation.ui.components.organisms.SupplyBatchRegisterContent
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
@@ -69,20 +53,20 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun SupplyBatchRegisterScreen(
-    supplyId: String,
+fun SupplyBatchModifyScreen(
+    supplyBatchId: String,
     onRegisterClick: () -> Unit,
     onBackClick: () -> Unit,
-    viewModel: SupplyBatchRegisterViewModel = hiltViewModel(),
+    viewModel: SupplyBatchModifyViewModel = hiltViewModel(),
 ) {
     // Use lifecycle-aware state collection (same pattern as SuppliesListScreen)
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(supplyId) {
-        if (supplyId.isNotEmpty()) {
-            viewModel.onSelectSupply(supplyId)
+    LaunchedEffect(supplyBatchId) {
+        if (supplyBatchId.isNotEmpty()) {
+            viewModel.onSelectSupply(supplyBatchId)
         }
     }
     LaunchedEffect(state.registerSuccess) {
@@ -113,7 +97,7 @@ fun SupplyBatchRegisterScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Registrar Lotes",
+                        text = "Modificar Lotes",
                         color = White,
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Bold,
@@ -134,10 +118,10 @@ fun SupplyBatchRegisterScreen(
         },
         bottomBar = {
             Column {
-                SupplyBatchRegisterBottomBar(
+                SupplyBatchModifyBottomBar(
                     uiState = state,
                     onRegisterClick = {
-                        viewModel.registerBatch()
+                        viewModel.updateBatch()
                         onRegisterClick()
                     },
                     onBackClick = {
@@ -174,8 +158,8 @@ fun SupplyBatchRegisterScreen(
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun SupplyBatchRegisterBottomBar(
-    uiState: SupplyBatchRegisterUiState,
+fun SupplyBatchModifyBottomBar(
+    uiState: SupplyBatchModifyUiState,
     onRegisterClick: () -> Unit,
     onBackClick: () -> Unit,
 ) {
@@ -214,7 +198,7 @@ fun SupplyBatchRegisterPreview() {
         )
 
     val sampleState =
-        SupplyBatchRegisterUiState(
+        SupplyBatchModifyUiState(
             suppliesList = sampleSupplies,
             isLoading = false,
             error = null,
@@ -251,7 +235,7 @@ fun SupplyBatchRegisterPreview() {
             },
             bottomBar = {
                 Column {
-                    SupplyBatchRegisterBottomBar(
+                    SupplyBatchModifyBottomBar(
                         uiState = sampleState,
                         onRegisterClick = {}, // Acciones de mock
                         onBackClick = {}, // Acciones de mock

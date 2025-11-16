@@ -1,13 +1,10 @@
-package com.app.arcabyolimpo.presentation.screens.supply.supplybatchregister
+package com.app.arcabyolimpo.presentation.screens.supply.supplybatchmodify
 
 import com.app.arcabyolimpo.domain.model.supplies.Acquisition
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.presentation.screens.supply.commonSupplyBatch.SupplyBatchUiStateBase
 
-/**
- * UI state for the Supply Batch Register screen.
- */
-data class SupplyBatchRegisterUiState(
+data class SupplyBatchModifyUiState(
     override val suppliesList: List<Supply> = emptyList(),
     override val acquisitionTypes: List<Acquisition> = emptyList(),
     override val selectedSupplyId: String? = null,

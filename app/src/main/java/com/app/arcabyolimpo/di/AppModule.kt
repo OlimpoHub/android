@@ -9,16 +9,16 @@ import com.app.arcabyolimpo.data.remote.interceptor.TokenAuthenticator
 import com.app.arcabyolimpo.data.repository.auth.UserRepositoryImpl
 import com.app.arcabyolimpo.data.repository.beneficiaries.BeneficiaryRepositoryImpl
 import com.app.arcabyolimpo.data.repository.password.PasswordUserRepositoryImpl
-import com.app.arcabyolimpo.data.repository.productbatches.ProductBatchRepositoryImpl
 import com.app.arcabyolimpo.data.repository.product.ProductRepositoryImpl
+import com.app.arcabyolimpo.data.repository.productbatches.ProductBatchRepositoryImpl
 import com.app.arcabyolimpo.data.repository.supplies.SupplyRepositoryImpl
 import com.app.arcabyolimpo.data.repository.user.UsersRepositoryImpl
 import com.app.arcabyolimpo.data.repository.workshops.WorkshopRepositoryImpl
 import com.app.arcabyolimpo.domain.repository.auth.UserRepository
 import com.app.arcabyolimpo.domain.repository.beneficiaries.BeneficiaryRepository
 import com.app.arcabyolimpo.domain.repository.password.PasswordUserRepository
-import com.app.arcabyolimpo.domain.repository.productbatches.ProductBatchRepository
 import com.app.arcabyolimpo.domain.repository.product.ProductRepository
+import com.app.arcabyolimpo.domain.repository.productbatches.ProductBatchRepository
 import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
 import com.app.arcabyolimpo.domain.repository.user.UsersRepository
 import com.app.arcabyolimpo.domain.repository.workshops.WorkshopRepository
@@ -37,7 +37,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    private const val BASE_URL = "http://10.0.2.2:8080/" // LOCALHOST
+    private const val BASE_URL = "https://magen-nonsectional-rosette.ngrok-free.dev/" // LOCALHOST
 
     /**
      * Provides a configured [OkHttpClient] instance.
@@ -174,5 +174,4 @@ object AppModule {
     @Provides
     @Singleton
     fun provideProductBatchRepository(api: ArcaApi): ProductBatchRepository = ProductBatchRepositoryImpl(api)
-
 }
