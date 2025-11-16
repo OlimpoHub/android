@@ -1,26 +1,23 @@
-package com.app.arcabyolimpo.presentation.screens.productbatches.productBatchRegister
+package com.app.arcabyolimpo.presentation.screens.productbatches.productBatchModify
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.arcabyolimpo.domain.usecase.productbatches.RegisterProductBatchUseCase
+import com.app.arcabyolimpo.domain.usecase.productbatches.ModifyProductBatchUseCase
 import com.app.arcabyolimpo.presentation.screens.productbatches.mapper.toDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-/** ViewModel for ProductBatchRegisterScreen.
- * @param registerProductBatchUseCase RegisterProductBatchUseCase -> use case to register a new product batch
-*/
 @HiltViewModel
-class ProductBatchRegisterViewModel
+class ProductBatchModifyViewModel
     @Inject
     constructor(
-        private val registerProductBatchUseCase: RegisterProductBatchUseCase,
+        private val modifyProductBatchModifyUseCase: ModifyProductBatchUseCase,
     ) : ViewModel() {
-        var uiState by mutableStateOf(ProductBatchRegisterUiState())
+        var uiState by mutableStateOf(ProductBatchModifyUiState())
             private set
 
         fun onFieldChange(
@@ -28,7 +25,6 @@ class ProductBatchRegisterViewModel
             value: String,
         ) {
             when (field) {
-                "idProducto" -> uiState = uiState.copy(idProducto = value)
                 "precioVenta" -> uiState = uiState.copy(precioVenta = value)
                 "cantidadProducida" -> uiState = uiState.copy(cantidadProducida = value)
                 "fechaCaducidad" -> uiState = uiState.copy(fechaCaducidad = value)
@@ -36,14 +32,18 @@ class ProductBatchRegisterViewModel
             }
         }
 
-        fun register(onSuccess: () -> Unit) {
+        fun modify(
+            id: String,
+            onSuccess: () -> Unit,
+        ) {
             viewModelScope.launch {
                 try {
                     val newBatch = uiState.toDomain()
-                    registerProductBatchUseCase(newBatch)
+                    println("Arrived to ViewModel Layer, batch: $newBatch, id: $id")
+                    modifyProductBatchModifyUseCase(newBatch, id)
                     onSuccess()
                 } catch (e: Exception) {
-                    uiState = uiState.copy(error = "Error al registrar lote")
+                    uiState = uiState.copy(error = "Error al modificar lote")
                 }
             }
         }

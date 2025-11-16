@@ -6,6 +6,10 @@
 
 ### Added
 - Added function to the delete products button
+- Added US to Register Product Batches
+
+### Fixed
+- Fixed StandardInput missing parameter
 
 ## [0.1.0] - 14/11/2025
 

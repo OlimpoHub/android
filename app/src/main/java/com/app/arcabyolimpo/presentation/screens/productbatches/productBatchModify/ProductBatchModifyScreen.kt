@@ -1,38 +1,29 @@
-package com.app.arcabyolimpo.presentation.screens.productbatches.productBatchRegister
+package com.app.arcabyolimpo.presentation.screens.productbatches.productBatchModify
 
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -41,10 +32,7 @@ import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.CancelButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ModifyButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SaveButton
-import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SquareAddButton
-import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SquareMinusButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.DateInput
-import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.ImageUploadInput
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SelectInput
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardInput
 import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
@@ -52,22 +40,16 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.NumberStepper
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
 
-/** ProductBatchRegisterScreen: Composable screen for registering a new product batch.
- *
- * @param onBackClick () -> Unit -> callback for back navigation
- * @param onCreated () -> Unit -> callback when the product batch is successfully created
- * @param viewModel ProductBatchRegisterViewModel = hiltViewModel() -> ViewModel for managing UI state
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun ProductBatchRegisterScreen(
+fun ProductBatchModifyScreen(
     onBackClick: () -> Unit,
-    onCreated: () -> Unit,
-    viewModel: ProductBatchRegisterViewModel = hiltViewModel(),
+    onModified: () -> Unit,
+    batchId: String,
+    viewModel: ProductBatchModifyViewModel = hiltViewModel(),
 ) {
     val state = viewModel.uiState
-    val products = listOf("p1", "p2", "p3") // Replace with fetchAllProducts
 
     Scaffold(
         containerColor = Background,
@@ -75,7 +57,7 @@ fun ProductBatchRegisterScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Registrar Lote",
+                        text = "Modificar Lote",
                         color = White,
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Bold,
@@ -113,21 +95,10 @@ fun ProductBatchRegisterScreen(
 
             Row(modifier = Modifier.padding(vertical = 40.dp)) {}
 
-            SelectInput(
-                label = "Selecciona el producto",
-                placeholder = "Producto",
-                selectedOption = state.idProducto,
-                options = products,
-                onOptionSelected = { viewModel.onFieldChange("idProducto", it) },
-                modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
-            )
-
             StandardInput(
                 label = "Precio de venta",
                 value = state.precioVenta,
-                onValueChange = {
-                    viewModel.onFieldChange("precioVenta", it)
-                },
+                onValueChange = { viewModel.onFieldChange("precioVenta", it) },
                 placeholder = "0.00",
                 keyboardType = KeyboardType.Decimal,
             )
@@ -135,9 +106,7 @@ fun ProductBatchRegisterScreen(
             NumberStepper(
                 label = "Cantidad producida",
                 value = state.cantidadProducida,
-                onValueChange = {
-                    viewModel.onFieldChange("cantidadProducida", it)
-                },
+                onValueChange = { viewModel.onFieldChange("cantidadProducida", it) },
                 onIncrement = {
                     val newVal = (state.cantidadProducida.toIntOrNull() ?: 0) + 1
                     viewModel.onFieldChange("cantidadProducida", newVal.toString())
@@ -157,20 +126,17 @@ fun ProductBatchRegisterScreen(
                 DateInput(
                     label = "Fecha de Elaboración",
                     value = state.fechaRealizacion,
-                    onValueChange = {
-                        viewModel.onFieldChange("fechaRealizacion", it)
-                    },
+                    onValueChange = { viewModel.onFieldChange("fechaRealizacion", it) },
                     modifier =
                         Modifier
                             .fillMaxWidth()
                             .weight(1f),
                 )
+
                 DateInput(
                     label = "Fecha de Caducidad",
                     value = state.fechaCaducidad,
-                    onValueChange = {
-                        viewModel.onFieldChange("fechaCaducidad", it)
-                    },
+                    onValueChange = { viewModel.onFieldChange("fechaCaducidad", it) },
                     modifier =
                         Modifier
                             .fillMaxWidth()
@@ -205,9 +171,12 @@ fun ProductBatchRegisterScreen(
                             .padding(horizontal = 8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    SaveButton(
+                    ModifyButton(
                         onClick = {
-                            viewModel.register(onSuccess = onCreated)
+                            viewModel.modify(
+                                id = batchId,
+                                onSuccess = onModified,
+                            )
                         },
                     )
                 }
