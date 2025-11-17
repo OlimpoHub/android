@@ -1,11 +1,11 @@
 package com.app.arcabyolimpo.data.remote.api
-
 import com.app.arcabyolimpo.data.remote.dto.auth.LoginRequestDto
 import com.app.arcabyolimpo.data.remote.dto.auth.LoginResponseDto
 import com.app.arcabyolimpo.data.remote.dto.auth.RefreshRequestDto
 import com.app.arcabyolimpo.data.remote.dto.auth.RefreshResponseDto
 import com.app.arcabyolimpo.data.remote.dto.beneficiaries.BeneficiariesListDto
 import com.app.arcabyolimpo.data.remote.dto.beneficiaries.BeneficiaryDto
+import com.app.arcabyolimpo.data.remote.dto.beneficiaries.GetBeneficiariesDisabilitiesDto
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.data.remote.dto.password.RecoverPasswordDto
 import com.app.arcabyolimpo.data.remote.dto.password.RecoverPasswordResponseDto
@@ -209,6 +209,14 @@ interface ArcaApi {
     suspend fun deleteBeneficiary(
         @Path("id") id: String,
     ): Response<Unit>
+
+    @GET("beneficiary/categories")
+    suspend fun getDisabilities(): GetBeneficiariesDisabilitiesDto
+
+    @POST("beneficiary/filter")
+    suspend fun filterBeneficiaries(
+        @Body params: FilterDto,
+    ): List<BeneficiaryDto>
 
     @GET("beneficiary/search")
     suspend fun searchBeneficiaries(

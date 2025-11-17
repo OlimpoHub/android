@@ -5,6 +5,8 @@
  - Add DeleteWorkshop Logic, Data and Domain
  - Add way to get users for workshops
  - Added functionality search beneficiaries
+ - Filter and order beneficiaries functionality
+ - Fixed merge conflicts
 
 ## [0.1.0] - 15/11/2025
 
