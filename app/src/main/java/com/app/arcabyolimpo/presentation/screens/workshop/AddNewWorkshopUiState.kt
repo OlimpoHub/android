@@ -1,6 +1,6 @@
 package com.app.arcabyolimpo.presentation.screens.workshop
 
-import com.app.arcabyolimpo.domain.model.workshops.Workshop
+import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 
 /**
  * UI state model representing the current state of the register workshop screen.
@@ -14,7 +14,7 @@ import com.app.arcabyolimpo.domain.model.workshops.Workshop
  * @property isSuccess Indicates if the action of register the workshop is a success.
  */
 data class AddNewWorkshopUiState(
-    val addNewWorkshop: Workshop? = null,
+    val addNewWorkshop: WorkshopDto? = null,
     val isLoading: Boolean = false,
     val error: String? = null,
     val isSuccess: Boolean = false

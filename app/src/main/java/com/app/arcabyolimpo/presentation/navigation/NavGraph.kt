@@ -20,24 +20,32 @@ import com.app.arcabyolimpo.presentation.common.components.LoadingShimmer
 import com.app.arcabyolimpo.presentation.screens.accountactivation.AccountActivationScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
+import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
 import com.app.arcabyolimpo.presentation.screens.home.assistant.CollaboratorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.home.coordinator.CoordinatorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.login.LoginScreen
 import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecoveryScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
+import com.app.arcabyolimpo.presentation.screens.product.ProductAddScreen
+import com.app.arcabyolimpo.presentation.screens.product.list.ProductsListRoute
+import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDeleteTestScreen
+import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchDetail.ProductBatchDetailScreen
+import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchModify.ProductBatchModifyScreen
+import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchRegister.ProductBatchRegisterScreen
+import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchesList.ProductBatchesListScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
-import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
-import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
-import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
 import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
+import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
+import com.app.arcabyolimpo.presentation.screens.supply.supplybatchregister.SupplyBatchRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
 import com.app.arcabyolimpo.presentation.screens.user.UserListScreen
 import com.app.arcabyolimpo.presentation.screens.user.detail.UserDetailScreen
 import com.app.arcabyolimpo.presentation.screens.user.register.UserRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.workshop.AddNewWorkshopScreen
+import com.app.arcabyolimpo.presentation.screens.workshop.WorkshopDetailScreen
 import com.app.arcabyolimpo.presentation.screens.workshop.WorkshopsListScreen
 
 /**
@@ -84,9 +92,17 @@ sealed class Screen(
 
     object WorkshopsList : Screen("workshop")
 
+    object WorkshopDetail : Screen("workshop/{id}") {
+        fun createRoute(id: String): String = "workshop/$id"
+    }
+
     object AddNewWorkshop : Screen("workshop/add")
 
     object BeneficiaryList : Screen("beneficiary_list")
+
+    object RegisterBatchSupply : Screen("register-batch-supply/{supplyId}") {
+        fun createRoute(supplyId: String) = "register-batch-supply/$supplyId"
+    }
 
     object BeneficiaryDetail : Screen("beneficiary_detail/{beneficiaryId}") {
         fun createRoute(beneficiaryId: String) = "beneficiary_detail/$beneficiaryId"
@@ -97,6 +113,24 @@ sealed class Screen(
     }
 
     object SupplyAdd : Screen("supply/add")
+
+    // object UserList : Screen("user")
+
+    object ProductBatchesList : Screen("product_batches")
+
+    object ProductBatchDetail : Screen("product_batch_detail/{batchId}") {
+        fun createRoute(batchId: String) = "product_batch_detail/$batchId"
+    }
+
+    object ProductBatchRegister : Screen("product_batch_register")
+
+    object ProductBatchModify : Screen("product_batch_modify/{batchId}") {
+        fun createRoute(batchId: String) = "product_batch_modify/$batchId"
+    }
+
+    object ProductAdd : Screen("product/add")
+
+    object ProductDeleteTest : Screen("test_delete_product")
 }
 
 /**
@@ -133,7 +167,8 @@ fun ArcaNavGraph(
     /** Defines all navigation. The start destination is the Splash screen. */
     NavHost(
         navController = navController,
-        startDestination = Screen.SuppliesList.route,
+        // TODO: Cambiar a Screen.Splash.route cuando acabe
+        startDestination = Screen.Splash.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -152,6 +187,7 @@ fun ArcaNavGraph(
                         navController.navigate(Screen.CollaboratorHome.route) {
                             popUpTo(Screen.Splash.route) { inclusive = true }
                         }
+
                     null ->
                         navController.navigate(Screen.Login.route) {
                             popUpTo(Screen.Splash.route) { inclusive = true }
@@ -383,8 +419,29 @@ fun ArcaNavGraph(
         composable(Screen.WorkshopsList.route) {
             WorkshopsListScreen(
                 navController = navController,
-                workshopClick = {},
+                workshopClick = { id ->
+                    navController.navigate(Screen.WorkshopDetail.createRoute(id))
+                },
             )
+        }
+
+        /**
+         * Workshops Detail Screen.
+         *
+         * This composable represents the screen where users can view and interact with
+         * the detail of a workshop.
+         *
+         * It connects to the [WorkshopDetailScreen] composable, which displays the UI and
+         * interacts with its corresponding [WorkshopDetailViewModel] to handle data fetching,
+         * loading states, and errors.
+         *
+         */
+        composable(
+            route = Screen.WorkshopDetail.route,
+            arguments = listOf(navArgument("id") { type = NavType.StringType }),
+        ) { backStackEntry ->
+            val workshopId = backStackEntry.arguments?.getString("id") ?: ""
+            WorkshopDetailScreen(navController, workshopId)
         }
 
         /**
@@ -426,10 +483,26 @@ fun ArcaNavGraph(
                 },
                 onAddSupplyClick = {
                     navController.navigate(Screen.SupplyAdd.route)
-                }
+                },
             )
         }
 
+        composable(
+            Screen.RegisterBatchSupply.route,
+            arguments = listOf(navArgument("supplyId") { type = NavType.StringType }),
+        ) { backStackEntry ->
+            val supplyId = backStackEntry.arguments?.getString("supplyId") ?: ""
+
+            SupplyBatchRegisterScreen(
+                supplyId = supplyId,
+                onRegisterClick = {
+                    navController.popBackStack()
+                },
+                onBackClick = {
+                    navController.popBackStack()
+                },
+            )
+        }
         composable(
             route = Screen.SupplyDetail.route,
             arguments = listOf(navArgument("idSupply") { type = NavType.StringType }),
@@ -439,7 +512,7 @@ fun ArcaNavGraph(
                 idInsumo = idSupply ?: "",
                 onBackClick = { navController.popBackStack() },
                 onClickAddSupplyBatch = {
-                    // TODO: Add when add a supply batch is ready
+                    navController.navigate(Screen.RegisterBatchSupply.createRoute(idSupply ?: ""))
                 },
                 onClickDelete = {
                     // TODO: Add when delete a supply is ready
@@ -461,7 +534,8 @@ fun ArcaNavGraph(
          * Shows the grid of beneficiaries.
          */
         composable(Screen.BeneficiaryList.route) {
-            BeneficiaryList(
+            BeneficiaryListScreen(
+                navController = navController,
                 onBeneficiaryClick = { beneficiaryId ->
                     navController.navigate(Screen.BeneficiaryDetail.createRoute(beneficiaryId))
                 },
@@ -498,7 +572,100 @@ fun ArcaNavGraph(
                 },
                 onCancel = {
                     navController.popBackStack()
-                }
+                },
+            )
+        }
+
+        /**
+         * Product Batches List Screen.
+         *
+         * Displays a list of product batches and allows navigation to details or registration.
+         * DetailClick -> navigates to ProductBatchDetailScreen
+         * AddClick -> navigates to ProductBatchRegisterScreen
+         */
+        composable(Screen.ProductBatchesList.route) {
+            ProductBatchesListScreen(
+                onBackClick = { navController.popBackStack() },
+                onDetailClick = { id ->
+                    navController.navigate(Screen.ProductBatchDetail.createRoute(id))
+                },
+                onAddClick = {
+                    navController.navigate(Screen.ProductBatchRegister.route)
+                },
+            )
+        }
+
+        /**
+         * Product Batches Detail Screen.
+         *
+         * Displays a view of product batch.
+         */
+        composable(
+            route = Screen.ProductBatchDetail.route,
+            arguments = listOf(navArgument("batchId") { type = NavType.StringType }),
+        ) { backStackEntry ->
+            val batchId = backStackEntry.arguments?.getString("batchId") ?: ""
+            ProductBatchDetailScreen(
+                batchId = batchId,
+                onModifyClick = { id ->
+                    navController.navigate(Screen.ProductBatchModify.createRoute(id))
+                },
+                onBackClick = { navController.popBackStack() },
+            )
+        }
+
+        /**
+         * Product Batches Register Screen.
+         *
+         * Allows the registration of a new product batch.
+         */
+        composable(Screen.ProductBatchRegister.route) {
+            ProductBatchRegisterScreen(
+                onCreated = { navController.popBackStack() },
+                onBackClick = { navController.popBackStack() },
+            )
+        }
+
+        /**
+         * Product Batches Modify Screen.
+         *
+         * Allows the modification of a defined product batch.
+         */
+        composable(
+            route = Screen.ProductBatchModify.route,
+            arguments = listOf(navArgument("batchId") { type = NavType.StringType }),
+        ) { backStackEntry ->
+            val batchId = backStackEntry.arguments?.getString("batchId") ?: ""
+            ProductBatchModifyScreen(
+                batchId = batchId,
+                onModified = { navController.popBackStack() },
+                onBackClick = { navController.popBackStack() },
+            )
+        }
+
+        composable(Screen.ProductAdd.route) {
+            ProductAddScreen(
+                onSaveSuccess = {
+                    navController.popBackStack()
+                },
+                onCancel = {
+                    navController.popBackStack()
+                },
+            )
+        }
+
+        composable("products_list") {
+            ProductsListRoute(
+                onProductClick = { /* ir a detalle si quieres */ },
+                onBackClick = { navController.popBackStack() },
+            )
+        }
+
+        composable(Screen.ProductDeleteTest.route) {
+            ProductDeleteTestScreen(
+                onDeleted = {
+                    navController.popBackStack()
+                },
             )
         }
     }

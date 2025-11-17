@@ -70,11 +70,15 @@ fun SuppliesDetailScreen(
     deleteSupplyBatch: () -> Unit,
     viewModel: SuppliesDetailViewModel = hiltViewModel(),
 ) {
-    //val navController = rememberNavController()
+    // State of the snackbar that will handle all messages on the screen.
     val snackbarHostState = remember { SnackbarHostState() }
+    // We use it to launch the coroutine that displays the snackbar.
     val scope = rememberCoroutineScope()
+    // We collect the state exposed by the ViewModel, reacting to changes
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    // In this case, if there is no error in the uiState,
+    // we consider it a success.
     val haserror = if (uiState.error == null){
         true
     }else {
@@ -85,6 +89,8 @@ fun SuppliesDetailScreen(
         viewModel.getSupply(idInsumo)
     }
 
+    // Effect triggered when the uiState.snackbarVisible flag changes.
+    // If true, the snackbar is displayed and the system waits to dismiss it.
     LaunchedEffect(uiState.snackbarVisible) {
 
         if (uiState.snackbarVisible == true){
@@ -92,20 +98,22 @@ fun SuppliesDetailScreen(
             scope.launch {
 
                 val result =
-                snackbarHostState.showSnackbar(
+                    snackbarHostState.showSnackbar(
                     SnackbarVisualsWithError(
                         "Insumo Borrado Correctamente",
+                        // isError controls the visual style (red/blue)
                         isError = true,
                     ),
                 )
+                // When the snack bar ends, we act according to the result
                 when (result){
                     SnackbarResult.Dismissed -> {
                         //Tell the VM that the visible snackbar is finished
                         viewModel.onSnackbarShown()
 
-                        //Navigate back as soon as the snack bar is empty
+                        //Navigate back as soon as the snack bar is finished
                         onBackClick()
-                        //navController.popBackStack()
+
                     }
                     SnackbarResult.ActionPerformed -> {}
                 }
@@ -113,11 +121,14 @@ fun SuppliesDetailScreen(
         }
     }
 
+    // Displays a confirmation dialog when the user wants to delete an item.
     if (uiState.decisionDialogVisible == true){
         DecisionDialog(
+            // The dialogue closes without any action being taken.
             onDismissRequest = {
                 viewModel.toggledecisionDialog(showdecisionDialog = false)
             },
+            // If the user confirms, the ViewModel is called to delete the input
             onConfirmation = {
                 viewModel.deleteOneSupply(idInsumo)
             },
@@ -130,14 +141,13 @@ fun SuppliesDetailScreen(
 
 
     Scaffold(
-
+        // Host del snackbar para la pantalla.
         snackbarHost = {
             SnackbarHost(snackbarHostState) { data ->
                 // Every time a snackbar is displayed, our custom component is called
                 Snackbarcustom(
                     data.visuals.message.toString(),
                     modifier = Modifier,
-                    // This can be replaced with logic to validate
                     // the type of snack bar (whether it's red or blue).
                     ifSucces = haserror,
                 )
@@ -202,6 +212,7 @@ fun SuppliesDetailScreen(
                         supply = uiState.supplyBatchList!!,
                         onClickAddSupplyBatch = onClickAddSupplyBatch,
                         onClickDelete = {
+                            // When you press delete in the details, we display the dialog
                             viewModel.toggledecisionDialog(showdecisionDialog = true)
                         },
                         onClickModify = onClickModify,

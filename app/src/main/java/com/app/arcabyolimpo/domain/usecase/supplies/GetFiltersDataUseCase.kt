@@ -22,18 +22,18 @@ import javax.inject.Inject
  * @return A Flow that emits loading, success, or error states containing the filter data.
  */
 class GetFiltersDataUseCase
-    @Inject
-    constructor(
-        private val repository: SupplyRepository,
-    ) {
-        operator fun invoke(): Flow<Result<FilterData>> =
-            flow {
-                try {
-                    emit(Result.Loading)
-                    val filter = repository.getFilterData()
-                    emit(Result.Success(filter))
-                } catch (e: Exception) {
-                    emit(Result.Error(e))
-                }
+@Inject
+constructor(
+    private val repository: SupplyRepository,
+) {
+    operator fun invoke(): Flow<Result<FilterData>> =
+        flow {
+            try {
+                emit(Result.Loading)
+                val filter = repository.getFilterData()
+                emit(Result.Success(filter))
+            } catch (e: Exception) {
+                emit(Result.Error(e))
             }
-    }
+        }
+}
