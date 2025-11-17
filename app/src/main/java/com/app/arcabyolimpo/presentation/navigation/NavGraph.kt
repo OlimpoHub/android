@@ -19,7 +19,6 @@ import com.app.arcabyolimpo.domain.model.auth.UserRole
 import com.app.arcabyolimpo.presentation.common.components.LoadingShimmer
 import com.app.arcabyolimpo.presentation.screens.accountactivation.AccountActivationScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
-import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
 import com.app.arcabyolimpo.presentation.screens.home.assistant.CollaboratorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.home.coordinator.CoordinatorHomeScreen
@@ -27,19 +26,14 @@ import com.app.arcabyolimpo.presentation.screens.login.LoginScreen
 import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecoveryScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
-import com.app.arcabyolimpo.presentation.screens.product.ProductAddScreen
+import com.app.arcabyolimpo.presentation.screens.product.addProduct.ProductAddScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchDetail.ProductBatchDetailScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchRegister.ProductBatchRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchesList.ProductBatchesListScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
-import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
-import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
-import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
-import com.app.arcabyolimpo.presentation.screens.product.ProductAddScreen
 import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDeleteTestScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
-import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplybatchregister.SupplyBatchRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
@@ -167,7 +161,7 @@ fun ArcaNavGraph(
     NavHost(
         navController = navController,
         // TODO: Cambiar a Screen.Splash.route cuando acabe
-        startDestination = Screen.SuppliesList.route,
+        startDestination = Screen.ProductAdd.route,
         modifier = modifier,
     ) {
         /** Splash Screen */

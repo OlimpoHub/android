@@ -1,4 +1,4 @@
-package com.app.arcabyolimpo.presentation.screens.product
+package com.app.arcabyolimpo.presentation.screens.product.addProduct
 
 import android.net.Uri
 import com.app.arcabyolimpo.domain.model.supplies.CategoryInfo

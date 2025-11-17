@@ -1,4 +1,4 @@
-package com.app.arcabyolimpo.presentation.screens.product
+package com.app.arcabyolimpo.presentation.screens.product.updateProduct
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddViewModel
+import com.app.arcabyolimpo.presentation.screens.product.addProduct.AddProductViewModel
 import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.CancelButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SaveButton
@@ -82,7 +82,7 @@ fun ProductAddScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Registrar Producto",
+                        text = "Modificar Producto",
                         color = White,
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Bold,
