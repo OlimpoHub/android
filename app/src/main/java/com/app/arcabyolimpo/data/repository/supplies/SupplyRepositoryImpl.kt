@@ -209,4 +209,53 @@ class SupplyRepositoryImpl
             } catch (e: Exception) {
                 Result.failure(e)
             }
+
+        override suspend fun updateSupply(
+            id: String,
+            supply: SupplyAdd,
+            image: Uri?
+        ): Result<Unit> =
+            try {
+                // Lógica de conversión de imagen (idéntica a addSupply)
+                val imagePart =
+                    image?.let {
+                        val input = context.contentResolver.openInputStream(it)
+                        val bytes = input?.readBytes()
+                        input?.close()
+                        if (bytes != null) {
+                            val requestFile =
+                                bytes.toRequestBody(
+                                    context.contentResolver.getType(it)?.toMediaTypeOrNull(),
+                                )
+                            MultipartBody.Part.createFormData(
+                                "imagenInsumo",
+                                "image.jpg",
+                                requestFile,
+                            )
+                        } else {
+                            null
+                        }
+                    }
+
+                // Lógica de conversión de texto (idéntica a addSupply)
+                val idWorkshop = supply.idWorkshop.toRequestBody("text/plain".toMediaTypeOrNull())
+                val name = supply.name.toRequestBody("text/plain".toMediaTypeOrNull())
+                val measureUnit = supply.measureUnit.toRequestBody("text/plain".toMediaTypeOrNull())
+                val idCategory = supply.idCategory.toRequestBody("text/plain".toMediaTypeOrNull())
+                val status = supply.status.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+
+                // LA ÚNICA DIFERENCIA: Llamamos a 'modifySupply' y pasamos el 'id'
+                api.updateSupply(
+                    idSupply = id,
+                    idWorkshop = idWorkshop,
+                    name = name,
+                    measureUnit = measureUnit,
+                    idCategory = idCategory,
+                    status = status,
+                    imagenInsumo = imagePart,
+                )
+                Result.success(Unit)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
     }
