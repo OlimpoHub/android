@@ -37,7 +37,14 @@ interface SupplyRepository {
     
     suspend fun deleteSupplyBatch(id: String)
 
-    // Yo uso Update
+    /**
+     * Deletes a single supply identified by its [id].
+     *
+     * A simple function so that the domain or presentation layer
+     * can request the deletion of an Supply.
+     *
+     * @param id Unique identifier of the supply to be deleted.
+     */
     suspend fun deleteOneSupply(id: String)
     suspend fun getWorkshopCategoryList(): Result<WorkshopCategoryList>
 
