@@ -117,4 +117,24 @@ class BeneficiaryRepositoryImpl
                 )
             }
         }
+
+        /**
+         * Retrieves a list of beneficiaries matching the search query.
+         *
+         * This function calls the API's search endpoint and maps the resulting
+         * list of [BeneficiaryDto] objects to domain [Beneficiary] models
+         * using the existing [toDomain] mapper
+         *
+         * @param query The search term
+         * @return A list of [Beneficiary] domain models.
+         */
+        override suspend fun searchBeneficiaries(query: String): List<Beneficiary> =
+            try {
+                val dtoList = api.searchBeneficiaries(query)
+                dtoList.map { it.toDomain() }
+            } catch (e: HttpException) {
+                throw e
+            } catch (e: IOException) {
+                throw e
+            }
     }

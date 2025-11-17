@@ -16,7 +16,6 @@ package com.app.arcabyolimpo.data.remote.dto.workshops
  */
 data class WorkshopFormData (
     val id: String = "",
-    val idTraining: String = "",
     val name: String = "",
     val startHour: String = "",
     val finishHour: String = "",
@@ -24,5 +23,6 @@ data class WorkshopFormData (
     val idUser: String = "",
     val description: String = "",
     val date: String = "",
-    val image: String = ""
+    val image: String = "",
+    val videoTraining: String = ""
 )

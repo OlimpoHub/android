@@ -28,8 +28,10 @@ import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecove
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
 import com.app.arcabyolimpo.presentation.screens.product.ProductAddScreen
+import com.app.arcabyolimpo.presentation.screens.product.list.ProductsListRoute
 import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDeleteTestScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchDetail.ProductBatchDetailScreen
+import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchModify.ProductBatchModifyScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchRegister.ProductBatchRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchesList.ProductBatchesListScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
@@ -122,6 +124,10 @@ sealed class Screen(
 
     object ProductBatchRegister : Screen("product_batch_register")
 
+    object ProductBatchModify : Screen("product_batch_modify/{batchId}") {
+        fun createRoute(batchId: String) = "product_batch_modify/$batchId"
+    }
+
     object ProductAdd : Screen("product/add")
 
     object ProductDeleteTest : Screen("test_delete_product")
@@ -162,7 +168,7 @@ fun ArcaNavGraph(
     NavHost(
         navController = navController,
         // TODO: Cambiar a Screen.Splash.route cuando acabe
-        startDestination = Screen.BeneficiaryList.route,
+        startDestination = Screen.Splash.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -529,6 +535,7 @@ fun ArcaNavGraph(
          */
         composable(Screen.BeneficiaryList.route) {
             BeneficiaryListScreen(
+                navController = navController,
                 onBeneficiaryClick = { beneficiaryId ->
                     navController.navigate(Screen.BeneficiaryDetail.createRoute(beneficiaryId))
                 },
@@ -600,6 +607,9 @@ fun ArcaNavGraph(
             val batchId = backStackEntry.arguments?.getString("batchId") ?: ""
             ProductBatchDetailScreen(
                 batchId = batchId,
+                onModifyClick = { id ->
+                    navController.navigate(Screen.ProductBatchModify.createRoute(id))
+                },
                 onBackClick = { navController.popBackStack() },
             )
         }
@@ -616,6 +626,23 @@ fun ArcaNavGraph(
             )
         }
 
+        /**
+         * Product Batches Modify Screen.
+         *
+         * Allows the modification of a defined product batch.
+         */
+        composable(
+            route = Screen.ProductBatchModify.route,
+            arguments = listOf(navArgument("batchId") { type = NavType.StringType }),
+        ) { backStackEntry ->
+            val batchId = backStackEntry.arguments?.getString("batchId") ?: ""
+            ProductBatchModifyScreen(
+                batchId = batchId,
+                onModified = { navController.popBackStack() },
+                onBackClick = { navController.popBackStack() },
+            )
+        }
+
         composable(Screen.ProductAdd.route) {
             ProductAddScreen(
                 onSaveSuccess = {
@@ -624,6 +651,13 @@ fun ArcaNavGraph(
                 onCancel = {
                     navController.popBackStack()
                 },
+            )
+        }
+
+        composable("products_list") {
+            ProductsListRoute(
+                onProductClick = { /* ir a detalle si quieres */ },
+                onBackClick = { navController.popBackStack() },
             )
         }
 

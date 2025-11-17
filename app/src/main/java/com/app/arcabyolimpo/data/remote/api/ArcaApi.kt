@@ -1,5 +1,4 @@
 package com.app.arcabyolimpo.data.remote.api
-
 import com.app.arcabyolimpo.data.remote.dto.auth.LoginRequestDto
 import com.app.arcabyolimpo.data.remote.dto.auth.LoginResponseDto
 import com.app.arcabyolimpo.data.remote.dto.auth.RefreshRequestDto
@@ -13,9 +12,11 @@ import com.app.arcabyolimpo.data.remote.dto.password.RecoverPasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
-import com.app.arcabyolimpo.data.remote.dto.supplies.AcquisitionDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchDto
+import com.app.arcabyolimpo.data.remote.dto.product.ProductDto
+import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchModifyDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchRegisterDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.AcquisitionDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteResponseDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
@@ -29,6 +30,8 @@ import com.app.arcabyolimpo.data.remote.dto.user.UserDto
 import com.app.arcabyolimpo.data.remote.dto.user.registeruser.RegisterResponseDto
 import com.app.arcabyolimpo.data.remote.dto.user.registeruser.RegisterUserDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.AddNewWorkshopDto
+import com.app.arcabyolimpo.data.remote.dto.workshops.DeleteResponseWorkshopDto
+import com.app.arcabyolimpo.data.remote.dto.workshops.DeleteWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
 import okhttp3.MultipartBody
@@ -39,10 +42,10 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
-
 
 /**
  * Defines the remote API endpoints.
@@ -134,11 +137,21 @@ interface ArcaApi {
         @Path("id") id: String,
     )
 
-    // My route is a soft delete and an update
+    /**
+     * Deletes a single supply from the backend.
+     *
+     * This endpoint receives a [DeleteDto] with the information needed
+     * to identify which supply should be removed ( its ID).
+     *
+     * @param requestBody Data transfer object that contains the supply
+     * information required by the API to perform the delete operation.
+     * @return [DeleteResponseDto] containing the result of the delete
+     * operation, such as a success flag and/or a confirmation message.
+     */
     @POST("supplies/delete")
     suspend fun deleteOneSupply(
         @Body requestBody: DeleteDto,
-        // DeleteResponseDto es para la respuesta , para el snackbar
+        // DeleteResponseDto is for the response, for the snackbar
     ): DeleteResponseDto
 
     // Workshop ---------------------------
@@ -148,7 +161,7 @@ interface ArcaApi {
 
     @GET("workshop/search")
     suspend fun searchWorkshops(
-        @Query("nameWorkshop") name: String
+        @Query("nameWorkshop") name: String,
     ): List<WorkshopDto>
 
     @GET("workshop/{id}")
@@ -161,6 +174,25 @@ interface ArcaApi {
         @Body requestBody: WorkshopDto,
     ): AddNewWorkshopDto
 
+    /**
+     * Deletes a single Workshop from the backend.
+     *
+     * This endpoint receives a [DeleteWorkshopDto] with the information needed
+     * to identify which supply should be removed ( its ID).
+     *
+     * @param requestBody Data transfer object that contains the supply
+     * information required by the API to perform the delete operation.
+     * @return [DeleteResponseWorkshopDto] containing the result of the delete
+     * operation, such as a success flag and/or a confirmation message.
+     */
+    @POST("workshop/delete")
+    suspend fun deleteWorkshops(
+        @Body requestBody: DeleteWorkshopDto,
+        // DeleteResponseDto is for the response, for the snackbar
+    ): DeleteResponseWorkshopDto
+
+
+
     // Beneficiary -------------
     @GET("beneficiary/list")
     suspend fun getBeneficiariesList(): List<BeneficiariesListDto>
@@ -170,6 +202,9 @@ interface ArcaApi {
         @Path("id") id: String,
     ): BeneficiaryDto
 
+    /**
+     * Makes a soft delete to the selected beneficiary.
+     */
     @DELETE("beneficiary/{id}")
     suspend fun deleteBeneficiary(
         @Path("id") id: String,
@@ -181,6 +216,11 @@ interface ArcaApi {
     @POST("beneficiary/filter")
     suspend fun filterBeneficiaries(
         @Body params: FilterDto,
+    ): List<BeneficiaryDto>
+
+    @GET("beneficiary/search")
+    suspend fun searchBeneficiaries(
+        @Query("term") searchTerm: String,
     ): List<BeneficiaryDto>
 
     @GET("supplies/workshop/category")
@@ -209,6 +249,13 @@ interface ArcaApi {
     suspend fun addProductBatch(
         @Body batch: ProductBatchRegisterDto,
     )
+
+    @PUT("productBatch/{id}")
+    suspend fun modifyProductBatch(
+        @Path("id") id: String,
+        @Body batch: ProductBatchModifyDto,
+    )
+
     // Products --------------------------
 
     @Multipart
@@ -220,12 +267,19 @@ interface ArcaApi {
         @Part("idCategoria") idCategory: RequestBody,
         @Part("Descripcion") description: RequestBody,
         @Part("Disponible") status: RequestBody,
-        @Part image: MultipartBody.Part?
+        @Part image: MultipartBody.Part?,
     )
-
     @DELETE("product/{idProduct}")
     suspend fun deleteProduct(
         @Path("idProduct") idProduct: String,
     ): Response<Unit>
+
+    @GET("product/")
+    suspend fun getProducts(): List<ProductDto>
+
+    @GET("product/search")
+    suspend fun searchProducts(
+        @Query("q") query: String,
+    ): List<ProductDto>
 
 }

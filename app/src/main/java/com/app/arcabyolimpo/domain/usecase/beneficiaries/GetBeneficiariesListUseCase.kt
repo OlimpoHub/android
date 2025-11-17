@@ -5,6 +5,8 @@ import com.app.arcabyolimpo.domain.model.beneficiaries.Beneficiary
 import com.app.arcabyolimpo.domain.repository.beneficiaries.BeneficiaryRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 
 class GetBeneficiariesListUseCase
@@ -18,7 +20,9 @@ class GetBeneficiariesListUseCase
                 emit(Result.Loading)
                 val beneficiaries = repository.getBeneficiariesList()
                 emit(Result.Success(beneficiaries))
-            } catch (e: Exception) {
+            } catch (e: HttpException) {
+                emit(Result.Error(e))
+            } catch (e: IOException) {
                 emit(Result.Error(e))
             }
         }

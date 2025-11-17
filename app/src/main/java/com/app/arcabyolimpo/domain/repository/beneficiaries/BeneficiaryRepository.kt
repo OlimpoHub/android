@@ -15,4 +15,5 @@ interface BeneficiaryRepository {
     suspend fun getDisabilitiesData(): FilterData
 
     suspend fun filterBeneficiary(params: FilterDto): List<Beneficiary>
+    suspend fun searchBeneficiaries(query: String): List<Beneficiary>
 }

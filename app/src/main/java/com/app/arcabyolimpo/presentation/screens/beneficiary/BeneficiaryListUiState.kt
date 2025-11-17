@@ -17,5 +17,5 @@ data class BeneficiaryListUiState(
     val isLoading: Boolean = false,
     val beneficiaries: List<Beneficiary> = emptyList(),
     val error: String? = null,
-    val searchText: String = "",
+    val searchText: String = ""
 )

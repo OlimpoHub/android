@@ -37,8 +37,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.domain.model.beneficiaries.Beneficiary
+import com.app.arcabyolimpo.presentation.navigation.Screen
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.FilterIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
@@ -55,6 +57,7 @@ import com.app.arcabyolimpo.ui.theme.Background
  */
 @Composable
 fun BeneficiaryListScreen(
+    navController: NavHostController,
     onBeneficiaryClick: (String) -> Unit,
     onFilterClick: () -> Unit,
     onNotificationClick: () -> Unit,
@@ -64,6 +67,7 @@ fun BeneficiaryListScreen(
     val filterState by viewModel.uiFiltersState.collectAsState()
 
     BeneficiaryList(
+        navController = navController,
         state = state,
         filterState = filterState,
         onSearchTextChange = viewModel::onSearchTextChange,
@@ -85,6 +89,7 @@ fun BeneficiaryListScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BeneficiaryList(
+    navController: NavHostController,
     state: BeneficiaryListUiState,
     filterState: BeneficiaryFilterUiState,
     onSearchTextChange: (String) -> Unit,
@@ -111,7 +116,7 @@ fun BeneficiaryList(
                             )
                         },
                         navigationIcon = {
-                            IconButton(onClick = { }) {
+                            IconButton(onClick = { navController.navigate(Screen.CoordinatorHome.route) }) {
                                 Icon(
                                     imageVector = Icons.Default.ArrowBack,
                                     contentDescription = "Regresar",
@@ -157,7 +162,7 @@ fun BeneficiaryList(
                     ) {
                         SearchInput(
                             value = state.searchText,
-                            onValueChange = { onSearchTextChange(it) },
+                            onValueChange = onSearchTextChange,
                             modifier =
                                 Modifier
                                     .weight(1f)
@@ -174,7 +179,8 @@ fun BeneficiaryList(
 
                     val hasActiveFilters = filterState.selectedFilters.filters.any { it.value.isNotEmpty() }
 
-                    val isDefaultOrder = filterState.selectedFilters.order.isNullOrBlank() ||
+                    val isDefaultOrder =
+                        filterState.selectedFilters.order.isNullOrBlank() ||
                             filterState.selectedFilters.order == "ASC"
 
                     val hasOrderOnly = !hasActiveFilters && !isDefaultOrder
@@ -186,7 +192,7 @@ fun BeneficiaryList(
                             else -> state.beneficiaries
                         }
 
-                    println("ACTIVE FILTERS: " + hasActiveFilters)
+                    // println("ACTIVE FILTERS: " + hasActiveFilters)
 
                     if (state.isLoading || state.error != null) {
                         // Loading o error
@@ -331,6 +337,7 @@ fun BeneficiaryListPreview() {
 
     ArcaByOlimpoTheme {
         BeneficiaryList(
+            navController = navController,
             state = previewState,
             onSearchTextChange = {},
             onBeneficiaryClick = {},

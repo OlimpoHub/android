@@ -1,11 +1,20 @@
-## [0.1.0] - 15/11/2025
-### Fixed
-- Fixed error from standard input attibutes into register supply batch screen
+## [0.1.0] - 16/11/2025
+
+### Added
+ - Added products search
+ - Add DeleteWorkshop Logic, Data and Domain
+ - Add way to get users for workshops
+ - Added functionality search beneficiaries
 
 ## [0.1.0] - 15/11/2025
 
 ### Added
 - Added function to the delete products button
+- Added US to Register Product Batches
+
+### Fixed
+- Fixed StandardInput missing parameter
+- Fixed error from standard input attibutes into register supply batch screen
 
 ## [0.1.0] - 14/11/2025
 
