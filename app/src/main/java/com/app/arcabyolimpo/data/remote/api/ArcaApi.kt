@@ -14,6 +14,7 @@ import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchDto
 import com.app.arcabyolimpo.data.remote.dto.product.ProductDto
+import com.app.arcabyolimpo.data.remote.dto.product.ProductRegisterInfoDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchModifyDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchRegisterDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.AcquisitionDto
@@ -288,4 +289,23 @@ interface ArcaApi {
         @Query("q") query: String,
     ): List<ProductDto>
 
+    @GET("product/add")
+    suspend fun getProductFilters(): ProductRegisterInfoDto
+
+    @GET("product/disponible")
+    suspend fun getProductsByAvailability(
+        @Query("disponible") disponible: Int,
+    ): List<ProductDto>
+
+
+    @GET("product/workshop")
+    suspend fun getProductsByWorkshop(
+        @Query("idTaller") idTaller: String,
+    ): List<ProductDto>
+
+    @GET("product/order")
+    suspend fun getProductsOrderedByPrice(
+        @Query("orderBy") orderBy: String,
+        @Query("direction") direction: String,
+    ): List<ProductDto>
 }

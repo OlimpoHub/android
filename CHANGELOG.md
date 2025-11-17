@@ -1,3 +1,8 @@
+## [0.1.0] - 17/11/2025
+
+### Added
+- Added filter and order products
+
 ## [0.1.0] - 16/11/2025
 
 ### Added
