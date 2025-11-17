@@ -1,5 +1,6 @@
 package com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +26,7 @@ import coil.compose.AsyncImage
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
 import com.app.arcabyolimpo.presentation.theme.Poppins
+import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AgregateButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.DeleteButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ModifyButton

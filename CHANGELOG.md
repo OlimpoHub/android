@@ -1,10 +1,13 @@
 ## [0.1.0] - 12/11/2025
 
 ### Added
+- DeleteOneSupply Button Logic
 - Filter and search bar for users
+- Included internal collaborators in the area of users
 
 ### Updated
 - External collabs screen to user general screen
+- External register screen to user register screen
 
 
 ## [0.1.0] - 11/11/2025
