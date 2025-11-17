@@ -11,6 +11,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,6 +34,9 @@ class WorkshopDetailViewModel @Inject constructor(
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
+    private val _formattedDate = MutableStateFlow("")
+    val formattedDate: StateFlow<String> = _formattedDate.asStateFlow()
+
     init {
         loadWorkshop()
     }
@@ -46,11 +53,31 @@ class WorkshopDetailViewModel @Inject constructor(
             try {
                 val workshopData = repository.getWorkshopsById(workshopId)
                 _workshop.value = workshopData
+                if (workshopData != null) {
+                    _formattedDate.value = formatWorkshopDate(workshopData.date)
+                } else {
+                    _errorMessage.value = "No se encontró el taller"
+                }
             } catch (e: Exception) {
                 _errorMessage.value = "Error al cargar el taller: ${e.message}"
             } finally {
                 _isLoading.value = false
             }
+        }
+    }
+
+    private fun formatWorkshopDate(dateString: String?): String {
+        if (dateString.isNullOrEmpty()) {
+            return "Fecha no disponible"
+        }
+
+        return try {
+            val instant = Instant.parse(dateString)
+            val zonedDateTime = instant.atZone(ZoneId.systemDefault())
+            val formatter = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale("es", "ES"))
+            zonedDateTime.format(formatter)
+        } catch (e: Exception) {
+            dateString
         }
     }
 }

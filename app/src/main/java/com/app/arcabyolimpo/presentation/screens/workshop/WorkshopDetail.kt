@@ -24,9 +24,15 @@ import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailCo
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailUiState
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.DeleteButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ModifyButton
+import com.app.arcabyolimpo.presentation.ui.components.atoms.videoView
 import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import com.app.arcabyolimpo.ui.theme.Background
+
+/**
+ *
+ * This composable acts as the screen for an individual Workshop.
+ */
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,6 +44,7 @@ fun WorkshopDetailScreen(
     val workshop by viewModel.workshop.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
+    val formattedDate by viewModel.formattedDate.collectAsState()
     ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false) {
         Scaffold(
             containerColor = Background,
@@ -115,6 +122,21 @@ fun WorkshopDetailScreen(
                                         style = MaterialTheme.typography.bodyLarge
                                     )
                                     Spacer(modifier = Modifier.height(24.dp))
+                                    if (workshop?.videoTraining != null) {
+                                        videoView(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(200.dp),// Dale una altura fija
+                                            videoUrl = workshop!!.videoTraining!!
+                                        )
+                                    }
+                                    else{
+                                        Text(
+                                            text= "No hay video disponible",
+                                            style = MaterialTheme.typography.bodyLarge
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.height(24.dp))
                                     Text(
                                         text= "Sobre el Taller:",
                                         style = MaterialTheme.typography.headlineMedium
@@ -122,12 +144,12 @@ fun WorkshopDetailScreen(
                                     Spacer(modifier = Modifier.height(12.dp))
                                     Text(
                                         text = "• Hora: ${workshop?.startHour} - ${workshop?.finishHour}",
-                                        style = MaterialTheme.typography.headlineMedium
+                                        style = MaterialTheme.typography.bodyLarge
                                     )
                                     Spacer(modifier = Modifier.height(12.dp))
                                     Text(
-                                        text = "• Fecha: ${workshop?.date}",
-                                        style = MaterialTheme.typography.headlineMedium
+                                        text = "• Fecha: $formattedDate",
+                                        style = MaterialTheme.typography.bodyLarge
                                     )
 
 
