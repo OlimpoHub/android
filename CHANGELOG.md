@@ -1,3 +1,21 @@
+## [0.1.0] - 16/11/2025
+
+### Added
+ - Added functionality search beneficiaries
+
+## [0.1.0] - 15/11/2025
+### Fixed
+- Fixed error from standard input attibutes into register supply batch screen
+
+## [0.1.0] - 15/11/2025
+
+### Added
+- Added function to the delete products button
+- Added US to Register Product Batches
+
+### Fixed
+- Fixed StandardInput missing parameter
+
 ## [0.1.0] - 14/11/2025
 
 ### Fixed
@@ -14,11 +32,14 @@
 - Added Workshop Card atom.
 - Added screen for view Workshop 
 - Added function for searching workshops by name.
+- Added US to Register Product Batches
 
 ### Fixed
 - ArcaApi get all external collabs
 - Search users
+- Added presentation, data and domain for RegisterSupplyBatch
 - Fix snackbar for register new workshops
+- Fix error of implementation in Input atoms
 
 ## [0.1.0] - 12/11/2025
 

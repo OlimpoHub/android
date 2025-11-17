@@ -13,9 +13,14 @@ import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchDto
+import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchModifyDto
+import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchRegisterDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.AcquisitionDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteResponseDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.RegisterSupplyBatchDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.SuccessMessageDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuppliesListDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyDto
@@ -27,7 +32,6 @@ import com.app.arcabyolimpo.data.remote.dto.workshops.AddNewWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopResponseDto
-import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -36,6 +40,7 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -117,6 +122,14 @@ interface ArcaApi {
         @Path("id") id: String,
     ): SupplyBatchDto
 
+    @POST("supplyBatch/addBatch")
+    suspend fun registerSupplyBatch(
+        @Body request: RegisterSupplyBatchDto,
+    ): SuccessMessageDto
+
+    @GET("supplyBatch/acquisition/types")
+    suspend fun getAcquisitionTypes(): List<AcquisitionDto>
+
     @DELETE("supplyBatch/{id}")
     suspend fun deleteSupplyBatch(
         @Path("id") id: String,
@@ -136,7 +149,7 @@ interface ArcaApi {
 
     @GET("workshop/search")
     suspend fun searchWorkshops(
-        @Query("nameWorkshop") name: String
+        @Query("nameWorkshop") name: String,
     ): List<WorkshopDto>
 
     @GET("workshop/{id}")
@@ -158,10 +171,18 @@ interface ArcaApi {
         @Path("id") id: String,
     ): BeneficiaryDto
 
+    /**
+     * Makes a soft delete to the selected beneficiary.
+     */
     @DELETE("beneficiary/{id}")
     suspend fun deleteBeneficiary(
         @Path("id") id: String,
     ): Response<Unit>
+
+    @GET("beneficiary/search")
+    suspend fun searchBeneficiaries(
+        @Query("term") searchTerm: String,
+    ): List<BeneficiaryDto>
 
     @GET("supplies/workshop/category")
     suspend fun getWorkshopCategoryList(): WorkshopCategoryListDto
@@ -174,7 +195,7 @@ interface ArcaApi {
         @Part("unidadMedida") measureUnit: RequestBody,
         @Part("idCategoria") idCategory: RequestBody,
         @Part("status") status: RequestBody,
-        @Part imagenInsumo: MultipartBody.Part?
+        @Part imagenInsumo: MultipartBody.Part?,
     )
 
     @GET("productBatch/")
@@ -187,8 +208,16 @@ interface ArcaApi {
 
     @POST("productBatch/")
     suspend fun addProductBatch(
-        @Body batch: ProductBatchDto,
+        @Body batch: ProductBatchRegisterDto,
     )
+
+    @PUT("productBatch/{id}")
+    suspend fun modifyProductBatch(
+        @Path("id") id: String,
+        @Body batch: ProductBatchModifyDto,
+    )
+
+    // Products --------------------------
 
     @Multipart
     @POST("product/add")
@@ -199,6 +228,11 @@ interface ArcaApi {
         @Part("idCategoria") idCategory: RequestBody,
         @Part("Descripcion") description: RequestBody,
         @Part("Disponible") status: RequestBody,
-        @Part image: MultipartBody.Part?
+        @Part image: MultipartBody.Part?,
     )
+
+    @DELETE("product/{idProduct}")
+    suspend fun deleteProduct(
+        @Path("idProduct") idProduct: String,
+    ): Response<Unit>
 }
