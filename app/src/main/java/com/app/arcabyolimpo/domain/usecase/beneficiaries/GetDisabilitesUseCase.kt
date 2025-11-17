@@ -1,9 +1,8 @@
-package com.app.arcabyolimpo.domain.usecase.supplies
+package com.app.arcabyolimpo.domain.usecase.beneficiaries
 
 import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.model.filter.FilterData
-import com.app.arcabyolimpo.domain.model.supplies.Supply
-import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
+import com.app.arcabyolimpo.domain.repository.beneficiaries.BeneficiaryRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -21,19 +20,19 @@ import javax.inject.Inject
  *
  * @return A Flow that emits loading, success, or error states containing the filter data.
  */
-class GetFiltersDataUseCase
-@Inject
-constructor(
-    private val repository: SupplyRepository,
-) {
-    operator fun invoke(): Flow<Result<FilterData>> =
-        flow {
-            try {
-                emit(Result.Loading)
-                val filter = repository.getFilterData()
-                emit(Result.Success(filter))
-            } catch (e: Exception) {
-                emit(Result.Error(e))
+class GetDisabilitesUseCase
+    @Inject
+    constructor(
+        private val repository: BeneficiaryRepository,
+    ) {
+        operator fun invoke(): Flow<Result<FilterData>> =
+            flow {
+                try {
+                    emit(Result.Loading)
+                    val filter = repository.getDisabilitiesData()
+                    emit(Result.Success(filter))
+                } catch (e: Exception) {
+                    emit(Result.Error(e))
+                }
             }
-        }
-}
+    }
