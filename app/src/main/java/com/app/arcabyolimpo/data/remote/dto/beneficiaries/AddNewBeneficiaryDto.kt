@@ -11,5 +11,5 @@ package com.app.arcabyolimpo.data.remote.dto.beneficiaries
 data class AddNewBeneficiaryDto (
     val success: Boolean,
     val message: String,
-    val idBeneficiary: String? /** new id to be added */
+    val idBeneficiary: String?
 )

@@ -70,50 +70,68 @@ fun AddNewBeneficiaryScreen(
             ) {
                 Spacer(modifier = Modifier.height(24.dp))
 
-                /** Title of the forms */
-                Text(
-                    text = "Registrar Nuevo Beneficiario",
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = White,
-                    modifier = Modifier.padding(bottom = 16.dp),
-                    fontWeight = FontWeight.Bold
-                )
+                /** Title */
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Registrar Beneficiario",
+                        style = MaterialTheme.typography.headlineLarge,
+                        color = White,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-                /** Nombre */
-                StandardInput(
-                    label = "Nombre",
-                    placeholder = "Ej. Juan",
-                    value = formData.nombre,
-                    onValueChange = { viewModel.updateFormData { copy(nombre = it) } },
-                    isError = fieldErrors["nombre"] == true,
-                    errorMessage = null
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    /** Upload image - Lado izquierdo */
+                    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+                    ImageUploadInput(
+                        label = "",
+                        value = selectedImageUri,
+                        onValueChange = { uri ->
+                            selectedImageUri = uri
+                            viewModel.updateFormData { copy(foto = uri?.toString().orEmpty()) }
+                        },
+                        isError = false,
+                        errorMessage = null,
+                        modifier = Modifier.weight(0.4f)
+                    )
 
-                Spacer(modifier = Modifier.height(12.dp))
+                    /** Columna derecha con los primeros campos */
+                    Column(
+                        modifier = Modifier.weight(0.6f),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        /** Nombre del beneficiario */
+                        StandardInput(
+                            label = "Nombre del beneficiario:",
+                            placeholder = "",
+                            value = formData.nombre,
+                            onValueChange = { viewModel.updateFormData { copy(nombre = it) } },
+                            isError = fieldErrors["nombre"] == true,
+                            errorMessage = null
+                        )
 
-                /** Apellido Paterno */
-                StandardInput(
-                    label = "Apellido Paterno",
-                    placeholder = "Ej. García",
-                    value = formData.apellidoPaterno,
-                    onValueChange = { viewModel.updateFormData { copy(apellidoPaterno = it) } },
-                    isError = fieldErrors["apellidoPaterno"] == true,
-                    errorMessage = null
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                /** Apellido Materno */
-                StandardInput(
-                    label = "Apellido Materno",
-                    placeholder = "Ej. López",
-                    value = formData.apellidoMaterno,
-                    onValueChange = { viewModel.updateFormData { copy(apellidoMaterno = it) } },
-                    isError = fieldErrors["apellidoMaterno"] == true,
-                    errorMessage = null
-                )
+                        /** Nombre de tutor (Apellido Paterno + Materno) */
+                        StandardInput(
+                            label = "Nombre de tutor:",
+                            placeholder = "",
+                            value = "${formData.apellidoPaterno} ${formData.apellidoMaterno}",
+                            onValueChange = {
+                                // Podrías dividir el input o manejarlo como prefieras
+                            },
+                            isError = fieldErrors["apellidoPaterno"] == true || fieldErrors["apellidoMaterno"] == true,
+                            errorMessage = null
+                        )
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -122,126 +140,108 @@ fun AddNewBeneficiaryScreen(
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     /** Fecha de Nacimiento */
-                    StandardIconInput(
-                        label = "Fecha de Nacimiento",
-                        placeholder = "Ej. 2000-01-15",
+                    StandardInput(
+                        label = "Fecha de Nacimiento:",
+                        placeholder = "",
                         value = formData.fechaNacimiento,
                         onValueChange = { viewModel.updateFormData { copy(fechaNacimiento = it) } },
                         isError = fieldErrors["fechaNacimiento"] == true,
                         errorMessage = null,
-                        trailingIcon = {
-                            CalendarIcon(tint = MaterialTheme.colorScheme.onSurface)
-                        },
                         modifier = Modifier.weight(1f)
                     )
 
-                    /** Fecha de Ingreso */
-                    StandardIconInput(
-                        label = "Fecha de Ingreso",
-                        placeholder = "Ej. 2024-01-15",
-                        value = formData.fechaIngreso,
-                        onValueChange = { viewModel.updateFormData { copy(fechaIngreso = it) } },
-                        isError = fieldErrors["fechaIngreso"] == true,
+                    /** Relación del tutor */
+                    StandardInput(
+                        label = "Relacion del tutor:",
+                        placeholder = "",
+                        value = formData.relacionContactoEmergencia,
+                        onValueChange = { viewModel.updateFormData { copy(relacionContactoEmergencia = it) } },
+                        isError = fieldErrors["relacionContactoEmergencia"] == true,
                         errorMessage = null,
-                        trailingIcon = {
-                            CalendarIcon(tint = MaterialTheme.colorScheme.onSurface)
-                        },
                         modifier = Modifier.weight(1f)
                     )
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                /** Número de Emergencia */
-                StandardInput(
-                    label = "Número de Emergencia",
-                    placeholder = "Ej. 4421234567",
-                    value = formData.numeroEmergencia,
-                    onValueChange = { viewModel.updateFormData { copy(numeroEmergencia = it) } },
-                    isError = fieldErrors["numeroEmergencia"] == true,
-                    errorMessage = null
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    /** Ingreso (Fecha de Ingreso) */
+                    StandardInput(
+                        label = "Ingreso",
+                        placeholder = "",
+                        value = formData.fechaIngreso,
+                        onValueChange = { viewModel.updateFormData { copy(fechaIngreso = it) } },
+                        isError = fieldErrors["fechaIngreso"] == true,
+                        errorMessage = null,
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    /** Número de teléfono */
+                    StandardInput(
+                        label = "Numero de telefono",
+                        placeholder = "",
+                        value = formData.numeroEmergencia,
+                        onValueChange = { viewModel.updateFormData { copy(numeroEmergencia = it) } },
+                        isError = fieldErrors["numeroEmergencia"] == true,
+                        errorMessage = null,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                /** Nombre de Contacto de Emergencia */
-                StandardInput(
-                    label = "Nombre del Contacto de Emergencia",
-                    placeholder = "Ej. María García",
-                    value = formData.nombreContactoEmergencia,
-                    onValueChange = { viewModel.updateFormData { copy(nombreContactoEmergencia = it) } },
-                    isError = fieldErrors["nombreContactoEmergencia"] == true,
-                    errorMessage = null
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                /** Relación de Contacto de Emergencia */
-                StandardInput(
-                    label = "Relación con Contacto de Emergencia",
-                    placeholder = "Ej. Madre",
-                    value = formData.relacionContactoEmergencia,
-                    onValueChange = { viewModel.updateFormData { copy(relacionContactoEmergencia = it) } },
-                    isError = fieldErrors["relacionContactoEmergencia"] == true,
-                    errorMessage = null
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                /** Discapacidad */
-                StandardInput(
-                    label = "Discapacidad",
-                    placeholder = "Ej. Ninguna o especificar",
-                    value = formData.discapacidad,
-                    onValueChange = { viewModel.updateFormData { copy(discapacidad = it) } },
-                    isError = fieldErrors["discapacidad"] == true,
-                    errorMessage = null
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    /** Discapacidades **/
+                    SelectInput(
+                        label = "Discapacidades",
+                        selectedOption = formData.discapacidad.ifEmpty { "Seleccionar" },
+                        options = listOf("Ninguna", "Visual", "Auditiva", "Motriz", "Intelectual", "Otra"),
+                        onOptionSelected = { selected ->
+                            viewModel.updateFormData { copy(discapacidad = selected) }
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        isError = fieldErrors["discapacidad"] == true
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
                 /** Descripción */
                 DescriptionInput(
                     label = "Descripción",
-                    placeholder = "Escribe información adicional del beneficiario...",
+                    placeholder = "",
                     value = formData.descripcion,
                     onValueChange = { viewModel.updateFormData { copy(descripcion = it) } },
                     isError = fieldErrors["descripcion"] == true,
-                    errorMessage = null
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                /** Upload image */
-                var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-                ImageUploadInput(
-                    label = "Foto del beneficiario",
-                    value = selectedImageUri,
-                    onValueChange = { uri ->
-                        selectedImageUri = uri
-                        viewModel.updateFormData { copy(foto = uri?.toString().orEmpty()) }
-                    },
-                    isError = false,
-                    errorMessage = null
+                    errorMessage = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(120.dp)
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-
                     /** Cancel */
                     CancelButton(
                         modifier = Modifier
                             .size(width = 112.dp, height = 40.dp),
-                        onClick = { navController.navigate(Screen.BeneficiaryList.route) }
+                        onClick = { navController.popBackStack() }
                     )
 
                     Spacer(modifier = Modifier.width(16.dp))
 
-                    /** Save */
+                    /** Save - Guardar */
                     SaveButton(
                         onClick = { showConfirmDialog = true },
                         width = 112.dp,
@@ -272,8 +272,8 @@ fun AddNewBeneficiaryScreen(
                             scope.launch {
                                 snackbarHostState.showSnackbar("Beneficiario registrado correctamente")
                             }
-
                             viewModel.resetForm()
+                            navController.popBackStack()
                         }
                     }
 
@@ -284,9 +284,9 @@ fun AddNewBeneficiaryScreen(
                             }
                         }
                     }
-
-                    Spacer(modifier = Modifier.height(80.dp))
                 }
+
+                Spacer(modifier = Modifier.height(80.dp))
             }
         }
     }

@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
 import com.app.arcabyolimpo.domain.common.Result
+import com.app.arcabyolimpo.domain.model.disabilities.Disability
 import javax.inject.Inject
 
 
@@ -27,7 +28,8 @@ class AddNewBeneficiaryViewModel @Inject constructor(
     val formData: StateFlow<BeneficiaryFormData> = _formData.asStateFlow()
     private val _fieldErrors = MutableStateFlow<Map<String, Boolean>>(emptyMap())
     val fieldErrors: StateFlow<Map<String, Boolean>> = _fieldErrors.asStateFlow()
-
+    private val _disabilities = MutableStateFlow<List<Disability>>(emptyList())
+    val disabilities: StateFlow<List<Disability>> = _disabilities.asStateFlow()
     fun addNewBeneficiary() {
         viewModelScope.launch {
             val beneficiaryDto = BeneficiaryDto(

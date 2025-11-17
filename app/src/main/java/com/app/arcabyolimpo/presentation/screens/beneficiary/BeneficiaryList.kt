@@ -117,9 +117,7 @@ fun BeneficiaryList(
                     )
                 },
                 floatingActionButton = {
-                    AddButton(
-                        onClick = { /* TODO: agregar beneficiario */ }
-                    )
+                    AddButton(onClick = onAddBeneficiaryClick)
                 },
                 bottomBar = {
                     Box(modifier = Modifier.padding(bottom = 8.dp)) {
