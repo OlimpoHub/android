@@ -51,6 +51,7 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SearchInput
  */
 @Composable
 fun BeneficiaryListScreen(
+    navController: NavHostController,
     onBeneficiaryClick: (String) -> Unit,
     onFilterClick: () -> Unit,
     onNotificationClick: () -> Unit,
@@ -59,6 +60,7 @@ fun BeneficiaryListScreen(
     val state by viewModel.uiState.collectAsState()
 
     BeneficiaryList(
+        navController = navController,
         state = state,
         onSearchTextChange = viewModel::onSearchTextChange,
         onBeneficiaryClick = onBeneficiaryClick,
@@ -74,6 +76,7 @@ fun BeneficiaryListScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BeneficiaryList(
+    navController: NavHostController,
     state: BeneficiaryListUiState,
     onSearchTextChange: (String) -> Unit,
     onBeneficiaryClick: (String) -> Unit,
@@ -95,7 +98,7 @@ fun BeneficiaryList(
                             )
                         },
                         navigationIcon = {
-                            IconButton(onClick = { /* TODO: agregar ruta*/}) {
+                            IconButton(onClick = {navController.navigate(Screen.CoordinatorHome.route)}) {
                                 Icon(
                                     imageVector = Icons.Default.ArrowBack,
                                     contentDescription = "Regresar",
@@ -229,6 +232,7 @@ fun BeneficiaryListPreview() {
 
     ArcaByOlimpoTheme {
         BeneficiaryList(
+            navController = navController,
             state = previewState,
             onSearchTextChange = {},
             onBeneficiaryClick = {},
