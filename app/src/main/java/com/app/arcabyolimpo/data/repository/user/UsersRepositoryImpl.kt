@@ -4,24 +4,23 @@ import com.app.arcabyolimpo.data.mapper.user.toDomain
 import com.app.arcabyolimpo.data.mapper.user.toRegisterDto
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.dto.user.UserDto
+import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.repository.user.UsersRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-// Repository implementation that interacts with the remote API to fetch user data.
-// Converts the received DTOs into domain models using the user mapper before returning them.
+class UsersRepositoryImpl @Inject constructor(
+    private val api: ArcaApi,
+) : UsersRepository {
 
-class UsersRepositoryImpl
-    @Inject
-    constructor(
-        private val api: ArcaApi,
-    ) : UsersRepository {
-        override suspend fun getUsers(): List<UserDto> {
-            val response = api.getAllUsers()
-            return response.map { it.toDomain() }
-        }
+    override suspend fun getUsers(): List<UserDto> {
+        val response = api.getAllUsers()
+        return response.map { it.toDomain() }
+    }
 
     override suspend fun getUserById(id: String): UserDto {
-         try {
+        try {
             val response = api.getUserById(id)
             if (response.isNotEmpty()) {
                 return response.first().toDomain()
@@ -54,6 +53,14 @@ class UsersRepositoryImpl
             throw Exception("Error al eliminar usuario: ${e.message}", e)
         }
     }
+
+    override suspend fun getUsersDomain(): Result<List<UserDto>> {
+        return try {
+            val response = api.getAllUsers()
+            val users = response.map { it.toDomain() }
+            Result.Success(users)
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
 }
-
-

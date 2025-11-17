@@ -2,11 +2,12 @@ package com.app.arcabyolimpo.presentation.screens.workshop
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.arcabyolimpo.data.remote.dto.user.UserDto
 import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.usecase.workshops.PostAddNewWorkshop
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopFormData
-import com.app.arcabyolimpo.domain.usecase.workshops.GetWorkshopsListUseCase
+import com.app.arcabyolimpo.domain.usecase.user.GetUsersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,31 +17,10 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
 
-/**
- * ViewModel responsible for managing the UI state of the register workshops screen.
- *
- * This class interacts with the [postAddNewWorkshop] to post all the data in the domain layer
- * and exposes a [StateFlow] of [AddNewWorkshopUiState] that the UI observes to render updates.
- *
- * @property postAddNewWorkshop Use case for posting the new workshop.
- */
-
-/** Mock Data - deleting in the future */
-data class Training(
-    val id: String,
-    val name: String
-)
-
-data class User(
-    val id: String,
-    val name: String,
-    val lastName: String,
-    val email: String
-)
-
 @HiltViewModel
 class AddNewWorkshopViewModel @Inject constructor(
-    private val postAddNewWorkshop: PostAddNewWorkshop
+    private val postAddNewWorkshop: PostAddNewWorkshop,
+    private val getUsersUseCase: GetUsersUseCase
 ) : ViewModel() {
 
     /** Backing property for the workshops UI state. */
@@ -51,37 +31,31 @@ class AddNewWorkshopViewModel @Inject constructor(
     private val _fieldErrors = MutableStateFlow<Map<String, Boolean>>(emptyMap())
     val fieldErrors: StateFlow<Map<String, Boolean>> = _fieldErrors.asStateFlow()
 
-    private val _users = MutableStateFlow<List<User>>(emptyList())
-    val users: StateFlow<List<User>> = _users.asStateFlow()
+    private val _users = MutableStateFlow<List<UserDto>>(emptyList())
+    val users: StateFlow<List<UserDto>> = _users.asStateFlow()
 
-    /** Mock Data - deleting in the future */
     fun loadUsers() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
             try {
-                val mockUsers = listOf(
-                    User(
-                        id = "13fc9277-bda1-11f0-b6b8-020161fa237d",
-                        name = "Juan",
-                        lastName = "Pérez",
-                        email = "juan.perez@email.com"
-                    ),
-                    User(
-                        id = "4e3d1a59-2ac1-4a5e-bb77-3b238bdfc50f",
-                        name = "María",
-                        lastName = "González",
-                        email = "maria.gonzalez@email.com"
-                    ),
-                    User(
-                        id = "dd03051b-bcfa-11f0-b6b8-020161fa237d",
-                        name = "Carlos",
-                        lastName = "Rodríguez",
-                        email = "carlos.rodriguez@email.com"
-                    )
-                )
-                _users.value = mockUsers
-                _uiState.update { it.copy(isLoading = false) }
+                getUsersUseCase().collect { result ->
+                    when (result) {
+                        is Result.Loading -> {
+                            _uiState.update { it.copy(isLoading = true) }
+                        }
+                        is Result.Success -> {
+                            _users.value = result.data
+                            _uiState.update { it.copy(isLoading = false, error = null) }
+                        }
+                        is Result.Error -> {
+                            _uiState.update { it.copy(
+                                isLoading = false,
+                                error = "Error al cargar usuarios: ${result.exception.message}"
+                            ) }
+                        }
+                    }
+                }
             } catch (e: Exception) {
                 _uiState.update { it.copy(
                     isLoading = false,
@@ -90,7 +64,6 @@ class AddNewWorkshopViewModel @Inject constructor(
             }
         }
     }
-
     fun addNewWorkshop() {
         if (!validateForm()) return
 
@@ -149,6 +122,7 @@ class AddNewWorkshopViewModel @Inject constructor(
     private fun clearFieldErrors() {
         _fieldErrors.value = emptyMap()
     }
+
     private fun validateForm(): Boolean {
         val data = _formData.value
         val errors = mutableMapOf<String, Boolean>()
@@ -175,6 +149,4 @@ class AddNewWorkshopViewModel @Inject constructor(
         _fieldErrors.value = errors
         return errors.isEmpty()
     }
-
-
 }
