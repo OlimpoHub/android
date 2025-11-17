@@ -182,7 +182,7 @@ interface ArcaApi {
     ): okhttp3.ResponseBody
 
     @GET("/disabilities/list")
-    suspend fun getDisabilities(): List<DisabilityDto>
+    suspend fun getDisabilitiesList(): List<DisabilityDto>
 
     @GET("supplies/workshop/category")
     suspend fun getWorkshopCategoryList(): WorkshopCategoryListDto

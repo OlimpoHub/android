@@ -32,7 +32,7 @@ class DisabilityRepositoryImpl
         Log.d("DisabilityRepo", "Llamando a getDisabilities...")
 
         try {
-            val response = api.getDisabilities()
+            val response = api.getDisabilitiesList()
             Log.d("DisabilityRepo", "Éxito: ${response.size} discapacidades recibidas")
 
             return response.map { dto ->
