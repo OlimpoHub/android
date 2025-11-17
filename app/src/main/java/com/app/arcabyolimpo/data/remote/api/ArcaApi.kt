@@ -34,6 +34,7 @@ import com.app.arcabyolimpo.data.remote.dto.workshops.DeleteResponseWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.DeleteWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
+import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopResponseDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -167,7 +168,7 @@ interface ArcaApi {
     @GET("workshop/{id}")
     suspend fun getWorkshop(
         @Path("id") id: String,
-    ): WorkshopDto
+    ): WorkshopResponseDto
 
     @POST("workshop/add")
     suspend fun addWorkshop(

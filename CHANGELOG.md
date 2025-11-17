@@ -5,6 +5,7 @@
  - Add DeleteWorkshop Logic, Data and Domain
  - Add way to get users for workshops
  - Added functionality search beneficiaries
+ - Added functionality view a Workshop (Video functionality needs more info)
  - Filter and order beneficiaries functionality
  - Fixed merge conflicts
  - Added US to Delete Product Batches
