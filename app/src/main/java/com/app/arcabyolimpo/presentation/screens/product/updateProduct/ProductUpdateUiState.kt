@@ -1,7 +1,7 @@
 package com.app.arcabyolimpo.presentation.screens.product.updateProduct
 
 import android.net.Uri
-import com.app.arcabyolimpo.domain.model.product.Product
+import com.app.arcabyolimpo.domain.model.product.ProductDetail
 import com.app.arcabyolimpo.domain.model.supplies.CategoryInfo
 import com.app.arcabyolimpo.domain.model.supplies.WorkshopInfo
 
@@ -10,7 +10,7 @@ data class ProductUpdateUiState(
     val error: String? = null,
     val isProductLoaded: Boolean = false,
 
-    val productDetail: Product? = null,
+    val productDetail: ProductDetail? = null,
 
     val workshops: List<WorkshopInfo> = emptyList(),
     val categories: List<CategoryInfo> = emptyList(),

@@ -1,7 +1,6 @@
 package com.app.arcabyolimpo.domain.usecase.product
 
-import com.app.arcabyolimpo.domain.model.product.Product
-import com.app.arcabyolimpo.domain.model.product.ProductAdd
+import com.app.arcabyolimpo.domain.model.product.ProductDetail
 import com.app.arcabyolimpo.domain.repository.product.ProductRepository
 import javax.inject.Inject
 
@@ -14,7 +13,7 @@ class GetProductUseCase @Inject constructor(
      * @param id The unique identifier of the product.
      * @return A [Result] containing the [Product] domain model.
      */
-    suspend operator fun invoke(id: String): Result<Product> {
+    suspend operator fun invoke(id: String): Result<ProductDetail> {
         return repository.getProduct(id)
     }
 }

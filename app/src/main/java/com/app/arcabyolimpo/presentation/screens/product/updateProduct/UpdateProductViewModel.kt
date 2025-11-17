@@ -8,8 +8,6 @@ import com.app.arcabyolimpo.domain.model.product.ProductUpdate
 import com.app.arcabyolimpo.domain.usecase.product.GetProductUseCase
 import com.app.arcabyolimpo.domain.usecase.product.UpdateProductUseCase
 import com.app.arcabyolimpo.domain.usecase.supplies.GetWorkshopCategoryInfoUseCase
-// ⚠️ ASUMIDO: Necesitas un DTO/Domain model para envolver las listas
-// Se asume que el UseCase devuelve un objeto con 'workshops' y 'categories'.
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

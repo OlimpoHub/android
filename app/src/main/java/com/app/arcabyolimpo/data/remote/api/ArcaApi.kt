@@ -15,10 +15,9 @@ import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
 import com.app.arcabyolimpo.data.remote.dto.product.ProductDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.AcquisitionDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchDto
-import com.app.arcabyolimpo.data.remote.dto.product.ProductDto
+import com.app.arcabyolimpo.data.remote.dto.product.ProductDetailDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchModifyDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchRegisterDto
-import com.app.arcabyolimpo.data.remote.dto.supplies.AcquisitionDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteResponseDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
@@ -44,7 +43,6 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
-import retrofit2.http.PUT
 import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
@@ -260,10 +258,6 @@ interface ArcaApi {
     )
 
     // Products --------------------------
-    @GET("product/{idProduct}/update")
-    suspend fun getProduct(
-        @Path("idProduct") idProduct: String,
-    ): ProductDto
     @Multipart
     @POST("product/add")
     suspend fun addProduct(
@@ -287,6 +281,11 @@ interface ArcaApi {
     suspend fun searchProducts(
         @Query("q") query: String,
     ): List<ProductDto>
+
+    @GET("product/{idProduct}/update")
+    suspend fun getProduct(
+        @Path("idProduct") idProduct: String,
+    ): ProductDetailDto
 
     @Multipart
     @PUT("product/{idProduct}/update")

@@ -3,12 +3,13 @@ package com.app.arcabyolimpo.data.repository.product
 import android.content.Context
 import com.app.arcabyolimpo.data.mapper.product.toDomain
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
-import com.app.arcabyolimpo.domain.model.product.Product
 import com.app.arcabyolimpo.data.remote.dto.product.ProductDto
 import com.app.arcabyolimpo.domain.model.product.ProductAdd
 import com.app.arcabyolimpo.domain.repository.product.ProductRepository
 import com.app.arcabyolimpo.domain.model.product.Product
-import com.app.arcabyolimpo.data.mapper.product.toDomain
+import com.app.arcabyolimpo.data.mapper.product.toDetailDomain
+import com.app.arcabyolimpo.data.remote.dto.product.ProductDetailDto
+import com.app.arcabyolimpo.domain.model.product.ProductDetail
 import com.app.arcabyolimpo.domain.model.product.ProductUpdate
 import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -121,10 +122,11 @@ class ProductRepositoryImpl @Inject constructor(
      * @param id The unique identifier of the product to retrieve.
      * @return A [Result] wrapping the [Product] domain model upon success.
      */
-    override suspend fun getProduct(id: String): Result<Product> {
+    override suspend fun getProduct(id: String): Result<ProductDetail> {
         return try {
-            val productDto = api.getProduct(idProduct = id)
-            val productDomain = productDto.toDomain()
+            val productDetailDto: ProductDetailDto = api.getProduct(idProduct = id)
+
+            val productDomain = productDetailDto.toDetailDomain()
 
             Result.success(productDomain)
         } catch (e: Exception) {

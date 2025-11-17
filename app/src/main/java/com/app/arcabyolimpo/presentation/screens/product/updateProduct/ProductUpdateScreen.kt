@@ -53,7 +53,7 @@ import com.app.arcabyolimpo.ui.theme.White
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductAddScreen(
+fun ProductUpdateScreen(
     viewModel: AddProductViewModel = hiltViewModel(),
     onSaveSuccess: () -> Unit,
     onCancel: () -> Unit,

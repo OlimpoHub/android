@@ -2,6 +2,7 @@ package com.app.arcabyolimpo.domain.repository.product
 
 import com.app.arcabyolimpo.domain.model.product.ProductAdd
 import com.app.arcabyolimpo.domain.model.product.Product
+import com.app.arcabyolimpo.domain.model.product.ProductDetail
 import com.app.arcabyolimpo.domain.model.product.ProductUpdate
 
 /**
@@ -32,7 +33,7 @@ interface ProductRepository {
      * @param id The unique identifier of the product to retrieve.
      * @return A [Result] containing the [Product] domain model if successful.
      */
-    suspend fun getProduct(id: String): Result<Product>
+    suspend fun getProduct(id: String): Result<ProductDetail>
 
     /**
      * Updates an existing product's details and optionally its image.

@@ -27,6 +27,7 @@ import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecove
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
 import com.app.arcabyolimpo.presentation.screens.product.addProduct.ProductAddScreen
+import com.app.arcabyolimpo.presentation.screens.product.updateProduct.ProductUpdateScreen
 import com.app.arcabyolimpo.presentation.screens.product.list.ProductsListRoute
 import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDeleteTestScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchDetail.ProductBatchDetailScreen
@@ -131,6 +132,8 @@ sealed class Screen(
     object ProductAdd : Screen("product/add")
 
     object ProductDeleteTest : Screen("test_delete_product")
+
+    object ProductUpdate : Screen("product/update/{idProduct}") {
 }
 
 /**
@@ -168,7 +171,7 @@ fun ArcaNavGraph(
     NavHost(
         navController = navController,
         // TODO: Cambiar a Screen.Splash.route cuando acabe
-        startDestination = Screen.ProductAdd.route,
+        startDestination = Screen.ProductUpdate.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -179,10 +182,12 @@ fun ArcaNavGraph(
                         navController.navigate(Screen.CoordinatorHome.route) {
                             popUpTo(Screen.Splash.route) { inclusive = true }
                         }
+
                     UserRole.ASISTENTE ->
                         navController.navigate(Screen.CollaboratorHome.route) {
                             popUpTo(Screen.Splash.route) { inclusive = true }
                         }
+
                     UserRole.BECARIO ->
                         navController.navigate(Screen.CollaboratorHome.route) {
                             popUpTo(Screen.Splash.route) { inclusive = true }
@@ -205,10 +210,12 @@ fun ArcaNavGraph(
                             navController.navigate(Screen.CoordinatorHome.route) {
                                 popUpTo(Screen.Login.route) { inclusive = true }
                             }
+
                         UserRole.ASISTENTE ->
                             navController.navigate(Screen.CollaboratorHome.route) {
                                 popUpTo(Screen.Login.route) { inclusive = true }
                             }
+
                         UserRole.BECARIO ->
                             navController.navigate(Screen.CollaboratorHome.route) {
                                 popUpTo(Screen.Login.route) { inclusive = true }
@@ -668,5 +675,17 @@ fun ArcaNavGraph(
                 },
             )
         }
+
+        composable(Screen.ProductUpdate.route) {
+            ProductUpdateScreen(
+                onSaveSuccess = {
+                    navController.popBackStack()
+                },
+                onCancel = {
+                    navController.popBackStack()
+                },
+            )
+        }
+    }
     }
 }
