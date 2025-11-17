@@ -35,7 +35,7 @@ interface SupplyRepository {
 
     suspend fun getAcquisitionTypes(): List<Acquisition>
     
-    suspend fun deleteSupplyBatch(id: String)
+    suspend fun deleteSupplyBatch(idSupply: String, expirationDate: String)
 
     /**
      * Deletes a single supply identified by its [id].
