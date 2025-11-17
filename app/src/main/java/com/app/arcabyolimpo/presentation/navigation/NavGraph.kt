@@ -28,8 +28,10 @@ import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecove
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
 import com.app.arcabyolimpo.presentation.screens.product.ProductAddScreen
+import com.app.arcabyolimpo.presentation.screens.product.list.ProductListScreen
 import com.app.arcabyolimpo.presentation.screens.product.list.ProductsListRoute
 import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDeleteTestScreen
+import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDetailScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchDetail.ProductBatchDetailScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchModify.ProductBatchModifyScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchRegister.ProductBatchRegisterScreen
@@ -131,6 +133,13 @@ sealed class Screen(
     object ProductAdd : Screen("product/add")
 
     object ProductDeleteTest : Screen("test_delete_product")
+
+    object ProductsList : Screen("products")
+
+    object ProductDetail : Screen("product/{productId}") {
+        fun createRoute(productId: String) = "product/$productId"
+    }
+
 }
 
 /**
@@ -168,7 +177,7 @@ fun ArcaNavGraph(
     NavHost(
         navController = navController,
         // TODO: Cambiar a Screen.Splash.route cuando acabe
-        startDestination = Screen.Splash.route,
+        startDestination = Screen.ProductsList.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -665,6 +674,33 @@ fun ArcaNavGraph(
             ProductDeleteTestScreen(
                 onDeleted = {
                     navController.popBackStack()
+                },
+            )
+        }
+
+        composable(Screen.ProductsList.route) {
+            ProductListScreen(
+                onProductClick = { productId ->
+                    navController.navigate(Screen.ProductDetail.createRoute(productId))
+                },
+                onAddProductClick = {
+                    navController.navigate(Screen.ProductAdd.route)
+                },
+            )
+        }
+
+        composable(
+            route = Screen.ProductDetail.route,
+            arguments = listOf(navArgument("productId") { type = NavType.StringType }),
+        ) { backStackEntry ->
+            val productId = backStackEntry.arguments?.getString("productId") ?: ""
+            ProductDetailScreen(
+                productId = productId,
+                onBackClick = { navController.popBackStack() },
+                onEditClick = { id ->
+                    // TODO: Navigate to edit screen when you create it
+                },
+                onDeleteClick = {
                 },
             )
         }

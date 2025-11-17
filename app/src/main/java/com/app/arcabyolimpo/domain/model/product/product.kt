@@ -12,4 +12,5 @@ data class Product(
     val description: String?,    // Descripcion
     val available: Boolean,      // Disponible == 1 -> true
     val imageUrl: String?,       // imagen
+    val category: String?,       // idCategoria
 )
