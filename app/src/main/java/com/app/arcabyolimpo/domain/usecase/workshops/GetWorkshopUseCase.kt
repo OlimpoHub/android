@@ -17,7 +17,14 @@ class GetWorkshopUseCase
             try {
                 emit(Result.Loading)
                 val workshop = repository.getWorkshopsById(id)
-                emit(Result.Success(workshop))
+                if (workshop != null) {
+                    emit(Result.Success(workshop))
+                }
+                else{
+                    emit(Result.Error(Exception("Taller no encontrado con ID: $id")))
+                }
+
+
             } catch (e: Exception) {
                 emit(Result.Error(e))
             }
