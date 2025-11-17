@@ -541,6 +541,7 @@ fun ArcaNavGraph(
          */
         composable(Screen.BeneficiaryList.route) {
             BeneficiaryListScreen(
+                navController = navController,
                 onBeneficiaryClick = { beneficiaryId ->
                     navController.navigate(Screen.BeneficiaryDetail.createRoute(beneficiaryId))
                 },

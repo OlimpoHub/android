@@ -2,10 +2,7 @@
 
 ### Added
 - Added products search
-
-## [0.1.0] - 15/11/2025
-### Fixed
-- Fixed error from standard input attibutes into register supply batch screen
+ - Added functionality search beneficiaries
 
 ## [0.1.0] - 15/11/2025
 
@@ -15,6 +12,7 @@
 
 ### Fixed
 - Fixed StandardInput missing parameter
+- Fixed error from standard input attibutes into register supply batch screen
 
 ## [0.1.0] - 14/11/2025
 
