@@ -130,12 +130,22 @@ class SupplyRepositoryImpl
             api.deleteSupplyBatch(id)
         }
 
-        // Do a soft delete for supplys
+        /**
+         * Performs a soft delete of a supply identified by its [id].
+         *
+         * This method builds the [DeleteDto] request body and calls the
+         * corresponding API endpoint (`supplies/delete`).
+         *
+         * @param id Unique identifier of the supply to be soft-deleted.
+         * @throws Exception If the network request fails or the server
+         *         returns an error.
+         */
         override suspend fun deleteOneSupply(id: String) {
-            // If I'm not returning a value, I don't include the response
+            // Build the request body with the supply ID expected by the API
             val body = DeleteDto(id)
             // If you want to check the status of an error
             // val body = DeleteDto("i33")
+            // Call the remote API to perform the soft delete operation
             val result = api.deleteOneSupply(body)
             Log.d("Validacion", "Si llego ")
         }

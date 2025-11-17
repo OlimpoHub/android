@@ -28,6 +28,7 @@ import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecove
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
 import com.app.arcabyolimpo.presentation.screens.product.ProductAddScreen
+import com.app.arcabyolimpo.presentation.screens.product.list.ProductsListRoute
 import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDeleteTestScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchDetail.ProductBatchDetailScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchModify.ProductBatchModifyScreen
@@ -534,6 +535,7 @@ fun ArcaNavGraph(
          */
         composable(Screen.BeneficiaryList.route) {
             BeneficiaryListScreen(
+                navController = navController,
                 onBeneficiaryClick = { beneficiaryId ->
                     navController.navigate(Screen.BeneficiaryDetail.createRoute(beneficiaryId))
                 },
@@ -649,6 +651,13 @@ fun ArcaNavGraph(
                 onCancel = {
                     navController.popBackStack()
                 },
+            )
+        }
+
+        composable("products_list") {
+            ProductsListRoute(
+                onProductClick = { /* ir a detalle si quieres */ },
+                onBackClick = { navController.popBackStack() },
             )
         }
 

@@ -1,7 +1,11 @@
 package com.app.arcabyolimpo.data.mapper.beneficiaries
 
 import com.app.arcabyolimpo.data.remote.dto.beneficiaries.BeneficiaryDto
+import com.app.arcabyolimpo.data.remote.dto.beneficiaries.GetBeneficiariesDisabilitiesDto
+import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
 import com.app.arcabyolimpo.domain.model.beneficiaries.Beneficiary
+import com.app.arcabyolimpo.domain.model.filter.FilterData
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
@@ -29,7 +33,7 @@ fun BeneficiaryDto.toDomain(): Beneficiary {
         entryDate = formatApiDate(entryDate),
         image = image.orEmpty(),
         disabilities = disabilities.orEmpty(),
-        status = status ?: 0
+        status = status ?: 0,
     )
 }
 
@@ -57,4 +61,70 @@ private fun formatApiDate(dateString: String?): String {
     } catch (e: DateTimeParseException) {
         ""
     }
+}
+
+/**
+ * Converts a [FilterDto] (data layer model) into a [FilterData] (domain model).
+ *
+ * This transformation is used when the filter data entered by the user needs to be
+ * represented in the domain layer for processing or state management.
+ *
+ * The function copies all existing filters from [FilterDto.filters] and, if an
+ * [FilterDto.order] value is present, it adds it as an additional entry with
+ * the key `"order"`.
+ *
+ * Example:
+ * ```
+ * val dto = FilterDto(
+ *     filters = mapOf("Categorías" to listOf("Materiales")),
+ *     order = "ASC"
+ * )
+ *
+ * val domain = dto.toDomain()
+ * // domain.sections => { "Categorías" = ["Materiales"], "order" = ["ASC"] }
+ * ```
+ *
+ * @return A [FilterData] object containing the combined filter information and order.
+ */
+fun FilterDto.toDomain(): FilterData {
+    val map = mutableMapOf<String, List<String>>()
+
+    map.putAll(filters)
+
+    order?.let {
+        map["order"] = listOf(it)
+    }
+
+    return FilterData(map)
+}
+
+/**
+ * Converts a [GetFiltersDto] (DTO from the API) into a [FilterData] (domain model).
+ *
+ * This function maps the API’s raw filter data — such as categories, measures,
+ * and workshops — into a domain-level structure that can be displayed in the UI
+ * as filter sections.
+ *
+ * The keys used in the resulting map correspond to localized section names:
+ * `"Categorías"`, `"Medidas"`, and `"Talleres"`.
+ *
+ * Example:
+ * ```
+ * val dto = GetFiltersDto(
+ *     beneficiaries = listOf("Motora", "Fisica"),
+ * )
+ * val domain = dto.toDomain()
+ * // domain.sections => {
+ * //   "Beneficiares" = ["Motora", "Fisica"],
+ * // }
+ * ```
+ *
+ * @return A [FilterData] object containing the available filter options organized by section.
+ */
+fun GetBeneficiariesDisabilitiesDto.toDomain(): FilterData {
+    val map = mutableMapOf<String, List<String>>()
+
+    if (!disabilities.isNullOrEmpty()) map["Discapacidades"] = disabilities
+
+    return FilterData(map)
 }
