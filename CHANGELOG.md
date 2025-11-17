@@ -1,6 +1,7 @@
 ## [0.1.0] - 16/11/2025
 
 ### Added
+ - Add way to get users for workshops
  - Added functionality search beneficiaries
 
 ## [0.1.0] - 15/11/2025
