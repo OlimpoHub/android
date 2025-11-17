@@ -2,6 +2,7 @@
 
 ### Added
  - Added products search
+ - Add DeleteWorkshop Logic, Data and Domain
  - Add way to get users for workshops
  - Added functionality search beneficiaries
 
