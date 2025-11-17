@@ -179,9 +179,9 @@ interface ArcaApi {
     @POST("beneficiary/create")
     suspend fun addBeneficiary(
         @Body requestBody: BeneficiaryDto,
-    ): AddNewBeneficiaryDto
+    ): okhttp3.ResponseBody
 
-    @GET("disability/list")
+    @GET("/disabilities/list")
     suspend fun getDisabilities(): List<DisabilityDto>
 
     @GET("supplies/workshop/category")

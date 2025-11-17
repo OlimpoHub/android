@@ -11,7 +11,7 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class DisabilityDto (
-    @SerializedName("idDiscapacidad") val id: String?,
-    @SerializedName("nombre") val name: String?,
-    @SerializedName("caracteristicas") val characteristics: String?,
+    @SerializedName("idDiscapacidad") val id: String,
+    @SerializedName("nombre") val name: String,
+    @SerializedName("caracteristicas") val characteristics: String,
 )

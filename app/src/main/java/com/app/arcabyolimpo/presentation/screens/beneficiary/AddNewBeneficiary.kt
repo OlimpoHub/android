@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -40,12 +41,18 @@ fun AddNewBeneficiaryScreen(
     ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false) {
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
         val formData by viewModel.formData.collectAsState()
+        val disabilities by viewModel.disabilities.collectAsStateWithLifecycle()
         val fieldErrors by viewModel.fieldErrors.collectAsStateWithLifecycle()
 
         var showConfirmDialog by remember { mutableStateOf(false) }
 
         val snackbarHostState = remember { SnackbarHostState() }
         val scope = rememberCoroutineScope()
+
+        // Cargar discapacidades al iniciar
+        LaunchedEffect(Unit) {
+            viewModel.loadDisabilities()
+        }
 
         Scaffold(
             containerColor = Background,
@@ -119,15 +126,23 @@ fun AddNewBeneficiaryScreen(
                             errorMessage = null
                         )
 
-                        /** Nombre de tutor (Apellido Paterno + Materno) */
+                        /** Apellido Paterno */
                         StandardInput(
-                            label = "Nombre de tutor:",
+                            label = "Apellido Paterno:",
                             placeholder = "",
-                            value = "${formData.apellidoPaterno} ${formData.apellidoMaterno}",
-                            onValueChange = {
-                                // Podrías dividir el input o manejarlo como prefieras
-                            },
-                            isError = fieldErrors["apellidoPaterno"] == true || fieldErrors["apellidoMaterno"] == true,
+                            value = formData.apellidoPaterno,
+                            onValueChange = { viewModel.updateFormData { copy(apellidoPaterno = it) } },
+                            isError = fieldErrors["apellidoPaterno"] == true,
+                            errorMessage = null
+                        )
+
+                        /** Apellido Materno */
+                        StandardInput(
+                            label = "Apellido Materno:",
+                            placeholder = "",
+                            value = formData.apellidoMaterno,
+                            onValueChange = { viewModel.updateFormData { copy(apellidoMaterno = it) } },
+                            isError = fieldErrors["apellidoMaterno"] == true,
                             errorMessage = null
                         )
                     }
@@ -142,7 +157,7 @@ fun AddNewBeneficiaryScreen(
                     /** Fecha de Nacimiento */
                     StandardInput(
                         label = "Fecha de Nacimiento:",
-                        placeholder = "",
+                        placeholder = "YYYY-MM-DD",
                         value = formData.fechaNacimiento,
                         onValueChange = { viewModel.updateFormData { copy(fechaNacimiento = it) } },
                         isError = fieldErrors["fechaNacimiento"] == true,
@@ -171,7 +186,7 @@ fun AddNewBeneficiaryScreen(
                     /** Ingreso (Fecha de Ingreso) */
                     StandardInput(
                         label = "Ingreso",
-                        placeholder = "",
+                        placeholder = "YYYY-MM-DD",
                         value = formData.fechaIngreso,
                         onValueChange = { viewModel.updateFormData { copy(fechaIngreso = it) } },
                         isError = fieldErrors["fechaIngreso"] == true,
@@ -193,22 +208,32 @@ fun AddNewBeneficiaryScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                Row(
+                /** Nombre de Contacto de Emergencia */
+                StandardInput(
+                    label = "Nombre del Contacto de Emergencia:",
+                    placeholder = "",
+                    value = formData.nombreContactoEmergencia,
+                    onValueChange = { viewModel.updateFormData { copy(nombreContactoEmergencia = it) } },
+                    isError = fieldErrors["nombreContactoEmergencia"] == true,
+                    errorMessage = null,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                /** Discapacidades - Selector desde base de datos */
+                SelectInput(
+                    label = "Discapacidades",
+                    selectedOption = disabilities.firstOrNull { it.id == formData.discapacidad }?.name
+                        ?: "Seleccionar",
+                    options = disabilities.map { it.name},
+                    onOptionSelected = { selectedNombre ->
+                        val selectedDisability = disabilities.find { it.name == selectedNombre }
+                        viewModel.updateFormData { copy(discapacidad = selectedDisability?.id ?: "") }
+                    },
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    /** Discapacidades **/
-                    SelectInput(
-                        label = "Discapacidades",
-                        selectedOption = formData.discapacidad.ifEmpty { "Seleccionar" },
-                        options = listOf("Ninguna", "Visual", "Auditiva", "Motriz", "Intelectual", "Otra"),
-                        onOptionSelected = { selected ->
-                            viewModel.updateFormData { copy(discapacidad = selected) }
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        isError = fieldErrors["discapacidad"] == true
-                    )
-                }
+                    isError = fieldErrors["discapacidad"] == true
+                )
 
                 Spacer(modifier = Modifier.height(12.dp))
 

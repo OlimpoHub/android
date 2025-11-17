@@ -1,5 +1,6 @@
 package com.app.arcabyolimpo.data.repository.disabilities
 
+import android.util.Log
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.domain.model.disabilities.Disability
 import com.app.arcabyolimpo.domain.repository.disability.DisabilityRepository
@@ -28,13 +29,23 @@ class DisabilityRepositoryImpl
      */
 
     override suspend fun getDisabilities(): List<Disability> {
-        val response = api.getDisabilities()
-        return response.map { dto ->
-            Disability (
-                id = dto.id.orEmpty(),
-                name = dto.name.orEmpty(),
-                characteristics =  dto.characteristics.orEmpty(),
-            )
+        Log.d("DisabilityRepo", "Llamando a getDisabilities...")
+
+        try {
+            val response = api.getDisabilities()
+            Log.d("DisabilityRepo", "Éxito: ${response.size} discapacidades recibidas")
+
+            return response.map { dto ->
+                Disability(
+                    id = dto.id,
+                    name = dto.name,
+                    characteristics = dto.characteristics
+                )
+            }
+        } catch (e: Exception) {
+            Log.e("DisabilityRepo", "Error al obtener discapacidades: ${e.message}")
+            Log.e("DisabilityRepo", "Stack trace: ", e)
+            throw e
         }
-        }
+    }
     }

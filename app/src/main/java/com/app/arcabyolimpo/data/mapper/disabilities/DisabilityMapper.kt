@@ -11,8 +11,8 @@ import com.app.arcabyolimpo.domain.model.disabilities.Disability
 
 fun DisabilityDto.toDomain(): Disability {
     return Disability (
-        id = id.orEmpty(),
-        name = name.orEmpty(),
-        characteristics = characteristics.orEmpty()
+        id = id,
+        name = name,
+        characteristics = characteristics
     )
 }
