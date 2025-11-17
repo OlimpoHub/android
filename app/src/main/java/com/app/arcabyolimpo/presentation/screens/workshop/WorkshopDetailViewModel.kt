@@ -19,7 +19,7 @@ class WorkshopDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val workshopId: String = savedStateHandle.get<String>("workshopId") ?: ""
+    private val workshopId: String = savedStateHandle.get<String>("id") ?: ""
 
     private val _workshop = MutableStateFlow<Workshop?>(null)
     val workshop: StateFlow<Workshop?> = _workshop.asStateFlow()
@@ -36,7 +36,7 @@ class WorkshopDetailViewModel @Inject constructor(
 
     private fun loadWorkshop() {
         if (workshopId.isBlank()) {
-            _errorMessage.value = "ID del taller no válido"
+            _errorMessage.value = "ID del taller no válido:" + workshopId
             _isLoading.value = false
             return
         }

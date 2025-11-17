@@ -26,6 +26,7 @@ import com.app.arcabyolimpo.data.remote.dto.user.registeruser.RegisterUserDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.AddNewWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
+import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopResponseDto
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -141,7 +142,7 @@ interface ArcaApi {
     @GET("workshop/{id}")
     suspend fun getWorkshop(
         @Path("id") id: String,
-    ): WorkshopDto
+    ): WorkshopResponseDto
 
     @POST("workshop/add")
     suspend fun addWorkshop(

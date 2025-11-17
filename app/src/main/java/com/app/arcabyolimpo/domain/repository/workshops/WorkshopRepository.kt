@@ -7,7 +7,7 @@ interface WorkshopRepository {
 
     suspend fun getWorkshopsList(): List<Workshop>
 
-    suspend fun getWorkshopsById(id: String): Workshop
+    suspend fun getWorkshopsById(id: String): Workshop?
 
     suspend fun addWorkshop(newWorkshop: WorkshopDto): Workshop
 
