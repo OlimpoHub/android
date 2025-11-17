@@ -87,10 +87,10 @@ class UpdateProductViewModel @Inject constructor(
                         isProductLoaded = true,
                         productDetail = product,
 
-                        nameInput = product.name,
-                        priceInput = product.unitaryPrice,
-                        descriptionInput = product.description,
-                        statusInput = product.status == 1,
+                        name = product.name,
+                        unitaryPrice = product.unitaryPrice,
+                        description = product.description,
+                        status = product.status,
 
                         selectedWorkshopId = selectedWorkshopId,
                         selectedCategoryId = selectedCategoryId,
@@ -117,16 +117,16 @@ class UpdateProductViewModel @Inject constructor(
     fun onSaveClick() {
         val state = _uiState.value
 
-        if (state.nameInput.isBlank() || state.selectedWorkshopId == null || state.selectedCategoryId == null) {
+        if (state.name.isBlank() || state.selectedWorkshopId == null || state.selectedCategoryId == null) {
             _uiState.update { it.copy(error = "Completa todos los campos obligatorios") }
             return
         }
 
         val productToUpdate = ProductUpdate(
-            name = state.nameInput,
-            unitaryPrice = state.priceInput,
-            description = state.descriptionInput,
-            status = state.statusInput.toString(),
+            name = state.name,
+            unitaryPrice = state.unitaryPrice,
+            description = state.description,
+            status = state.status.toString(),
             idWorkshop = state.selectedWorkshopId!!,
             idCategory = state.selectedCategoryId!!,
             image = state.selectedImageUri
@@ -153,10 +153,10 @@ class UpdateProductViewModel @Inject constructor(
         }
     }
 
-    fun onNameChange(name: String) = _uiState.update { it.copy(nameInput = name) }
-    fun onPriceChange(price: String) = _uiState.update { it.copy(priceInput = price) }
-    fun onDescriptionChange(description: String) = _uiState.update { it.copy(descriptionInput = description) }
-    fun onStatusChange(status: Boolean) = _uiState.update { it.copy(statusInput = status) }
+    fun onNameChange(name: String) = _uiState.update { it.copy(name = name) }
+    fun onUnitaryPriceChange(price: String) = _uiState.update { it.copy(unitaryPrice = price) }
+    fun onDescriptionChange(description: String) = _uiState.update { it.copy(description = description) }
+    fun onStatusChange(status: Int) = _uiState.update { it.copy(status = status) }
     fun onWorkshopSelected(id: String) = _uiState.update { it.copy(selectedWorkshopId = id) }
     fun onCategorySelected(id: String) = _uiState.update { it.copy(selectedCategoryId = id) }
     fun onImageSelected(uri: Uri?) = _uiState.update { it.copy(selectedImageUri = uri) }

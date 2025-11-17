@@ -15,10 +15,10 @@ data class ProductUpdateUiState(
     val workshops: List<WorkshopInfo> = emptyList(),
     val categories: List<CategoryInfo> = emptyList(),
 
-    val nameInput: String = "",
-    val priceInput: String = "",
-    val descriptionInput: String = "",
-    val statusInput: Boolean = true,
+    val name: String = "",
+    val unitaryPrice: String = "",
+    val description: String = "",
+    val status: Int = 1,
 
     val selectedWorkshopId: String? = null,
     val selectedCategoryId: String? = null,

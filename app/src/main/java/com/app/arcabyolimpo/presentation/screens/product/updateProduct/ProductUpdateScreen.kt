@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.app.arcabyolimpo.presentation.screens.product.addProduct.AddProductViewModel
 import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.CancelButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SaveButton
@@ -41,32 +40,32 @@ import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
 
 /**
- * ProductAddScreen -> The main composable view for adding a new product.
+ * ProductUpdateScreen -> The main composable view for adding a new product.
  *
- * It displays all necessary input fields driven by the [AddProductViewModel] state.
+ * It displays all necessary input fields driven by the [UpdateProductViewModel] state.
  * It handles side effects like navigation and showing [Toast] messages based on the
  * success or error status from the UI state.
  *
- * @param viewModel The Hilt-injected [AddProductViewModel] providing UI state and handling input events.
+ * @param viewModel The Hilt-injected [UpdateProductViewModel] providing UI state and handling input events.
  * @param onSaveSuccess Lambda function executed when the product is successfully added.
  * @param onCancel Lambda function executed when the user cancels the operation.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductUpdateScreen(
-    viewModel: AddProductViewModel = hiltViewModel(),
+    viewModel: UpdateProductViewModel = hiltViewModel(),
     onSaveSuccess: () -> Unit,
     onCancel: () -> Unit,
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
     LaunchedEffect(
-        key1 = uiState.success,
+        key1 = uiState.saveSuccess,
         key2 = uiState.error,
     ) {
         when {
-            uiState.success -> {
+            uiState.saveSuccess -> {
                 Toast.makeText(context, "Producto agregado con éxito", Toast.LENGTH_SHORT).show()
                 onSaveSuccess()
             }
@@ -107,13 +106,13 @@ fun ProductUpdateScreen(
                 label = "Nombre",
                 value = uiState.name,
                 onValueChange = viewModel::onNameChange,
-                placeholder = "Galletas de chocolate",
+                placeholder = uiState.productDetail?.name ?: "Galletas de chocolate",
                 isError = uiState.error?.contains("Nombre") == true
             )
 
             ImageUploadInput(
                 label = "Imagen del producto",
-                value = uiState.selectedImage,
+                value = uiState.selectedImageUri,
                 onValueChange = viewModel::onImageSelected,
                 isError = uiState.error?.contains("Imagen") == true
             )
@@ -137,7 +136,6 @@ fun ProductUpdateScreen(
 
             SelectObjectInput(
                 label = "Selecciona la categoría del producto",
-                // ... (el resto de los campos igual) ...
                 options = uiState.categories,
                 selectedId = uiState.selectedCategoryId,
                 onOptionSelected = viewModel::onCategorySelected,
