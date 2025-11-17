@@ -155,11 +155,11 @@ fun WorkshopDetailScreen(
                     workshop != null -> {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text("Nombre: ${workshop?.nameWorkshop}")
-                            Text("Capacitación: ${workshop?.idTraining}")
                             Text("Usuario: ${workshop?.idUser}")
                             Text("Fecha: ${workshop?.date}")
                             Text("Hora: ${workshop?.startHour} - ${workshop?.finishHour}")
                             Text("Descripción: ${workshop?.description}")
+                            Text("Video Capacitacion: ${workshop?.videoTraining}")
                         }
                     }
                     else -> Text("No se encontró el taller")

@@ -8,4 +8,6 @@ interface BeneficiaryRepository{
     suspend fun getBeneficiaryById(id: String): Beneficiary
 
     suspend fun deleteBeneficiary(id: String)
+
+    suspend fun searchBeneficiaries(query: String): List<Beneficiary>
 }

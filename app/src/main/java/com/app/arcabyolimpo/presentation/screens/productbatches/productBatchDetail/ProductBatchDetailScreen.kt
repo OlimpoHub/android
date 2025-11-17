@@ -66,6 +66,7 @@ import org.jetbrains.annotations.Async
 fun ProductBatchDetailScreen(
     batchId: String,
     onBackClick: () -> Unit,
+    onModifyClick: (String) -> Unit,
     viewModel: ProductBatchDetailViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -208,7 +209,9 @@ fun ProductBatchDetailScreen(
                             modifier = Modifier.weight(1f),
                         )
                         ModifyButton(
-                            onClick = {},
+                            onClick = {
+                                onModifyClick(batch?.idInventario ?: "")
+                            },
                             modifier = Modifier.weight(1f),
                         )
                     }

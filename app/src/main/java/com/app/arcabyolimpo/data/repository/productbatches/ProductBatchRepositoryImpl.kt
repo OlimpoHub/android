@@ -2,6 +2,7 @@ package com.app.arcabyolimpo.data.repository.productbatches
 
 import com.app.arcabyolimpo.data.mapper.productbatches.toDomain
 import com.app.arcabyolimpo.data.mapper.productbatches.toDto
+import com.app.arcabyolimpo.data.mapper.productbatches.toModifyDto
 import com.app.arcabyolimpo.data.mapper.productbatches.toRegisterDto
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.domain.model.productbatches.ProductBatch
@@ -20,9 +21,18 @@ class ProductBatchRepositoryImpl(
     override suspend fun getProductBatch(id: String): ProductBatch = api.getProductBatch(id).toDomain()
 
     override suspend fun registerProductBatch(batch: ProductBatch) {
-        println("Batch received: $batch")
         val dto = batch.toRegisterDto()
-        println("DTO: $dto")
         api.addProductBatch(dto)
+    }
+
+    override suspend fun modifyProductBatch(
+        batch: ProductBatch,
+        id: String,
+    ) {
+        val dto = batch.toModifyDto()
+        api.modifyProductBatch(
+            id = id,
+            batch = dto,
+        )
     }
 }
