@@ -40,7 +40,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.domain.model.beneficiaries.Beneficiary
-import com.app.arcabyolimpo.presentation.navigation.Screen
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
 import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
@@ -78,7 +77,6 @@ fun BeneficiaryListScreen(
         onSearchTextChange = viewModel::onSearchTextChange,
         onBeneficiaryClick = onBeneficiaryClick,
         onFilterClick = onFilterClick,
-        onNotificationClick = onNotificationClick,
         onApplyFilters = viewModel::filterBeneficiary,
         onClearFilters = {
             viewModel.clearFilters()
@@ -107,7 +105,6 @@ fun BeneficiaryList(
     onNotificationClick: () -> Unit,
     onApplyFilters: (FilterDto) -> Unit,
     onClearFilters: () -> Unit,
-    onNotificationClick: () -> Unit,
     onAddBeneficiaryClick: () -> Unit
 ) {
     var showFilter by remember { mutableStateOf(false) }
