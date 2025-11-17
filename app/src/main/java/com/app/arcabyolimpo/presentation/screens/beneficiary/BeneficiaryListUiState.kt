@@ -14,6 +14,6 @@ import com.app.arcabyolimpo.domain.model.beneficiaries.Beneficiary
 data class BeneficiaryListUiState (
     val isLoading: Boolean = false,
     val beneficiaries: List<Beneficiary> = emptyList(),
-    val error: String?? = null,
+    val error: String? = null,
     val searchText: String = ""
 )
