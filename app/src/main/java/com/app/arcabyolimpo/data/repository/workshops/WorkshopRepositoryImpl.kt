@@ -60,10 +60,11 @@ class WorkshopRepositoryImpl
      * @param id The unique identifier of the workshop to retrieve.
      * @return A [Workshop] object containing detailed workshop information.
      */
-    override suspend fun getWorkshopsById(id: String): Workshop {
+    override suspend fun getWorkshopsById(id: String): Workshop? {
         val response = api.getWorkshop(id)
         println("Workshop crudo desde API: $response")
-        return response.toDomain()
+        val workshopListInside = response.workshopList
+        return workshopListInside.firstOrNull()?.toDomain()
     }
 
     /**

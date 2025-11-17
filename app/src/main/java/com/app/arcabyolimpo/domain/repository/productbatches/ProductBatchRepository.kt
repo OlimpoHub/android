@@ -18,4 +18,6 @@ interface ProductBatchRepository {
         batch: ProductBatch,
         id: String,
     )
+
+    suspend fun deleteProductBatch(id: String)
 }
