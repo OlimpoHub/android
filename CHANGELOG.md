@@ -1,3 +1,8 @@
+## [0.1.0] - 16/11/2025
+
+### Added
+ - Add way to get users for workshops
+
 ## [0.1.0] - 15/11/2025
 ### Fixed
 - Fixed error from standard input attibutes into register supply batch screen
