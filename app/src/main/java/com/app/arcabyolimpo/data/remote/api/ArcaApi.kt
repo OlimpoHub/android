@@ -13,6 +13,7 @@ import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchDto
+import com.app.arcabyolimpo.data.remote.dto.product.ProductDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchModifyDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchRegisterDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.AcquisitionDto
@@ -260,9 +261,17 @@ interface ArcaApi {
         @Part("Disponible") status: RequestBody,
         @Part image: MultipartBody.Part?,
     )
-
     @DELETE("product/{idProduct}")
     suspend fun deleteProduct(
         @Path("idProduct") idProduct: String,
     ): Response<Unit>
+
+    @GET("product/")
+    suspend fun getProducts(): List<ProductDto>
+
+    @GET("product/search")
+    suspend fun searchProducts(
+        @Query("q") query: String,
+    ): List<ProductDto>
+
 }
