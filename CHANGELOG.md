@@ -1,6 +1,7 @@
 ## [0.1.0] - 16/11/2025
 
 ### Added
+ - Add DeleteWorkshop Logic, Data and Domain
  - Add way to get users for workshops
  - Added functionality search beneficiaries
 
