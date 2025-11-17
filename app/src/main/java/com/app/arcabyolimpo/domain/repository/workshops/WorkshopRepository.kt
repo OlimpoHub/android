@@ -13,6 +13,16 @@ interface WorkshopRepository {
 
     suspend fun searchWorkshop(name: String): List<Workshop>
 
+    /**
+     * Deletes a single workshop identified by its [id].
+     *
+     * A simple function so that the domain or presentation layer
+     * can request the deletion of an Workshop.
+     *
+     * @param id Unique identifier of the workshop to be deleted.
+     */
+    suspend fun deleteWorkshops(id: String)
+
     companion object
 
 }

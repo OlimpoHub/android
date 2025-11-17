@@ -13,6 +13,7 @@ import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchDto
+import com.app.arcabyolimpo.data.remote.dto.product.ProductDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchModifyDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchRegisterDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.AcquisitionDto
@@ -29,6 +30,8 @@ import com.app.arcabyolimpo.data.remote.dto.user.UserDto
 import com.app.arcabyolimpo.data.remote.dto.user.registeruser.RegisterResponseDto
 import com.app.arcabyolimpo.data.remote.dto.user.registeruser.RegisterUserDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.AddNewWorkshopDto
+import com.app.arcabyolimpo.data.remote.dto.workshops.DeleteResponseWorkshopDto
+import com.app.arcabyolimpo.data.remote.dto.workshops.DeleteWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopResponseDto
@@ -135,11 +138,21 @@ interface ArcaApi {
         @Path("id") id: String,
     )
 
-    // My route is a soft delete and an update
+    /**
+     * Deletes a single supply from the backend.
+     *
+     * This endpoint receives a [DeleteDto] with the information needed
+     * to identify which supply should be removed ( its ID).
+     *
+     * @param requestBody Data transfer object that contains the supply
+     * information required by the API to perform the delete operation.
+     * @return [DeleteResponseDto] containing the result of the delete
+     * operation, such as a success flag and/or a confirmation message.
+     */
     @POST("supplies/delete")
     suspend fun deleteOneSupply(
         @Body requestBody: DeleteDto,
-        // DeleteResponseDto es para la respuesta , para el snackbar
+        // DeleteResponseDto is for the response, for the snackbar
     ): DeleteResponseDto
 
     // Workshop ---------------------------
@@ -161,6 +174,25 @@ interface ArcaApi {
     suspend fun addWorkshop(
         @Body requestBody: WorkshopDto,
     ): AddNewWorkshopDto
+
+    /**
+     * Deletes a single Workshop from the backend.
+     *
+     * This endpoint receives a [DeleteWorkshopDto] with the information needed
+     * to identify which supply should be removed ( its ID).
+     *
+     * @param requestBody Data transfer object that contains the supply
+     * information required by the API to perform the delete operation.
+     * @return [DeleteResponseWorkshopDto] containing the result of the delete
+     * operation, such as a success flag and/or a confirmation message.
+     */
+    @POST("workshop/delete")
+    suspend fun deleteWorkshops(
+        @Body requestBody: DeleteWorkshopDto,
+        // DeleteResponseDto is for the response, for the snackbar
+    ): DeleteResponseWorkshopDto
+
+
 
     // Beneficiary -------------
     @GET("beneficiary/list")
@@ -230,9 +262,17 @@ interface ArcaApi {
         @Part("Disponible") status: RequestBody,
         @Part image: MultipartBody.Part?,
     )
-
     @DELETE("product/{idProduct}")
     suspend fun deleteProduct(
         @Path("idProduct") idProduct: String,
     ): Response<Unit>
+
+    @GET("product/")
+    suspend fun getProducts(): List<ProductDto>
+
+    @GET("product/search")
+    suspend fun searchProducts(
+        @Query("q") query: String,
+    ): List<ProductDto>
+
 }
