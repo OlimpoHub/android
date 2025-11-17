@@ -44,7 +44,6 @@ import kotlinx.coroutines.launch
  * - A navbar at the button of the screen.
  *
  * @param navController The way to go through different screens that are in the [NavGraph]
- * @param workshopClick Callback triggered when a workshop item is clicked.
  * @param viewModel The [WorkshopsListViewModel] used to manage the UI state.
  */
 @Composable
@@ -57,15 +56,27 @@ fun AddNewWorkshopScreen(
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
         val formData by viewModel.formData.collectAsState()
         val users by viewModel.users.collectAsStateWithLifecycle()
+        val usersLoading by viewModel.usersLoading.collectAsStateWithLifecycle()
+        val usersError by viewModel.usersError.collectAsStateWithLifecycle()
         val fieldErrors by viewModel.fieldErrors.collectAsStateWithLifecycle()
 
         var showConfirmDialog by remember { mutableStateOf(false) }
+        var expanded by remember { mutableStateOf(false) }
 
         val snackbarHostState = remember { SnackbarHostState() }
         val scope = rememberCoroutineScope()
 
         LaunchedEffect(Unit) {
             viewModel.loadUsers()
+        }
+
+        // Mostrar error de carga de usuarios
+        LaunchedEffect(usersError) {
+            usersError?.let { error ->
+                scope.launch {
+                    snackbarHostState.showSnackbar("Error: $error")
+                }
+            }
         }
 
         Scaffold(
@@ -114,6 +125,7 @@ fun AddNewWorkshopScreen(
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -173,22 +185,57 @@ fun AddNewWorkshopScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                /** User */
-                SelectInput(
-                    label = "Usuario",
-                    selectedOption =
-                        users
-                            .firstOrNull { it.id == formData.idUser }
-                            ?.let { "${it.name} ${it.lastName}" } ?: "",
-                    options = users.map { "${it.name} ${it.lastName}" },
-                    onOptionSelected = { selectedName ->
-                        val selectedUser =
-                            users.find { "${it.name} ${it.lastName}" == selectedName }
-                        viewModel.updateFormData { copy(idUser = selectedUser?.id ?: "") }
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    isError = fieldErrors["idUser"] == true,
-                )
+                /** User Selection  */
+                if (usersLoading) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        contentAlignment = Alignment.CenterStart
+                    ) {
+                        Text(
+                            text = "Cargando usuarios...",
+                            color = White,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                } else if (usersError != null) {
+                    Column {
+                        Text(
+                            text = "Error al cargar usuarios",
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        TextButton(
+                            onClick = { viewModel.loadUsers() }
+                        ) {
+                            Text("Reintentar")
+                        }
+                    }
+                } else {
+                    SelectInput(
+                        label = "Usuario",
+                        selectedOption =
+                            users
+                                .firstOrNull { it.idUsuario == formData.idUser }
+                                ?.let { "${it.nombre} ${it.apellidoPaterno} ${it.apellidoMaterno}" }
+                                ?: "Seleccionar usuario",
+                        options = users.map {
+                            "${it.nombre} ${it.apellidoPaterno} ${it.apellidoMaterno}"
+                        },
+                        onOptionSelected = { selectedText ->
+                            val selectedUser = users.find {
+                                "${it.nombre} ${it.apellidoPaterno} ${it.apellidoMaterno}" == selectedText
+                            }
+
+                            viewModel.updateFormData { copy(idUser = selectedUser?.idUsuario ?: "") }
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        isError = fieldErrors["idUser"] == true,
+                    )
+
+                }
+
                 Spacer(modifier = Modifier.height(12.dp))
 
                 /** Video Training */
@@ -200,6 +247,7 @@ fun AddNewWorkshopScreen(
                     isError = fieldErrors["videoTraining"] == true,
                     errorMessage = null,
                 )
+
                 Spacer(modifier = Modifier.height(12.dp))
 
                 /** Upload image */
@@ -216,6 +264,7 @@ fun AddNewWorkshopScreen(
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center,
@@ -233,10 +282,20 @@ fun AddNewWorkshopScreen(
 
                     /** Save */
                     SaveButton(
-                        onClick = { showConfirmDialog = true },
+                        onClick = {
+                            if (users.isEmpty() && !usersLoading) {
+                                scope.launch {
+                                    snackbarHostState.showSnackbar("Debe cargar los usuarios primero")
+                                }
+                                viewModel.loadUsers()
+                            } else {
+                                showConfirmDialog = true
+                            }
+                        },
                         width = 112.dp,
-                        height = 40.dp,
+                        height = 40.dp
                     )
+
 
                     if (showConfirmDialog) {
                         DecisionDialog(
@@ -281,10 +340,9 @@ fun AddNewWorkshopScreen(
                             navController.popBackStack()
                         }
                     }
-
-
-                    Spacer(modifier = Modifier.height(80.dp))
                 }
+
+                Spacer(modifier = Modifier.height(80.dp))
             }
         }
     }

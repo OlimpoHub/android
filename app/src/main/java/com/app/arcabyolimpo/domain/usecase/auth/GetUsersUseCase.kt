@@ -5,7 +5,7 @@ import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.repository.user.UsersRepository
 import javax.inject.Inject
 
-class GetUsersUseCase @Inject constructor(
+class GetAllUsersUseCase @Inject constructor(
     private val usersRepository: UsersRepository
 ) {
     suspend operator fun invoke(): Result<List<UserDto>> {

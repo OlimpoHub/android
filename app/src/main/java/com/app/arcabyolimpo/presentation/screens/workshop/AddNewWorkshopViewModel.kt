@@ -7,7 +7,7 @@ import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.usecase.workshops.PostAddNewWorkshop
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopFormData
-import com.app.arcabyolimpo.domain.usecase.user.GetUsersUseCase
+import com.app.arcabyolimpo.domain.usecase.user.GetAllUsersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AddNewWorkshopViewModel @Inject constructor(
     private val postAddNewWorkshop: PostAddNewWorkshop,
-    private val getUsersUseCase: GetUsersUseCase
+    private val getAllUsersUseCase: GetAllUsersUseCase
 ) : ViewModel() {
 
     /** Backing property for the workshops UI state. */
@@ -31,39 +31,45 @@ class AddNewWorkshopViewModel @Inject constructor(
     private val _fieldErrors = MutableStateFlow<Map<String, Boolean>>(emptyMap())
     val fieldErrors: StateFlow<Map<String, Boolean>> = _fieldErrors.asStateFlow()
 
+
     private val _users = MutableStateFlow<List<UserDto>>(emptyList())
     val users: StateFlow<List<UserDto>> = _users.asStateFlow()
 
+    private val _usersLoading = MutableStateFlow(false)
+    val usersLoading: StateFlow<Boolean> = _usersLoading.asStateFlow()
+
+    private val _usersError = MutableStateFlow<String?>(null)
+    val usersError: StateFlow<String?> = _usersError.asStateFlow()
+
     fun loadUsers() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
+            _usersLoading.value = true
+            _usersError.value = null
 
             try {
-                getUsersUseCase().collect { result ->
-                    when (result) {
-                        is Result.Loading -> {
-                            _uiState.update { it.copy(isLoading = true) }
-                        }
-                        is Result.Success -> {
-                            _users.value = result.data
-                            _uiState.update { it.copy(isLoading = false, error = null) }
-                        }
-                        is Result.Error -> {
-                            _uiState.update { it.copy(
-                                isLoading = false,
-                                error = "Error al cargar usuarios: ${result.exception.message}"
-                            ) }
-                        }
+                val result = getAllUsersUseCase()
+                when (result) {
+                    is Result.Success -> {
+                        _users.value = result.data
+                        _usersError.value = null
+                    }
+                    is Result.Error -> {
+                        _usersError.value = "Error al cargar usuarios: ${result.exception.message}"
+                        _users.value = emptyList()
+                    }
+                    is Result.Loading -> {
+
                     }
                 }
             } catch (e: Exception) {
-                _uiState.update { it.copy(
-                    isLoading = false,
-                    error = "Error al cargar usuarios: ${e.message}"
-                ) }
+                _usersError.value = "Error al cargar usuarios: ${e.message}"
+                _users.value = emptyList()
+            } finally {
+                _usersLoading.value = false
             }
         }
     }
+
     fun addNewWorkshop() {
         if (!validateForm()) return
 
@@ -91,7 +97,7 @@ class AddNewWorkshopViewModel @Inject constructor(
                         )
 
                         is Result.Success -> state.copy(
-                            addNewWorkshop = result.data,
+                            addNewWorkshop = workshopDto,
                             isLoading = false,
                             error = null,
                             isSuccess = true
@@ -150,3 +156,4 @@ class AddNewWorkshopViewModel @Inject constructor(
         return errors.isEmpty()
     }
 }
+
