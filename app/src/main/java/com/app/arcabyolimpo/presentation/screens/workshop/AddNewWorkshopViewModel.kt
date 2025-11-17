@@ -2,11 +2,12 @@ package com.app.arcabyolimpo.presentation.screens.workshop
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.arcabyolimpo.data.remote.dto.user.UserDto
 import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.usecase.workshops.PostAddNewWorkshop
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopFormData
-import com.app.arcabyolimpo.domain.usecase.workshops.GetWorkshopsListUseCase
+import com.app.arcabyolimpo.domain.usecase.user.GetAllUsersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,31 +17,10 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
 
-/**
- * ViewModel responsible for managing the UI state of the register workshops screen.
- *
- * This class interacts with the [postAddNewWorkshop] to post all the data in the domain layer
- * and exposes a [StateFlow] of [AddNewWorkshopUiState] that the UI observes to render updates.
- *
- * @property postAddNewWorkshop Use case for posting the new workshop.
- */
-
-/** Mock Data - deleting in the future */
-data class Training(
-    val id: String,
-    val name: String
-)
-
-data class User(
-    val id: String,
-    val name: String,
-    val lastName: String,
-    val email: String
-)
-
 @HiltViewModel
 class AddNewWorkshopViewModel @Inject constructor(
-    private val postAddNewWorkshop: PostAddNewWorkshop
+    private val postAddNewWorkshop: PostAddNewWorkshop,
+    private val getAllUsersUseCase: GetAllUsersUseCase
 ) : ViewModel() {
 
     /** Backing property for the workshops UI state. */
@@ -51,76 +31,41 @@ class AddNewWorkshopViewModel @Inject constructor(
     private val _fieldErrors = MutableStateFlow<Map<String, Boolean>>(emptyMap())
     val fieldErrors: StateFlow<Map<String, Boolean>> = _fieldErrors.asStateFlow()
 
-    /** Mock Data - deleting in the future */
-    private val _trainings = MutableStateFlow<List<Training>>(emptyList())
-    val trainings: StateFlow<List<Training>> = _trainings.asStateFlow()
-    private val _users = MutableStateFlow<List<User>>(emptyList())
-    val users: StateFlow<List<User>> = _users.asStateFlow()
 
-    /** Mock Data - deleting in the future */
-    fun loadTrainings() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
+    private val _users = MutableStateFlow<List<UserDto>>(emptyList())
+    val users: StateFlow<List<UserDto>> = _users.asStateFlow()
 
-            try {
-                val mockTrainings = listOf(
-                    Training(
-                        id = "a6a4dc6e-29f3-4c34-bd3c-4c8c74a5a550",
-                        name = "Panadería"
-                    ),
-                    Training(
-                        id = "f05468dc-bda0-11f0-b6b8-020161fa237d",
-                        name = "Repostería"
-                    ),
-                    Training(
-                        id = "f0546abd-bda0-11f0-b6b8-020161fa237d",
-                        name = "Cocina"
-                    )
-                )
-                _trainings.value = mockTrainings
-                _uiState.update { it.copy(isLoading = false) }
-            } catch (e: Exception) {
-                _uiState.update { it.copy(
-                    isLoading = false,
-                    error = "Error al cargar capacitaciones: ${e.message}"
-                ) }
-            }
-        }
-    }
+    private val _usersLoading = MutableStateFlow(false)
+    val usersLoading: StateFlow<Boolean> = _usersLoading.asStateFlow()
 
-    /** Mock Data - deleting in the future */
+    private val _usersError = MutableStateFlow<String?>(null)
+    val usersError: StateFlow<String?> = _usersError.asStateFlow()
+
     fun loadUsers() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
+            _usersLoading.value = true
+            _usersError.value = null
 
             try {
-                val mockUsers = listOf(
-                    User(
-                        id = "13fc9277-bda1-11f0-b6b8-020161fa237d",
-                        name = "Juan",
-                        lastName = "Pérez",
-                        email = "juan.perez@email.com"
-                    ),
-                    User(
-                        id = "4e3d1a59-2ac1-4a5e-bb77-3b238bdfc50f",
-                        name = "María",
-                        lastName = "González",
-                        email = "maria.gonzalez@email.com"
-                    ),
-                    User(
-                        id = "dd03051b-bcfa-11f0-b6b8-020161fa237d",
-                        name = "Carlos",
-                        lastName = "Rodríguez",
-                        email = "carlos.rodriguez@email.com"
-                    )
-                )
-                _users.value = mockUsers
-                _uiState.update { it.copy(isLoading = false) }
+                val result = getAllUsersUseCase()
+                when (result) {
+                    is Result.Success -> {
+                        _users.value = result.data
+                        _usersError.value = null
+                    }
+                    is Result.Error -> {
+                        _usersError.value = "Error al cargar usuarios: ${result.exception.message}"
+                        _users.value = emptyList()
+                    }
+                    is Result.Loading -> {
+
+                    }
+                }
             } catch (e: Exception) {
-                _uiState.update { it.copy(
-                    isLoading = false,
-                    error = "Error al cargar usuarios: ${e.message}"
-                ) }
+                _usersError.value = "Error al cargar usuarios: ${e.message}"
+                _users.value = emptyList()
+            } finally {
+                _usersLoading.value = false
             }
         }
     }
@@ -131,7 +76,6 @@ class AddNewWorkshopViewModel @Inject constructor(
         viewModelScope.launch {
             val workshopDto = WorkshopDto(
                 id = UUID.randomUUID().toString(),
-                idTraining = _formData.value.idTraining,
                 name = _formData.value.name,
                 startHour = _formData.value.startHour,
                 finishHour = _formData.value.finishHour,
@@ -139,7 +83,8 @@ class AddNewWorkshopViewModel @Inject constructor(
                 idUser = _formData.value.idUser,
                 description = _formData.value.description,
                 date = _formData.value.date,
-                image = _formData.value.image
+                image = _formData.value.image,
+                videoTraining = _formData.value.videoTraining
             )
 
             postAddNewWorkshop(workshopDto).collect { result ->
@@ -152,7 +97,7 @@ class AddNewWorkshopViewModel @Inject constructor(
                         )
 
                         is Result.Success -> state.copy(
-                            addNewWorkshop = result.data,
+                            addNewWorkshop = workshopDto,
                             isLoading = false,
                             error = null,
                             isSuccess = true
@@ -183,6 +128,7 @@ class AddNewWorkshopViewModel @Inject constructor(
     private fun clearFieldErrors() {
         _fieldErrors.value = emptyMap()
     }
+
     private fun validateForm(): Boolean {
         val data = _formData.value
         val errors = mutableMapOf<String, Boolean>()
@@ -190,12 +136,12 @@ class AddNewWorkshopViewModel @Inject constructor(
         val dateRegex = Regex("^\\d{4}-\\d{2}-\\d{2}$")
 
         if (data.name.isBlank()) errors["name"] = true
-        if (data.idTraining.isBlank()) errors["idTraining"] = true
         if (data.startHour.isBlank()) errors["startHour"] = true
         if (data.finishHour.isBlank()) errors["finishHour"] = true
         if (data.date.isBlank()) errors["date"] = true
         if (data.description.isBlank()) errors["description"] = true
         if (data.idUser.isBlank()) errors["idUser"] = true
+        if (data.videoTraining.isBlank()) errors["videoTrainings"] = true
 
         if (data.startHour.isNotBlank() && !hourRegex.matches(data.startHour)) {
             errors["startHour"] = true
@@ -209,6 +155,5 @@ class AddNewWorkshopViewModel @Inject constructor(
         _fieldErrors.value = errors
         return errors.isEmpty()
     }
-
-
 }
+

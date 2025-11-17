@@ -99,6 +99,16 @@ class SuppliesDetailViewModel
 
         }
 
+        /**
+         * Toggles the visibility of the decision dialog used to confirm
+         * the deletion of a supply.
+         *
+         * This function simply updates the UI state to show
+         * or hide the confirmation dialog, without yet executing the deletion logic.
+         *
+         * @param showdecisionDialog `true` to show the dialog,
+         *                           `false` to hide it.
+         */
         fun toggledecisionDialog(showdecisionDialog: Boolean) {
             viewModelScope.launch {
                 _uiState.update {state ->
@@ -109,6 +119,14 @@ class SuppliesDetailViewModel
             }
         }
 
+        /**
+         * Callback that is invoked when the snackbar has already been displayed
+         * and consumed by the UI.
+         *
+         * Its purpose is to clear the [snackbarVisible] flag to
+         * prevent the snackbar from being displayed again
+         *
+         */
         fun onSnackbarShown() {
             _uiState.update { state ->
                 state.copy(
@@ -117,16 +135,27 @@ class SuppliesDetailViewModel
             }
         }
 
-        /** ------------------------------------------------------------------------------------------ *
-         * deleteOneSupply -> Do a soft deletes a specific supply using its ID. The function updates the
-         * UI state to reflect loading, success, or error states.
+        /**
+         * Deletes a single supply identified by its [id].
          *
-         * After successful soft delte, you can optionally trigger a refresh of the supply list
-         * to reflect the latest state.
+         * This function orchestrates the deletion flow:
+         * - Calls [DeleteOneSupplyUseCase] with the supply ID.
+         * - Listens for the [Result] emitted by the use case and updates the
+         *   UI state accordingly (loading, success, error).
          *
-         * @param id: String -> ID of the supply batch to delete.
-         * ------------------------------------------------------------------------------------------ */
-
+         * Behavior by state:
+         * - [Result.Loading]: activates the loading indicator.
+         * - [Result.Success]:
+         *      - closes the decision dialog,
+         *      - displays the confirmation snackbar,
+         *      - clears any previous errors.
+         * - [Result.Error]:
+         *      - closes the decision dialog,
+         *      - displays the error snackbar,
+         *      - saves the error message to the state.
+         *
+         * @param id ID of the supply to be deleted.
+         */
         fun deleteOneSupply(id: String) {
             viewModelScope.launch {
                 deleteOneSupplyUseCase(id).collect { result ->
@@ -154,7 +183,5 @@ class SuppliesDetailViewModel
                     }
                 }
             }
-
         }
-
     }

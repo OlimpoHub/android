@@ -5,7 +5,9 @@ import com.app.arcabyolimpo.data.mapper.supplies.toDomain
 import com.app.arcabyolimpo.data.mapper.workshops.toDomain
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.dto.beneficiaries.BeneficiaryDto
+import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.domain.model.beneficiaries.Beneficiary
+import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.domain.repository.beneficiaries.BeneficiaryRepository
 import retrofit2.HttpException
 import java.io.IOException
@@ -35,15 +37,16 @@ class BeneficiaryRepositoryImpl
         override suspend fun getBeneficiariesList(): List<Beneficiary> {
             val response = api.getBeneficiariesList()
             return response.map { dto ->
-                val fullName = listOfNotNull(
-                    dto.firstName,
-                    dto.paternalName,
-                    dto.maternalName
-                ).joinToString(" ").trim()
+                val fullName =
+                    listOfNotNull(
+                        dto.firstName,
+                        dto.paternalName,
+                        dto.maternalName,
+                    ).joinToString(" ").trim()
 
                 Beneficiary(
                     id = dto.id.orEmpty(),
-                    name = fullName.ifEmpty{ "Nombre no disponible" },
+                    name = fullName.ifEmpty { "Nombre no disponible" },
                     birthdate = "",
                     emergencyNumber = "",
                     emergencyName = "",
@@ -86,6 +89,54 @@ class BeneficiaryRepositoryImpl
                 throw e
             }
         }
+
+        override suspend fun getDisabilitiesData(): FilterData = api.getDisabilities().toDomain()
+
+        override suspend fun filterBeneficiary(params: FilterDto): List<Beneficiary> {
+            val response = api.filterBeneficiaries(params)
+            return response.map { dto ->
+                val fullName =
+                    listOfNotNull(
+                        dto.firstName,
+                        dto.paternalName,
+                        dto.maternalName,
+                    ).joinToString(" ").trim()
+
+                Beneficiary(
+                    id = dto.id.orEmpty(),
+                    name = fullName.ifEmpty { "Nombre no disponible" },
+                    birthdate = "",
+                    emergencyNumber = "",
+                    emergencyName = "",
+                    emergencyRelation = "",
+                    details = "",
+                    entryDate = "",
+                    image = dto.image.orEmpty(),
+                    disabilities = "",
+                    status = 0,
+                )
+            }
+        }
+
+        /**
+         * Retrieves a list of beneficiaries matching the search query.
+         *
+         * This function calls the API's search endpoint and maps the resulting
+         * list of [BeneficiaryDto] objects to domain [Beneficiary] models
+         * using the existing [toDomain] mapper
+         *
+         * @param query The search term
+         * @return A list of [Beneficiary] domain models.
+         */
+        override suspend fun searchBeneficiaries(query: String): List<Beneficiary> =
+            try {
+                val dtoList = api.searchBeneficiaries(query)
+                dtoList.map { it.toDomain() }
+            } catch (e: HttpException) {
+                throw e
+            } catch (e: IOException) {
+                throw e
+            }
 
         override suspend fun addBeneficiary(newBeneficiary: BeneficiaryDto): Beneficiary {
             val response = api.addBeneficiary(newBeneficiary)

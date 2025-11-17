@@ -1,6 +1,7 @@
 package com.app.arcabyolimpo.data.mapper.productbatches
 
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchDto
+import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchModifyDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchRegisterDto
 import com.app.arcabyolimpo.domain.model.productbatches.ProductBatch
 import java.time.LocalDate
@@ -60,4 +61,12 @@ fun ProductBatch.toRegisterDto(): ProductBatchRegisterDto =
         cantidadProducida = cantidadProducida,
         fechaCaducidad = fechaCaducidad?.let { reformatDate(it) },
         fechaRealizacion = reformatDate(fechaRealizacion),
+    )
+
+fun ProductBatch.toModifyDto(): ProductBatchModifyDto =
+    ProductBatchModifyDto(
+        PrecioVenta = precioVenta.toDoubleOrNull() ?: 0.0,
+        CantidadProducida = cantidadProducida,
+        FechaCaducidad = fechaCaducidad?.let { reformatDate(it) },
+        FechaRealizacion = reformatDate(fechaRealizacion),
     )

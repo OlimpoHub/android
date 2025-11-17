@@ -29,16 +29,13 @@ import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecove
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
 import com.app.arcabyolimpo.presentation.screens.product.ProductAddScreen
+import com.app.arcabyolimpo.presentation.screens.product.list.ProductsListRoute
+import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDeleteTestScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchDetail.ProductBatchDetailScreen
+import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchModify.ProductBatchModifyScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchRegister.ProductBatchRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchesList.ProductBatchesListScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
-import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
-import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
-import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
-import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
-import com.app.arcabyolimpo.presentation.screens.product.ProductAddScreen
-import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDeleteTestScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
@@ -129,6 +126,10 @@ sealed class Screen(
     }
 
     object ProductBatchRegister : Screen("product_batch_register")
+
+    object ProductBatchModify : Screen("product_batch_modify/{batchId}") {
+        fun createRoute(batchId: String) = "product_batch_modify/$batchId"
+    }
 
     object ProductAdd : Screen("product/add")
 
@@ -624,6 +625,9 @@ fun ArcaNavGraph(
             val batchId = backStackEntry.arguments?.getString("batchId") ?: ""
             ProductBatchDetailScreen(
                 batchId = batchId,
+                onModifyClick = { id ->
+                    navController.navigate(Screen.ProductBatchModify.createRoute(id))
+                },
                 onBackClick = { navController.popBackStack() },
             )
         }
@@ -640,6 +644,23 @@ fun ArcaNavGraph(
             )
         }
 
+        /**
+         * Product Batches Modify Screen.
+         *
+         * Allows the modification of a defined product batch.
+         */
+        composable(
+            route = Screen.ProductBatchModify.route,
+            arguments = listOf(navArgument("batchId") { type = NavType.StringType }),
+        ) { backStackEntry ->
+            val batchId = backStackEntry.arguments?.getString("batchId") ?: ""
+            ProductBatchModifyScreen(
+                batchId = batchId,
+                onModified = { navController.popBackStack() },
+                onBackClick = { navController.popBackStack() },
+            )
+        }
+
         composable(Screen.ProductAdd.route) {
             ProductAddScreen(
                 onSaveSuccess = {
@@ -651,6 +672,13 @@ fun ArcaNavGraph(
             )
         }
 
+        composable("products_list") {
+            ProductsListRoute(
+                onProductClick = { /* ir a detalle si quieres */ },
+                onBackClick = { navController.popBackStack() },
+            )
+        }
+
         composable(Screen.ProductDeleteTest.route) {
             ProductDeleteTestScreen(
                 onDeleted = {
@@ -658,7 +686,5 @@ fun ArcaNavGraph(
                 },
             )
         }
-
     }
 }
-

@@ -58,6 +58,7 @@ fun StandardInput(
     errorMessage: String? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     trailingIcon: @Composable (() -> Unit)? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardType: KeyboardType = KeyboardType.Text,
 ) {
     Column(

@@ -39,11 +39,8 @@ class ProductBatchRegisterViewModel
         fun register(onSuccess: () -> Unit) {
             viewModelScope.launch {
                 try {
-                    println("Running register with uiState: $uiState")
                     val newBatch = uiState.toDomain()
-                    println("New batch: $newBatch")
                     registerProductBatchUseCase(newBatch)
-                    println("Succeded")
                     onSuccess()
                 } catch (e: Exception) {
                     uiState = uiState.copy(error = "Error al registrar lote")
