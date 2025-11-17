@@ -22,6 +22,10 @@ interface ProductRepository {
 
     suspend fun deleteProduct(id: String)
 
+    suspend fun getProducts(): List<Product>
+
+    suspend fun searchProducts(query: String): List<Product>
+
     /**
      * Retrieves detailed information for a specific product by its ID.
      *

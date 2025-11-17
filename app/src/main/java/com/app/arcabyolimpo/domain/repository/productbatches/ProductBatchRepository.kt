@@ -13,4 +13,9 @@ interface ProductBatchRepository {
 
     // Register
     suspend fun registerProductBatch(batch: ProductBatch)
+
+    suspend fun modifyProductBatch(
+        batch: ProductBatch,
+        id: String,
+    )
 }
