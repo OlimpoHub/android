@@ -170,10 +170,18 @@ interface ArcaApi {
         @Path("id") id: String,
     ): BeneficiaryDto
 
+    /**
+     * Makes a soft delete to the selected beneficiary.
+     */
     @DELETE("beneficiary/{id}")
     suspend fun deleteBeneficiary(
         @Path("id") id: String,
     ): Response<Unit>
+
+    @GET("beneficiary/search")
+    suspend fun searchBeneficiaries(
+        @Query("term") searchTerm: String,
+    ): List<BeneficiaryDto>
 
     @GET("supplies/workshop/category")
     suspend fun getWorkshopCategoryList(): WorkshopCategoryListDto
