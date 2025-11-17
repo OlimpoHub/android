@@ -7,6 +7,14 @@
  - Added functionality search beneficiaries
  - Filter and order beneficiaries functionality
  - Fixed merge conflicts
+ - Added US to Delete Product Batches
+
+### Fixed
+- Refreshing on Product Batches List
+
+## [0.1.0] - 15/11/2025
+### Fixed
+
 
 ## [0.1.0] - 15/11/2025
 
