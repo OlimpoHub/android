@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -16,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -56,9 +58,9 @@ fun StandardInput(
     errorMessage: String? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     trailingIcon: @Composable (() -> Unit)? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardType: KeyboardType = KeyboardType.Text,
 ) {
-    var textValue by rememberSaveable { mutableStateOf(value) }
-
     Column(
         modifier
             .fillMaxWidth()
@@ -72,11 +74,8 @@ fun StandardInput(
         )
 
         OutlinedTextField(
-            value = textValue,
-            onValueChange = {
-                textValue = it
-                onValueChange(it)
-            },
+            value = value,
+            onValueChange = onValueChange,
             placeholder = {
                 Text(
                     text = placeholder,
@@ -92,6 +91,7 @@ fun StandardInput(
             visualTransformation = visualTransformation,
             textStyle = TextStyle(color = White),
             trailingIcon = trailingIcon,
+            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
             singleLine = true,
             colors =
                 TextFieldDefaults.colors(

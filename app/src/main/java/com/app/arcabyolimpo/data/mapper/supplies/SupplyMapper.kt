@@ -1,9 +1,16 @@
 package com.app.arcabyolimpo.data.mapper.supplies
 
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.AcquisitionDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.RegisterSupplyBatchDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.SuccessMessageDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyDto
 import com.app.arcabyolimpo.domain.model.filter.FilterData
+import com.app.arcabyolimpo.domain.model.supplies.Acquisition
+import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
+import com.app.arcabyolimpo.domain.model.supplies.SuccessMessage
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatch
 import kotlin.String
@@ -104,3 +111,46 @@ fun GetFiltersDto.toDomain(): FilterData {
 
     return FilterData(map)
 }
+
+/**
+ * Maps a [RegisterSupplyBatchDto] (data layer) into a [SupplyBatch] domain model.
+ *
+ * This conversion is intentionally one-to-one: fields received from the API
+ * (cantidad, FechaCaducidad, FechaCompra, idInsumo, adquisicion) are forwarded
+ * into the domain object which is later used by the business logic and UI.
+ *
+ * Notes for debugging and maintenance:
+ * - Date fields are kept as strings here; if you need to normalize or parse
+ *   dates to a specific format, do it in this mapper or in a dedicated date
+ *   utility before creating the DTO/Domain objects.
+ * - This function assumes the DTO values are validated upstream. If additional
+ *   validation is required (e.g. non-negative quantity), add it here or in the
+ *   calling repository/usecase.
+ */
+fun RegisterSupplyBatchDto.toDomain(): RegisterSupplyBatch =
+    RegisterSupplyBatch(
+        quantity = quantity,
+        expirationDate = expirationDate,
+        boughtDate = boughtDate,
+        supplyId = supplyId,
+        acquisition = acquisition,
+    )
+
+/**
+ * Extension function to convert a [SupplyBatchDto] from the data (remote) layer
+ * into a [SupplyBatch] domain model
+ */
+fun AcquisitionDto.toDomain(): Acquisition =
+    Acquisition(
+        id = id,
+        description = description,
+    )
+
+/**
+ * Extension function to convert a [SuccessMessageDto] from the data (remote) layer
+ * into a [String] domain model
+ */
+fun SuccessMessageDto.toDomain(): SuccessMessage =
+    SuccessMessage(
+        message = message,
+    )
