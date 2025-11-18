@@ -7,7 +7,7 @@ import java.util.UUID
 fun ProductDto.toDomain(): Product =
     Product(
         id = idProducto ?: UUID.randomUUID().toString().also {
-            println("⚠️ WARNING: idProducto was null, generated ID: $it")
+            println("WARNING: idProducto was null, generated ID: $it")
         },
         name = nombre,
         unitaryPrice = precioUnitario,
