@@ -66,7 +66,7 @@ class ProductBatchesListViewModel
                         } else {
                             ProductBatchesUiState(
                                 isLoading = false,
-                                items = uiList,
+                                batches = uiList,
                                 filterData = filterData
                             )
                         }
@@ -97,7 +97,7 @@ class ProductBatchesListViewModel
                         when (result) {
                             is Result.Loading -> _uiState.update { it.copy(isLoading = true) }
                             is Result.Success -> _uiState.update {
-                                it.copy(items = result.data.map { it.toUiModel() }, isLoading = false, error = null)
+                                it.copy(batches = result.data.map { it.toUiModel() }, isLoading = false, error = null)
                             }
                             is Result.Error -> _uiState.update {
                                 it.copy(isLoading = false, error = result.exception.message)
@@ -116,7 +116,7 @@ class ProductBatchesListViewModel
                         when (result) {
                             is Result.Loading -> _uiState.update { it.copy(isLoading = true) }
                             is Result.Success -> _uiState.update {
-                                it.copy(items = result.data.map { it.toUiModel() }, isLoading = false, error = null)
+                                it.copy(batches = result.data.map { it.toUiModel() }, isLoading = false, error = null)
                             }
                             is Result.Error -> _uiState.update {
                                 it.copy(isLoading = false, error = result.exception.message)

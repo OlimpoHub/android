@@ -10,7 +10,7 @@ import com.app.arcabyolimpo.presentation.screens.productbatches.model.ProductBat
  * @param batches List<ProductBatchUiModel> -> list of product batches
 */
 data class ProductBatchesUiState(
-    val items: List<ProductBatchUiModel> = emptyList(),
+    val batches: List<ProductBatchUiModel> = emptyList(),
     val filters: FilterDto = FilterDto(),
     val filterData: FilterData? = null,
     val isLoading: Boolean = false,

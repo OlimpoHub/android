@@ -186,7 +186,7 @@ fun ProductBatchesListScreen(
                         )
                     }
                 }
-                state.items.isEmpty() -> {
+                state.batches.isEmpty() -> {
                     Box(
                         modifier =
                             Modifier
@@ -206,7 +206,7 @@ fun ProductBatchesListScreen(
                                 .padding(top = 8.dp),
                         verticalArrangement = Arrangement.spacedBy(0.dp),
                     ) {
-                        items(state.items) { batch ->
+                        items(state.batches) { batch ->
                             ProductBatchItem(
                                 batch = batch,
                                 onClick = { onDetailClick(batch.idInventario) },
