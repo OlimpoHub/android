@@ -11,6 +11,7 @@ import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteSupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.RegisterSupplyBatchDto
 import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.domain.model.supplies.Acquisition
+import com.app.arcabyolimpo.domain.model.supplies.Batch
 import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
 import com.app.arcabyolimpo.domain.model.supplies.SuccessMessage
 import com.app.arcabyolimpo.domain.model.supplies.Supply
@@ -76,6 +77,19 @@ class SupplyRepositoryImpl
          * getSupplyBatchById -> calls the API to fetch a supply batch by its ID.
          * --------------------------------------------------------------------------------------- */
         override suspend fun getSupplyBatchById(id: String): SupplyBatchExt = api.getSupplyBatchById(id).toDomain()
+
+        override suspend fun filterSupplyBatch(filters: FilterDto): List<Batch> {
+            val response = api.filterSupplyBatch(filters)
+            return response.map { dto ->
+                Batch(
+                    quantity = dto.quantity ?: 0,
+                    expirationDate = dto.expirationDate?: "",
+                    adquisitionType = dto.adquisitionType?: "",
+                )
+            }
+        }
+
+        override suspend fun getFilterBatchData(): FilterData = api.getFilterSupplyBatch().toDomain()
 
         /**
          * Register a new supply batch in the backend.

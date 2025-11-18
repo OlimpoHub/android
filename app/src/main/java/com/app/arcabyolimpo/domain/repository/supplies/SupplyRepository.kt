@@ -44,6 +44,8 @@ interface SupplyRepository {
      */
     suspend fun deleteSupplyBatch(idSupply: String, expirationDate: String)
 
+    suspend fun filterSupplyBatch(params: FilterDto): List<Batch>
+    suspend fun getFilterBatchData(): FilterData
 
     /**
      * Deletes a single supply identified by its [id].
