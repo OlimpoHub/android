@@ -1,6 +1,11 @@
 ## [0.1.0] - 17/11/2025
 
 ### Added
+- Added filter and order supply batches
+
+## [0.1.0] - 17/11/2025
+
+### Added
 - Delete supply batch
 - Added filter and order products
 
