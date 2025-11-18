@@ -2,6 +2,7 @@ package com.app.arcabyolimpo.data.mapper.supplies
 
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFilterBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchSpecsDto
 import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.domain.model.supplies.Batch
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
@@ -33,10 +34,12 @@ fun SupplyBatchDto.toDomain(): SupplyBatchExt =
 
 fun GetFilterBatchDto.toDomain(): FilterData {
     val map = mutableMapOf<String, List<String>>()
-
-    if (!acquisitionType.isNullOrEmpty()) map["TipoAdquisicion"] = acquisitionType
-    if (!expirationDate.isNullOrEmpty()) map["FechaCaducidad"] = expirationDate
-    if (!quantity.isNullOrEmpty()) map["TotalCantidad"] = quantity
+    if (!acquisitionType.isNullOrEmpty()) {
+        map["Tipo de Adquisición"] = acquisitionType
+    }
+    if (!expirationDate.isNullOrEmpty()) {
+        map["Fecha de caducidad"] = expirationDate
+    }
 
     return FilterData(map)
 }

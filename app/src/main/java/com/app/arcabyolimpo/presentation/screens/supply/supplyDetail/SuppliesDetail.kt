@@ -224,6 +224,7 @@ fun SuppliesDetailScreen(
                 uiState.supplyBatchList != null -> {
                     SupplyDetailContent(
                         supply = uiState.supplyBatchList!!,
+                        filteredBatches = filterState.result.takeIf { it.isNotEmpty() },
                         onClickAddSupplyBatch = {},
                         onClickDelete = {
                             // When you press delete in the details, we display the dialog

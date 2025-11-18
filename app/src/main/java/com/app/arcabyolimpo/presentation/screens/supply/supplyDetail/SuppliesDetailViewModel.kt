@@ -54,12 +54,14 @@ class SuppliesDetailViewModel
                         when (result) {
                             is Result.Loading -> state.copy(isLoading = true)
 
-                            is Result.Success ->
+                            is Result.Success -> {
+                                Log.d("Filtros", "Datos de Filtro recibidos: ${result.data}")
                                 state.copy(
                                     isLoading = false,
                                     filterData = result.data,
                                     error = null,
                                 )
+                            }
 
                             is Result.Error ->
                                 state.copy(
@@ -259,8 +261,33 @@ class SuppliesDetailViewModel
             // Guardamos la selección en el UIState
             _uiFiltersState.update { it.copy(selectedFilters = filters) }
 
+            val apiFilters = mutableMapOf<String, List<String>>()
+
+            filters.filters.forEach { (uiKey, values) ->
+                val apiKey = when (uiKey) {
+                    // Mapeo 1: Clave de la UI -> Clave de la API/Backend
+                    "Tipo de Adquisición" -> "TipoAdquisicion"
+
+                    // Mapeo 2: Clave de la UI -> Clave de la API/Backend
+                    "Fecha de caducidad" -> "FechaCaducidad"
+
+                    // Si hay otras claves de filtro, pasarlas directamente
+                    else -> uiKey
+                }
+
+                // Solo incluir filtros si tienen valores seleccionados
+                if (values.isNotEmpty()) {
+                    apiFilters[apiKey] = values
+                }
+            }
+
+            val apiFilterDto = FilterDto(
+                filters = apiFilters.toMap(), // Convertir a inmutable
+                order = filters.order // Mantener el orden original
+            )
+
             viewModelScope.launch {
-                filterSupplyBatchUseCase(filters).collect { result ->
+                filterSupplyBatchUseCase(apiFilterDto).collect { result ->
                     when (result) {
                         is Result.Loading -> {
                             _uiFiltersState.update { it.copy(isLoading = true) }
@@ -297,6 +324,7 @@ class SuppliesDetailViewModel
                             filters = emptyMap(),
                             order = "ASC",
                         ),
+                        result = emptyList()
                 )
             }
         }
