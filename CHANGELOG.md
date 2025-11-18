@@ -3,6 +3,9 @@
 ### Added
 - Modify product implementation
 
+### Fixed
+- Fixed error in register workshop
+
 ## [0.1.0] - 17/11/2025
 
 ### Changed
