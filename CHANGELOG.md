@@ -4,6 +4,9 @@
 - Fixed error in register workshop
 - Fixed error in view Workshops after a delete
 
+### Added
+- US for RBAC main screens and navigation accross the app
+
 ## [0.1.0] - 17/11/2025
 
 ### Changed
