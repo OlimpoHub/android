@@ -65,7 +65,7 @@ fun HomeScreenCard(
                 Modifier
                     .background(gradientBrush)
                     .fillMaxSize()
-                    .padding(start = 16.dp, end = 50.dp),
+                    .padding(start = 16.dp, end = 32.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
@@ -90,8 +90,8 @@ fun HomeScreenCard(
                 contentDescription = null,
                 modifier =
                     Modifier
-                        .height(80.dp)
-                        .width(80.dp),
+                        .height(130.dp)
+                        .width(130.dp),
             )
         }
     }

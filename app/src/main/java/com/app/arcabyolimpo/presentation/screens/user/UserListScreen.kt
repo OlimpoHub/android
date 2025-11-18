@@ -141,9 +141,6 @@ fun UserListScreen(
                 }
             }
         },
-        bottomBar = {
-            NavBar()
-        },
         floatingActionButton = {
             AddButton(
                 onClick = { showRegisterModal = true },

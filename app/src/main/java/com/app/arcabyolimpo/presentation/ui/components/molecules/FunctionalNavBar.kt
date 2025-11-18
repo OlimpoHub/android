@@ -24,6 +24,14 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.OrderIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.WorkshopIcon
 import com.app.arcabyolimpo.ui.theme.HeaderLineBlue
 
+/**
+ * Bottom navigation bar used in CoordinatorHomeScreen.
+ * Highlights the selected item and triggers a callback when an item is tapped.
+ *
+ * @param selectedIndex Index of the currently selected tab.
+ * @param onItemSelected Callback invoked when a tab is selected.
+ */
+@Suppress("ktlint:standard:function-naming")
 @Composable
 fun FunctionalNavBar(
     selectedIndex: Int,
