@@ -38,6 +38,7 @@ import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
+import com.app.arcabyolimpo.presentation.screens.supply.supplyUpdate.SupplyUpdateScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplybatchregister.SupplyBatchRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
@@ -131,6 +132,10 @@ sealed class Screen(
     object ProductAdd : Screen("product/add")
 
     object ProductDeleteTest : Screen("test_delete_product")
+
+    object SupplyUpdate : Screen("supply/update/{idSupply}") {
+        fun createRoute(idSupply: String) = "supply/update/$idSupply"
+    }
 }
 
 /**
@@ -394,17 +399,6 @@ fun ArcaNavGraph(
             )
         }
 
-        composable(Screen.UserList.route) {
-            UserListScreen(
-                onCollabClick = { id ->
-                    navController.navigate(Screen.UserDetail.createRoute(id))
-                },
-                onAddClick = {
-                    navController.navigate(Screen.UserRegister.route)
-                },
-            )
-        }
-
         /**
          * Workshops List Screen.
          *
@@ -518,7 +512,9 @@ fun ArcaNavGraph(
                     // TODO: Add when delete a supply is ready
                 },
                 onClickModify = {
-                    // TODO: Add when delete a supply is ready
+                    if (idSupply != null) {
+                        navController.navigate(Screen.SupplyUpdate.createRoute(idSupply))
+                    }
                 },
                 modifySupplyBatch = {
                     // TODO: Add when delete a supply is ready
@@ -666,6 +662,25 @@ fun ArcaNavGraph(
                 onDeleted = {
                     navController.popBackStack()
                 },
+            )
+        }
+
+        composable(
+            route = Screen.SupplyUpdate.route,
+            arguments = listOf(navArgument("idSupply") { type = NavType.StringType })
+        ) { backStackEntry ->
+
+            SupplyUpdateScreen(
+                onModifyClick = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("shouldRefresh", true)
+
+                    navController.popBackStack()
+                },
+                onCancel = {
+                    navController.popBackStack()
+                }
             )
         }
     }
