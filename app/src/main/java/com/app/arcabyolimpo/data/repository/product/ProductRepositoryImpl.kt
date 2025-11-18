@@ -1,6 +1,7 @@
 package com.app.arcabyolimpo.data.repository.product
 
 import android.content.Context
+import android.util.Log
 import com.app.arcabyolimpo.data.mapper.product.toDomain
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.dto.product.ProductDto
@@ -162,6 +163,8 @@ class ProductRepositoryImpl @Inject constructor(
             val idCategory = product.idCategory.toRequestBody("text/plain".toMediaTypeOrNull())
             val description = product.description.toRequestBody("text/plain".toMediaTypeOrNull())
             val status = product.status.toString().toRequestBody("text/plain".toMediaTypeOrNull()) // Asumo que status es String/Int
+
+            Log.d("ProductRepositoryImpl", "idWorkshop: $product.idWorkshop")
 
             api.updateProduct(
                 idProduct = idProduct,

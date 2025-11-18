@@ -116,9 +116,11 @@ class UpdateProductViewModel @Inject constructor(
     fun onDescriptionChange(description: String) {
         _uiState.update { it.copy(description = description) }
     }
+
     fun onImageSelected(uri: Uri?) {
         _uiState.update { it.copy(selectedImageUrl = uri) }
     }
+
     fun onStatusChange(newStatus: Int) {
         _uiState.update { it.copy(status = newStatus) }
     }
