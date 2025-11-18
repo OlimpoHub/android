@@ -33,7 +33,7 @@ class UpdateProductViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             loadDropDownData()
-            loadProductDetails(productId)
+            loadProductDetails()
         }
     }
 
@@ -60,49 +60,63 @@ class UpdateProductViewModel @Inject constructor(
         }
     }
 
-    private fun loadProductDetails(id: String) {
-        if (id.isEmpty()) {
-            _uiState.update { it.copy(error = "Product ID is missing") }
-            return
-        }
-
+    private fun loadProductDetails() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
-            val result = getProductUseCase(id)
 
-            if (result.isSuccess) {
-                val product = result.getOrThrow()
+            val infoResult = getWorkshopCategoryInfoUseCase.invoke()
 
-                val currentState = _uiState.value
-                val workshops = currentState.workshops
-                val categories = currentState.categories
-
-                val selectedWorkshopId = workshops.find { it.name == product.workshopName }?.idWorkshop
-
-                val selectedCategoryId = categories.find { it.type == product.categoryDescription }?.idCategory
-
+            if (infoResult.isFailure) {
+                // Manejo de error si falla la carga de info base
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        isProductLoaded = true,
-                        productDetail = product,
-
-                        name = product.name,
-                        unitaryPrice = product.unitaryPrice,
-                        description = product.description,
-                        status = product.status,
-
-                        selectedWorkshopId = selectedWorkshopId,
-                        selectedCategoryId = selectedCategoryId,
-
-                        selectedImageUri = product.image?.toUri(),
+                        error = "Error al cargar info base: ${infoResult.exceptionOrNull()?.message}"
                     )
                 }
-            } else {
+                return@launch // Sale de la coroutine
+            }
+
+            // Desestructurar y obtener las listas de Talleres y Categorías del resultado exitoso
+            // ESTO SOLUCIONA EL PROBLEMA DE ALCANCE (SCOPE)
+            val (categories, workshops) = infoResult.getOrThrow()
+
+            // 2. OBTENER DETALLES DEL PRODUCTO
+            getProductUseCase(productId).onSuccess { productDetail ->
+
+                // **USO DE PROPIEDADES CONFIRMADAS:** .name y .type
+                val selectedWorkshop = workshops.find { it.name == productDetail.workshopName }
+                val selectedCategory = categories.find { it.type == productDetail.categoryDescription }
+
+                _uiState.update { state ->
+                    state.copy(
+                        // Se actualizan las listas en el estado
+                        workshops = workshops,
+                        categories = categories,
+
+                        productDetail = productDetail,
+                        isProductLoaded = true,
+
+                        // PRE-LLENAR TODOS LOS CAMPOS DE LA UI
+                        name = productDetail.name,
+                        unitaryPrice = productDetail.unitaryPrice,
+                        description = productDetail.description,
+                        status = productDetail.status, // Int
+
+                        // ASIGNAR IDs
+                        selectedWorkshopId = selectedWorkshop?.idWorkshop,
+                        selectedCategoryId = selectedCategory?.idCategory,
+
+                        // Convertir la URL (String) a Uri
+                        selectedImageUri = productDetail.image?.toUri(),
+                        isLoading = false
+                    )
+                }
+            }.onFailure { e ->
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = "Error al cargar el producto: ${result.exceptionOrNull()?.message}"
+                        error = "Error al cargar el producto: ${e.message}"
                     )
                 }
             }

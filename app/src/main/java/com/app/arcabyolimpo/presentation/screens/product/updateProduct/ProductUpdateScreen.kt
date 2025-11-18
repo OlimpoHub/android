@@ -60,18 +60,10 @@ fun ProductUpdateScreen(
     val uiState by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    LaunchedEffect(
-        key1 = uiState.saveSuccess,
-        key2 = uiState.error,
-    ) {
-        when {
-            uiState.saveSuccess -> {
-                Toast.makeText(context, "Producto agregado con éxito", Toast.LENGTH_SHORT).show()
-                onSaveSuccess()
-            }
-            uiState.error != null -> {
-                Toast.makeText(context, uiState.error, Toast.LENGTH_LONG).show()
-            }
+    LaunchedEffect(uiState.saveSuccess) {
+        if (uiState.saveSuccess) {
+            Toast.makeText(context, "Producto actualizado con éxito", Toast.LENGTH_SHORT).show()
+            onSaveSuccess()
         }
     }
 

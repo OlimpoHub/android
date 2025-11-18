@@ -133,8 +133,9 @@ sealed class Screen(
 
     object ProductDeleteTest : Screen("test_delete_product")
 
-    object ProductUpdate : Screen("product/update/{idProduct}") {
-}
+    object ProductUpdate : Screen("product/update/{productId}") {
+        fun createRoute(productId: String) = "product/update/$productId"
+    }
 
 /**
  * Composable function that defines the main navigation graph of the app.
@@ -676,7 +677,12 @@ fun ArcaNavGraph(
             )
         }
 
-        composable(Screen.ProductUpdate.route) {
+        composable(
+            route = Screen.ProductUpdate.route,
+            arguments = listOf(
+                navArgument("productId") { type = NavType.StringType }
+            )
+        ) {
             ProductUpdateScreen(
                 onSaveSuccess = {
                     navController.popBackStack()
