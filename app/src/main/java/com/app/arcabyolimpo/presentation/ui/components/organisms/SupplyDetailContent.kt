@@ -183,10 +183,11 @@ fun SupplyDetailContent(
             } else {
               batches.forEachIndexed { index, batch ->
                   SupplyBatchRow(
+                      batchId = batch.id,
                       quantity = batch.quantity,
                       date = batch.expirationDate,
                       adquisition = batch.adquisitionType,
-                      onModifyClick = modifySupplyBatch,
+                      onModifyClick = { modifySupplyBatch(batch.id) },
                       onDeleteClick = { deleteSupplyBatch(batch.id) },
                   )
               }

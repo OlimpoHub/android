@@ -126,12 +126,16 @@ class SupplyRepositoryImpl
          * This function calls the remote API to perform the deletion operation.
          *
          */
-        override suspend fun deleteSupplyBatch(idSupply: String, expirationDate: String) {
-            val formattedDate = if (expirationDate.contains("T")) {
-                expirationDate.substring(0, 10)
-            } else {
-                expirationDate
-            }
+        override suspend fun deleteSupplyBatch(
+            idSupply: String,
+            expirationDate: String,
+        ) {
+            val formattedDate =
+                if (expirationDate.contains("T")) {
+                    expirationDate.substring(0, 10)
+                } else {
+                    expirationDate
+                }
 
             val body = DeleteSupplyBatchDto(idSupply, formattedDate)
             val result = api.deleteSupplyBatch(body)
@@ -216,4 +220,20 @@ class SupplyRepositoryImpl
             } catch (e: Exception) {
                 Result.failure(e)
             }
+
+        override suspend fun modifySupplyBatch(
+            id: String,
+            batch: RegisterSupplyBatch,
+        ): SuccessMessage {
+            val dto =
+                RegisterSupplyBatchDto(
+                    supplyId = batch.supplyId,
+                    quantity = batch.quantity,
+                    expirationDate = batch.expirationDate,
+                    acquisition = batch.acquisition,
+                    boughtDate = batch.boughtDate,
+                )
+            val responseDto = api.modifySupplyBatch(id, dto)
+            return responseDto.toDomain()
+        }
     }

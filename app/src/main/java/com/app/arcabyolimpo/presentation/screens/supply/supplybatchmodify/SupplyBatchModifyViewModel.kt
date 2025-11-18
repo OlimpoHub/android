@@ -7,8 +7,7 @@ import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
 import com.app.arcabyolimpo.domain.usecase.supplies.GetAcquisitionTypesUseCase
 import com.app.arcabyolimpo.domain.usecase.supplies.GetSuppliesListUseCase
-import com.app.arcabyolimpo.domain.usecase.supplies.RegisterSupplyBatchUseCase
-import com.app.arcabyolimpo.presentation.screens.supply.supplybatchregister.SupplyBatchRegisterUiState
+import com.app.arcabyolimpo.domain.usecase.supplies.ModifySupplyBatchUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,7 +21,7 @@ class SupplyBatchModifyViewModel
     @Inject
     constructor(
         private val getSuppliesListUseCase: GetSuppliesListUseCase,
-        private val registerSupplyBatchUseCase: RegisterSupplyBatchUseCase,
+        private val modifySupplyBatchUseCase: ModifySupplyBatchUseCase,
         private val getAcquisitionTypesUseCase: GetAcquisitionTypesUseCase,
     ) : ViewModel() {
         // Tag used for Logcat so you can filter logs from this ViewModel while debugging
@@ -83,24 +82,25 @@ class SupplyBatchModifyViewModel
                             )
                     }
 
-                    // Update UI state after logging
-                    _uiState.update { state ->
+                    // Update UI state after logging: compute explicit newState and assign
+                    val newSuppliesState =
                         when (result) {
-                            is com.app.arcabyolimpo.domain.common.Result.Loading -> state.copy(isLoading = true, error = null)
-                            is com.app.arcabyolimpo.domain.common.Result.Success ->
-                                state.copy(
+                            is Result.Loading -> _uiState.value.copy(isLoading = true, error = null)
+                            is Result.Success ->
+                                _uiState.value.copy(
                                     suppliesList = result.data,
                                     isLoading = false,
                                     error = null,
                                 )
 
-                            is com.app.arcabyolimpo.domain.common.Result.Error ->
-                                state.copy(
+                            is Result.Error ->
+                                _uiState.value.copy(
                                     isLoading = false,
                                     error = result.exception.message,
                                 )
                         }
-                    }
+
+                    _uiState.value = newSuppliesState
                 }
             }
         }
@@ -123,29 +123,34 @@ class SupplyBatchModifyViewModel
                             )
                     }
 
-                    _uiState.update { state ->
+                    val newAcqState =
                         when (result) {
-                            is com.app.arcabyolimpo.domain.common.Result.Loading -> state.copy(isLoading = true, error = null)
-                            is com.app.arcabyolimpo.domain.common.Result.Success ->
-                                state.copy(
+                            is Result.Loading -> _uiState.value.copy(isLoading = true, error = null)
+                            is Result.Success ->
+                                _uiState.value.copy(
                                     acquisitionTypes = result.data,
                                     isLoading = false,
                                     error = null,
                                 )
 
-                            is com.app.arcabyolimpo.domain.common.Result.Error ->
-                                state.copy(
+                            is Result.Error ->
+                                _uiState.value.copy(
                                     isLoading = false,
                                     error = result.exception.message,
                                 )
                         }
-                    }
+
+                    _uiState.value = newAcqState
                 }
             }
         }
 
         fun onSelectSupply(id: String) {
             _uiState.update { it.copy(selectedSupplyId = id) }
+        }
+
+        fun onSelectBatch(id: String) {
+            _uiState.update { it.copy(selectedBatchId = id) }
         }
 
         fun onAcquisitionTypeSelected(id: String) {
@@ -168,6 +173,7 @@ class SupplyBatchModifyViewModel
             val current = _uiState.value
 
             val supplyId = current.selectedSupplyId
+            val batchId = current.selectedBatchId
             val quantity = current.quantityInput.toIntOrNull()
             val expiration = current.expirationDateInput
             val bought = current.boughtDateInput
@@ -176,12 +182,12 @@ class SupplyBatchModifyViewModel
             // Log user input state before validation / network call
             Log.d(
                 TAG,
-                "registerBatch: called with supplyId=$supplyId, quantity=${current.quantityInput}, expiration=$expiration, bought=$bought",
+                "registerBatch: called with batchId=$batchId, supplyId=$supplyId, quantity=${current.quantityInput}, expiration=$expiration, bought=$bought",
             )
 
-            if (supplyId.isNullOrEmpty() || quantity == null || acquisition.isNullOrEmpty()) {
+            if (batchId.isNullOrEmpty() || supplyId.isNullOrEmpty() || quantity == null || acquisition.isNullOrEmpty()) {
                 Log.w(TAG, "registerBatch: validation failed - required fields missing")
-                _uiState.update { it.copy(registerError = "Seleccione un insumo, un tipo de adquisición y coloque una cantidad válida") }
+                _uiState.update { it.copy(registerError = "Seleccione un campo válido") }
                 return
             }
 
@@ -203,47 +209,47 @@ class SupplyBatchModifyViewModel
                 )
 
             viewModelScope.launch {
-                // Collect the use case flow and log each stage for debugging (network, mapping, etc.)
-                registerSupplyBatchUseCase(batch).collect { result ->
+                val targetBatchId = batchId ?: ""
+                modifySupplyBatchUseCase(targetBatchId, batch).collect { result ->
                     when (result) {
-                        is com.app.arcabyolimpo.domain.common.Result.Loading -> Log.d(TAG, "registerBatch: Loading")
-                        is com.app.arcabyolimpo.domain.common.Result.Success ->
+                        is Result.Loading -> Log.d(TAG, "modifyBatch: Loading")
+                        is Result.Success ->
                             Log.d(
                                 TAG,
-                                "registerBatch: Success - batch registered: ${result.data}",
+                                "modifyBatch: Success - batch modified: ${result.data}",
                             )
 
-                        is com.app.arcabyolimpo.domain.common.Result.Error ->
+                        is Result.Error ->
                             Log.w(
                                 TAG,
-                                "registerBatch: Error - ${result.exception.message}",
+                                "modifyBatch: Error - ${result.exception.message}",
                             )
                     }
-
-                    _uiState.update { state ->
+                    val newRegisterState =
                         when (result) {
-                            is com.app.arcabyolimpo.domain.common.Result.Loading ->
-                                state.copy(
+                            is Result.Loading ->
+                                _uiState.value.copy(
                                     registerLoading = true,
                                     registerError = null,
                                     registerSuccess = false,
                                 )
 
-                            is com.app.arcabyolimpo.domain.common.Result.Success ->
-                                state.copy(
+                            is Result.Success ->
+                                _uiState.value.copy(
                                     registerLoading = false,
                                     registerSuccess = true,
                                     registerError = null,
                                 )
 
                             is Result.Error ->
-                                state.copy(
+                                _uiState.value.copy(
                                     registerLoading = false,
                                     registerError = result.exception.message,
                                     registerSuccess = false,
                                 )
                         }
-                    }
+
+                    _uiState.value = newRegisterState
                 }
             }
         }

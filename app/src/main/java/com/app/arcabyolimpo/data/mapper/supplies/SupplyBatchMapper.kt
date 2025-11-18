@@ -20,12 +20,13 @@ fun SupplyBatchDto.toDomain(): SupplyBatchExt =
         workshop = workshop,
         category = category,
         status = status,
-        batch = supplyBatches?.map { spec ->
-            Batch(
-                id = it.expirationDate ?: "",
-                quantity = it.quantity ?: 0,
-                expirationDate = it.expirationDate ?: "",
-                adquisitionType = it.adquisitionType ?: "",
-            )
-        } ?: emptyList(),
+        batch =
+            supplyBatches?.map { it ->
+                Batch(
+                    id = it.expirationDate ?: "",
+                    quantity = it.quantity ?: 0,
+                    expirationDate = it.expirationDate ?: "",
+                    adquisitionType = it.adquisitionType ?: "",
+                )
+            } ?: emptyList(),
     )

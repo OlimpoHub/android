@@ -63,11 +63,11 @@ fun SupplyBatchModifyScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-//    LaunchedEffect(supplyBatchId) {
-//        if (supplyBatchId.isNotEmpty()) {
-//            viewModel.onSelectSupply(supplyBatchId)
-//        }
-//    }
+    LaunchedEffect(supplyBatchId) {
+        if (supplyBatchId.isNotEmpty()) {
+            viewModel.onSelectBatch(supplyBatchId)
+        }
+    }
     LaunchedEffect(state.registerSuccess) {
         if (state.registerSuccess) {
             scope.launch {
@@ -180,7 +180,7 @@ fun SupplyBatchModifyBottomBar(
         }
 
         SaveButton(onClick = {
-            if (!uiState.registerLoading && uiState.selectedSupplyId != null) onRegisterClick()
+            if (!uiState.registerLoading && uiState.selectedBatchId != null) onRegisterClick()
         })
     }
 }

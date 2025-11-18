@@ -8,6 +8,7 @@ data class SupplyBatchModifyUiState(
     override val suppliesList: List<Supply> = emptyList(),
     override val acquisitionTypes: List<Acquisition> = emptyList(),
     override val selectedSupplyId: String? = null,
+    val selectedBatchId: String? = null,
     override val quantityInput: String = "",
     override val expirationDateInput: String = "",
     override val boughtDateInput: String = "",

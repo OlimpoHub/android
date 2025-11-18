@@ -172,7 +172,7 @@ fun ArcaNavGraph(
     NavHost(
         navController = navController,
         // TODO: Cambiar a Screen.Splash.route cuando acabe
-        startDestination = Screen.SuppliesList.route,
+        startDestination = Screen.SupplyBatchModify.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -525,7 +525,7 @@ fun ArcaNavGraph(
         ) { backStackEntry ->
             val batchId = backStackEntry.arguments?.getString("id") ?: ""
             SupplyBatchModifyScreen(
-                supplyBatchId = batchId,
+                supplyBatchId = "0e69a75c-b9e7-11f0-b6b8-020161fa237d",
                 onRegisterClick = {
                     navController.popBackStack()
                 },
