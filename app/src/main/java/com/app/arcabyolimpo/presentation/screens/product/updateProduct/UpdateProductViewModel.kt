@@ -10,170 +10,170 @@ import com.app.arcabyolimpo.domain.usecase.product.UpdateProductUseCase
 import com.app.arcabyolimpo.domain.usecase.supplies.GetWorkshopCategoryInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import androidx.core.net.toUri
+import com.app.arcabyolimpo.domain.common.Result
+import kotlinx.coroutines.async
 
 @HiltViewModel
 class UpdateProductViewModel @Inject constructor(
     private val getProductUseCase: GetProductUseCase,
     private val updateProductUseCase: UpdateProductUseCase,
     private val getWorkshopCategoryInfoUseCase: GetWorkshopCategoryInfoUseCase,
-    private val savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProductUpdateUiState())
-    val state: StateFlow<ProductUpdateUiState> = _uiState.asStateFlow()
+    val state = _uiState.asStateFlow()
 
-    private val productId: String = savedStateHandle.get<String>("productId") ?: ""
+    private val idProduct: String = savedStateHandle.get<String>("idProduct") ?: "3f2d6006-1efe-4683-9b7e-b339c39e1ff1"
 
     init {
-        viewModelScope.launch {
-            loadDropDownData()
-            loadProductDetails()
-        }
+        loadFormsData()
     }
 
-    private fun loadDropDownData() {
+    private fun loadFormsData() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-            val result = getWorkshopCategoryInfoUseCase()
+            val categoriesWorkshopsPromise = async { getWorkshopCategoryInfoUseCase() }
 
-            _uiState.update {
-                if (result.isSuccess) {
-                    val data = result.getOrNull()
-                    it.copy(
-                        isLoading = false,
-                        workshops = data?.workshops ?: emptyList(),
-                        categories = data?.categories ?: emptyList(),
-                    )
-                }else {
-                    it.copy(
-                        isLoading = false,
-                        error = "Error cargando datos",
-                    )
+            getProductUseCase(idProduct).collect { productResult ->
+                when (productResult) {
+                    is com.app.arcabyolimpo.domain.common.Result.Loading -> {
+                        _uiState.update { it.copy(isLoading = true) }
+                    }
+                    is com.app.arcabyolimpo.domain.common.Result.Error -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                error = productResult.exception?.message ?: "Error al cargar insumo"
+                            )
+                        }
+                    }
+                    is Result.Success -> {
+                        val product = productResult.data
+                        val categoriesWorkshops = categoriesWorkshopsPromise.await()
+
+                        if (categoriesWorkshops.isSuccess) {
+                            val dropdownData = categoriesWorkshops.getOrNull()
+
+                            if (dropdownData != null) {
+                                val idWorkshop = dropdownData.workshops.find {
+                                    it.name == product.workshopName
+                                }?.idWorkshop
+                                val idCategory = dropdownData.categories.find  {
+                                    it.type == product.categoryDescription
+                                }?.idCategory
+
+                                _uiState.update {
+                                    it.copy(
+                                        isLoading = false,
+                                        workshops = dropdownData.workshops,
+                                        categories = dropdownData.categories,
+                                    ).loadProductData(
+                                        name = product.name,
+                                        unitaryPrice = product.unitaryPrice,
+                                        status = product.status,
+                                        idWorkshop = idWorkshop,
+                                        idCategory = idCategory,
+                                        description = product.description,
+                                        imageUrl = product.image,
+                                    )
+                                }
+                            } else {
+                                _uiState.update {
+                                    it.copy(
+                                        isLoading = false,
+                                        error = "Error al cargar los datos"
+                                    )
+                                }
+                            }
+                        } else {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    error =
+                                        categoriesWorkshops
+                                            .exceptionOrNull()?.message
+                                            ?: "Error al cargar las categorias y talleres"
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
     }
 
-    private fun loadProductDetails() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, error = null) }
-
-            val infoResult = getWorkshopCategoryInfoUseCase.invoke()
-
-            if (infoResult.isFailure) {
-                // Manejo de error si falla la carga de info base
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        error = "Error al cargar info base: ${infoResult.exceptionOrNull()?.message}"
-                    )
-                }
-                return@launch // Sale de la coroutine
-            }
-
-            // Desestructurar y obtener las listas de Talleres y Categorías del resultado exitoso
-            // ESTO SOLUCIONA EL PROBLEMA DE ALCANCE (SCOPE)
-            val (categories, workshops) = infoResult.getOrThrow()
-
-            // 2. OBTENER DETALLES DEL PRODUCTO
-            getProductUseCase(productId).onSuccess { productDetail ->
-
-                // **USO DE PROPIEDADES CONFIRMADAS:** .name y .type
-                val selectedWorkshop = workshops.find { it.name == productDetail.workshopName }
-                val selectedCategory = categories.find { it.type == productDetail.categoryDescription }
-
-                _uiState.update { state ->
-                    state.copy(
-                        // Se actualizan las listas en el estado
-                        workshops = workshops,
-                        categories = categories,
-
-                        productDetail = productDetail,
-                        isProductLoaded = true,
-
-                        // PRE-LLENAR TODOS LOS CAMPOS DE LA UI
-                        name = productDetail.name,
-                        unitaryPrice = productDetail.unitaryPrice,
-                        description = productDetail.description,
-                        status = productDetail.status, // Int
-
-                        // ASIGNAR IDs
-                        selectedWorkshopId = selectedWorkshop?.idWorkshop,
-                        selectedCategoryId = selectedCategory?.idCategory,
-
-                        // Convertir la URL (String) a Uri
-                        selectedImageUri = productDetail.image?.toUri(),
-                        isLoading = false
-                    )
-                }
-            }.onFailure { e ->
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        error = "Error al cargar el producto: ${e.message}"
-                    )
-                }
-            }
-        }
+    fun onNameChange(name: String) {
+        _uiState.update { it.copy(name = name) }
+    }
+    fun onUnitaryPriceChange(unitaryPrice: String) {
+        _uiState.update { it.copy(unitaryPrice = unitaryPrice) }
+    }
+    fun onDescriptionChange(description: String) {
+        _uiState.update { it.copy(description = description) }
+    }
+    fun onImageSelected(uri: Uri?) {
+        _uiState.update { it.copy(selectedImageUrl = uri) }
+    }
+    fun onStatusChange(newStatus: Int) {
+        _uiState.update { it.copy(status = newStatus) }
+    }
+    fun onWorkshopSelected(idWorkshop: String) {
+        _uiState.update { it.copy(selectedIdWorkshop = idWorkshop) }
+    }
+    fun onCategorySelected(idCategory: String) {
+        _uiState.update { it.copy(selectedIdCategory = idCategory) }
     }
 
-    /**
-     * Construye el modelo ProductUpdate a partir de los inputs y llama al caso de uso de actualización.
-     */
-    // UpdateProductViewModel.kt
+    fun onModifyClick() {
+        val formData = _uiState.value
 
-    fun onSaveClick() {
-        val state = _uiState.value
-
-        if (state.name.isBlank() || state.selectedWorkshopId == null || state.selectedCategoryId == null) {
-            _uiState.update { it.copy(error = "Completa todos los campos obligatorios") }
+        if (!formData.hadChanged) {
+            _uiState.update { it.copy(error = "No se realizó ningun cambio") }
             return
         }
 
-        val productToUpdate = ProductUpdate(
-            name = state.name,
-            unitaryPrice = state.unitaryPrice,
-            description = state.description,
-            status = state.status.toString(),
-            idWorkshop = state.selectedWorkshopId!!,
-            idCategory = state.selectedCategoryId!!,
-            image = state.selectedImageUri
-        )
+        if (formData.selectedIdWorkshop == null || formData.selectedIdCategory == null) {
+            _uiState.update { it.copy(error = "El taller y categoría no pueden estar vacios") }
+            return
+        }
 
         viewModelScope.launch {
-            _uiState.update { it.copy(isSaving = true, error = null) }
+            _uiState.update { it.copy(isSaving = true) }
 
-            val result = updateProductUseCase(productId, productToUpdate)
+            val product = ProductUpdate(
+                name = formData.name,
+                idWorkshop = formData.selectedIdWorkshop,
+                unitaryPrice = formData.unitaryPrice,
+                idCategory = formData.selectedIdCategory,
+                description = formData.description,
+                status = formData.status.toString(),
+                image = formData.selectedImageUrl
+            )
+
+            val result = updateProductUseCase(
+                id = idProduct,
+                productData = product
+            )
 
             _uiState.update {
                 if (result.isSuccess) {
                     it.copy(
                         isSaving = false,
-                        saveSuccess = true,
+                        success = true
                     )
                 } else {
                     it.copy(
                         isSaving = false,
-                        error = "Error al actualizar: ${result.exceptionOrNull()?.message}"
+                        error = result.exceptionOrNull()?.message
                     )
                 }
             }
         }
     }
 
-    fun onNameChange(name: String) = _uiState.update { it.copy(name = name) }
-    fun onUnitaryPriceChange(price: String) = _uiState.update { it.copy(unitaryPrice = price) }
-    fun onDescriptionChange(description: String) = _uiState.update { it.copy(description = description) }
-    fun onStatusChange(status: Int) = _uiState.update { it.copy(status = status) }
-    fun onWorkshopSelected(id: String) = _uiState.update { it.copy(selectedWorkshopId = id) }
-    fun onCategorySelected(id: String) = _uiState.update { it.copy(selectedCategoryId = id) }
-    fun onImageSelected(uri: Uri?) = _uiState.update { it.copy(selectedImageUri = uri) }
-
-    fun resetSaveState() = _uiState.update { it.copy(saveSuccess = false) }
 }

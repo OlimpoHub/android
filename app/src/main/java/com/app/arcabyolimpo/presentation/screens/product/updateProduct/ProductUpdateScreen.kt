@@ -54,16 +54,26 @@ import com.app.arcabyolimpo.ui.theme.White
 @Composable
 fun ProductUpdateScreen(
     viewModel: UpdateProductViewModel = hiltViewModel(),
-    onSaveSuccess: () -> Unit,
+    onModifyClick: () -> Unit,
     onCancel: () -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    LaunchedEffect(uiState.saveSuccess) {
-        if (uiState.saveSuccess) {
-            Toast.makeText(context, "Producto actualizado con éxito", Toast.LENGTH_SHORT).show()
-            onSaveSuccess()
+    LaunchedEffect(
+        key1 = uiState.success,
+        key2 = uiState.error,
+    ) {
+        when {
+            uiState.success -> {
+                Toast.makeText(context, "Producto modificado", Toast.LENGTH_SHORT)
+                    .show()
+                onModifyClick()
+            }
+
+            uiState.error != null -> {
+                Toast.makeText(context, uiState.error, Toast.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -98,13 +108,13 @@ fun ProductUpdateScreen(
                 label = "Nombre",
                 value = uiState.name,
                 onValueChange = viewModel::onNameChange,
-                placeholder = uiState.productDetail?.name ?: "Galletas de chocolate",
+                placeholder = uiState.name ?: "Galletas de chocolate",
                 isError = uiState.error?.contains("Nombre") == true
             )
 
             ImageUploadInput(
                 label = "Imagen del producto",
-                value = uiState.selectedImageUri,
+                value = uiState.selectedImageUrl,
                 onValueChange = viewModel::onImageSelected,
                 isError = uiState.error?.contains("Imagen") == true
             )
@@ -119,7 +129,7 @@ fun ProductUpdateScreen(
             SelectObjectInput(
                 label = "Selecciona taller",
                 options = uiState.workshops,
-                selectedId = uiState.selectedWorkshopId,
+                selectedId = uiState.selectedIdWorkshop,
                 onOptionSelected = viewModel::onWorkshopSelected,
                 getItemName = { it.name },
                 getItemId = { it.idWorkshop },
@@ -129,7 +139,7 @@ fun ProductUpdateScreen(
             SelectObjectInput(
                 label = "Selecciona la categoría del producto",
                 options = uiState.categories,
-                selectedId = uiState.selectedCategoryId,
+                selectedId = uiState.selectedIdCategory,
                 onOptionSelected = viewModel::onCategorySelected,
                 getItemName = { it.type },
                 getItemId = { it.idCategory },
@@ -166,7 +176,7 @@ fun ProductUpdateScreen(
                     CircularProgressIndicator()
                 } else {
                     CancelButton(onClick = onCancel)
-                    SaveButton(onClick = viewModel::onSaveClick)
+                    SaveButton(onClick = viewModel::onModifyClick)
                 }
 
             }

@@ -141,8 +141,8 @@ sealed class Screen(
         fun createRoute(idSupply: String) = "supply/update/$idSupply"
     }
 
-    object ProductUpdate : Screen("product/update/{productId}") {
-        fun createRoute(productId: String) = "product/update/$productId"
+    object ProductUpdate : Screen("product/update/{idProduct}") {
+        fun createRoute(idProduct: String) = "product/update/$idProduct"
     }
 
 /**
@@ -549,7 +549,7 @@ fun ArcaNavGraph(
                 onFilterClick = { /* TODO: Lógica de VM */ },
                 onNotificationClick = { /* TODO: Lógica de VM */ },
 
-            )
+                )
         }
 
         /**
@@ -694,11 +694,15 @@ fun ArcaNavGraph(
         composable(
             route = Screen.ProductUpdate.route,
             arguments = listOf(
-                navArgument("productId") { type = NavType.StringType }
+                navArgument("idProduct") { type = NavType.StringType }
             )
         ) {
             ProductUpdateScreen(
-                onSaveSuccess = {
+                onModifyClick = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("shouldRefresh", true)
+
                     navController.popBackStack()
                 },
                 onCancel = {
@@ -706,7 +710,6 @@ fun ArcaNavGraph(
                 },
             )
         }
-    }
 
         composable(
             route = Screen.SupplyUpdate.route,
@@ -727,4 +730,5 @@ fun ArcaNavGraph(
             )
         }
     }
+}
 }
