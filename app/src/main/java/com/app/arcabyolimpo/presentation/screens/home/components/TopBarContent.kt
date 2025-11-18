@@ -9,6 +9,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -25,8 +27,9 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationI
 @Suppress("ktlint:standard:function-naming")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarContent() {
-    val sessionViewModel: SessionViewModel = hiltViewModel()
+fun TopBarContent(sessionViewModel: SessionViewModel = hiltViewModel()) {
+    val username by sessionViewModel.username.collectAsState(initial = "")
+    val role by sessionViewModel.role.collectAsState(initial = "")
 
     Column(modifier = Modifier.fillMaxWidth()) {
         TopAppBar(
@@ -39,7 +42,7 @@ fun TopBarContent() {
                         fontWeight = FontWeight.Normal,
                     )
                     Text(
-                        text = "Jorge Garzón",
+                        text = username,
                         style = MaterialTheme.typography.headlineLarge,
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
