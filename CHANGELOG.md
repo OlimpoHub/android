@@ -8,6 +8,8 @@
 - US for modify Supply with MVVM and clean architecture principles
 - Delete supply batch
 - Added filter and order products
+- Added register Beneficiary View
+- Added Consult Disabilities List
 
 ## [0.1.0] - 16/11/2025
 

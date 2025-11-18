@@ -3,9 +3,11 @@ import com.app.arcabyolimpo.data.remote.dto.auth.LoginRequestDto
 import com.app.arcabyolimpo.data.remote.dto.auth.LoginResponseDto
 import com.app.arcabyolimpo.data.remote.dto.auth.RefreshRequestDto
 import com.app.arcabyolimpo.data.remote.dto.auth.RefreshResponseDto
+import com.app.arcabyolimpo.data.remote.dto.beneficiaries.AddNewBeneficiaryDto
 import com.app.arcabyolimpo.data.remote.dto.beneficiaries.BeneficiariesListDto
 import com.app.arcabyolimpo.data.remote.dto.beneficiaries.BeneficiaryDto
 import com.app.arcabyolimpo.data.remote.dto.beneficiaries.GetBeneficiariesDisabilitiesDto
+import com.app.arcabyolimpo.data.remote.dto.disabilities.DisabilityDto
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.data.remote.dto.password.RecoverPasswordDto
 import com.app.arcabyolimpo.data.remote.dto.password.RecoverPasswordResponseDto
@@ -225,6 +227,14 @@ interface ArcaApi {
     suspend fun searchBeneficiaries(
         @Query("term") searchTerm: String,
     ): List<BeneficiaryDto>
+
+    @POST("beneficiary/create")
+    suspend fun addBeneficiary(
+        @Body requestBody: BeneficiaryDto,
+    ): okhttp3.ResponseBody
+
+    @GET("/disabilities/list")
+    suspend fun getDisabilitiesList(): List<DisabilityDto>
 
     @GET("supplies/workshop/category")
     suspend fun getWorkshopCategoryList(): WorkshopCategoryListDto
