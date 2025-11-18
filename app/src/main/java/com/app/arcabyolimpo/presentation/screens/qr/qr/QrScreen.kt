@@ -143,6 +143,7 @@ fun QrScreen(
                             Spacer(modifier = Modifier.height(30.dp))
                             Box {
                                 Text(
+                                    modifier = Modifier.padding(20.dp),
                                     text = "*Este código QR solo tiene 15 minutos de duración",
                                     style = Typography.headlineSmall,
                                     color = White,
