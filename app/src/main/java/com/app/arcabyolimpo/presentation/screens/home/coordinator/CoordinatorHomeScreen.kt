@@ -5,7 +5,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -13,9 +20,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.app.arcabyolimpo.presentation.screens.home.HomeScreen
 import com.app.arcabyolimpo.presentation.screens.home.InventoryScreen
+import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
 import com.app.arcabyolimpo.presentation.ui.components.molecules.FunctionalNavBar
 
 /**
@@ -24,6 +34,7 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.FunctionalNavBa
  *
  * @param navController NavController used by the HomeScreen for deeper navigation flows.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun CoordinatorHomeScreen(navController: NavHostController) {
@@ -37,12 +48,31 @@ fun CoordinatorHomeScreen(navController: NavHostController) {
                 Modifier
                     .weight(1f)
                     .fillMaxWidth()
-                    .background(Color.LightGray),
+                    .background(Color(0xFF040610)),
         ) {
             when (selectedTab) {
                 0 -> HomeScreen(navController)
                 1 -> Text("Pantalla Talleres")
-                2 -> Text("Pantalla Pedidos")
+                2 ->
+                    TopAppBar(
+                        title = {
+                            Text(
+                                "Pedidos",
+                                color = Color.White,
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        },
+                        colors =
+                            TopAppBarDefaults.topAppBarColors(
+                                containerColor = Color(0xFF040610),
+                            ),
+                        actions = {
+                            IconButton(onClick = { }) {
+                                NotificationIcon()
+                            }
+                        },
+                    )
                 3 -> InventoryScreen(navController)
                 4 -> Text("Pantalla Beneficiarios")
             }
