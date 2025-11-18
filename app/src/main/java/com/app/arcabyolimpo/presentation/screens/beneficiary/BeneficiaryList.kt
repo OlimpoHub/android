@@ -40,8 +40,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.domain.model.beneficiaries.Beneficiary
-import com.app.arcabyolimpo.presentation.navigation.Screen
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
+import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
+import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
+import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.FilterIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SearchInput
@@ -50,6 +52,8 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
 import com.app.arcabyolimpo.presentation.ui.components.organisms.Filter
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import com.app.arcabyolimpo.ui.theme.Background
+import com.app.arcabyolimpo.presentation.navigation.Screen
+import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
 
 /**
  * This composable acts as the main screen, inecting the ViewModel
@@ -73,12 +77,15 @@ fun BeneficiaryListScreen(
         onSearchTextChange = viewModel::onSearchTextChange,
         onBeneficiaryClick = onBeneficiaryClick,
         onFilterClick = onFilterClick,
-        onNotificationClick = onNotificationClick,
         onApplyFilters = viewModel::filterBeneficiary,
         onClearFilters = {
             viewModel.clearFilters()
             viewModel.getBeneficiaries()
         },
+        onNotificationClick = onNotificationClick,
+        onAddBeneficiaryClick = {
+            navController.navigate(Screen.AddNewBeneficiary.route)
+        }
     )
 }
 
@@ -98,6 +105,7 @@ fun BeneficiaryList(
     onNotificationClick: () -> Unit,
     onApplyFilters: (FilterDto) -> Unit,
     onClearFilters: () -> Unit,
+    onAddBeneficiaryClick: () -> Unit
 ) {
     var showFilter by remember { mutableStateOf(false) }
 
@@ -132,7 +140,7 @@ fun BeneficiaryList(
                     )
                 },
                 floatingActionButton = {
-                    AddButton(onClick = {})
+                    AddButton(onClick = onAddBeneficiaryClick)
                 },
                 bottomBar = {
                     Box(modifier = Modifier.padding(bottom = 8.dp)) {
@@ -343,5 +351,8 @@ fun BeneficiaryListPreview() {
             onBeneficiaryClick = {},
             onFilterClick = {},
         ),
+            onNotificationClick = {},
+            onAddBeneficiaryClick = {}
+        )
     }
 }*/

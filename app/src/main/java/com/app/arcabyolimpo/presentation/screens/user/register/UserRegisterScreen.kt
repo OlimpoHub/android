@@ -278,6 +278,91 @@ fun UserRegisterScreen(
                         placeholder = "Ingeniería en..."
                     )
 
+                    // Document Checkboxes
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = "Documentos",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.White,
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { viewModel.updateHasReglamentoInterno(!uiState.hasReglamentoInterno) }
+                                .padding(vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Checkbox(
+                                checked = uiState.hasReglamentoInterno,
+                                onCheckedChange = { viewModel.updateHasReglamentoInterno(it) },
+                                colors = CheckboxDefaults.colors(
+                                    checkedColor = Color(0xFF3B82F6),
+                                    uncheckedColor = Color(0xFF3B82F6).copy(alpha = 0.5f),
+                                    checkmarkColor = Color.White
+                                )
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Reglamento Interno",
+                                color = Color.White,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { viewModel.updateHasCopiaIne(!uiState.hasCopiaIne) }
+                                .padding(vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Checkbox(
+                                checked = uiState.hasCopiaIne,
+                                onCheckedChange = { viewModel.updateHasCopiaIne(it) },
+                                colors = CheckboxDefaults.colors(
+                                    checkedColor = Color(0xFF3B82F6),
+                                    uncheckedColor = Color(0xFF3B82F6).copy(alpha = 0.5f),
+                                    checkmarkColor = Color.White
+                                )
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Copia de INE",
+                                color = Color.White,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { viewModel.updateHasAvisoConfidencialidad(!uiState.hasAvisoConfidencialidad) }
+                                .padding(vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Checkbox(
+                                checked = uiState.hasAvisoConfidencialidad,
+                                onCheckedChange = { viewModel.updateHasAvisoConfidencialidad(it) },
+                                colors = CheckboxDefaults.colors(
+                                    checkedColor = Color(0xFF3B82F6),
+                                    uncheckedColor = Color(0xFF3B82F6).copy(alpha = 0.5f),
+                                    checkmarkColor = Color.White
+                                )
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Aviso de Confidencialidad",
+                                color = Color.White,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                    }
+
                     // Status Toggle
                     Column(modifier = Modifier.fillMaxWidth()) {
                         Text(
