@@ -1,10 +1,12 @@
 package com.app.arcabyolimpo.presentation.ui.components.molecules
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.MaterialTheme
@@ -37,40 +39,39 @@ fun StatusSelector(
     onStatusChange: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = Modifier) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Estatus",
+            style = Typography.bodyMedium,
+            fontFamily = Poppins,
+            color = White
+        )
+        Spacer(Modifier.width(8.dp))
+
+        Box(
+            modifier =
+                Modifier.clickable { onStatusChange(1) }
         ) {
-            Text(
-                text = "Estatus",
-                style = Typography.bodyMedium,
-                fontFamily = Poppins,
-                color = White
+            ActiveStatus(
+                backgroundColor = if (status == 1) PrimaryBlue else ButtonBlue,
+                textColor = if (status == 1) White else DangerGray
             )
+        }
 
-            Spacer(Modifier.width(8.dp))
+        Spacer(Modifier.width(16.dp))
 
-            Box(
-                modifier =
-                    Modifier.clickable { onStatusChange(1) }
-            ) {
-                ActiveStatus(
-                    backgroundColor = if (status == 1) PrimaryBlue else ButtonBlue,
-                    textColor = if (status == 1) White else DangerGray
-                )
-            }
-
-            Spacer(Modifier.width(16.dp))
-
-            Box(
-                modifier =
-                    Modifier.clickable { onStatusChange(0) }
-            ) {
-                InactiveStatus(
-                    backgroundColor = if (status == 0) White else DangerGray,
-                    textColor = PrimaryBlue
-                )
-            }
+        Box(
+            modifier =
+                Modifier.clickable { onStatusChange(0) }
+        ) {
+            InactiveStatus(
+                backgroundColor = if (status == 0) White else DangerGray,
+                textColor = PrimaryBlue
+            )
         }
     }
 }
