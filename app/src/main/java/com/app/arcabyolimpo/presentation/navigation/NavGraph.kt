@@ -167,7 +167,6 @@ fun ArcaNavGraph(
     /** Defines all navigation. The start destination is the Splash screen. */
     NavHost(
         navController = navController,
-        // TODO: Cambiar a Screen.Splash.route cuando acabe
         startDestination = Screen.Splash.route,
         modifier = modifier,
     ) {
@@ -206,11 +205,11 @@ fun ArcaNavGraph(
                                 popUpTo(Screen.Login.route) { inclusive = true }
                             }
                         UserRole.ASISTENTE ->
-                            navController.navigate(Screen.CoordinatorHome.route) {
+                            navController.navigate(Screen.CollaboratorHome.route) {
                                 popUpTo(Screen.Login.route) { inclusive = true }
                             }
                         UserRole.BECARIO ->
-                            navController.navigate(Screen.CoordinatorHome.route) {
+                            navController.navigate(Screen.CollaboratorHome.route) {
                                 popUpTo(Screen.Login.route) { inclusive = true }
                             }
                     }
@@ -354,6 +353,17 @@ fun ArcaNavGraph(
             CollaboratorHomeScreen()
         }
 
+        composable(Screen.UserList.route) {
+            UserListScreen(
+                onCollabClick = { id ->
+                    navController.navigate(Screen.UserDetail.createRoute(id))
+                },
+                onAddClick = {
+                    navController.navigate(Screen.UserRegister.route)
+                },
+            )
+        }
+
         /** User Detail Screen */
         composable(
             route = Screen.UserDetail.route,
@@ -365,7 +375,11 @@ fun ArcaNavGraph(
                 onEditClick = { id ->
                     // TODO: Navigate to edit screen when you create it
                 },
-                onDeleteClick = { navController.popBackStack() },
+                onDeleteClick = {
+                    navController.navigate(Screen.UserList.route) {
+                        popUpTo(Screen.UserList.route) { inclusive = true }
+                    }
+                },
             )
         }
 
@@ -375,6 +389,17 @@ fun ArcaNavGraph(
                 onDismiss = { navController.popBackStack() },
                 onSuccess = {
                     navController.popBackStack()
+                },
+            )
+        }
+
+        composable(Screen.UserList.route) {
+            UserListScreen(
+                onCollabClick = { id ->
+                    navController.navigate(Screen.UserDetail.createRoute(id))
+                },
+                onAddClick = {
+                    navController.navigate(Screen.UserRegister.route)
                 },
             )
         }

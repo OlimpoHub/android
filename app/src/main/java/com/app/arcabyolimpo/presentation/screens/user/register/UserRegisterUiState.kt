@@ -11,6 +11,9 @@ data class UserRegisterUiState (
     val roleId: String = "3",
     val isActive: Int = 1,
     val photoUrl: String? = null,
+    val hasReglamentoInterno: Boolean = false,
+    val hasCopiaIne: Boolean = false,
+    val hasAvisoConfidencialidad: Boolean = false,
 
     val isLoading: Boolean = false,
     val error: String? = null,
