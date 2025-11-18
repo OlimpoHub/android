@@ -171,7 +171,7 @@ fun ArcaNavGraph(
     NavHost(
         navController = navController,
         // TODO: Cambiar a Screen.Splash.route cuando acabe
-        startDestination = Screen.Splash.route,
+        startDestination = Screen.SuppliesList.route,
         modifier = modifier,
     ) {
         /** Splash Screen */

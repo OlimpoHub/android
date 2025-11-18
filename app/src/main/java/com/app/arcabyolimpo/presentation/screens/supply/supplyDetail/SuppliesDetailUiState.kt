@@ -14,4 +14,11 @@ data class SuppliesDetailUiState(
     val decisionDialogVisible: Boolean = false,
     // Controls whether the snackbar should be shown
     val snackbarVisible: Boolean = false,
+    val deletionType: DeletionType? = null,
+    val snackbarMessage: String? = null
 )
+
+enum class DeletionType {
+    SUPPLY,
+    BATCH
+}

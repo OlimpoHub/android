@@ -6,7 +6,7 @@ package com.app.arcabyolimpo.domain.model.supplies
 data class SupplyBatchExt(
     val id: String,
     val name: String,
-    val imageUrl: String,
+    val imageUrl: String?,
     val unitMeasure: String,
     val totalQuantity: Int,
     val workshop: String,
@@ -19,6 +19,7 @@ data class SupplyBatchExt(
  * Batch -> Secondary class that contains all the extra attributes from a supply batch
  * ---------------------------------------------------------------------------------------------- */
 data class Batch(
+    val id: String = "",
     val quantity: Int = 0,
     val expirationDate: String = "",
     val adquisitionType: String = "",

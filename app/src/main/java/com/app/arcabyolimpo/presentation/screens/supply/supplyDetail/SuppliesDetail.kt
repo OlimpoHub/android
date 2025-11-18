@@ -99,11 +99,10 @@ fun SuppliesDetailScreen(
 
                 val result =
                     snackbarHostState.showSnackbar(
-                    SnackbarVisualsWithError(
-                        "Insumo Borrado Correctamente",
-                        // isError controls the visual style (red/blue)
-                        isError = true,
-                    ),
+                        SnackbarVisualsWithError(
+                            uiState.snackbarMessage ?: "Operación completada",
+                            isError = haserror,
+                        ),
                 )
                 // When the snack bar ends, we act according to the result
                 when (result){
@@ -112,8 +111,9 @@ fun SuppliesDetailScreen(
                         viewModel.onSnackbarShown()
 
                         //Navigate back as soon as the snack bar is finished
-                        onBackClick()
-
+                        if (uiState.deletionType == DeletionType.SUPPLY) {
+                            onBackClick()
+                        }
                     }
                     SnackbarResult.ActionPerformed -> {}
                 }
@@ -122,22 +122,33 @@ fun SuppliesDetailScreen(
     }
 
     // Displays a confirmation dialog when the user wants to delete an item.
-    if (uiState.decisionDialogVisible == true){
+    if (uiState.decisionDialogVisible == true) {
+        val (title, text) = when (uiState.deletionType) {
+            DeletionType.SUPPLY ->
+                "¿Estás seguro de eliminar este Insumo?" to
+                        "Esta acción no podrá revertirse y eliminará todos sus lotes"
+
+            DeletionType.BATCH ->
+                "¿Estás seguro de eliminar este Lote?" to
+                        "Esta acción no podrá revertirse"
+
+            else ->
+                "¿Estás seguro?" to "Esta acción no podrá revertirse"
+        }
         DecisionDialog(
-            // The dialogue closes without any action being taken.
             onDismissRequest = {
                 viewModel.toggledecisionDialog(showdecisionDialog = false)
             },
-            // If the user confirms, the ViewModel is called to delete the input
             onConfirmation = {
-                viewModel.deleteOneSupply(idInsumo)
+                viewModel.confirmDeletion()
             },
-            dialogTitle = "¿Estas seguro de eliminar este Insumo?",
-            dialogText = "Esta accion no podra revertirce",
+            dialogTitle = title,
+            dialogText = text,
             confirmText = "Confirmar",
             dismissText = "Cancelar",
-            )
+        )
     }
+
 
     Scaffold(
         // Host del snackbar para la pantalla.
@@ -209,14 +220,23 @@ fun SuppliesDetailScreen(
                 uiState.supplyBatchList != null -> {
                     SupplyDetailContent(
                         supply = uiState.supplyBatchList!!,
-                        onClickAddSupplyBatch = onClickAddSupplyBatch,
+                        onClickAddSupplyBatch = {},
                         onClickDelete = {
                             // When you press delete in the details, we display the dialog
-                            viewModel.toggledecisionDialog(showdecisionDialog = true)
+                            viewModel.toggledecisionDialog(
+                                showdecisionDialog = true,
+                                deletionType = DeletionType.SUPPLY
+                            )
                         },
                         onClickModify = onClickModify,
                         modifySupplyBatch = modifySupplyBatch,
-                        deleteSupplyBatch = deleteSupplyBatch,
+                        deleteSupplyBatch = { batchId ->
+                            viewModel.selectedBatchExpirationDate = batchId
+                            viewModel.toggledecisionDialog(
+                                showdecisionDialog = true,
+                                deletionType = DeletionType.BATCH
+                            )
+                        },
                     )
                 }
             }

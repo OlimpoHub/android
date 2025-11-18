@@ -3,6 +3,7 @@
 - Added Consult Disabilities List
 
 ### Added
+- Delete supply batch
 - Added filter and order products
 
 ## [0.1.0] - 16/11/2025
