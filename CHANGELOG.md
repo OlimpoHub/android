@@ -1,6 +1,11 @@
 ## [0.1.0] - 17/11/2025
 
+### Changed
+ - UploadImageInput modified to not save persistantly the photo, instead to 
+   receive the URI value from the view model  
+   
 ### Added
+- US for modify Supply with MVVM and clean architecture principles
 - Delete supply batch
 - Added filter and order products
 

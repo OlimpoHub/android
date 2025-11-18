@@ -240,6 +240,18 @@ interface ArcaApi {
         @Part imagenInsumo: MultipartBody.Part?,
     )
 
+    @Multipart
+    @PUT("supplies/update/{idSupply}")
+    suspend fun updateSupply(
+        @Path("idSupply") idSupply: String,
+        @Part("idTaller") idWorkshop: RequestBody,
+        @Part("nombre") name: RequestBody,
+        @Part("unidadMedida") measureUnit: RequestBody,
+        @Part("idCategoria") idCategory: RequestBody,
+        @Part("status") status: RequestBody,
+        @Part imagenInsumo: MultipartBody.Part?,
+    )
+
     @GET("productBatch/")
     suspend fun getProductBatches(): List<ProductBatchDto>
 
