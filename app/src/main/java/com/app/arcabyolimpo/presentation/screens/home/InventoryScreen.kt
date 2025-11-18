@@ -21,15 +21,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.app.arcabyolimpo.presentation.navigation.Screen
 import com.app.arcabyolimpo.presentation.screens.home.components.InventoryMainScreen
 import com.app.arcabyolimpo.presentation.screens.home.components.InventoryTopBar
-import com.app.arcabyolimpo.presentation.screens.home.components.MainMenu
-import com.app.arcabyolimpo.presentation.screens.home.components.TopBarContent
-import com.app.arcabyolimpo.presentation.screens.user.UserListScreen
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 
+/**
+ * InventoryScreen manages the inventory home UI and its internal navigation.
+ * @param navController NavHostController used for navigation between app screens.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable

@@ -9,16 +9,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.app.arcabyolimpo.presentation.screens.session.SessionViewModel
-import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.ConfigurationIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
 
+/**
+ * Displays the top bar for the Inventory screen, showing the title and a notifications action.
+ */
 @Suppress("ktlint:standard:function-naming")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
