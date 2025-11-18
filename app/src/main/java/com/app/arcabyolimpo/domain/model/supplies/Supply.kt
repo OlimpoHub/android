@@ -12,7 +12,7 @@ package com.app.arcabyolimpo.domain.model.supplies
 data class Supply(
     val id: String,
     val name: String,
-    val imageUrl: String,
+    val imageUrl: String?,
     val unitMeasure: String,
     val batch: List<SupplyBatch>,
 )
@@ -26,4 +26,42 @@ data class Supply(
 data class SupplyBatch(
     val quantity: Int,
     val expirationDate: String,
+)
+
+/**
+ * Data class representing a supply batch
+ * with additional information.
+ *
+ * @property supplyId The unique identifier of the supply.
+ * @property quantity The quantity of the supply batch.
+ * @property expirationDate The expiration date of the supply batch.
+ * @property adquisition The type of acquisition for the supply batch.
+ * @property boughtDate The date when the supply batch was bought.
+ */
+data class RegisterSupplyBatch(
+    val supplyId: String,
+    val quantity: Int,
+    val expirationDate: String,
+    val acquisition: String,
+    val boughtDate: String,
+)
+
+/**
+ * Data class representing an acquisition
+ *
+ * @property id The unique identifier of the acquisition
+ * @property description The description of the acquisition.
+ */
+data class Acquisition(
+    val id: String,
+    val description: String,
+)
+
+/**
+ * Data class representing a success message.
+ *
+ * @property message The content of the success message.
+ */
+data class SuccessMessage(
+    val message: String,
 )

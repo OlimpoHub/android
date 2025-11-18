@@ -1,4 +1,4 @@
-package com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.components
+package com.app.arcabyolimpo.presentation.ui.components.organisms
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -23,7 +23,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
 import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
@@ -33,6 +32,8 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ModifyButto
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.FilterIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.status.ActiveStatus
 import com.app.arcabyolimpo.presentation.ui.components.atoms.status.InactiveStatus
+import com.app.arcabyolimpo.presentation.ui.components.molecules.SupplyBatchRow
+import com.app.arcabyolimpo.presentation.ui.components.molecules.TextValue
 import com.app.arcabyolimpo.ui.theme.White
 
 /** ---------------------------------------------------------------------------------------------- *
@@ -54,7 +55,7 @@ fun SupplyDetailContent(
     onClickDelete: () -> Unit,
     onClickModify: () -> Unit,
     modifySupplyBatch: () -> Unit,
-    deleteSupplyBatch: () -> Unit,
+    deleteSupplyBatch: (String) -> Unit,
 ) {
     val batches = supply.batch
 
@@ -186,7 +187,7 @@ fun SupplyDetailContent(
                       date = batch.expirationDate,
                       adquisition = batch.adquisitionType,
                       onModifyClick = modifySupplyBatch,
-                      onDeleteClick = deleteSupplyBatch,
+                      onDeleteClick = { deleteSupplyBatch(batch.id) },
                   )
               }
             }
@@ -202,9 +203,12 @@ fun SupplyDetailContent(
                 Arrangement
                     .spacedBy(24.dp, Alignment.CenterHorizontally),
         ) {
-            DeleteButton(
-                onClick = onClickDelete,
-            )
+            // Only add the delete button if the status is Active
+            if (supply.status == 1) {
+                DeleteButton(
+                    onClick = onClickDelete,
+                )
+            }
             ModifyButton(
                 onClick = onClickModify,
             )
