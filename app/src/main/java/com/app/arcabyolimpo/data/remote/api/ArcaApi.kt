@@ -26,6 +26,7 @@ import com.app.arcabyolimpo.data.remote.dto.supplies.RegisterSupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuccessMessageDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuppliesListDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchOneDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.WorkshopCategoryListDto
 import com.app.arcabyolimpo.data.remote.dto.user.UserDto
@@ -131,6 +132,11 @@ interface ArcaApi {
     suspend fun getSupplyBatchById(
         @Path("id") id: String,
     ): SupplyBatchDto
+
+    @GET("supplyBatch/modify/{idSupplyBatch}")
+    suspend fun getSupplyBatchOne(
+        @Path("idSupplyBatch") idSupplyBatch: String,
+    ): SupplyBatchOneDto
 
     @POST("supplyBatch/addBatch")
     suspend fun registerSupplyBatch(

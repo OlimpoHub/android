@@ -30,14 +30,15 @@ fun SupplyDto.toDomain(): Supply =
         imageUrl = image ?: "",
         name = name.replaceFirstChar { it.uppercase() },
         unitMeasure = unitMeasure,
-        batch = batch.flatMap { supplyBatchDto ->
-            supplyBatchDto.supplyBatches?.map { spec ->
-                SupplyBatch(
-                    quantity = spec.quantity ?: 0,
-                    expirationDate = spec.expirationDate ?: ""
-                )
-            } ?: emptyList()
-        }
+        batch =
+            batch.flatMap { supplyBatchDto ->
+                supplyBatchDto.supplyBatches?.map { spec ->
+                    SupplyBatch(
+                        quantity = spec.quantity ?: 0,
+                        expirationDate = spec.expirationDate ?: "",
+                    )
+                } ?: emptyList()
+            },
     )
 
 /**

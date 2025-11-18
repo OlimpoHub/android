@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import com.app.arcabyolimpo.data.mapper.supplies.toDomain
+import com.app.arcabyolimpo.data.mapper.supplies.toRegister
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
@@ -76,6 +77,14 @@ class SupplyRepositoryImpl
          * getSupplyBatchById -> calls the API to fetch a supply batch by its ID.
          * --------------------------------------------------------------------------------------- */
         override suspend fun getSupplyBatchById(id: String): SupplyBatchExt = api.getSupplyBatchById(id).toDomain()
+
+        /**
+         * Fetch a single inventory batch by its inventory id and map to domain RegisterSupplyBatch.
+         */
+        override suspend fun getSupplyBatchOne(id: String): RegisterSupplyBatch {
+            val dto = api.getSupplyBatchOne(id)
+            return dto.toRegister()
+        }
 
         /**
          * Register a new supply batch in the backend.

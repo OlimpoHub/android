@@ -140,17 +140,26 @@ fun SupplyBatchModifyScreen(
                     .padding(padding)
                     .padding(8.dp),
         ) {
-            // Reuse the content composable so we keep single-source-of-truth for UI
-            SupplyBatchRegisterContent(
-                uiState = state,
-                onSelectSupply = { viewModel.onSelectSupply(it) },
-                onQuantityChanged = { viewModel.onQuantityChanged(it) },
-                onExpirationDateChanged = { viewModel.onExpirationDateChanged(it) },
-                onBoughtDateChanged = { viewModel.onBoughtDateChanged(it) },
-                onIncrementQuantity = { viewModel.onIncrementQuantity() },
-                onDecrementQuantity = { viewModel.onDecrementQuantity() },
-                onAcquisitionTypeSelected = { viewModel.onAcquisitionTypeSelected(it) },
-            )
+            // If we're loading the batch details, show a centered progress indicator
+            if (state.isLoading) {
+                Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Spacer(modifier = Modifier.weight(1f))
+                    CircularProgressIndicator()
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+            } else {
+                // Reuse the content composable so we keep single-source-of-truth for UI
+                SupplyBatchRegisterContent(
+                    uiState = state,
+                    onSelectSupply = { viewModel.onSelectSupply(it) },
+                    onQuantityChanged = { viewModel.onQuantityChanged(it) },
+                    onExpirationDateChanged = { viewModel.onExpirationDateChanged(it) },
+                    onBoughtDateChanged = { viewModel.onBoughtDateChanged(it) },
+                    onIncrementQuantity = { viewModel.onIncrementQuantity() },
+                    onDecrementQuantity = { viewModel.onDecrementQuantity() },
+                    onAcquisitionTypeSelected = { viewModel.onAcquisitionTypeSelected(it) },
+                )
+            }
         }
     }
 }

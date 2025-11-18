@@ -8,6 +8,7 @@ import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
 import com.app.arcabyolimpo.domain.usecase.supplies.GetAcquisitionTypesUseCase
 import com.app.arcabyolimpo.domain.usecase.supplies.GetSuppliesListUseCase
 import com.app.arcabyolimpo.domain.usecase.supplies.ModifySupplyBatchUseCase
+import com.app.arcabyolimpo.domain.usecase.supplies.GetSupplyBatchOneUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,6 +16,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import java.time.Instant
+import java.time.LocalDate
+import java.time.OffsetDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 @HiltViewModel
 class SupplyBatchModifyViewModel
@@ -23,6 +29,7 @@ class SupplyBatchModifyViewModel
         private val getSuppliesListUseCase: GetSuppliesListUseCase,
         private val modifySupplyBatchUseCase: ModifySupplyBatchUseCase,
         private val getAcquisitionTypesUseCase: GetAcquisitionTypesUseCase,
+        private val getSupplyBatchOneUseCase: GetSupplyBatchOneUseCase,
     ) : ViewModel() {
         // Tag used for Logcat so you can filter logs from this ViewModel while debugging
         private val TAG = "SupplyBatchModifyVM"
@@ -151,6 +158,37 @@ class SupplyBatchModifyViewModel
 
         fun onSelectBatch(id: String) {
             _uiState.update { it.copy(selectedBatchId = id) }
+
+            // Load batch details from repository and populate fields for modification
+            viewModelScope.launch {
+                getSupplyBatchOneUseCase(id).collect { result ->
+                    when (result) {
+                        is Result.Loading -> Log.d(TAG, "onSelectBatch: Loading batch $id")
+                        is Result.Success -> Log.d(TAG, "onSelectBatch: Success - got batch for id $id: ${result.data}")
+                        is Result.Error -> Log.w(TAG, "onSelectBatch: Error - ${result.exception.message}")
+                    }
+
+                    val newState = when (result) {
+                        is Result.Loading -> _uiState.value.copy(isLoading = true, registerError = null)
+                        is Result.Success -> _uiState.value.copy(
+                            selectedSupplyId = result.data.supplyId,
+                            quantityInput = result.data.quantity.toString(),
+                            expirationDateInput = formatToDisplayDate(result.data.expirationDate),
+                            boughtDateInput = formatToDisplayDate(result.data.boughtDate),
+                            acquisitionInput = result.data.acquisition,
+                            isLoading = false,
+                            registerError = null,
+                        )
+                        is Result.Error -> _uiState.value.copy(
+                            isLoading = false,
+                            registerError = result.exception.message,
+                        )
+                        else -> _uiState.value
+                    }
+
+                    _uiState.value = newState
+                }
+            }
         }
 
         fun onAcquisitionTypeSelected(id: String) {
@@ -263,5 +301,41 @@ class SupplyBatchModifyViewModel
                     registerSuccess = false,
                 )
             }
+        }
+
+        /**
+         * Convert various backend/ISO date representations into the UI date format `dd/MM/yyyy`.
+         * Returns empty string when input is null/empty or cannot be parsed.
+         */
+        private fun formatToDisplayDate(dateStr: String?): String {
+            if (dateStr.isNullOrBlank()) return ""
+
+            val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+
+            try {
+                // Try parsing RFC3339 / ISO instant with timezone (e.g. 2025-11-26T06:00:00.000Z)
+                val odt = OffsetDateTime.parse(dateStr)
+                val local = odt.toLocalDate()
+                return local.format(outputFormatter)
+            } catch (_: Exception) {
+            }
+
+            try {
+                // Try parsing plain ISO local date (e.g. 2025-11-26)
+                val ld = LocalDate.parse(dateStr)
+                return ld.format(outputFormatter)
+            } catch (_: Exception) {
+            }
+
+            try {
+                // Try parsing Instant-like strings
+                val instant = Instant.parse(dateStr)
+                val local = instant.atZone(ZoneId.systemDefault()).toLocalDate()
+                return local.format(outputFormatter)
+            } catch (_: Exception) {
+            }
+
+            // If the backend already returned dd/MM/yyyy, return it; otherwise return empty to avoid invalid SQL
+            return if (dateStr.contains("/")) dateStr else ""
         }
     }

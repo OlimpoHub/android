@@ -29,3 +29,4 @@ data class RegisterSupplyBatchDto(
     /** Purchase/bought date. Maps to JSON key "FechaCompra". */
     @SerializedName("FechaCompra") val boughtDate: String,
 )
+

@@ -29,6 +29,12 @@ interface SupplyRepository {
 
     suspend fun getSupplyBatchById(id: String): SupplyBatchExt
 
+    /**
+     * Fetch a single inventory batch by its inventory id (idInventario).
+     * Returns a RegisterSupplyBatch-like object with initial values to populate the modify screen.
+     */
+    suspend fun getSupplyBatchOne(id: String): RegisterSupplyBatch
+
     suspend fun filterSupply(params: FilterDto): List<Supply>
 
     suspend fun getFilterData(): FilterData
