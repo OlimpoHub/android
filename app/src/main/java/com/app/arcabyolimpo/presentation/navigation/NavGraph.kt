@@ -29,8 +29,6 @@ import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordR
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
 import com.app.arcabyolimpo.presentation.screens.product.ProductAddScreen
 import com.app.arcabyolimpo.presentation.screens.product.list.ProductListScreen
-import com.app.arcabyolimpo.presentation.screens.product.list.ProductsListRoute
-import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDeleteTestScreen
 import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDetailScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchDetail.ProductBatchDetailScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchModify.ProductBatchModifyScreen
@@ -177,7 +175,7 @@ fun ArcaNavGraph(
     NavHost(
         navController = navController,
         // TODO: Cambiar a Screen.Splash.route cuando acabe
-        startDestination = Screen.ProductsList.route,
+        startDestination = Screen.Splash.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -658,21 +656,6 @@ fun ArcaNavGraph(
                     navController.popBackStack()
                 },
                 onCancel = {
-                    navController.popBackStack()
-                },
-            )
-        }
-
-        composable("products_list") {
-            ProductsListRoute(
-                onProductClick = { /* ir a detalle si quieres */ },
-                onBackClick = { navController.popBackStack() },
-            )
-        }
-
-        composable(Screen.ProductDeleteTest.route) {
-            ProductDeleteTestScreen(
-                onDeleted = {
                     navController.popBackStack()
                 },
             )

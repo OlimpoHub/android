@@ -1,9 +1,27 @@
 package com.app.arcabyolimpo.presentation.screens.product.list
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -27,16 +45,16 @@ import com.app.arcabyolimpo.ui.theme.White
 /**
  * Composable screen that displays the list of products.
  *
- * This screen is responsible for showing a list of available products
- * retrieved from the [ProductListViewModel]. It provides:
- * - A top bar with the title and notification icon.
- * - A floating action button for adding new products.
- * - A content area showing the product list with loading and error states.
+ * It provides:
+ * - Top bar with title and notification icon.
+ * - Search input.
+ * - Filter & order modal (by workshop and alphabetical order).
+ * - Floating action button to add new products.
+ * - Product list with loading / error states.
  *
  * @param onProductClick Callback triggered when a product item is clicked.
- * Receives the product ID as a parameter.
+ * Receives the product ID as parameter.
  * @param onAddProductClick Callback triggered when the add button is clicked.
- * @param viewModel The [ProductListViewModel] used to manage the UI state.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,17 +65,16 @@ fun ProductListScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    // State variable to track whether the filter modal is visible
+    // Controls visibility of the filter modal
     var showFilter by remember { mutableStateOf(false) }
 
-    // State variable to track the current text entered by the user in the search field
+    // Text entered by the user in the search field
     var searchQuery by remember { mutableStateOf("") }
 
     /**
-     * List of products filtered based on the user's search input.
-     *
-     * @param searchQuery Text entered by the user in the search field.
-     * @param uiState.productsList Complete list of products loaded in the UI.
+     * Products filtered according to the search text.
+     * The filter is applied over the already-processed list in uiState.productsList
+     * (which may also be filtered/ordered by the modal).
      */
     val filteredProducts =
         remember(searchQuery, uiState.productsList) {
@@ -125,21 +142,7 @@ fun ProductListScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false) {
-                    /**
-                     * Text input field with an icon, used to search products.
-                     *
-                     * This component allows the user to type text to filter the list of products
-                     * on the screen. It updates automatically via the searchQuery state.
-                     *
-                     * Main parameters:
-                     * @param label Optional label text for the field (empty here).
-                     * @param placeholder Text shown when the field is empty ("Buscar").
-                     * @param value Current value of the field, bound to searchQuery.
-                     * @param onValueChange Callback executed whenever the user types something.
-                     *                      Updates the [searchQuery] state.
-                     * @param trailingIcon Icon displayed at the end of the text field (search icon).
-                     * @param modifier Compose modifier to define size, weight, padding, etc.
-                     */
+                    // Search input with trailing search icon
                     StandardIconInput(
                         label = "",
                         placeholder = "Buscar",
@@ -153,15 +156,9 @@ fun ProductListScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.size(16.dp))
 
-                /**
-                 * Icon button used to open the filter panel for products.
-                 * When clicked, it sets showFilter to `true`, triggering the display
-                 * of the filter UI.
-                 *
-                 * @param modifier Compose Modifier used to define size, padding, and click behavior.
-                 */
+                // Filter icon that opens the filter & order modal
                 FilterIcon(
                     modifier =
                         Modifier
@@ -176,47 +173,56 @@ fun ProductListScreen(
             Box(
                 modifier = Modifier.fillMaxSize(),
             ) {
-                /**
-                 * Displays the main content of the product list screen based on the current UI state.
-                 *
-                 * The content is shown according to the following conditions:
-                 * 1. If the data is loading or there is an error,
-                 * 2. If the filtered list is empty
-                 * 3. Otherwise, the composable displays the filtered list normally,
-                 *
-                 * @param filteredProducts List of products filtered by the search query.
-                 * @param uiState Current UI state of the product list screen.
-                 * @param onProductClick Callback triggered when a product item is clicked.
-                 * @param viewModel ViewModel used to reload the product list on retry.
-                 */
+                when {
+                    uiState.isLoading || uiState.error != null -> {
+                        ProductListContent(
+                            productsList = filteredProducts,
+                            isLoading = uiState.isLoading,
+                            error = uiState.error,
+                            onProductClick = onProductClick,
+                            onRetry = { viewModel.loadProductsList() },
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    }
 
-                if (uiState.isLoading || uiState.error != null) {
-                    ProductListContent(
-                        productsList = filteredProducts,
-                        isLoading = uiState.isLoading,
-                        error = uiState.error,
-                        onProductClick = onProductClick,
-                        onRetry = { viewModel.loadProductsList() },
-                        modifier = Modifier.fillMaxSize(),
-                    )
-                } else if (filteredProducts.isEmpty()) {
-                    Text(
-                        text = "No se encontraron productos",
-                        color = ErrorRed,
-                        style = Typography.headlineMedium,
-                        modifier = Modifier.align(Alignment.Center),
-                    )
-                } else {
-                    ProductListContent(
-                        productsList = filteredProducts,
-                        isLoading = false,
-                        error = null,
-                        onProductClick = onProductClick,
-                        onRetry = { },
-                        modifier = Modifier.fillMaxSize(),
-                    )
+                    filteredProducts.isEmpty() -> {
+                        Text(
+                            text = "No se encontraron productos",
+                            color = ErrorRed,
+                            style = Typography.headlineMedium,
+                            modifier = Modifier.align(Alignment.Center),
+                        )
+                    }
+
+                    else -> {
+                        ProductListContent(
+                            productsList = filteredProducts,
+                            isLoading = false,
+                            error = null,
+                            onProductClick = onProductClick,
+                            onRetry = { },
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    }
                 }
             }
         }
+    }
+
+    // Filter & order modal (bottom sheet)
+    if (showFilter) {
+        Filter(
+            data = uiState.filterData,
+            initialSelected = uiState.selectedFilters,
+            onApply = { dto ->
+                showFilter = false
+                viewModel.applyFilters(dto)
+            },
+            onDismiss = { showFilter = false },
+            onClearFilters = {
+                viewModel.clearFilters()
+                showFilter = false
+            },
+        )
     }
 }

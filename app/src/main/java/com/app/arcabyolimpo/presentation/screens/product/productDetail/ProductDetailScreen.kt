@@ -35,7 +35,7 @@ import com.app.arcabyolimpo.ui.theme.White
  * @param productId The ID of the product to display
  * @param onBackClick Callback when back button is pressed
  * @param onEditClick Callback when edit button is pressed
- * @param onDeleteClick Callback when delete button is pressed
+ * @param onDeleteClick Callback when delete finishes successfully (navegar hacia atrás)
  * @param viewModel The ViewModel managing the product detail state
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,13 +48,35 @@ fun ProductDetailScreen(
     viewModel: ProductDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
 
+    // Cargar producto al entrar
     LaunchedEffect(productId) {
         viewModel.loadProduct(productId)
     }
 
+    // Manejo de snackbar y navegación cuando termina el delete
+    LaunchedEffect(uiState.snackbarVisible, uiState.error) {
+        if (uiState.snackbarVisible) {
+            val message = if (uiState.error == null) {
+                "Producto eliminado correctamente"
+            } else {
+                "Error al eliminar el producto: ${uiState.error}"
+            }
+
+            snackbarHostState.showSnackbar(message)
+            viewModel.onSnackbarShown()
+
+            // Si no hubo error, regresamos a la pantalla anterior
+            if (uiState.error == null) {
+                onDeleteClick()
+            }
+        }
+    }
+
     Scaffold(
         containerColor = Background,
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = {
@@ -71,7 +93,7 @@ fun ProductDetailScreen(
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Volver",
-                            tint = White
+                            tint = White,
                         )
                     }
                 },
@@ -82,49 +104,64 @@ fun ProductDetailScreen(
         },
     ) { padding ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(padding),
         ) {
             when {
                 uiState.isLoading -> {
                     CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center),
-                        color = White
+                        color = White,
                     )
                 }
-                uiState.error != null -> {
+
+                uiState.error != null && uiState.product == null -> {
                     Column(
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(24.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        modifier =
+                            Modifier
+                                .align(Alignment.Center)
+                                .padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Text(
                             text = uiState.error ?: "Error desconocido",
                             color = ErrorRed,
                             style = Typography.headlineMedium,
-                            modifier = Modifier.padding(bottom = 16.dp)
+                            modifier = Modifier.padding(bottom = 16.dp),
                         )
                         Button(
                             onClick = { viewModel.loadProduct(productId) },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = White
-                            )
+                            colors =
+                                ButtonDefaults.buttonColors(
+                                    containerColor = White,
+                                ),
                         ) {
                             Text("Reintentar", color = Background)
                         }
                     }
                 }
+
                 uiState.product != null -> {
                     ProductDetailContent(
                         product = uiState.product!!,
                         onEditClick = { onEditClick(productId) },
-                        onDeleteClick = onDeleteClick,
-                        modifier = Modifier.fillMaxSize()
+                        onDeleteClick = { viewModel.toggleDecisionDialog(true) },
+                        modifier = Modifier.fillMaxSize(),
                     )
                 }
             }
+
+            if (uiState.decisionDialogVisible && uiState.product != null) {
+                val productId = uiState.product!!.id
+
+                DeleteConfirmationDialog(
+                    onConfirm = { viewModel.deleteProduct(id = productId) },
+                    onDismiss = { viewModel.toggleDecisionDialog(false) },
+                )
+            }
+
         }
     }
 }
@@ -134,35 +171,38 @@ private fun ProductDetailContent(
     product: Product,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .verticalScroll(rememberScrollState())
-            .padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(28.dp)
+        modifier =
+            modifier
+                .verticalScroll(rememberScrollState())
+                .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(28.dp),
     ) {
         // Top section: Image + Product Info
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(20.dp)
+            horizontalArrangement = Arrangement.spacedBy(20.dp),
         ) {
             // Product image placeholder (bigger)
             Box(
-                modifier = Modifier
-                    .size(150.dp)
-                    .background(
-                        color = ButtonBlue.copy(alpha = 0.1f),
-                        shape = CircleShape
-                    )
+                modifier =
+                    Modifier
+                        .size(150.dp)
+                        .background(
+                            color = ButtonBlue.copy(alpha = 0.1f),
+                            shape = CircleShape,
+                        ),
             )
 
             // Product information
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .align(Alignment.CenterVertically),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .align(Alignment.CenterVertically),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 // Product name
                 Text(
@@ -192,18 +232,18 @@ private fun ProductDetailContent(
                     )
                 }
 
-                // Category (if you have it in your Product model)
-                 Text(
-                     text = "Categoría: ${product.category}",
-                     color = White.copy(alpha = 0.8f),
-                     fontSize = 15.sp,
-                     fontFamily = Poppins,
-                 )
+                // Category (si existe en tu modelo)
+                Text(
+                    text = "Categoría: ${product.category}",
+                    color = White.copy(alpha = 0.8f),
+                    fontSize = 15.sp,
+                    fontFamily = Poppins,
+                )
 
                 // Availability status
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Text(
                         text = "Estado:",
@@ -212,15 +252,24 @@ private fun ProductDetailContent(
                         fontFamily = Poppins,
                     )
                     Surface(
-                        color = if (product.available) ButtonBlue.copy(alpha = 0.3f) else ErrorRed.copy(alpha = 0.3f),
-                        shape = MaterialTheme.shapes.small
+                        color =
+                            if (product.available) {
+                                ButtonBlue.copy(alpha = 0.3f)
+                            } else {
+                                ErrorRed.copy(alpha = 0.3f)
+                            },
+                        shape = MaterialTheme.shapes.small,
                     ) {
                         Text(
                             text = if (product.available) "Disponible" else "No disponible",
                             color = if (product.available) White else ErrorRed,
                             fontSize = 12.sp,
                             fontFamily = Poppins,
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                            modifier =
+                                Modifier.padding(
+                                    horizontal = 12.dp,
+                                    vertical = 6.dp,
+                                ),
                         )
                     }
                 }
@@ -229,12 +278,12 @@ private fun ProductDetailContent(
 
         Divider(
             color = DangerGray.copy(alpha = 0.3f),
-            thickness = 1.dp
+            thickness = 1.dp,
         )
 
         // Description section
         Column(
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
                 text = "Descripción",
@@ -248,18 +297,18 @@ private fun ProductDetailContent(
                 color = White.copy(alpha = 0.8f),
                 fontSize = 15.sp,
                 fontFamily = Poppins,
-                lineHeight = 22.sp
+                lineHeight = 22.sp,
             )
         }
 
         Divider(
             color = DangerGray.copy(alpha = 0.3f),
-            thickness = 1.dp
+            thickness = 1.dp,
         )
 
         // Active lots section
         Column(
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
                 text = "Lotes Activos",
@@ -269,17 +318,17 @@ private fun ProductDetailContent(
                 fontFamily = Poppins,
             )
 
-            // Placeholder for lots list
-            // You can replace this with actual lot items when available
+            // Placeholder para lotes
             Card(
-                colors = CardDefaults.cardColors(
-                    containerColor = White.copy(alpha = 0.05f)
-                ),
-                modifier = Modifier.fillMaxWidth()
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor = White.copy(alpha = 0.05f),
+                    ),
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 Column(
                     modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Text(
                         text = "No hay lotes activos",
@@ -287,7 +336,7 @@ private fun ProductDetailContent(
                         fontSize = 14.sp,
                         fontFamily = Poppins,
                     )
-                    // Add your lot items here when available
+                    // Aquí podrías agregar los lotes reales cuando existan
                 }
             }
         }
@@ -297,15 +346,16 @@ private fun ProductDetailContent(
         // Action buttons
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             // Delete button
             Button(
                 onClick = onDeleteClick,
                 modifier = Modifier.weight(1f),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = White
-                )
+                colors =
+                    ButtonDefaults.buttonColors(
+                        containerColor = White,
+                    ),
             ) {
                 Text(
                     text = "Eliminar",
@@ -319,9 +369,10 @@ private fun ProductDetailContent(
             Button(
                 onClick = onEditClick,
                 modifier = Modifier.weight(1f),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = ButtonBlue
-                )
+                colors =
+                    ButtonDefaults.buttonColors(
+                        containerColor = ButtonBlue,
+                    ),
             ) {
                 Text(
                     text = "Modificar",
@@ -332,4 +383,49 @@ private fun ProductDetailContent(
             }
         }
     }
+}
+
+@Composable
+private fun DeleteConfirmationDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "Eliminar producto",
+                color = White,
+                fontFamily = Poppins,
+                fontWeight = FontWeight.Bold,
+            )
+        },
+        text = {
+            Text(
+                text = "¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.",
+                color = White.copy(alpha = 0.8f),
+                fontFamily = Poppins,
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text(
+                    text = "Eliminar",
+                    color = ErrorRed,
+                    fontFamily = Poppins,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(
+                    text = "Cancelar",
+                    color = White,
+                    fontFamily = Poppins,
+                )
+            }
+        },
+        containerColor = Background,
+    )
 }
