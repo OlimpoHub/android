@@ -211,12 +211,11 @@ class SupplyRepositoryImpl
             }
 
         override suspend fun updateSupply(
-            id: String,
+            idSupply: String,
             supply: SupplyAdd,
             image: Uri?
         ): Result<Unit> =
             try {
-                // Lógica de conversión de imagen (idéntica a addSupply)
                 val imagePart =
                     image?.let {
                         val input = context.contentResolver.openInputStream(it)
@@ -225,7 +224,8 @@ class SupplyRepositoryImpl
                         if (bytes != null) {
                             val requestFile =
                                 bytes.toRequestBody(
-                                    context.contentResolver.getType(it)?.toMediaTypeOrNull(),
+                                    context.contentResolver
+                                        .getType(it)?.toMediaTypeOrNull(),
                                 )
                             MultipartBody.Part.createFormData(
                                 "imagenInsumo",
@@ -237,16 +237,14 @@ class SupplyRepositoryImpl
                         }
                     }
 
-                // Lógica de conversión de texto (idéntica a addSupply)
                 val idWorkshop = supply.idWorkshop.toRequestBody("text/plain".toMediaTypeOrNull())
                 val name = supply.name.toRequestBody("text/plain".toMediaTypeOrNull())
                 val measureUnit = supply.measureUnit.toRequestBody("text/plain".toMediaTypeOrNull())
                 val idCategory = supply.idCategory.toRequestBody("text/plain".toMediaTypeOrNull())
                 val status = supply.status.toString().toRequestBody("text/plain".toMediaTypeOrNull())
 
-                // LA ÚNICA DIFERENCIA: Llamamos a 'modifySupply' y pasamos el 'id'
                 api.updateSupply(
-                    idSupply = id,
+                    idSupply = idSupply,
                     idWorkshop = idWorkshop,
                     name = name,
                     measureUnit = measureUnit,
