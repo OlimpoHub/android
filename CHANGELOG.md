@@ -1,9 +1,12 @@
 ## [0.1.0] - 17/11/2025
 
 ### Changed
-
  - UploadImageInput modified to not save persistantly the photo, instead to 
    receive the URI value from the view model  
+   
+### Added
+- Delete supply batch
+- Added filter and order products
 
 ## [0.1.0] - 16/11/2025
 

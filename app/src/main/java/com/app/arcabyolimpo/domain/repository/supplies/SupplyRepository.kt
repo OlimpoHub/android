@@ -34,8 +34,16 @@ interface SupplyRepository {
     suspend fun getFilterData(): FilterData
 
     suspend fun getAcquisitionTypes(): List<Acquisition>
-    
-    suspend fun deleteSupplyBatch(id: String)
+
+    /**
+     * Sends a request to delete a specific supply batch.
+     *
+     * @param idSupply The ID of the supply that owns the batch.
+     * @param expirationDate The expiration date of the batch to delete. This value uniquely identifies the batch.
+     *
+     */
+    suspend fun deleteSupplyBatch(idSupply: String, expirationDate: String)
+
 
     /**
      * Deletes a single supply identified by its [id].

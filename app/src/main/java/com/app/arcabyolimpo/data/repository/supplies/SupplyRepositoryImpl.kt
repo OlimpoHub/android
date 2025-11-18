@@ -7,6 +7,7 @@ import com.app.arcabyolimpo.data.mapper.supplies.toDomain
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteSupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.RegisterSupplyBatchDto
 import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.domain.model.supplies.Acquisition
@@ -21,7 +22,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import retrofit2.http.Multipart
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -48,7 +48,7 @@ class SupplyRepositoryImpl
                 Supply(
                     id = dto.id,
                     name = dto.name,
-                    imageUrl = dto.image,
+                    imageUrl = dto.image ?: "",
                     unitMeasure = "",
                     batch = emptyList(),
                 )
@@ -63,7 +63,7 @@ class SupplyRepositoryImpl
                 Supply(
                     id = dto.id,
                     name = dto.name,
-                    imageUrl = dto.image,
+                    imageUrl = dto.image ?: "",
                     unitMeasure = "",
                     batch = emptyList(),
                 )
@@ -121,13 +121,20 @@ class SupplyRepositoryImpl
         }
 
         /**
-         * Deletes a specific supply batch identified by its [id].
+         * Deletes a specific supply batch identified by its expiration date.
          *
          * This function calls the remote API to perform the deletion operation.
-         * It does not return any data, but will throw an exception if the request fails.
+         *
          */
-        override suspend fun deleteSupplyBatch(id: String) {
-            api.deleteSupplyBatch(id)
+        override suspend fun deleteSupplyBatch(idSupply: String, expirationDate: String) {
+            val formattedDate = if (expirationDate.contains("T")) {
+                expirationDate.substring(0, 10)
+            } else {
+                expirationDate
+            }
+
+            val body = DeleteSupplyBatchDto(idSupply, formattedDate)
+            val result = api.deleteSupplyBatch(body)
         }
 
         /**
