@@ -1,10 +1,10 @@
 package com.app.arcabyolimpo.data.repository.product
 
 import android.content.Context
-import com.app.arcabyolimpo.data.mapper.supplies.toDomain
+import com.app.arcabyolimpo.data.mapper.product.toDomain
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
+import com.app.arcabyolimpo.domain.model.product.Product
 import com.app.arcabyolimpo.domain.model.product.ProductAdd
-import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.domain.repository.product.ProductRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -37,7 +37,7 @@ class ProductRepositoryImpl @Inject constructor(
      * @param product The [ProductAdd] object containing the details of the product to be added.
      * @return A [Result] indicating whether the operation was successful or if an error occurred.
      */
-    override suspend fun addProduct(product: ProductAdd): Result<Unit>{
+    override suspend fun addProduct(product: ProductAdd): Result<Unit> {
         return try {
             val imagePart = product.image.let {
                 val input = context.contentResolver.openInputStream(it)
@@ -53,7 +53,6 @@ class ProductRepositoryImpl @Inject constructor(
                         "image.jpg",
                         requestFile
                     )
-
                 } else null
             }
 
@@ -77,8 +76,8 @@ class ProductRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Result.failure(e)
         }
-
     }
+
     /**
      * deleteProduct.
      * Deletes a product by its id by calling the API.
@@ -91,5 +90,20 @@ class ProductRepositoryImpl @Inject constructor(
         if (!response.isSuccessful) {
             throw HttpException(response)
         }
+    }
+    /**
+     * getProducts.
+     * Fetches the full list of products from the API.
+     */
+    override suspend fun getProducts(): List<Product> {
+        return api.getProducts().map { it.toDomain() }
+    }
+
+    /**
+     * searchProducts.
+     * Searches products in the API using GET /product/search?q=...
+     */
+    override suspend fun searchProducts(query: String): List<Product> {
+        return api.searchProducts(query).map { it.toDomain() }
     }
 }

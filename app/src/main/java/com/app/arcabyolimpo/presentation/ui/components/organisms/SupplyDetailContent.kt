@@ -55,7 +55,7 @@ fun SupplyDetailContent(
     onClickDelete: () -> Unit,
     onClickModify: () -> Unit,
     modifySupplyBatch: (String) -> Unit,
-    deleteSupplyBatch: () -> Unit,
+    deleteSupplyBatch: (String) -> Unit,
 ) {
     val batches = supply.batch
 
@@ -181,16 +181,15 @@ fun SupplyDetailContent(
                     modifier = Modifier.padding(vertical = 8.dp),
                 )
             } else {
-                batches.forEachIndexed { index, batch ->
-                    SupplyBatchRow(
-                        batchId = batch.idBatch,
-                        quantity = batch.quantity,
-                        date = batch.expirationDate,
-                        adquisition = batch.adquisitionType,
-                        onModifyClick = { id -> modifySupplyBatch(id) },
-                        onDeleteClick = deleteSupplyBatch,
-                    )
-                }
+              batches.forEachIndexed { index, batch ->
+                  SupplyBatchRow(
+                      quantity = batch.quantity,
+                      date = batch.expirationDate,
+                      adquisition = batch.adquisitionType,
+                      onModifyClick = modifySupplyBatch,
+                      onDeleteClick = { deleteSupplyBatch(batch.id) },
+                  )
+              }
             }
         }
 

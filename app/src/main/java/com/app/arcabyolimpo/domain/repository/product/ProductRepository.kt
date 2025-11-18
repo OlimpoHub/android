@@ -1,6 +1,7 @@
 package com.app.arcabyolimpo.domain.repository.product
 
 import com.app.arcabyolimpo.domain.model.product.ProductAdd
+import com.app.arcabyolimpo.domain.model.product.Product
 
 /**
  * Interface defining the contract for managing product-related data operations.
@@ -19,6 +20,10 @@ interface ProductRepository {
     ): Result<Unit>
 
     suspend fun deleteProduct(id: String)
+
+    suspend fun getProducts(): List<Product>
+
+    suspend fun searchProducts(query: String): List<Product>
 
 
 }

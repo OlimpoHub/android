@@ -1,8 +1,11 @@
 package com.app.arcabyolimpo.data.repository.workshops
 
+import android.util.Log
 import com.app.arcabyolimpo.data.mapper.supplies.toDomain
 import com.app.arcabyolimpo.data.mapper.workshops.toDomain
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
+import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
+import com.app.arcabyolimpo.data.remote.dto.workshops.DeleteWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.domain.model.workshops.Workshop
 import com.app.arcabyolimpo.domain.repository.workshops.WorkshopRepository
@@ -35,7 +38,6 @@ class WorkshopRepositoryImpl
         return response.map { dto ->
             Workshop(
                 id = dto.id,
-                idTraining = dto.idTraining,
                 idUser = dto.idUser,
                 nameWorkshop = dto.name,
                 url = dto.image.orEmpty(),
@@ -43,7 +45,8 @@ class WorkshopRepositoryImpl
                 description = "",
                 startHour = "",
                 finishHour = "",
-                date = ""
+                date = "",
+                videoTraining = ""
             )
         }
     }
@@ -57,10 +60,11 @@ class WorkshopRepositoryImpl
      * @param id The unique identifier of the workshop to retrieve.
      * @return A [Workshop] object containing detailed workshop information.
      */
-    override suspend fun getWorkshopsById(id: String): Workshop {
+    override suspend fun getWorkshopsById(id: String): Workshop? {
         val response = api.getWorkshop(id)
         println("Workshop crudo desde API: $response")
-        return response.toDomain()
+        val workshopListInside = response.workshopList
+        return workshopListInside.firstOrNull()?.toDomain()
     }
 
     /**
@@ -75,7 +79,6 @@ class WorkshopRepositoryImpl
         val response = api.addWorkshop(newWorkshop)
         return Workshop(
             id = newWorkshop.id,
-            idTraining = newWorkshop.idTraining,
             idUser = newWorkshop.idUser,
             nameWorkshop = newWorkshop.name,
             url = newWorkshop.image,
@@ -83,7 +86,8 @@ class WorkshopRepositoryImpl
             description = newWorkshop.description,
             startHour = newWorkshop.startHour,
             finishHour = newWorkshop.finishHour,
-            date = newWorkshop.date
+            date = newWorkshop.date,
+            videoTraining = newWorkshop.videoTraining
         )
     }
 
@@ -99,6 +103,26 @@ class WorkshopRepositoryImpl
     override suspend fun searchWorkshop(name: String): List<Workshop> {
         val response = api.searchWorkshops(name)
         return response.map { it.toDomain() }
+    }
+
+    /**
+     * Performs a soft delete of a workshop identified by its [id].
+     *
+     * This method builds the [DeleteWorkshopDto] request body and calls the
+     * corresponding API endpoint (`workshop/delete`).
+     *
+     * @param id Unique identifier of the workshop to be soft-deleted.
+     * @throws Exception If the network request fails or the server
+     *         returns an error.
+     */
+    override suspend fun deleteWorkshops(id: String) {
+        // Build the request body with the supply ID expected by the API
+        val body = DeleteWorkshopDto(id)
+        // If you want to check the status of an error
+        // val body = DeleteWorkshopDto("i33")
+        // Call the remote API to perform the soft delete operation
+        val result = api.deleteWorkshops(body)
+        Log.d("Validacion", "Si llego ")
     }
 
 }

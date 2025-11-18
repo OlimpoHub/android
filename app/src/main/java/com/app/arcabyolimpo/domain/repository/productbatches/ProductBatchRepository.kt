@@ -7,8 +7,17 @@ import com.app.arcabyolimpo.domain.model.productbatches.ProductBatch
 interface ProductBatchRepository {
     // GetAll
     suspend fun getProductBatches(): List<ProductBatch>
+
     // GetOne
     suspend fun getProductBatch(id: String): ProductBatch
+
     // Register
-    suspend fun registerProductBatch(batch: ProductBatch): Result<Unit>
+    suspend fun registerProductBatch(batch: ProductBatch)
+
+    suspend fun modifyProductBatch(
+        batch: ProductBatch,
+        id: String,
+    )
+
+    suspend fun deleteProductBatch(id: String)
 }
