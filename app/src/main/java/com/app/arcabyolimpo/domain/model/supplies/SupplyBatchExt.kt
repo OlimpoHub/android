@@ -6,7 +6,7 @@ package com.app.arcabyolimpo.domain.model.supplies
 data class SupplyBatchExt(
     val id: String,
     val name: String,
-    val imageUrl: String,
+    val imageUrl: String?,
     val unitMeasure: String,
     val totalQuantity: Int,
     val workshop: String,

@@ -22,7 +22,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import retrofit2.http.Multipart
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -49,7 +48,7 @@ class SupplyRepositoryImpl
                 Supply(
                     id = dto.id,
                     name = dto.name,
-                    imageUrl = dto.image,
+                    imageUrl = dto.image ?: "",
                     unitMeasure = "",
                     batch = emptyList(),
                 )
@@ -64,7 +63,7 @@ class SupplyRepositoryImpl
                 Supply(
                     id = dto.id,
                     name = dto.name,
-                    imageUrl = dto.image,
+                    imageUrl = dto.image ?: "",
                     unitMeasure = "",
                     batch = emptyList(),
                 )
@@ -128,7 +127,13 @@ class SupplyRepositoryImpl
          *
          */
         override suspend fun deleteSupplyBatch(idSupply: String, expirationDate: String) {
-            val body = DeleteSupplyBatchDto(idSupply, expirationDate)
+            val formattedDate = if (expirationDate.contains("T")) {
+                expirationDate.substring(0, 10)
+            } else {
+                expirationDate
+            }
+
+            val body = DeleteSupplyBatchDto(idSupply, formattedDate)
             val result = api.deleteSupplyBatch(body)
         }
 

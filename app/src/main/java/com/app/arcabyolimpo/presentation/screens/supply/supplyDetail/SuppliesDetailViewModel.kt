@@ -70,6 +70,13 @@ class SuppliesDetailViewModel
             }
         }
 
+        /**
+         * Deletes a supply batch using its expiration date. This function retrieves the current
+         * supply ID from the ViewModel state, triggers the use case, and updates the UI state
+         * based on the result.
+         *
+         * @param expirationDate The expiration date of the batch that should be deleted.
+         */
         fun deleteSupplyBatch(expirationDate: String) {
             viewModelScope.launch {
                 currentSupplyId?.let { supplyId ->
@@ -77,6 +84,7 @@ class SuppliesDetailViewModel
                         _uiState.update { state ->
                             when (result) {
                                 is Result.Loading -> state.copy(isLoading = true)
+
                                 is Result.Success -> {
                                     getSupply(supplyId)
                                     state.copy(
@@ -87,6 +95,7 @@ class SuppliesDetailViewModel
                                         error = null
                                     )
                                 }
+
                                 is Result.Error -> state.copy(
                                     decisionDialogVisible = false,
                                     snackbarVisible = true,
@@ -100,6 +109,7 @@ class SuppliesDetailViewModel
                 }
             }
         }
+
 
         /**
          * Toggles the visibility of the decision dialog used to confirm
