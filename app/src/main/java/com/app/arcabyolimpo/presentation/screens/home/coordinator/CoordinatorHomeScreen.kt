@@ -21,9 +21,7 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun CoordinatorHomeScreen(
-    navController: NavHostController
-) {
+fun CoordinatorHomeScreen(navController: NavHostController) {
     val sessionViewModel: SessionViewModel = hiltViewModel()
 
     Column(
@@ -42,6 +40,9 @@ fun CoordinatorHomeScreen(
         Spacer(modifier = Modifier.height(12.dp))
         Button(onClick = { navController.navigate(Screen.BeneficiaryList.route) }) {
             Text("Beneficiarios")
+        }
+        Button(onClick = { navController.navigate(Screen.QrWorkshopSelection.route) }) {
+            Text("Qr")
         }
         Button(onClick = { sessionViewModel.logout() }) {
             Text("Cerrar sesión")

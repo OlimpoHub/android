@@ -1,4 +1,4 @@
-package com.app.arcabyolimpo.presentation.screens.workshop
+package com.app.arcabyolimpo.presentation.screens.qr.workshopselection
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -6,6 +6,7 @@ import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.model.workshops.Workshop
 import com.app.arcabyolimpo.domain.usecase.workshops.GetWorkshopsListUseCase
 import com.app.arcabyolimpo.domain.usecase.workshops.SearchWorkshopsUseCase
+import com.app.arcabyolimpo.presentation.screens.workshop.WorkshopsListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +24,7 @@ import javax.inject.Inject
  * @property getWorkshopsListUseCase Use case for retrieving the list of workshops.
  */
 @HiltViewModel
-class WorkshopsListViewModel
+class QrWorkshopsListViewModel
     @Inject
     constructor(
         private val getWorkshopsListUseCase: GetWorkshopsListUseCase,

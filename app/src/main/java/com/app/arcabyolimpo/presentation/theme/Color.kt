@@ -1,5 +1,7 @@
 package com.app.arcabyolimpo.ui.theme
 
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 // Base colors
@@ -27,3 +29,10 @@ val PlaceholderGray = Color(0XFF87858B)
 val HeaderBackground = Color(0xCE070A18)
 val HeaderLineBlue = Color(0xFF101432)
 val PopupBackgroundBlue = Color(0xFF1D1F28)
+
+val gradientBrush =
+    Brush.linearGradient(
+        colors = listOf(ButtonBlue, SecondaryBlue),
+        start = Offset(0f, 0f),
+        end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY),
+    )

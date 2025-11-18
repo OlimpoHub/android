@@ -13,6 +13,7 @@ import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchDto
+import com.app.arcabyolimpo.data.remote.dto.qr.CreateQrDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteResponseDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
@@ -26,9 +27,9 @@ import com.app.arcabyolimpo.data.remote.dto.user.registeruser.RegisterUserDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.AddNewWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
-import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -135,7 +136,7 @@ interface ArcaApi {
 
     @GET("workshop/search")
     suspend fun searchWorkshops(
-        @Query("nameWorkshop") name: String
+        @Query("nameWorkshop") name: String,
     ): List<WorkshopDto>
 
     @GET("workshop/{id}")
@@ -173,7 +174,7 @@ interface ArcaApi {
         @Part("unidadMedida") measureUnit: RequestBody,
         @Part("idCategoria") idCategory: RequestBody,
         @Part("status") status: RequestBody,
-        @Part imagenInsumo: MultipartBody.Part?
+        @Part imagenInsumo: MultipartBody.Part?,
     )
 
     @GET("productBatch/")
@@ -188,4 +189,9 @@ interface ArcaApi {
     suspend fun addProductBatch(
         @Body batch: ProductBatchDto,
     )
+
+    @POST("qr/create")
+    suspend fun postCreateQr(
+        @Body request: CreateQrDto,
+    ): ResponseBody
 }

@@ -29,11 +29,11 @@ import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordR
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchDetail.ProductBatchDetailScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchRegister.ProductBatchRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchesList.ProductBatchesListScreen
+import com.app.arcabyolimpo.presentation.screens.qr.qr.QrScreen
+import com.app.arcabyolimpo.presentation.screens.qr.workshopselection.QrWorkshopsListScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
-import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
-import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
-import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
 import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
+import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
@@ -94,7 +94,6 @@ sealed class Screen(
 
     object AddNewWorkshop : Screen("workshop/add")
 
-
     object BeneficiaryList : Screen("beneficiary_list")
 
     object BeneficiaryDetail : Screen("beneficiary_detail/{beneficiaryId}") {
@@ -107,7 +106,7 @@ sealed class Screen(
 
     object SupplyAdd : Screen("supply/add")
 
-    //object UserList : Screen("user")
+    // object UserList : Screen("user")
 
     object ProductBatchesList : Screen("product_batches")
 
@@ -116,6 +115,15 @@ sealed class Screen(
     }
 
     object ProductBatchRegister : Screen("product_batch_register")
+
+    object QrWorkshopSelection : Screen("qr/workshop_selection")
+
+    object CreateQr : Screen("qr/workshop_selection/show_qr/{workshopID}/{workshopName}") {
+        fun createRoute(
+            workshopID: String,
+            workshopName: String,
+        ) = "qr/workshop_selection/show_qr/$workshopID/$workshopName"
+    }
 }
 
 /**
@@ -153,7 +161,7 @@ fun ArcaNavGraph(
     NavHost(
         navController = navController,
         // TODO: Cambiar a Screen.Splash.route cuando acabe
-        startDestination = Screen.Splash.route,
+        startDestination = Screen.Login.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -405,7 +413,7 @@ fun ArcaNavGraph(
                 navController = navController,
                 workshopClick = { id ->
                     navController.navigate(Screen.WorkshopDetail.createRoute(id))
-                }
+                },
             )
         }
 
@@ -422,12 +430,11 @@ fun ArcaNavGraph(
          */
         composable(
             route = Screen.WorkshopDetail.route,
-            arguments = listOf(navArgument("id") { type = NavType.StringType })
+            arguments = listOf(navArgument("id") { type = NavType.StringType }),
         ) { backStackEntry ->
             val workshopId = backStackEntry.arguments?.getString("id") ?: ""
             WorkshopDetailScreen(navController, workshopId)
         }
-
 
         /**
          * Workshops Add Screen.
@@ -450,7 +457,6 @@ fun ArcaNavGraph(
             )
         }
 
-
         /**
          * Supply List Screen.
          *
@@ -469,7 +475,7 @@ fun ArcaNavGraph(
                 },
                 onAddSupplyClick = {
                     navController.navigate(Screen.SupplyAdd.route)
-                }
+                },
             )
         }
 
@@ -541,7 +547,7 @@ fun ArcaNavGraph(
                 },
                 onCancel = {
                     navController.popBackStack()
-                }
+                },
             )
         }
 
@@ -589,6 +595,34 @@ fun ArcaNavGraph(
             ProductBatchRegisterScreen(
                 onCreated = { navController.popBackStack() },
                 onBackClick = { navController.popBackStack() },
+            )
+        }
+
+        composable(Screen.QrWorkshopSelection.route) {
+            QrWorkshopsListScreen(
+                onBackClick = { navController.popBackStack() },
+                workshopClick = { id, name ->
+                    navController.navigate(Screen.CreateQr.createRoute(id, name))
+                },
+            )
+        }
+
+        composable(
+            route = Screen.CreateQr.route,
+            arguments =
+                listOf(
+                    navArgument("workshopID") { type = NavType.StringType },
+                    navArgument("workshopName") { type = NavType.StringType },
+                ),
+        ) { backStackEntry ->
+
+            val id = backStackEntry.arguments?.getString("workshopID") ?: ""
+            val name = backStackEntry.arguments?.getString("workshopName") ?: ""
+
+            QrScreen(
+                onBackClick = { navController.popBackStack() },
+                workshopId = id,
+                workshopName = name,
             )
         }
     }
