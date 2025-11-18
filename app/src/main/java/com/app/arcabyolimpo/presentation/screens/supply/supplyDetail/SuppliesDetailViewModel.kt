@@ -1,5 +1,6 @@
 package com.app.arcabyolimpo.presentation.screens.supply.supplyDetail
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.arcabyolimpo.domain.common.Result
@@ -32,6 +33,10 @@ class SuppliesDetailViewModel
         private val _uiState = MutableStateFlow(SuppliesDetailUiState())
         val uiState: StateFlow<SuppliesDetailUiState> = _uiState.asStateFlow()
 
+        private var currentSupplyId: String? = null
+        var selectedBatchId: String? = null
+        var selectedBatchExpirationDate: String? = null
+
     /** ------------------------------------------------------------------------------------------ *
      * getSupply -> receives the id of a supply then uses the US and updates the status of the views
      * marking it as loading, error or success.
@@ -39,6 +44,7 @@ class SuppliesDetailViewModel
      * @param id: String -> ID of the supply
      * ------------------------------------------------------------------------------------------ */
     fun getSupply(id: String) {
+        currentSupplyId = id
             viewModelScope.launch {
                 getSupplyBatchListUseCase(id).collect { result ->
                     _uiState.update { state ->
@@ -63,41 +69,47 @@ class SuppliesDetailViewModel
                 }
             }
         }
-        /** ------------------------------------------------------------------------------------------ *
-         * deleteSupplyBatch -> Deletes a specific supply batch using its ID. The function updates the
-         * UI state to reflect loading, success, or error states.
-         *
-         * After successful deletion, you can optionally trigger a refresh of the supply list
-         * to reflect the latest state.
-         *
-         * @param id: String -> ID of the supply batch to delete.
-         * ------------------------------------------------------------------------------------------ */
 
-        fun deleteSupplyBatch(id: String) {
+        /**
+         * Deletes a supply batch using its expiration date. This function retrieves the current
+         * supply ID from the ViewModel state, triggers the use case, and updates the UI state
+         * based on the result.
+         *
+         * @param expirationDate The expiration date of the batch that should be deleted.
+         */
+        fun deleteSupplyBatch(expirationDate: String) {
             viewModelScope.launch {
-                deleteSupplyBatchUseCase(id).collect { result ->
-                    _uiState.update { state ->
-                        when (result) {
-                            is Result.Loading ->
-                                state.copy(isLoading = true)
+                currentSupplyId?.let { supplyId ->
+                    deleteSupplyBatchUseCase(supplyId, expirationDate).collect { result ->
+                        _uiState.update { state ->
+                            when (result) {
+                                is Result.Loading -> state.copy(isLoading = true)
 
-                            is Result.Success ->
-                                state.copy(
-                                    isLoading = false,
-                                    error = null,
-                                )
+                                is Result.Success -> {
+                                    getSupply(supplyId)
+                                    state.copy(
+                                        decisionDialogVisible = false,
+                                        snackbarVisible = true,
+                                        snackbarMessage = "Lote eliminado correctamente",
+                                        isLoading = false,
+                                        error = null
+                                    )
+                                }
 
-                            is Result.Error ->
-                                state.copy(
+                                is Result.Error -> state.copy(
+                                    decisionDialogVisible = false,
+                                    snackbarVisible = true,
+                                    snackbarMessage = "Error al eliminar lote",
                                     error = result.exception.message,
-                                    isLoading = false,
+                                    isLoading = false
                                 )
+                            }
                         }
                     }
                 }
             }
-
         }
+
 
         /**
          * Toggles the visibility of the decision dialog used to confirm
@@ -109,12 +121,32 @@ class SuppliesDetailViewModel
          * @param showdecisionDialog `true` to show the dialog,
          *                           `false` to hide it.
          */
-        fun toggledecisionDialog(showdecisionDialog: Boolean) {
+        fun toggledecisionDialog(showdecisionDialog: Boolean, deletionType: DeletionType? = null) {
             viewModelScope.launch {
                 _uiState.update {state ->
                     state.copy(
                         decisionDialogVisible = showdecisionDialog,
+                        deletionType = if (showdecisionDialog) deletionType else null
                     )
+                }
+            }
+        }
+
+        fun confirmDeletion() {
+            viewModelScope.launch {
+                when (_uiState.value.deletionType) {
+                    DeletionType.SUPPLY -> {
+                        currentSupplyId?.let {
+                            deleteOneSupply(it)
+                        }
+                    }
+                    DeletionType.BATCH -> {
+                        selectedBatchExpirationDate?.let { fecha ->
+                            deleteSupplyBatch(fecha)
+                        }
+                    }
+                    null -> {
+                    }
                 }
             }
         }
@@ -131,6 +163,7 @@ class SuppliesDetailViewModel
             _uiState.update { state ->
                 state.copy(
                     snackbarVisible = false,
+                    snackbarMessage = null
                 )
             }
         }
@@ -168,6 +201,7 @@ class SuppliesDetailViewModel
                                 state.copy(
                                     decisionDialogVisible = false,
                                     snackbarVisible = true,
+                                    snackbarMessage = "Insumo eliminado correctamente",
                                     isLoading = false,
                                     error = null,
                                 )
@@ -176,6 +210,7 @@ class SuppliesDetailViewModel
                                 state.copy(
                                     decisionDialogVisible = false,
                                     snackbarVisible = true,
+                                    snackbarMessage = "Error al eliminar insumo",
                                     error = result.exception.message,
                                     isLoading = false,
                                 )
@@ -184,4 +219,5 @@ class SuppliesDetailViewModel
                 }
             }
         }
+
     }

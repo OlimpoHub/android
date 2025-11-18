@@ -20,6 +20,7 @@ import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchRegisterD
 import com.app.arcabyolimpo.data.remote.dto.supplies.AcquisitionDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteResponseDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteSupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.RegisterSupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuccessMessageDto
@@ -65,6 +66,10 @@ interface ArcaApi {
     suspend fun refresh(
         @Body request: RefreshRequestDto,
     ): RefreshResponseDto
+
+    // External Collabs ----------------
+    //@GET("externalCollabs/")
+    //suspend fun getAllCollabs(): List<ExternalCollabDto>
 
     @GET("user/{id}")
     suspend fun getUserById(
@@ -134,10 +139,10 @@ interface ArcaApi {
     @GET("supplyBatch/acquisition/types")
     suspend fun getAcquisitionTypes(): List<AcquisitionDto>
 
-    @DELETE("supplyBatch/{id}")
+    @POST("supplyBatch/delete")
     suspend fun deleteSupplyBatch(
-        @Path("id") id: String,
-    )
+        @Body request: DeleteSupplyBatchDto,
+    ): DeleteResponseDto
 
     /**
      * Deletes a single supply from the backend.
