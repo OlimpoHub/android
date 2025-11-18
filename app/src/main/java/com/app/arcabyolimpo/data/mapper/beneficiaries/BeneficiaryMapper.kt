@@ -5,8 +5,6 @@ import com.app.arcabyolimpo.data.remote.dto.beneficiaries.GetBeneficiariesDisabi
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
 import com.app.arcabyolimpo.data.remote.dto.beneficiaries.BeneficiaryFormData
-import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
-import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopFormData
 import com.app.arcabyolimpo.domain.model.beneficiaries.Beneficiary
 import com.app.arcabyolimpo.domain.model.filter.FilterData
 import java.time.LocalDate

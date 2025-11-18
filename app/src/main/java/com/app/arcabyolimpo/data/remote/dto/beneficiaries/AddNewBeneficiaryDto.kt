@@ -1,7 +1,5 @@
 package com.app.arcabyolimpo.data.remote.dto.beneficiaries
 
-import com.google.gson.annotations.SerializedName
-
 /**
  * DTO representing detailed information of the information when the workshop is added.
  *

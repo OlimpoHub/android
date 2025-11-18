@@ -4,7 +4,6 @@ import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.data.remote.dto.beneficiaries.BeneficiaryDto
 import com.app.arcabyolimpo.domain.model.beneficiaries.Beneficiary
 import com.app.arcabyolimpo.domain.model.filter.FilterData
-import com.app.arcabyolimpo.domain.model.supplies.Supply
 
 interface BeneficiaryRepository {
     suspend fun getBeneficiariesList(): List<Beneficiary>
