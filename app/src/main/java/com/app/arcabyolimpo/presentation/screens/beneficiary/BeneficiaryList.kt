@@ -1,5 +1,6 @@
 package com.app.arcabyolimpo.presentation.screens.beneficiary
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,25 +26,30 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.app.arcabyolimpo.presentation.ui.components.molecules.BeneficiaryCard
-import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.domain.model.beneficiaries.Beneficiary
-import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
-import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
-import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.presentation.navigation.Screen
+import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.FilterIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SearchInput
+import com.app.arcabyolimpo.presentation.ui.components.molecules.BeneficiaryCard
+import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
+import com.app.arcabyolimpo.presentation.ui.components.organisms.Filter
+import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
+import com.app.arcabyolimpo.ui.theme.Background
 
 /**
  * This composable acts as the main screen, inecting the ViewModel
@@ -51,19 +57,28 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SearchInput
  */
 @Composable
 fun BeneficiaryListScreen(
+    navController: NavHostController,
     onBeneficiaryClick: (String) -> Unit,
     onFilterClick: () -> Unit,
     onNotificationClick: () -> Unit,
-    viewModel: BeneficiaryListViewModel = hiltViewModel()
+    viewModel: BeneficiaryListViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
+    val filterState by viewModel.uiFiltersState.collectAsState()
 
     BeneficiaryList(
+        navController = navController,
         state = state,
+        filterState = filterState,
         onSearchTextChange = viewModel::onSearchTextChange,
         onBeneficiaryClick = onBeneficiaryClick,
         onFilterClick = onFilterClick,
-        onNotificationClick = onNotificationClick
+        onNotificationClick = onNotificationClick,
+        onApplyFilters = viewModel::filterBeneficiary,
+        onClearFilters = {
+            viewModel.clearFilters()
+            viewModel.getBeneficiaries()
+        },
     )
 }
 
@@ -74,12 +89,18 @@ fun BeneficiaryListScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BeneficiaryList(
+    navController: NavHostController,
     state: BeneficiaryListUiState,
+    filterState: BeneficiaryFilterUiState,
     onSearchTextChange: (String) -> Unit,
     onBeneficiaryClick: (String) -> Unit,
     onFilterClick: () -> Unit,
-    onNotificationClick: () -> Unit
+    onNotificationClick: () -> Unit,
+    onApplyFilters: (FilterDto) -> Unit,
+    onClearFilters: () -> Unit,
 ) {
+    var showFilter by remember { mutableStateOf(false) }
+
     ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false) {
         Box(modifier = Modifier.fillMaxSize()) {
             Scaffold(
@@ -91,15 +112,15 @@ fun BeneficiaryList(
                                 text = "Beneficiarios",
                                 style = MaterialTheme.typography.headlineLarge,
                                 color = Color.White,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
                             )
                         },
                         navigationIcon = {
-                            IconButton(onClick = { /* TODO: agregar ruta*/}) {
+                            IconButton(onClick = { navController.navigate(Screen.CoordinatorHome.route) }) {
                                 Icon(
                                     imageVector = Icons.Default.ArrowBack,
                                     contentDescription = "Regresar",
-                                    tint = Color.White
+                                    tint = Color.White,
                                 )
                             }
                         },
@@ -107,133 +128,220 @@ fun BeneficiaryList(
                             Box(modifier = Modifier.padding(end = 28.dp)) {
                                 NotificationIcon()
                             }
-                        }
+                        },
                     )
                 },
                 floatingActionButton = {
-                    AddButton(
-                        onClick = { /* TODO: agregar beneficiario */ }
-                    )
+                    AddButton(onClick = {})
                 },
                 bottomBar = {
                     Box(modifier = Modifier.padding(bottom = 8.dp)) {
                         NavBar()
                     }
-                }
+                },
             ) { padding ->
                 Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(
-                            top = padding.calculateTopPadding(),
-                            bottom = padding.calculateBottomPadding()
-                        )
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(
+                                top = padding.calculateTopPadding(),
+                                bottom = padding.calculateBottomPadding(),
+                            ),
                 ) {
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                start = 30.dp,
-                                end = 30.dp,
-                                bottom = 12.dp
-                            ),
-                        verticalAlignment = Alignment.CenterVertically
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    start = 30.dp,
+                                    end = 30.dp,
+                                    bottom = 12.dp,
+                                ),
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         SearchInput(
-                            value = "",
-                            onValueChange = {},
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(end = 20.dp)
+                            value = state.searchText,
+                            onValueChange = onSearchTextChange,
+                            modifier =
+                                Modifier
+                                    .weight(1f)
+                                    .padding(end = 20.dp),
                         )
 
                         FilterIcon(
-                            modifier = Modifier
-                                .padding(start = 16.dp)
+                            modifier =
+                                Modifier
+                                    .padding(start = 16.dp)
+                                    .clickable { showFilter = true },
                         )
                     }
 
-                    when {
-                        state.isLoading -> {
-                            CircularProgressIndicator(
-                                modifier = Modifier
+                    val hasActiveFilters = filterState.selectedFilters.filters.any { it.value.isNotEmpty() }
+
+                    val isDefaultOrder =
+                        filterState.selectedFilters.order.isNullOrBlank() ||
+                            filterState.selectedFilters.order == "ASC"
+
+                    val hasOrderOnly = !hasActiveFilters && !isDefaultOrder
+
+                    val listToShow =
+                        when {
+                            hasActiveFilters -> filterState.result ?: emptyList()
+                            hasOrderOnly -> filterState.result ?: state.beneficiaries
+                            else -> state.beneficiaries
+                        }
+
+                    // println("ACTIVE FILTERS: " + hasActiveFilters)
+
+                    if (state.isLoading || state.error != null) {
+                        // Loading o error
+                        CircularProgressIndicator(
+                            modifier =
+                                Modifier
                                     .fillMaxWidth()
                                     .padding(top = 20.dp)
-                                    .wrapContentWidth(Alignment.CenterHorizontally)
-                            )
-
-                        }
-
-                        state.error != null -> {
-                            Text(
-                                text = state.error,
-                                color = Color.Red,
-                                modifier = Modifier
+                                    .wrapContentWidth(Alignment.CenterHorizontally),
+                        )
+                    } else if (listToShow.isEmpty()) {
+                        // Lista vacía
+                        Text(
+                            text = "No se encontraron beneficiarios",
+                            color = Color.Red,
+                            modifier =
+                                Modifier
                                     .fillMaxWidth()
-                                    .wrapContentWidth(Alignment.CenterHorizontally)
-                            )
-
-                        }
-
-                        else -> {
-                            LazyVerticalGrid(
-                                columns = GridCells.Fixed(2),
-                                contentPadding = PaddingValues(vertical = 16.dp),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp),
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .weight(1f)
-                            ) {
-                                items(
-                                    items = state.beneficiaries,
-                                    key = { beneficiary -> beneficiary.id }
-                                ) { beneficiary ->
-                                    BeneficiaryCard(
-                                        name = beneficiary.name,
-                                        onClick = { onBeneficiaryClick(beneficiary.id) },
-                                        cardModifier = Modifier
+                                    .wrapContentWidth(Alignment.CenterHorizontally),
+                        )
+                    } else {
+                        // Lista de tarjetas
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(2),
+                            contentPadding = PaddingValues(vertical = 16.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.fillMaxSize().weight(1f),
+                        ) {
+                            items(listToShow, key = { it.id }) { beneficiary ->
+                                BeneficiaryCard(
+                                    name = beneficiary.name,
+                                    onClick = { onBeneficiaryClick(beneficiary.id) },
+                                    cardModifier =
+                                        Modifier
                                             .fillMaxWidth()
                                             .padding(horizontal = 8.dp)
                                             .height(160.dp),
-                                        contentPadding = PaddingValues(
+                                    contentPadding =
+                                        PaddingValues(
                                             vertical = 20.dp,
-                                            horizontal = 40.dp
-                                        )
-                                    )
-                                }
-
+                                            horizontal = 40.dp,
+                                        ),
+                                )
                             }
                         }
                     }
+
+                    /** when {
+                     state.isLoading || state.isLoading -> {
+                     CircularProgressIndicator(
+                     modifier =
+                     Modifier
+                     .fillMaxWidth()
+                     .padding(top = 20.dp)
+                     .wrapContentWidth(Alignment.CenterHorizontally),
+                     )
+                     }
+                     state.error != null -> {
+                     Text(
+                     text = state.error ?: "Error",
+                     color = Color.Red,
+                     modifier =
+                     Modifier
+                     .fillMaxWidth()
+                     .wrapContentWidth(Alignment.CenterHorizontally),
+                     )
+                     }
+                     else -> {
+                     LazyVerticalGrid(
+                     columns = GridCells.Fixed(2),
+                     contentPadding = PaddingValues(vertical = 16.dp),
+                     horizontalArrangement = Arrangement.spacedBy(8.dp),
+                     verticalArrangement = Arrangement.spacedBy(8.dp),
+                     modifier =
+                     Modifier
+                     .fillMaxSize()
+                     .weight(1f),
+                     ) {
+                     items(
+                     items = filteredList,
+                     key = { it.id },
+                     ) { beneficiary ->
+                     BeneficiaryCard(
+                     name = beneficiary.name,
+                     onClick = { onBeneficiaryClick(beneficiary.id) },
+                     cardModifier =
+                     Modifier
+                     .fillMaxWidth()
+                     .padding(horizontal = 8.dp)
+                     .height(160.dp),
+                     contentPadding =
+                     PaddingValues(
+                     vertical = 20.dp,
+                     horizontal = 40.dp,
+                     ),
+                     )
+                     }
+                     }
+                     }
+                     }*/
                 }
+            }
+
+            if (showFilter && filterState.filterData != null) {
+                println("ENtro al filter despues" + filterState.filterData)
+                Filter(
+                    data = filterState.filterData!!,
+                    initialSelected = filterState.selectedFilters,
+                    onApply = { dto ->
+                        onApplyFilters(dto)
+                        showFilter = false
+                    },
+                    onDismiss = { showFilter = false },
+                    onClearFilters = {
+                        onClearFilters()
+                        showFilter = false
+                    },
+                )
             }
         }
     }
 }
 
+/*
 @Preview(showBackground = true, backgroundColor = 0xFF1C1B1F)
 @Composable
 fun BeneficiaryListPreview() {
     val navController = androidx.navigation.compose.rememberNavController()
 
     // Mock state
-    val previewState = BeneficiaryListUiState(
-        beneficiaries = listOf(
-            Beneficiary("1", "John Smith 1", "", "", "", "", "", "", "", "", 1),
-            Beneficiary("2", "John Smith 2", "", "", "", "", "", "", "", "", 1),
-            Beneficiary("3", "John Smith 3", "", "", "", "", "", "", "", "", 1),
-            Beneficiary("4", "John Smith 4", "", "", "", "", "", "", "", "", 1)
+    val previewState =
+        BeneficiaryListUiState(
+            beneficiaries =
+                listOf(
+                    Beneficiary("1", "John Smith 1", "", "", "", "", "", "", "", "", 1),
+                    Beneficiary("2", "John Smith 2", "", "", "", "", "", "", "", "", 1),
+                    Beneficiary("3", "John Smith 3", "", "", "", "", "", "", "", "", 1),
+                    Beneficiary("4", "John Smith 4", "", "", "", "", "", "", "", "", 1),
+                ),
         )
-    )
 
     ArcaByOlimpoTheme {
         BeneficiaryList(
+            navController = navController,
             state = previewState,
             onSearchTextChange = {},
             onBeneficiaryClick = {},
             onFilterClick = {},
-            onNotificationClick = {}
-        )
+        ),
     }
-}
+}*/

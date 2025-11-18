@@ -10,7 +10,6 @@ import com.app.arcabyolimpo.domain.model.workshops.Workshop
 fun WorkshopDto.toDomain(): Workshop {
     return Workshop(
         id = id ?: "",
-        idTraining = idTraining ?: "",
         idUser = idUser ?: "",
         nameWorkshop = (name ?: "").replaceFirstChar { it.uppercase() },
         url = image ?: "",
@@ -18,7 +17,8 @@ fun WorkshopDto.toDomain(): Workshop {
         finishHour = finishHour ?: "",
         status = status,
         description = description ?: "",
-        date = date ?: ""
+        date = date ?: "",
+        videoTraining = videoTraining ?: ""
     )
 }
 
@@ -27,7 +27,6 @@ fun WorkshopDto.toDomain(): Workshop {
  */
 fun WorkshopFormData.toWorkshopDto() = WorkshopDto(
     id = id ?: "",
-    idTraining = idTraining ?: "",
     idUser = idUser ?: "",
     name = name ?: "",
     startHour = startHour ?: "",
@@ -35,6 +34,7 @@ fun WorkshopFormData.toWorkshopDto() = WorkshopDto(
     description = description ?: "",
     date = date ?: "",
     image = image ?: "",
+    videoTraining = videoTraining ?: "",
     status = 1
 )
 
@@ -46,7 +46,6 @@ fun WorkshopFormData.toWorkshopDto() = WorkshopDto(
 fun WorkshopFormData.toDomain(): Workshop {
     return Workshop(
         id = id,
-        idTraining = idTraining,
         idUser = idUser,
         nameWorkshop = name.replaceFirstChar { it.uppercase() },
         url = image,
@@ -54,6 +53,7 @@ fun WorkshopFormData.toDomain(): Workshop {
         finishHour = finishHour,
         status = status,
         description = description,
-        date = date
+        date = date,
+        videoTraining = videoTraining
     )
 }
