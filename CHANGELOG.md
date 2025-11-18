@@ -1,10 +1,10 @@
 ## [0.1.0] - 17/11/2025
-- Added register Beneficiary View
-- Added Consult Disabilities List
 
 ### Added
 - Delete supply batch
 - Added filter and order products
+- Added register Beneficiary View
+- Added Consult Disabilities List
 
 ## [0.1.0] - 16/11/2025
 
