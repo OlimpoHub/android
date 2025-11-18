@@ -22,6 +22,10 @@ class UserRegisterViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(UserRegisterUiState())
     val uiState: StateFlow<UserRegisterUiState> = _uiState.asStateFlow()
 
+    fun updateRoleId(value: String) {
+        _uiState.value = _uiState.value.copy(roleId = value)
+    }
+
     fun updateIsActive(value: Boolean) {
         _uiState.value = _uiState.value.copy(isActive = if (value) 1 else 0)
     }
@@ -102,7 +106,7 @@ class UserRegisterViewModel @Inject constructor(
                         if (duplicate != null) {
                             _uiState.value = _uiState.value.copy(
                                 isLoading = false,
-                                error = "Este colaborador externo ya está registrado"
+                                error = "Este usuario ya está registrado"
                             )
                         } else {
                             // If no duplicate, proceed with registration
@@ -136,7 +140,7 @@ class UserRegisterViewModel @Inject constructor(
             foto = _uiState.value.photoUrl
         )
 
-        android.util.Log.d("RegisterCollab", "Starting registration...")
+        android.util.Log.d("RegisterCollab", "Starting registration with roleId: ${_uiState.value.roleId}")
 
         registerUserUseCase(user).collect { result ->
             when (result) {
@@ -145,10 +149,11 @@ class UserRegisterViewModel @Inject constructor(
                 }
                 is Result.Success -> {
                     android.util.Log.d("RegisterCollab", "SUCCESS!")
+                    val userType = if (_uiState.value.roleId == "2") "asistente" else "voluntario"
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         success = true,
-                        successMessage = "Colaborador externo registrado exitosamente",
+                        successMessage = "Usuario registrado exitosamente como $userType",
                         error = null
                     )
                 }
