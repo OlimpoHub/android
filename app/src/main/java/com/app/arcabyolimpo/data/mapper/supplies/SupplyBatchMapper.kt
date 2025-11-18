@@ -22,6 +22,7 @@ fun SupplyBatchDto.toDomain(): SupplyBatchExt =
         status = status,
         batch = supplyBatches?.map {
             Batch(
+                id = it.expirationDate ?: "",
                 quantity = it.quantity ?: 0,
                 expirationDate = it.expirationDate ?: "",
                 adquisitionType = it.adquisitionType ?: "",
