@@ -2,6 +2,7 @@
 
 ### Fixed
 - Fixed error in register workshop
+- Fixed error in view Workshops after a delete
 
 ## [0.1.0] - 17/11/2025
 
