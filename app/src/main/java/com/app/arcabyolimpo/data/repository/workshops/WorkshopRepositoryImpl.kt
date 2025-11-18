@@ -38,7 +38,7 @@ class WorkshopRepositoryImpl
                 idTraining = dto.idTraining,
                 idUser = dto.idUser,
                 nameWorkshop = dto.name,
-                url = dto.image,
+                url = dto.image.orEmpty(),
                 status = 0,
                 description = "",
                 startHour = "",

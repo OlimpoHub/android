@@ -54,7 +54,7 @@ fun SupplyDetailContent(
     onClickAddSupplyBatch: () -> Unit,
     onClickDelete: () -> Unit,
     onClickModify: () -> Unit,
-    modifySupplyBatch: () -> Unit,
+    modifySupplyBatch: (String) -> Unit,
     deleteSupplyBatch: () -> Unit,
 ) {
     val batches = supply.batch
@@ -109,7 +109,7 @@ fun SupplyDetailContent(
                         fontWeight = FontWeight.Bold,
                         fontSize = 15.sp,
                     )
-                    if (supply.status == 1){
+                    if (supply.status == 1) {
                         ActiveStatus()
                     } else {
                         InactiveStatus()
@@ -172,24 +172,25 @@ fun SupplyDetailContent(
             verticalArrangement =
                 Arrangement.spacedBy(0.dp),
         ) {
-            if(batches[0].expirationDate == "") {
+            if (batches[0].expirationDate == "") {
                 Text(
                     text = "No hay lotes del insumo",
                     color = White,
                     fontFamily = Poppins,
                     fontSize = 18.sp,
-                    modifier = Modifier.padding(vertical = 8.dp)
+                    modifier = Modifier.padding(vertical = 8.dp),
                 )
             } else {
-              batches.forEachIndexed { index, batch ->
-                  SupplyBatchRow(
-                      quantity = batch.quantity,
-                      date = batch.expirationDate,
-                      adquisition = batch.adquisitionType,
-                      onModifyClick = modifySupplyBatch,
-                      onDeleteClick = deleteSupplyBatch,
-                  )
-              }
+                batches.forEachIndexed { index, batch ->
+                    SupplyBatchRow(
+                        batchId = batch.idBatch,
+                        quantity = batch.quantity,
+                        date = batch.expirationDate,
+                        adquisition = batch.adquisitionType,
+                        onModifyClick = { id -> modifySupplyBatch(id) },
+                        onDeleteClick = deleteSupplyBatch,
+                    )
+                }
             }
         }
 

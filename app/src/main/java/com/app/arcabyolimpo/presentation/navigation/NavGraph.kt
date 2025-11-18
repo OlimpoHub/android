@@ -19,7 +19,6 @@ import com.app.arcabyolimpo.domain.model.auth.UserRole
 import com.app.arcabyolimpo.presentation.common.components.LoadingShimmer
 import com.app.arcabyolimpo.presentation.screens.accountactivation.AccountActivationScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
-import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
 import com.app.arcabyolimpo.presentation.screens.home.assistant.CollaboratorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.home.coordinator.CoordinatorHomeScreen
@@ -128,7 +127,7 @@ sealed class Screen(
     object ProductDeleteTest : Screen("test_delete_product")
 
     object SupplyBatchModify : Screen("supply_batch_modify/{id}") {
-        fun createRoute(id: String) = "supply_batch_modify/$id"
+        fun createRoute(batchId: String) = "supply_batch_modify/$batchId"
     }
 }
 
@@ -517,10 +516,11 @@ fun ArcaNavGraph(
         composable(
             Screen.SupplyBatchModify.route,
             arguments = listOf(navArgument("id") { type = NavType.StringType }),
-        ) {
+        ) { backStackEntry ->
+            val batchId = backStackEntry.arguments?.getString("id") ?: ""
             SupplyBatchModifyScreen(
-                supplyBatchId = id,
-                onUpdateClick = {
+                supplyBatchId = batchId,
+                onRegisterClick = {
                     navController.popBackStack()
                 },
                 onBackClick = {
@@ -546,8 +546,18 @@ fun ArcaNavGraph(
                 onClickModify = {
                     // TODO: Add when delete a supply is ready
                 },
-                modifySupplyBatch = {
-                    // TODO: Add when delete a supply is ready
+                modifySupplyBatch = { batchId ->
+                    try {
+                        if (batchId.isNotBlank()) {
+                            navController.navigate(
+                                Screen.SupplyBatchModify.createRoute(batchId),
+                            )
+                        } else {
+                            android.util.Log.w("NavGraph", "modifySupplyBatch called with blank batchId, skipping navigation")
+                        }
+                    } catch (e: Exception) {
+                        android.util.Log.e("NavGraph", "Failed to navigate to SupplyBatchModify", e)
+                    }
                 },
                 deleteSupplyBatch = {
                     // TODO: Add when delete a supply is ready

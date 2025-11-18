@@ -48,7 +48,7 @@ class SupplyRepositoryImpl
                 Supply(
                     id = dto.id,
                     name = dto.name,
-                    imageUrl = dto.image,
+                    imageUrl = dto.image ?: "",
                     unitMeasure = "",
                     batch = emptyList(),
                 )
@@ -63,7 +63,7 @@ class SupplyRepositoryImpl
                 Supply(
                     id = dto.id,
                     name = dto.name,
-                    imageUrl = dto.image,
+                    imageUrl = dto.image ?: "",
                     unitMeasure = "",
                     batch = emptyList(),
                 )

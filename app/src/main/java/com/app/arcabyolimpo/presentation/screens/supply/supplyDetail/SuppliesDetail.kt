@@ -35,11 +35,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.app.arcabyolimpo.presentation.common.components.ErrorView
 import com.app.arcabyolimpo.presentation.common.components.LoadingShimmer
-import com.app.arcabyolimpo.presentation.ui.components.organisms.SupplyDetailContent
 import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.SnackbarVisualsWithError
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
+import com.app.arcabyolimpo.presentation.ui.components.organisms.SupplyDetailContent
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
 import kotlinx.coroutines.launch
@@ -66,46 +66,45 @@ fun SuppliesDetailScreen(
     onClickAddSupplyBatch: () -> Unit,
     onClickDelete: () -> Unit,
     onClickModify: () -> Unit,
-    modifySupplyBatch: () -> Unit,
+    modifySupplyBatch: (String) -> Unit,
     deleteSupplyBatch: () -> Unit,
     viewModel: SuppliesDetailViewModel = hiltViewModel(),
 ) {
-    //val navController = rememberNavController()
+    // val navController = rememberNavController()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val haserror = if (uiState.error == null){
-        true
-    }else {
-        false
-    }
+    val haserror =
+        if (uiState.error == null) {
+            true
+        } else {
+            false
+        }
 
     LaunchedEffect(idInsumo) {
         viewModel.getSupply(idInsumo)
     }
 
     LaunchedEffect(uiState.snackbarVisible) {
-
-        if (uiState.snackbarVisible == true){
+        if (uiState.snackbarVisible == true) {
             // show snackbar as a suspend function
             scope.launch {
-
                 val result =
-                snackbarHostState.showSnackbar(
-                    SnackbarVisualsWithError(
-                        "Insumo Borrado Correctamente",
-                        isError = true,
-                    ),
-                )
-                when (result){
+                    snackbarHostState.showSnackbar(
+                        SnackbarVisualsWithError(
+                            "Insumo Borrado Correctamente",
+                            isError = true,
+                        ),
+                    )
+                when (result) {
                     SnackbarResult.Dismissed -> {
-                        //Tell the VM that the visible snackbar is finished
+                        // Tell the VM that the visible snackbar is finished
                         viewModel.onSnackbarShown()
 
-                        //Navigate back as soon as the snack bar is empty
+                        // Navigate back as soon as the snack bar is empty
                         onBackClick()
-                        //navController.popBackStack()
+                        // navController.popBackStack()
                     }
                     SnackbarResult.ActionPerformed -> {}
                 }
@@ -113,7 +112,7 @@ fun SuppliesDetailScreen(
         }
     }
 
-    if (uiState.decisionDialogVisible == true){
+    if (uiState.decisionDialogVisible == true) {
         DecisionDialog(
             onDismissRequest = {
                 viewModel.toggledecisionDialog(showdecisionDialog = false)
@@ -125,11 +124,10 @@ fun SuppliesDetailScreen(
             dialogText = "Esta accion no podra revertirce",
             confirmText = "Confirmar",
             dismissText = "Cancelar",
-            )
+        )
     }
 
     Scaffold(
-
         snackbarHost = {
             SnackbarHost(snackbarHostState) { data ->
                 // Every time a snackbar is displayed, our custom component is called
@@ -142,7 +140,6 @@ fun SuppliesDetailScreen(
                 )
             }
         },
-
         containerColor = Background,
         topBar = {
             TopAppBar(

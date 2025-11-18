@@ -40,7 +40,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.text.font.FontWeight
-import com.app.arcabyolimpo.presentation.screens.supply.supplybatchregister.SupplyBatchRegisterUiState
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.SnackbarVisualsWithError
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
 import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
@@ -64,11 +63,11 @@ fun SupplyBatchModifyScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(supplyBatchId) {
-        if (supplyBatchId.isNotEmpty()) {
-            viewModel.onSelectSupply(supplyBatchId)
-        }
-    }
+//    LaunchedEffect(supplyBatchId) {
+//        if (supplyBatchId.isNotEmpty()) {
+//            viewModel.onSelectSupply(supplyBatchId)
+//        }
+//    }
     LaunchedEffect(state.registerSuccess) {
         if (state.registerSuccess) {
             scope.launch {

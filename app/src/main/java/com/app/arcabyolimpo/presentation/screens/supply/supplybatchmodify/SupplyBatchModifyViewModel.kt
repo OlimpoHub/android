@@ -29,7 +29,7 @@ class SupplyBatchModifyViewModel
         private val TAG = "SupplyBatchModifyVM"
 
         private val _uiState = MutableStateFlow(SupplyBatchModifyUiState())
-        val uiState: StateFlow<SupplyBatchRegisterUiState> = _uiState.asStateFlow()
+        val uiState: StateFlow<SupplyBatchModifyUiState> = _uiState.asStateFlow()
 
         init {
             // Log when ViewModel is created (helps confirm DI/Hilt and screen wiring)

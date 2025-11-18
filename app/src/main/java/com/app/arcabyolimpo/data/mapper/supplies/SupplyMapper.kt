@@ -27,7 +27,7 @@ import kotlin.collections.List
 fun SupplyDto.toDomain(): Supply =
     Supply(
         id = id,
-        imageUrl = image,
+        imageUrl = image ?: "",
         name = name.replaceFirstChar { it.uppercase() },
         unitMeasure = unitMeasure,
         batch = batch.flatMap { supplyBatchDto ->

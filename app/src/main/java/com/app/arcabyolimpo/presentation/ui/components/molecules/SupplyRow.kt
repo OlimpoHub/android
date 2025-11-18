@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import android.util.Log
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -36,16 +37,19 @@ import com.app.arcabyolimpo.ui.theme.White
  * ---------------------------------------------------------------------------------------------- */
 @Composable
 fun SupplyBatchRow(
+    batchId: String,
     quantity: Int,
     date: String,
     adquisition: String,
-    onModifyClick: () -> Unit,
+    onModifyClick: (String) -> Unit,
     onDeleteClick: () -> Unit,
 ) {
+    val TAG = "SupplyBatchRow"
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 6.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 6.dp),
     ) {
         Row(
             modifier =
@@ -55,23 +59,22 @@ fun SupplyBatchRow(
         ) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(2.dp),
-                modifier = Modifier.weight(1f)
-            ){
+                modifier = Modifier.weight(1f),
+            ) {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(32.dp)
-                )
-                {
+                    horizontalArrangement = Arrangement.spacedBy(32.dp),
+                ) {
                     Text(
                         text = "$quantity",
                         color = White,
                         fontFamily = Poppins,
-                        fontSize = 16.sp
+                        fontSize = 16.sp,
                     )
                     Text(
                         text = date,
                         color = White,
                         fontFamily = Poppins,
-                        fontSize = 16.sp
+                        fontSize = 16.sp,
                     )
                 }
 
@@ -81,19 +84,22 @@ fun SupplyBatchRow(
                     text = "Adquisición: $adquisition",
                     color = White,
                     fontSize = 16.sp,
-                    fontFamily = Poppins
+                    fontFamily = Poppins,
                 )
             }
 
             Column(
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Row {
                     IconButton(
-                        onClick = onModifyClick,
-                        modifier = Modifier.padding(end = 2.dp)
-                    ) {
+                            onClick = {
+                                Log.d(TAG, "Modify clicked for batchId=$batchId")
+                                onModifyClick(batchId)
+                            },
+                            modifier = Modifier.padding(end = 2.dp),
+                        ) {
                         Icon(
                             imageVector = Icons.Filled.Create,
                             contentDescription = "modify",
@@ -118,8 +124,9 @@ fun SupplyBatchRow(
         Divider(
             color = DangerGray.copy(alpha = 0.3f),
             thickness = 0.7.dp,
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier =
+                Modifier
+                    .fillMaxWidth(),
         )
     }
 }
