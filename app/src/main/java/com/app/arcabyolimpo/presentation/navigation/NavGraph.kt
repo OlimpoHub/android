@@ -18,6 +18,7 @@ import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
 import com.app.arcabyolimpo.domain.model.auth.UserRole
 import com.app.arcabyolimpo.presentation.common.components.LoadingShimmer
 import com.app.arcabyolimpo.presentation.screens.accountactivation.AccountActivationScreen
+import com.app.arcabyolimpo.presentation.screens.beneficiary.AddNewBeneficiaryScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
 import com.app.arcabyolimpo.presentation.screens.home.assistant.CollaboratorHomeScreen
@@ -39,6 +40,7 @@ import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDet
 import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDeleteTestScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
+import com.app.arcabyolimpo.presentation.screens.supply.supplyUpdate.SupplyUpdateScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplybatchregister.SupplyBatchRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
@@ -109,6 +111,8 @@ sealed class Screen(
         fun createRoute(beneficiaryId: String) = "beneficiary_detail/$beneficiaryId"
     }
 
+    object AddNewBeneficiary : Screen("beneficiary/create")
+
     object SupplyDetail : Screen("supply/{idSupply}") {
         fun createRoute(idSupply: String) = "supply/$idSupply"
     }
@@ -132,6 +136,10 @@ sealed class Screen(
     object ProductAdd : Screen("product/add")
 
     object ProductDeleteTest : Screen("test_delete_product")
+
+    object SupplyUpdate : Screen("supply/update/{idSupply}") {
+        fun createRoute(idSupply: String) = "supply/update/$idSupply"
+    }
 
     object ProductUpdate : Screen("product/update/{productId}") {
         fun createRoute(productId: String) = "product/update/$productId"
@@ -402,17 +410,6 @@ fun ArcaNavGraph(
             )
         }
 
-        composable(Screen.UserList.route) {
-            UserListScreen(
-                onCollabClick = { id ->
-                    navController.navigate(Screen.UserDetail.createRoute(id))
-                },
-                onAddClick = {
-                    navController.navigate(Screen.UserRegister.route)
-                },
-            )
-        }
-
         /**
          * Workshops List Screen.
          *
@@ -526,7 +523,9 @@ fun ArcaNavGraph(
                     // TODO: Add when delete a supply is ready
                 },
                 onClickModify = {
-                    // TODO: Add when delete a supply is ready
+                    if (idSupply != null) {
+                        navController.navigate(Screen.SupplyUpdate.createRoute(idSupply))
+                    }
                 },
                 modifySupplyBatch = {
                     // TODO: Add when delete a supply is ready
@@ -549,6 +548,7 @@ fun ArcaNavGraph(
                 },
                 onFilterClick = { /* TODO: Lógica de VM */ },
                 onNotificationClick = { /* TODO: Lógica de VM */ },
+
             )
         }
 
@@ -565,6 +565,20 @@ fun ArcaNavGraph(
                 onBackClick = { navController.popBackStack() },
                 onModifyClick = { /* TODO: Lógica de VM */ },
                 viewModel = hiltViewModel(),
+            )
+        }
+
+        /**
+         * Add new beneficiary
+         */
+
+        composable(Screen.AddNewBeneficiary.route) {
+            AddNewBeneficiaryScreen(
+                navController = navController,
+                viewModel = hiltViewModel(),
+                onSuccess = {
+                    navController.popBackStack()
+                }
             )
         }
 
@@ -693,5 +707,24 @@ fun ArcaNavGraph(
             )
         }
     }
+
+        composable(
+            route = Screen.SupplyUpdate.route,
+            arguments = listOf(navArgument("idSupply") { type = NavType.StringType })
+        ) { backStackEntry ->
+
+            SupplyUpdateScreen(
+                onModifyClick = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("shouldRefresh", true)
+
+                    navController.popBackStack()
+                },
+                onCancel = {
+                    navController.popBackStack()
+                }
+            )
+        }
     }
 }
