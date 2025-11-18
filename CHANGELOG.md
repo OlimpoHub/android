@@ -1,4 +1,6 @@
 ## [0.1.0] - 17/11/2025
+- Added register Beneficiary View
+- Added Consult Disabilities List
 
 ### Added
 - Added filter and order products
