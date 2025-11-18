@@ -97,6 +97,7 @@ fun ProductBatchesListScreen(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
                     )
                 },
                 navigationIcon = {
@@ -118,7 +119,7 @@ fun ProductBatchesListScreen(
                 },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
-                        containerColor = Background
+                        containerColor = Background,
                     ),
             )
         },
@@ -186,6 +187,7 @@ fun ProductBatchesListScreen(
                         )
                     }
                 }
+
                 state.batches.isEmpty() -> {
                     Box(
                         modifier =
