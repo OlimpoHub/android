@@ -1,3 +1,8 @@
+## [0.1.0] - 18/11/2025
+
+### Fixed
+- Fixed error in register workshop
+
 ## [0.1.0] - 17/11/2025
 
 ### Changed
