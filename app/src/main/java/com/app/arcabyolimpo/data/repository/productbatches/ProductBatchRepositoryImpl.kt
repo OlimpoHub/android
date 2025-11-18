@@ -37,6 +37,7 @@ class ProductBatchRepositoryImpl(
         )
     }
 
+
     override suspend fun searchProductBatch(term: String): List<ProductBatch> {
         return api.searchProductBatch(term).map { it.toDomain() }
     }
@@ -44,4 +45,9 @@ class ProductBatchRepositoryImpl(
     override suspend fun filterProductBatch(filters: FilterDto): List<ProductBatch> {
         return api.filterProductBatch(filters).map { it.toDomain() }
     }
+
+    override suspend fun deleteProductBatch(id: String) {
+        api.deleteProductBatch(id)
+    }
 }
+

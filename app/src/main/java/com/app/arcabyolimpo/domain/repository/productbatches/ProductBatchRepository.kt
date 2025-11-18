@@ -24,4 +24,5 @@ interface ProductBatchRepository {
 
     suspend fun filterProductBatch(filters: FilterDto): List<ProductBatch>
 
+    suspend fun deleteProductBatch(id: String)
 }

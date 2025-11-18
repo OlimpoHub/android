@@ -29,6 +29,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -43,6 +45,7 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.SearchIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SearchInput
 import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
 import com.app.arcabyolimpo.presentation.ui.components.molecules.ProductItem
+import com.app.arcabyolimpo.presentation.ui.components.organisms.Filter
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
 
@@ -50,22 +53,40 @@ import com.app.arcabyolimpo.ui.theme.White
 @Composable
 fun ProductsListRoute(
     onProductClick: (String) -> Unit,
-    onBackClick: () -> Unit = {},
+    onBackClick: () -> Unit,
     viewModel: ProductsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    var showFilter by remember { mutableStateOf(false) }   // ← NUEVO
 
     ProductsListScreen(
         state = uiState,
         onSearchChange = viewModel::onSearchQueryChange,
         onBackClick = onBackClick,
         onDetailClick = onProductClick,
-        onAddClick = { /* TODO: navegar a agregar producto si quieres */ },
+        onAddClick = { /* ... */ },
+        onFilterClick = { showFilter = true },             // ← NUEVO
     )
+
+    if (showFilter) {
+        Filter(
+            data = uiState.filterData,
+            initialSelected = uiState.selectedFilters,
+            onApply = { dto ->
+                showFilter = false
+                viewModel.applyFilters(dto)
+            },
+            onDismiss = { showFilter = false },
+            onClearFilters = {
+                viewModel.clearFilters()
+                showFilter = false
+            },
+        )
+    }
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
-@Suppress("ktlint:standard:function-naming")
 @Composable
 fun ProductsListScreen(
     state: ProductsUiState,
@@ -73,6 +94,7 @@ fun ProductsListScreen(
     onBackClick: () -> Unit,
     onDetailClick: (String) -> Unit,
     onAddClick: () -> Unit,
+    onFilterClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val filteredProducts = remember(state.searchQuery, state.products) {
@@ -157,7 +179,7 @@ fun ProductsListScreen(
                     modifier = Modifier.weight(1f),
                 )
 
-                IconButton(onClick = { /* TODO: filtros luego */ }) {
+                IconButton(onClick = onFilterClick) {
                     FilterIcon(
                         Modifier.size(32.dp),
                     )
@@ -231,7 +253,6 @@ fun ProductsListScreen(
     }
 }
 
-// ---------- ITEM DE LISTA (estilo parecido a las cards del mock) ----------
 @Composable
 fun ProductItem(
     product: Product,

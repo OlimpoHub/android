@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -72,10 +73,18 @@ fun ProductBatchesListScreen(
     var text by remember { mutableStateOf("") }
     var showFilter by remember { mutableStateOf(false) }
 
+    LaunchedEffect(Unit) {
+        viewModel.loadData()
+    }
+
     Scaffold(
         containerColor = Background,
-        bottomBar = { NavBar() },
-        floatingActionButton = { AddButton(onClick = { onAddClick() }) },
+        bottomBar = {
+            NavBar()
+        },
+        floatingActionButton = {
+            AddButton(onClick = { onAddClick() })
+        },
         topBar = {
             TopAppBar(
                 title = {
@@ -85,31 +94,47 @@ fun ProductBatchesListScreen(
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.headlineLarge,
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = White)
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            "Back",
+                            tint = White,
+                        )
                     }
                 },
                 actions = {
                     NotificationIcon(
-                        modifier = Modifier.padding(horizontal = 24.dp).size(24.dp),
+                        modifier =
+                            Modifier
+                                .padding(horizontal = 24.dp)
+                                .size(24.dp),
                     )
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Background),
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = Background
+                    ),
             )
-        }
+        },
     ) { padding ->
         Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 16.dp),
+            modifier =
+                modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(horizontal = 16.dp),
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
@@ -126,7 +151,9 @@ fun ProductBatchesListScreen(
                     modifier = Modifier.weight(1f),
                 )
 
-                IconButton(onClick = { showFilter = true }) {
+                IconButton(onClick = {
+                    showFilter = true
+                }) {
                     FilterIcon(modifier = Modifier.size(32.dp))
                 }
             }
@@ -134,15 +161,22 @@ fun ProductBatchesListScreen(
             when {
                 state.isLoading -> {
                     Box(
-                        modifier = Modifier.fillMaxSize().padding(padding),
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(padding),
                         contentAlignment = Alignment.Center,
                     ) {
                         CircularProgressIndicator()
                     }
                 }
+
                 state.error != null -> {
                     Box(
-                        modifier = Modifier.fillMaxSize().padding(padding),
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(padding),
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
@@ -154,15 +188,22 @@ fun ProductBatchesListScreen(
                 }
                 state.items.isEmpty() -> {
                     Box(
-                        modifier = Modifier.fillMaxSize().padding(padding),
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(padding),
                         contentAlignment = Alignment.Center,
                     ) {
                         Text("No product batches found")
                     }
                 }
+
                 else -> {
                     LazyColumn(
-                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp),
                         verticalArrangement = Arrangement.spacedBy(0.dp),
                     ) {
                         items(state.items) { batch ->

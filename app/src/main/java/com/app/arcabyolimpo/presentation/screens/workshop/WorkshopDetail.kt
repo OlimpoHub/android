@@ -2,6 +2,8 @@ package com.app.arcabyolimpo.presentation.screens.workshop
 
 import android.util.Log
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -13,10 +15,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.app.arcabyolimpo.domain.model.beneficiaries.Beneficiary
 import com.app.arcabyolimpo.presentation.navigation.Screen
 import com.app.arcabyolimpo.presentation.screens.login.LoginScreen
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
@@ -24,9 +30,21 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.SnackbarVisu
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.DeleteButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ModifyButton
+import com.app.arcabyolimpo.presentation.ui.components.atoms.videoView
 import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
+import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import com.app.arcabyolimpo.ui.theme.Background
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.launch 
+
+/**
+ *
+ * This composable acts as the screen for an individual Workshop.
+ */
+
+/**
+ *
+ * This composable acts as the screen for an individual Workshop.
+ */
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,7 +56,8 @@ fun WorkshopDetailScreen(
     val workshop by viewModel.workshop.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
-
+    val formattedDate by viewModel.formattedDate.collectAsState()
+    ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false) {
     // State of the snackbar that will handle all messages on the screen.
     val snackbarHostState = remember { SnackbarHostState() }
     // We use it to launch the coroutine that displays the snackbar.
@@ -105,8 +124,8 @@ fun WorkshopDetailScreen(
         )
     }
 
-    Scaffold(
-        // Host del snackbar para la pantalla.
+        Scaffold(
+            // Host del snackbar para la pantalla.
         snackbarHost = {
             SnackbarHost(snackbarHostState) { data ->
                 // Every time a snackbar is displayed, our custom component is called
@@ -121,75 +140,147 @@ fun WorkshopDetailScreen(
 
 
         containerColor = Background,
-        topBar = {
-            TopAppBar(
-                title = { Text("Detalle del taller") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Regresar")
-                    }
-                }
-            )
-        },
-        bottomBar = { NavBar() }
-    ) { padding ->
+            topBar = {
+                TopAppBar(
+                    title = {
+                        when{
+                            workshop != null -> {
+                                Text(
+                                    text = "${workshop?.nameWorkshop}",
+                                    style = MaterialTheme.typography.headlineLarge,
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                            errorMessage != null ->
+                                Text(
+                                    text = "Error",
+                                    style = MaterialTheme.typography.headlineLarge,
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold
+                                )
+                        }
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                contentAlignment = Alignment.Center
-            ) {
-                when {
-                    isLoading -> CircularProgressIndicator()
-                    errorMessage != null -> Text(text = errorMessage ?: "")
-                    workshop != null -> {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("Nombre: ${workshop?.nameWorkshop}")
-                            Text("Usuario: ${workshop?.idUser}")
-                            Text("Fecha: ${workshop?.date}")
-                            Text("Hora: ${workshop?.startHour} - ${workshop?.finishHour}")
-                            Text("Descripción: ${workshop?.description}")
-                            Text("Video Capacitacion: ${workshop?.videoTraining}")
+                            },
+                    navigationIcon = {
+                        IconButton(onClick = { navController.popBackStack() }) {
+                            Icon(Icons.Default.ArrowBack, contentDescription = "Regresar")
                         }
                     }
-                    else -> Text("No se encontró el taller")
-                }
-            }
+                )
+            },
+            bottomBar = { NavBar() }
+        ) { padding ->
 
-            Row(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+                    .fillMaxSize()
+                    .padding(padding),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                DeleteButton(
-                    modifier = Modifier.size(width = 112.dp, height = 40.dp),
-                    onClick = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = 16.dp),
+                horizontalAlignment = Alignment.Start
+                )
+                {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        contentAlignment = Alignment.TopStart
+                    ) {
+                        when {
+                            isLoading -> CircularProgressIndicator()
+                            errorMessage != null -> Text(text = errorMessage ?: "")
+                            workshop != null -> {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp),
+                                    horizontalAlignment = Alignment.Start
+
+                                ) {
+                                    Text(
+                                        text = "Descripción:",
+                                        style = MaterialTheme.typography.headlineMedium
+                                    )
+                                    Spacer(modifier = Modifier.height(12.dp))
+                                    Text(
+                                        text= workshop?.description ?: "Cargando descripción...",
+                                        style = MaterialTheme.typography.bodyLarge
+                                    )
+                                    Spacer(modifier = Modifier.height(24.dp))
+                                    if (workshop?.videoTraining != null) {
+                                        videoView(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(200.dp),// Dale una altura fija
+                                            videoUrl = workshop!!.videoTraining!!
+                                        )
+                                    }
+                                    else{
+                                        Text(
+                                            text= "No hay video disponible",
+                                            style = MaterialTheme.typography.bodyLarge
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.height(24.dp))
+                                    Text(
+                                        text= "Sobre el Taller:",
+                                        style = MaterialTheme.typography.headlineMedium
+                                    )
+                                    Spacer(modifier = Modifier.height(12.dp))
+                                    Text(
+                                        text = "• Hora: ${workshop?.startHour} - ${workshop?.finishHour}",
+                                        style = MaterialTheme.typography.bodyLarge
+                                    )
+                                    Spacer(modifier = Modifier.height(12.dp))
+                                    Text(
+                                        text = "• Fecha: $formattedDate",
+                                        style = MaterialTheme.typography.bodyLarge
+                                    )
+
+
+                                }
+                            }
+
+                            else -> Text("No se encontró el taller")
+                        }
+                    }
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            bottom = 16.dp,
+                            top = 12.dp
+                        ),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    DeleteButton(
+                        modifier = Modifier.size(width = 112.dp, height = 40.dp),
+                        onClick = {
                         // When you press delete in the details, we display the dialog
                         viewModel.toggledecisionDialog(showdecisionDialog = true)
                         //Log.d("ButtonDelete", "Click ")
-                    }
-                )
+                        }
+                    )
 
-                Spacer(modifier = Modifier.width(16.dp))
+                    Spacer(modifier = Modifier.width(16.dp))
 
-                ModifyButton(
-                    modifier = Modifier.size(width = 112.dp, height = 40.dp),
-                    onClick = {
-                    }
-                )
+                    ModifyButton(
+                        modifier = Modifier.size(width = 112.dp, height = 40.dp),
+                        onClick = {
+                        }
+                    )
+                }
             }
+
         }
     }
 }

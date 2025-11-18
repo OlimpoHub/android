@@ -2,11 +2,13 @@ package com.app.arcabyolimpo.presentation.screens.productbatches.productBatchDet
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.arcabyolimpo.domain.usecase.productbatches.DeleteProductBatchUseCase
 import com.app.arcabyolimpo.domain.usecase.productbatches.GetProductBatchUseCase
 import com.app.arcabyolimpo.presentation.screens.productbatches.mapper.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,6 +20,7 @@ class ProductBatchDetailViewModel
     @Inject
     constructor(
         private val getProductBatchUseCase: GetProductBatchUseCase,
+        private val deleteProductBatchUseCase: DeleteProductBatchUseCase,
     ) : ViewModel() {
         private val _uiState = MutableStateFlow(ProductBatchDetailUiState(isLoading = true))
         val uiState: StateFlow<ProductBatchDetailUiState> = _uiState
@@ -33,6 +36,30 @@ class ProductBatchDetailViewModel
                         ProductBatchDetailUiState(
                             isLoading = false,
                             error = "No se pudo cargar el lote",
+                        )
+                }
+            }
+        }
+
+        fun toggledecisionDialog(showdecisionDialog: Boolean) {
+            viewModelScope.launch {
+                _uiState.update { state ->
+                    state.copy(
+                        decisionDialogVisible = showdecisionDialog,
+                    )
+                }
+            }
+        }
+
+        fun deleteBatch(id: String) {
+            viewModelScope.launch {
+                try {
+                    deleteProductBatchUseCase(id)
+                } catch (e: Exception) {
+                    _uiState.value =
+                        ProductBatchDetailUiState(
+                            isLoading = false,
+                            error = "No se pudo eliminar el lote",
                         )
                 }
             }

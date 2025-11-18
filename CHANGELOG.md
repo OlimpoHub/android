@@ -1,9 +1,3 @@
-## [0.1.0] - 17/11/2025
-
-### Added
-- Product Batch filter and order
-- Product Batch functional search bar
-
 ## [0.1.0] - 16/11/2025
 
 ### Added

@@ -62,9 +62,7 @@ class ProductBatchesListViewModel
 
                     _uiState.value =
                         if (uiList.isEmpty()) {
-                            ProductBatchesUiState(
-                                isLoading = false
-                            )
+                            ProductBatchesUiState(isLoading = false)
                         } else {
                             ProductBatchesUiState(
                                 isLoading = false,
