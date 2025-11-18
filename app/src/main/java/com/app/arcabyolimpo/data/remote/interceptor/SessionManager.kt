@@ -29,8 +29,8 @@ class SessionManager
          * and emitting a session expiration event to UI observers.
          */
         suspend fun logout() {
-            userPreferences.clearAll()
             _sessionExpired.emit(Unit)
+            userPreferences.clearAll()
         }
 
         /** Returns the first two words of the stored username. */
@@ -44,5 +44,8 @@ class SessionManager
             }
 
         /** Returns the stored user role. */
-        fun getUserRole(): Flow<String?> = userPreferences.getUserRole()
+        fun getUserRole(): Flow<String> =
+            userPreferences.getUserRole().map { role ->
+                role?.uppercase() ?: ""
+            }
     }

@@ -57,7 +57,7 @@ fun HomeScreenCard(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .height(110.dp)
+                .height(120.dp)
                 .clickable(onClick = onClick),
     ) {
         Row(

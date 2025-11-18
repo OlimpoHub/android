@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,7 +18,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.app.arcabyolimpo.R
+import com.app.arcabyolimpo.presentation.screens.session.SessionViewModel
 import com.app.arcabyolimpo.presentation.ui.components.molecules.HomeScreenCard
 
 /**
@@ -30,14 +34,17 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.HomeScreenCard
 fun MainMenu(
     paddingValues: PaddingValues,
     onSelect: (String) -> Unit,
+    sessionViewModel: SessionViewModel = hiltViewModel(),
 ) {
+    val role by sessionViewModel.role.collectAsState(initial = "")
+
     Column(
         modifier =
             Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(vertical = 24.dp, horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(24.dp),
+        verticalArrangement = Arrangement.spacedBy(36.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         HomeScreenCard(
@@ -55,16 +62,25 @@ fun MainMenu(
             modifier = Modifier.fillMaxWidth(),
         )
 
-        HomeScreenCard(
-            name = "Usuarios",
-            image = painterResource(id = R.drawable.img_users),
-            onClick = { onSelect("users") },
-        )
+        if (role == "COORDINADOR") {
+            HomeScreenCard(
+                name = "Usuarios",
+                image = painterResource(id = R.drawable.img_users),
+                onClick = { onSelect("users") },
+            )
+        }
 
         HomeScreenCard(
             name = "Capacitaciones",
             image = painterResource(id = R.drawable.img_trainings),
             onClick = { onSelect("training") },
         )
+        if (role == "COORDINADOR" || role == "ASISTENTE") {
+            HomeScreenCard(
+                name = "Análisis",
+                image = painterResource(id = R.drawable.img_dashboard),
+                onClick = { onSelect("analysis") },
+            )
+        }
     }
 }

@@ -206,11 +206,11 @@ fun ArcaNavGraph(
                                 popUpTo(Screen.Login.route) { inclusive = true }
                             }
                         UserRole.ASISTENTE ->
-                            navController.navigate(Screen.CollaboratorHome.route) {
+                            navController.navigate(Screen.CoordinatorHome.route) {
                                 popUpTo(Screen.Login.route) { inclusive = true }
                             }
                         UserRole.BECARIO ->
-                            navController.navigate(Screen.CollaboratorHome.route) {
+                            navController.navigate(Screen.CoordinatorHome.route) {
                                 popUpTo(Screen.Login.route) { inclusive = true }
                             }
                     }

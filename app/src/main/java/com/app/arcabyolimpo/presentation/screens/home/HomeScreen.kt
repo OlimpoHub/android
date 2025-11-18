@@ -126,6 +126,35 @@ fun HomeScreen(navController: NavHostController) {
                                     }
                                 },
                             )
+                        "analysis" ->
+                            TopAppBar(
+                                title = {
+                                    Text(
+                                        "Análisis",
+                                        color = Color.White,
+                                        fontSize = 24.sp,
+                                        fontWeight = FontWeight.Bold,
+                                    )
+                                },
+                                navigationIcon = {
+                                    IconButton(onClick = { selectedOption = null }) {
+                                        Icon(
+                                            imageVector = Icons.Default.ArrowBack,
+                                            contentDescription = "Regresar",
+                                            tint = Color.White,
+                                        )
+                                    }
+                                },
+                                colors =
+                                    TopAppBarDefaults.topAppBarColors(
+                                        containerColor = Color(0xFF040610),
+                                    ),
+                                actions = {
+                                    IconButton(onClick = { }) {
+                                        NotificationIcon()
+                                    }
+                                },
+                            )
                     }
                 }
             }
