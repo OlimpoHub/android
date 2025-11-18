@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import com.app.arcabyolimpo.presentation.screens.home.HomeScreen
+import com.app.arcabyolimpo.presentation.screens.home.InventoryScreen
 import com.app.arcabyolimpo.presentation.ui.components.molecules.FunctionalNavBar
 
 /**
@@ -42,7 +43,7 @@ fun CoordinatorHomeScreen(navController: NavHostController) {
                 0 -> HomeScreen(navController)
                 1 -> Text("Pantalla Talleres")
                 2 -> Text("Pantalla Pedidos")
-                3 -> Text("Pantalla Inventario")
+                3 -> InventoryScreen(navController)
                 4 -> Text("Pantalla Beneficiarios")
             }
         }
