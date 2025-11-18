@@ -66,6 +66,18 @@ class UserRegisterViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(degree = value)
     }
 
+    fun updateHasReglamentoInterno(value: Boolean) {
+        _uiState.value = _uiState.value.copy(hasReglamentoInterno = value)
+    }
+
+    fun updateHasCopiaIne(value: Boolean) {
+        _uiState.value = _uiState.value.copy(hasCopiaIne = value)
+    }
+
+    fun updateHasAvisoConfidencialidad(value: Boolean) {
+        _uiState.value = _uiState.value.copy(hasAvisoConfidencialidad = value)
+    }
+
     fun registerCollab() {
         if (!validateForm()) return
 
@@ -118,9 +130,9 @@ class UserRegisterViewModel @Inject constructor(
             correoElectronico = _uiState.value.email,
             telefono = _uiState.value.phone,
             estatus = _uiState.value.isActive,
-            reglamentoInterno = null,
-            copiaINE = null,
-            avisoConfidencialidad = null,
+            reglamentoInterno = if (_uiState.value.hasReglamentoInterno) 1 else 0,
+            copiaINE = if (_uiState.value.hasCopiaIne) 1 else 0,
+            avisoConfidencialidad = if (_uiState.value.hasAvisoConfidencialidad) 1 else 0,
             foto = _uiState.value.photoUrl
         )
 
