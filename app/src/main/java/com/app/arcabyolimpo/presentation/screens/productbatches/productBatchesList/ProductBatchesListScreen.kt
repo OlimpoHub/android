@@ -1,5 +1,6 @@
 package com.app.arcabyolimpo.presentation.screens.productbatches.productBatchesList
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,6 +44,7 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.SearchIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SearchInput
 import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
 import com.app.arcabyolimpo.presentation.ui.components.molecules.ProductBatchItem
+import com.app.arcabyolimpo.presentation.ui.components.organisms.Filter
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
@@ -55,6 +57,7 @@ import com.app.arcabyolimpo.ui.theme.White
  * @param onAddClick () -> Unit -> callback to add a new product batch
  * @param viewModel ProductBatchesListViewModel = hiltViewModel() -> ViewModel for managing UI state
  */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable
@@ -67,15 +70,12 @@ fun ProductBatchesListScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     var text by remember { mutableStateOf("") }
+    var showFilter by remember { mutableStateOf(false) }
 
     Scaffold(
         containerColor = Background,
-        bottomBar = {
-            NavBar()
-        },
-        floatingActionButton = {
-            AddButton(onClick = { onAddClick() })
-        },
+        bottomBar = { NavBar() },
+        floatingActionButton = { AddButton(onClick = { onAddClick() }) },
         topBar = {
             TopAppBar(
                 title = {
@@ -85,84 +85,64 @@ fun ProductBatchesListScreen(
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.headlineLarge,
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(
-                            Icons.Default.ArrowBack,
-                            "Back",
-                            tint = White,
-                        )
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = White)
                     }
                 },
                 actions = {
                     NotificationIcon(
-                        modifier =
-                            Modifier
-                                .padding(horizontal = 24.dp)
-                                .size(24.dp),
+                        modifier = Modifier.padding(horizontal = 24.dp).size(24.dp),
                     )
                 },
-                colors =
-                    TopAppBarDefaults.topAppBarColors(
-                        containerColor = Background,
-                    ),
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Background),
             )
-        },
+        }
     ) { padding ->
         Column(
-            modifier =
-                modifier
-                    .fillMaxSize()
-                    .padding(padding)
-                    .padding(horizontal = 16.dp),
+            modifier = modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(horizontal = 16.dp),
         ) {
             Row(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 SearchInput(
                     value = text,
                     onValueChange = { text = it },
-                    trailingIcon = { SearchIcon() },
+                    trailingIcon = {
+                        IconButton(onClick = {
+                            viewModel.searchProductBatch(text)
+                        }) {
+                            SearchIcon()
+                        }
+                    },
                     modifier = Modifier.weight(1f),
                 )
 
-                IconButton(onClick = {}) {
-                    FilterIcon(
-                        Modifier.size(32.dp),
-                    )
+                IconButton(onClick = { showFilter = true }) {
+                    FilterIcon(modifier = Modifier.size(32.dp))
                 }
             }
 
             when {
                 state.isLoading -> {
                     Box(
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .padding(padding),
+                        modifier = Modifier.fillMaxSize().padding(padding),
                         contentAlignment = Alignment.Center,
                     ) {
                         CircularProgressIndicator()
                     }
                 }
-
                 state.error != null -> {
                     Box(
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .padding(padding),
+                        modifier = Modifier.fillMaxSize().padding(padding),
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
@@ -172,28 +152,20 @@ fun ProductBatchesListScreen(
                         )
                     }
                 }
-
-                state.batches.isEmpty() -> {
+                state.items.isEmpty() -> {
                     Box(
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .padding(padding),
+                        modifier = Modifier.fillMaxSize().padding(padding),
                         contentAlignment = Alignment.Center,
                     ) {
                         Text("No product batches found")
                     }
                 }
-
                 else -> {
                     LazyColumn(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(top = 8.dp),
+                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                         verticalArrangement = Arrangement.spacedBy(0.dp),
                     ) {
-                        items(state.batches) { batch ->
+                        items(state.items) { batch ->
                             ProductBatchItem(
                                 batch = batch,
                                 onClick = { onDetailClick(batch.idInventario) },
@@ -204,4 +176,23 @@ fun ProductBatchesListScreen(
             }
         }
     }
+
+    // Filtro modal
+    if (showFilter && state.filterData != null) {
+        Filter(
+            data = state.filterData!!,
+            initialSelected = state.filters,
+            onApply = { dto ->
+                viewModel.filterProductBatch(dto)
+                showFilter = false
+            },
+            onDismiss = { showFilter = false },
+            onClearFilters = {
+                viewModel.clearFilters()
+                viewModel.loadData()
+                showFilter = false
+            }
+        )
+    }
+
 }

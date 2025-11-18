@@ -215,6 +215,8 @@ interface ArcaApi {
         @Query("term") searchTerm: String,
     ): List<BeneficiaryDto>
 
+    // Supplies -------------
+
     @GET("supplies/workshop/category")
     suspend fun getWorkshopCategoryList(): WorkshopCategoryListDto
 
@@ -228,6 +230,8 @@ interface ArcaApi {
         @Part("status") status: RequestBody,
         @Part imagenInsumo: MultipartBody.Part?,
     )
+
+    // productBatch -------------
 
     @GET("productBatch/")
     suspend fun getProductBatches(): List<ProductBatchDto>
@@ -247,6 +251,12 @@ interface ArcaApi {
         @Path("id") id: String,
         @Body batch: ProductBatchModifyDto,
     )
+
+    @GET("productBatch/search")
+    suspend fun searchProductBatch(@Query("q") term: String): List<ProductBatchDto>
+
+    @POST("productBatch/filter")
+    suspend fun filterProductBatch(@Body filters: FilterDto): List<ProductBatchDto>
 
     // Products --------------------------
 

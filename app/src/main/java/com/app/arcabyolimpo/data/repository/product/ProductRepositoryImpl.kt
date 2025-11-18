@@ -106,4 +106,5 @@ class ProductRepositoryImpl @Inject constructor(
     override suspend fun searchProducts(query: String): List<Product> {
         return api.searchProducts(query).map { it.toDomain() }
     }
+
 }

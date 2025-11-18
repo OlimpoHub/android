@@ -1,5 +1,7 @@
 package com.app.arcabyolimpo.presentation.screens.productbatches.productBatchesList
 
+import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
+import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.presentation.screens.productbatches.model.ProductBatchUiModel
 
 /** UI state for ProductBatchesListScreen.
@@ -8,7 +10,9 @@ import com.app.arcabyolimpo.presentation.screens.productbatches.model.ProductBat
  * @param batches List<ProductBatchUiModel> -> list of product batches
 */
 data class ProductBatchesUiState(
+    val items: List<ProductBatchUiModel> = emptyList(),
+    val filters: FilterDto = FilterDto(),
+    val filterData: FilterData? = null,
     val isLoading: Boolean = false,
-    val error: String? = null,
-    val batches: List<ProductBatchUiModel> = emptyList(),
+    val error: String? = null
 )
