@@ -11,6 +11,14 @@ interface WorkshopRepository {
 
     suspend fun addWorkshop(newWorkshop: WorkshopDto): Workshop
 
+    /**
+     * Modify a single workshop.
+     *
+     * A simple function so that the domain or presentation layer
+     * can request the modification of an Workshop.
+     *
+     * @param modifiedWorkshop data of the modified workshop.
+     */
     suspend fun modifyWorkshop(modifiedWorkshop: WorkshopDto): Workshop
 
     suspend fun searchWorkshop(name: String): List<Workshop>

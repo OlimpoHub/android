@@ -10,6 +10,7 @@ import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.model.workshops.Workshop
 import com.app.arcabyolimpo.domain.repository.workshops.WorkshopRepository
 import com.app.arcabyolimpo.domain.usecase.user.GetAllUsersUseCase
+import com.app.arcabyolimpo.domain.usecase.workshops.GetWorkshopsListUseCase
 import com.app.arcabyolimpo.domain.usecase.workshops.PostModifyWorkshop
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +23,17 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import javax.inject.Inject
+
+/**
+ * ViewModel responsible for managing the UI state of the Modify Workshop screen.
+ *
+ * This class interacts with the [GetAllUsersUseCase] to fetch data from the users available. It also
+ * interacts with the and exposes a [StateFlow] of [WorkshopsListUiState]
+ * that the UI observes to render updates.
+ *
+ * @property GetAllUsersUseCase Use case for retrieving the list of users.
+ * @property PostModifyWorkshop Use case for updating the data of the workshop in the database.
+ */
 
 @HiltViewModel
 class ModifyWorkshopViewModel @Inject constructor(

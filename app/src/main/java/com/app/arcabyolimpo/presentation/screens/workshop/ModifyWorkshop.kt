@@ -55,7 +55,20 @@ import com.app.arcabyolimpo.ui.theme.White
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
+/**
+ * Composable screen that displays the registrations of updates for a workshop.
+ *
+ * This screen is responsible for showing a forms to modify workshops
+ *  retrieved from the [ModifyWorkshopViewModel]. It provides:
+ * - Each field required to modify the workshop, with the previous data.
+ * - A button to cancel the forms an return to [WorkshopDetail].
+ * - A button to save all the fields and send it to the data base.
+ * - A navbar at the button of the screen.
+ *
+ * @param navController The way to go through different screens that are in the [NavGraph]
+ * @param viewModel The [ModifyWorkshop] used to manage the UI state.
+ * @param workshopID The id of the workshop that is being changed
+ */
 
 @Composable
 fun modifyWorkshopScreen(
@@ -83,12 +96,6 @@ fun modifyWorkshopScreen(
             viewModel.loadWorkshop(workshopId) // Carga del taller primero
             viewModel.loadUsers() // Carga de usuarios
         }
-        LaunchedEffect(formData.idUser, formData.startHour, formData.finishHour) {
-            Log.d("WORKSHOP_DEBUG", "🔄 Recomposición de UI por formData:")
-            Log.d("WORKSHOP_DEBUG", "  idUser (UI): ${formData.idUser}")
-            Log.d("WORKSHOP_DEBUG", "  startHour (UI): ${formData.startHour}")
-            Log.d("WORKSHOP_DEBUG", "  finishHour (UI): ${formData.finishHour}")
-        }
         Scaffold(
             containerColor = Background,
             bottomBar = { NavBar() },
@@ -108,7 +115,7 @@ fun modifyWorkshopScreen(
 
                 /** Title of the forms */
                 Text(
-                    text = "Registrar Nuevo Taller",
+                    text = "Modificar Taller",
                     style = MaterialTheme.typography.headlineLarge,
                     color = White,
                     modifier = Modifier.padding(bottom = 16.dp),
@@ -128,7 +135,7 @@ fun modifyWorkshopScreen(
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
-
+                /** Loading */
                 if (isLoading) {
                     Box(
                         modifier = Modifier
@@ -145,9 +152,9 @@ fun modifyWorkshopScreen(
                 } else {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp) // Usar 16.dp para coincidir con tu diseño original
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        /** Start Hour*/
+                        /** Start Hour with format*/
                         StandardIconInput(
                             label = "Hora de entrada",
                             placeholder = "Ej. 08:00",
@@ -162,7 +169,7 @@ fun modifyWorkshopScreen(
                         )
 
 
-                        /** Finish Hour*/
+                        /** Finish Hour with format*/
                         StandardIconInput(
                             label = "Hora de salida",
                             placeholder = "Ej. 12:00",
@@ -180,7 +187,7 @@ fun modifyWorkshopScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                /** Date */
+                /** Date with format */
                 StandardInput(
                     label = "Fecha del taller",
                     placeholder = "Ej. 2016-07-30",
@@ -208,7 +215,7 @@ fun modifyWorkshopScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                /** User Selection  */
+                /** User Selection. Loads previous user and loads others for selection */
                 if (usersLoading) {
                     Box(
                         modifier = Modifier

@@ -125,6 +125,15 @@ class WorkshopRepositoryImpl
         Log.d("Validacion", "Si llego ")
     }
 
+    /**
+     * Performs a modification using the modified workshop data.
+     *
+     * This method requests the [workshopDTO] body and calls the
+     * corresponding API endpoint.
+     *
+     * @param modifiedWorkshop DTO class with all information of modified workshop
+     */
+
     override suspend fun modifyWorkshop(modifiedWorkshop: WorkshopDto): Workshop {
         val workshopId = modifiedWorkshop.id
         val response = api.modifyWorkshop(
