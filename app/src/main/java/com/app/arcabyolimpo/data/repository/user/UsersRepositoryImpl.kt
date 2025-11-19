@@ -47,7 +47,6 @@ class UsersRepositoryImpl @Inject constructor(
     override suspend fun updateUser(user: UserDto): UserDto {
         return try {
             val dto = user.toUpdateDto()
-            android.util.Log.d("UsersRepository", "DTO que se envía al API: $dto")
             api.updateUser(dto)
             user
         } catch (e: Exception) {

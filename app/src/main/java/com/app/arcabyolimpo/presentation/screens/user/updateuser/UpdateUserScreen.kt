@@ -77,14 +77,14 @@ fun UpdateUserScreen(
         }
     }
 
-    // Show success message
+    // Cuando el update fue exitoso avisamos al padre y limpiamos el estado
     LaunchedEffect(uiState.success) {
         if (uiState.success) {
-            kotlinx.coroutines.delay(3000)
             onSuccess()
             viewModel.resetState()
         }
     }
+
 
     DisposableEffect(Unit) {
         onDispose {

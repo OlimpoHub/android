@@ -121,16 +121,10 @@ class UpdateUserViewModel @Inject constructor(
     }
 
     fun updateUser() {
-        android.util.Log.d("UpdateUserVM", "ENTRÓ A updateUser()")
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
 
             val s = _uiState.value
-
-            android.util.Log.d(
-                "UpdateUserVM",
-                "Datos a enviar -> id=${s.id}, nombre=${s.firstName}, apellido=${s.lastName}, email=${s.email}"
-            )
 
             val user = UserDto(
                 idUsuario        = s.id,
@@ -149,11 +143,9 @@ class UpdateUserViewModel @Inject constructor(
             updateUserUseCase(user).collect { result ->
                 when (result) {
                     is Result.Loading -> {
-                        android.util.Log.d("UpdateUserVM", "UPDATE Loading")
                         // ya estamos en loading
                     }
                     is Result.Success -> {
-                        android.util.Log.d("UpdateUserVM", "UPDATE Success")
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
                             success = true,
@@ -162,7 +154,6 @@ class UpdateUserViewModel @Inject constructor(
                         )
                     }
                     is Result.Error -> {
-                        android.util.Log.e("UpdateUserVM", "UPDATE Error", result.exception)
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
                             error = result.exception.message ?: "Error al actualizar"
