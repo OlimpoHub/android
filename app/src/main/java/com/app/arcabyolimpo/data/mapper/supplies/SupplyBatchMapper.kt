@@ -7,12 +7,9 @@ import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchSpecsDto
 import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.domain.model.supplies.Batch
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
-<<<<<<< HEAD
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchOneDto
 import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
-=======
 import kotlin.math.exp
->>>>>>> release-0.1.0
 
 /** ---------------------------------------------------------------------------------------------- *
  * Helper function that maps the Dto of supplyBatch to return it into a kotlin object
