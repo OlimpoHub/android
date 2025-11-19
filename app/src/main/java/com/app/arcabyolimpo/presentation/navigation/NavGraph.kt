@@ -19,7 +19,6 @@ import com.app.arcabyolimpo.domain.model.auth.UserRole
 import com.app.arcabyolimpo.presentation.common.components.LoadingShimmer
 import com.app.arcabyolimpo.presentation.screens.accountactivation.AccountActivationScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
-import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
 import com.app.arcabyolimpo.presentation.screens.home.assistant.CollaboratorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.home.coordinator.CoordinatorHomeScreen
@@ -44,6 +43,7 @@ import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerifica
 import com.app.arcabyolimpo.presentation.screens.user.UserListScreen
 import com.app.arcabyolimpo.presentation.screens.user.detail.UserDetailScreen
 import com.app.arcabyolimpo.presentation.screens.user.register.UserRegisterScreen
+import com.app.arcabyolimpo.presentation.screens.user.updateuser.UpdateUserScreen
 import com.app.arcabyolimpo.presentation.screens.workshop.AddNewWorkshopScreen
 import com.app.arcabyolimpo.presentation.screens.workshop.WorkshopDetailScreen
 import com.app.arcabyolimpo.presentation.screens.workshop.WorkshopsListScreen
@@ -70,6 +70,10 @@ sealed class Screen(
 
     object UserDetail : Screen("user_detail/{userId}") {
         fun createRoute(userId: String) = "user_detail/$userId"
+    }
+
+    object UpdateUserScreen : Screen("update_user/{userId}") {
+        fun createRoute(userId: String) = "update_user/$userId"
     }
 
     object TokenVerification : Screen("user/verify-token?token={token}") {
@@ -168,7 +172,7 @@ fun ArcaNavGraph(
     NavHost(
         navController = navController,
         // TODO: Cambiar a Screen.Splash.route cuando acabe
-        startDestination = Screen.SuppliesList.route,
+        startDestination = Screen.UserList.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -357,7 +361,7 @@ fun ArcaNavGraph(
         composable(Screen.UserList.route) {
             UserListScreen(
                 onCollabClick = { id ->
-                    navController.navigate(Screen.UserDetail.createRoute(id))
+                    navController.navigate(Screen.UpdateUserScreen.createRoute(id))
                 },
                 onAddClick = {
                     navController.navigate(Screen.UserRegister.route)
@@ -374,7 +378,7 @@ fun ArcaNavGraph(
             UserDetailScreen(
                 onBackClick = { navController.popBackStack() },
                 onEditClick = { id ->
-                    // TODO: Navigate to edit screen when you create it
+                    navController.navigate(Screen.UpdateUserScreen.createRoute(id))
                 },
                 onDeleteClick = {
                     navController.navigate(Screen.UserList.route) {
@@ -391,6 +395,25 @@ fun ArcaNavGraph(
                 onSuccess = {
                     navController.popBackStack()
                 },
+            )
+        }
+
+        /** User Update Screen */
+        composable(
+            route = Screen.UpdateUserScreen.route,
+            arguments = listOf(navArgument("userId") { type = NavType.StringType }),
+        ) { backStackEntry ->
+            val userId = requireNotNull(backStackEntry.arguments?.getString("userId"))
+
+            UpdateUserScreen(
+                onDismiss = { navController.popBackStack() },
+                onSuccess = {
+                    // avisa al detalle que debe recargar y regresa
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("refresh_detail_$userId", true)
+                    navController.popBackStack()
+                }
             )
         }
 
