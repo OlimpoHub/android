@@ -54,7 +54,7 @@ import kotlinx.coroutines.launch
  * @param onClickAddSupplyBatch: () -> Unit -> function when you want to ADD A NEW SUPPLY
  * @param onClickDelete: () -> Unit -> function when you want to DELETE THE SUPPLY
  * @param onClickModify: () -> Unit -> function when you want to MODIFY THE SUPPLY
- * @param modifySupplyBatch: () -> Unit -> function when you want to MODIFY A SUPPLY BATCH
+ * @param watchSupplyBatch: () -> Unit -> function when you want to MODIFY A SUPPLY BATCH (removed)
  * @param deleteSupplyBatch: () -> function when you want to DELETE A SUPPLY BATCH
  * @param viewModel: SuppliesDetailViewModel -> view model that gathers the data and updates the view
  * ---------------------------------------------------------------------------------------------- */
@@ -66,10 +66,28 @@ fun SuppliesDetailScreen(
     onClickAddSupplyBatch: () -> Unit,
     onClickDelete: () -> Unit,
     onClickModify: () -> Unit,
-    modifySupplyBatch: (String) -> Unit,
+    onViewBatches: (String, String) -> Unit,
     deleteSupplyBatch: () -> Unit,
     viewModel: SuppliesDetailViewModel = hiltViewModel(),
 ) {
+    fun toSqlDate(dateStr: String): String {
+        if (dateStr.isBlank()) return ""
+        return try {
+            if (dateStr.contains('/')) {
+                val parts = dateStr.split('/')
+                if (parts.size == 3) {
+                    val d = parts[0].toIntOrNull() ?: return dateStr
+                    val m = parts[1].toIntOrNull() ?: return dateStr
+                    val y = parts[2].toIntOrNull() ?: return dateStr
+                    String.format("%04d-%02d-%02d", y, m, d)
+                } else dateStr
+            } else {
+                dateStr
+            }
+        } catch (e: Exception) {
+            dateStr
+        }
+    }
     // State of the snackbar that will handle all messages on the screen.
     val snackbarHostState = remember { SnackbarHostState() }
     // We use it to launch the coroutine that displays the snackbar.
@@ -79,11 +97,12 @@ fun SuppliesDetailScreen(
 
     // In this case, if there is no error in the uiState,
     // we consider it a success.
-    val haserror = if (uiState.error == null){
-        true
-    }else {
-        false
-    }
+    val haserror =
+        if (uiState.error == null) {
+            true
+        } else {
+            false
+        }
 
     LaunchedEffect(idInsumo) {
         viewModel.getSupply(idInsumo)
@@ -101,14 +120,14 @@ fun SuppliesDetailScreen(
                             uiState.snackbarMessage ?: "Operación completada",
                             isError = haserror,
                         ),
-                )
+                    )
                 // When the snack bar ends, we act according to the result
-                when (result){
+                when (result) {
                     SnackbarResult.Dismissed -> {
                         // Tell the VM that the visible snackbar is finished
                         viewModel.onSnackbarShown()
 
-                        //Navigate back as soon as the snack bar is finished
+                        // Navigate back as soon as the snack bar is finished
                         if (uiState.deletionType == DeletionType.SUPPLY) {
                             onBackClick()
                         }
@@ -121,18 +140,19 @@ fun SuppliesDetailScreen(
 
     // Displays a confirmation dialog when the user wants to delete an item.
     if (uiState.decisionDialogVisible == true) {
-        val (title, text) = when (uiState.deletionType) {
-            DeletionType.SUPPLY ->
-                "¿Estás seguro de eliminar este Insumo?" to
+        val (title, text) =
+            when (uiState.deletionType) {
+                DeletionType.SUPPLY ->
+                    "¿Estás seguro de eliminar este Insumo?" to
                         "Esta acción no podrá revertirse y eliminará todos sus lotes"
 
-            DeletionType.BATCH ->
-                "¿Estás seguro de eliminar este Lote?" to
+                DeletionType.BATCH ->
+                    "¿Estás seguro de eliminar este Lote?" to
                         "Esta acción no podrá revertirse"
 
-            else ->
-                "¿Estás seguro?" to "Esta acción no podrá revertirse"
-        }
+                else ->
+                    "¿Estás seguro?" to "Esta acción no podrá revertirse"
+            }
         DecisionDialog(
             onDismissRequest = {
                 viewModel.toggledecisionDialog(showdecisionDialog = false)
@@ -146,7 +166,6 @@ fun SuppliesDetailScreen(
             dismissText = "Cancelar",
         )
     }
-
 
     Scaffold(
         // Host del snackbar para la pantalla.
@@ -215,26 +234,30 @@ fun SuppliesDetailScreen(
                     )
                 }
                 uiState.supplyBatchList != null -> {
-                    SupplyDetailContent(
-                        supply = uiState.supplyBatchList!!,
-                        onClickAddSupplyBatch = {},
-                        onClickDelete = {
-                            // When you press delete in the details, we display the dialog
-                            viewModel.toggledecisionDialog(
-                                showdecisionDialog = true,
-                                deletionType = DeletionType.SUPPLY
-                            )
-                        },
-                        onClickModify = onClickModify,
-                        modifySupplyBatch = modifySupplyBatch,
-                        deleteSupplyBatch = { batchId ->
-                            viewModel.selectedBatchExpirationDate = batchId
-                            viewModel.toggledecisionDialog(
-                                showdecisionDialog = true,
-                                deletionType = DeletionType.BATCH
-                            )
-                        },
-                    )
+                        SupplyDetailContent(
+                            supply = uiState.supplyBatchList!!,
+                            onClickAddSupplyBatch = {},
+                            onClickDelete = {
+                                // When you press delete in the details, we display the dialog
+                                viewModel.toggledecisionDialog(
+                                    showdecisionDialog = true,
+                                    deletionType = DeletionType.SUPPLY,
+                                )
+                            },
+                            onClickModify = onClickModify,
+                            viewAllBatches = { date, supplyId ->
+                                // convert incoming date (dd/MM/yyyy or other) to SQL yyyy-MM-dd before forwarding
+                                val sqlDate = toSqlDate(date)
+                                onViewBatches(sqlDate, supplyId)
+                            },
+                            deleteSupplyBatch = { batchId ->
+                                viewModel.selectedBatchExpirationDate = batchId
+                                viewModel.toggledecisionDialog(
+                                    showdecisionDialog = true,
+                                    deletionType = DeletionType.BATCH,
+                                )
+                            },
+                        )
                 }
             }
         }

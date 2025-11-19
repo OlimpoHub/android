@@ -17,6 +17,7 @@ import com.app.arcabyolimpo.domain.model.supplies.SuccessMessage
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.domain.model.supplies.SupplyAdd
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
+import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchList
 import com.app.arcabyolimpo.domain.model.supplies.WorkshopCategoryList
 import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -244,5 +245,17 @@ class SupplyRepositoryImpl
                 )
             val responseDto = api.modifySupplyBatch(id, dto)
             return responseDto.toDomain()
+        }
+
+        /**
+         *
+         */
+        override suspend fun supplyBatchList(
+            expirationDate: String,
+            idSupply: String,
+        ): SupplyBatchList {
+            val response = api.supplyBatchList(expirationDate, idSupply)
+            val combinedItems = response.flatMap { it.batch }
+            return SupplyBatchList(batch = combinedItems.map { it.toDomain() })
         }
     }

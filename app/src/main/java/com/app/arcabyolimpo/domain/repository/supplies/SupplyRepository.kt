@@ -11,6 +11,7 @@ import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.domain.model.supplies.SupplyAdd
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatch
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
+import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchList
 import com.app.arcabyolimpo.domain.model.supplies.WorkshopCategoryList
 
 /**
@@ -74,4 +75,9 @@ interface SupplyRepository {
         id: String,
         batch: RegisterSupplyBatch,
     ): SuccessMessage
+
+    suspend fun supplyBatchList(
+        expirationDate: String,
+        idSupply: String,
+    ): SupplyBatchList
 }

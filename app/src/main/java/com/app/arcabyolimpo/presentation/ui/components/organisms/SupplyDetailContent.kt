@@ -36,6 +36,29 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.SupplyBatchRow
 import com.app.arcabyolimpo.presentation.ui.components.molecules.TextValue
 import com.app.arcabyolimpo.ui.theme.White
 
+private fun formatToIso(dateStr: String): String {
+    if (dateStr.isBlank()) return ""
+    return try {
+        // Expecting dd/MM/yyyy -> convert to yyyy-MM-dd
+        if (dateStr.contains("/")) {
+            val parts = dateStr.split('/')
+            if (parts.size == 3) {
+                val d = parts[0].toIntOrNull() ?: return dateStr
+                val m = parts[1].toIntOrNull() ?: return dateStr
+                val y = parts[2].toIntOrNull() ?: return dateStr
+                String.format("%04d-%02d-%02d", y, m, d)
+            } else {
+                dateStr
+            }
+        } else {
+            // If already looks like yyyy-MM-dd or another format, return as-is
+            dateStr
+        }
+    } catch (e: Exception) {
+        dateStr
+    }
+}
+
 /** ---------------------------------------------------------------------------------------------- *
  * SupplyDetailContent -> Its the container of the view that its just called in the main
  * SuppliesDetailScreen, has the information of the Supply and its batches and its the bridge to
@@ -54,7 +77,7 @@ fun SupplyDetailContent(
     onClickAddSupplyBatch: () -> Unit,
     onClickDelete: () -> Unit,
     onClickModify: () -> Unit,
-    modifySupplyBatch: (String) -> Unit,
+    viewAllBatches: (String, String) -> Unit,
     deleteSupplyBatch: (String) -> Unit,
 ) {
     val batches = supply.batch
@@ -153,11 +176,12 @@ fun SupplyDetailContent(
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 if (batches[0].expirationDate != "") {
+                    val headerIso = formatToIso(batches[0].expirationDate)
                     FilterIcon(
                         modifier =
                             Modifier
                                 .size(28.dp)
-                                .clickable { /* Implements the filter US */ },
+                                .clickable { viewAllBatches(headerIso, supply.id) },
                     )
                 }
 
@@ -181,16 +205,17 @@ fun SupplyDetailContent(
                     modifier = Modifier.padding(vertical = 8.dp),
                 )
             } else {
-              batches.forEachIndexed { index, batch ->
-                  SupplyBatchRow(
-                      batchId = batch.id,
-                      quantity = batch.quantity,
-                      date = batch.expirationDate,
-                      adquisition = batch.adquisitionType,
-                      onModifyClick = { modifySupplyBatch(batch.id) },
-                      onDeleteClick = { deleteSupplyBatch(batch.id) },
-                  )
-              }
+                batches.forEachIndexed { index, batch ->
+                    val isoDate = formatToIso(batch.expirationDate)
+                    SupplyBatchRow(
+                        batchId = batch.id,
+                        quantity = batch.quantity,
+                        date = isoDate,
+                        adquisition = batch.adquisitionType,
+                        onViewClick = { date -> viewAllBatches(date, supply.id) },
+                        onDeleteClick = { deleteSupplyBatch(batch.id) },
+                    )
+                }
             }
         }
 

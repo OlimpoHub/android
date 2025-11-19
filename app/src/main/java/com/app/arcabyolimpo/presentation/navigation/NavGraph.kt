@@ -35,6 +35,7 @@ import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchRegi
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchesList.ProductBatchesListScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
+import com.app.arcabyolimpo.presentation.screens.supply.supplyBatchList.SupplyBatchListScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplybatchmodify.SupplyBatchModifyScreen
@@ -135,6 +136,13 @@ sealed class Screen(
     object SupplyBatchModify : Screen("supply_batch_modify/{id}") {
         fun createRoute(batchId: String) = "supply_batch_modify/$batchId"
     }
+
+    object SupplyBatchList : Screen("supply_batch_list/dates/{date}?idInsumo={idInsumo}") {
+        fun createRoute(
+            date: String,
+            idInsumo: String,
+        ) = "supply_batch_list/dates/$date?idInsumo=$idInsumo"
+    }
 }
 
 /**
@@ -172,7 +180,7 @@ fun ArcaNavGraph(
     NavHost(
         navController = navController,
         // TODO: Cambiar a Screen.Splash.route cuando acabe
-        startDestination = Screen.SupplyBatchModify.route,
+        startDestination = Screen.SuppliesList.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -525,7 +533,7 @@ fun ArcaNavGraph(
         ) { backStackEntry ->
             val batchId = backStackEntry.arguments?.getString("id") ?: ""
             SupplyBatchModifyScreen(
-                supplyBatchId = "0e69a75c-b9e7-11f0-b6b8-020161fa237d",
+                supplyBatchId = batchId,
                 onRegisterClick = {
                     navController.popBackStack()
                 },
@@ -552,17 +560,13 @@ fun ArcaNavGraph(
                 onClickModify = {
                     // TODO: Add when delete a supply is ready
                 },
-                modifySupplyBatch = { batchId ->
+                onViewBatches = { date, supplyId ->
+                    // Navigate to the batch list for this supply and date.
                     try {
-                        if (batchId.isNotBlank()) {
-                            navController.navigate(
-                                Screen.SupplyBatchModify.createRoute(batchId),
-                            )
-                        } else {
-                            android.util.Log.w("NavGraph", "modifySupplyBatch called with blank batchId, skipping navigation")
-                        }
+                        android.util.Log.d("NavGraph", "Navigating to SupplyBatchList with date=$date, idSupply=$supplyId")
+                        navController.navigate(Screen.SupplyBatchList.createRoute(date, supplyId))
                     } catch (e: Exception) {
-                        android.util.Log.e("NavGraph", "Failed to navigate to SupplyBatchModify", e)
+                        android.util.Log.e("NavGraph", "Failed to navigate to SupplyBatchList", e)
                     }
                 },
                 deleteSupplyBatch = {
@@ -708,6 +712,34 @@ fun ArcaNavGraph(
                 onDeleted = {
                     navController.popBackStack()
                 },
+            )
+        }
+
+        composable(
+            Screen.SupplyBatchList.route,
+            arguments =
+                listOf(
+                    navArgument("date") { type = NavType.StringType },
+                    navArgument("idInsumo") {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    },
+                ),
+        ) { backStackEntry ->
+            val date = backStackEntry.arguments?.getString("date") ?: ""
+            val idInsumo = backStackEntry.arguments?.getString("idInsumo") ?: ""
+            android.util.Log.d("NavGraph", "SupplyBatchList args received: date=$date, idInsumo=$idInsumo")
+            SupplyBatchListScreen(
+                supplyId = idInsumo,
+                supplyName = "",
+                date = date,
+                onModifyClick = { batchId ->
+                    android.util.Log.d("NavGraph", "Modify clicked, batchId=$batchId")
+                    if (batchId.isNotBlank()) {
+                        navController.navigate(Screen.SupplyBatchModify.createRoute(batchId))
+                    }
+                },
+                onBackClick = { navController.popBackStack() },
             )
         }
     }

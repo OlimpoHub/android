@@ -17,6 +17,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import android.util.Log
+import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -41,7 +42,7 @@ fun SupplyBatchRow(
     quantity: Int,
     date: String,
     adquisition: String,
-    onModifyClick: (String) -> Unit,
+    onViewClick: (String) -> Unit,
     onDeleteClick: () -> Unit,
 ) {
     val TAG = "SupplyBatchRow"
@@ -94,15 +95,15 @@ fun SupplyBatchRow(
             ) {
                 Row {
                     IconButton(
-                            onClick = {
-                                Log.d(TAG, "Modify clicked for batchId=$batchId")
-                                onModifyClick(batchId)
-                            },
-                            modifier = Modifier.padding(end = 2.dp),
-                        ) {
+                        onClick = {
+                            Log.d(TAG, "View clicked for batchId=$batchId, date=$date")
+                            onViewClick(date)
+                        },
+                        modifier = Modifier.padding(end = 2.dp),
+                    ) {
                         Icon(
-                            imageVector = Icons.Filled.Create,
-                            contentDescription = "modify",
+                            imageVector = Icons.Filled.Visibility,
+                            contentDescription = "view",
                             tint = White,
                         )
                     }
