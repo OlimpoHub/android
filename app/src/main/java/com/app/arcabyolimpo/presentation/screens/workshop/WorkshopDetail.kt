@@ -51,6 +51,7 @@ import kotlinx.coroutines.launch
 fun WorkshopDetailScreen(
     navController: NavHostController,
     workshopId: String,
+    onModifyClick: (String) -> Unit,
     viewModel: WorkshopDetailViewModel = hiltViewModel()
 ) {
     val workshop by viewModel.workshop.collectAsState()
@@ -64,6 +65,7 @@ fun WorkshopDetailScreen(
     val scope = rememberCoroutineScope()
     // We collect the state exposed by the ViewModel, reacting to changes
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
 
     // In this case, if there is no error in the uiState,
     // we consider it a success.
@@ -276,6 +278,7 @@ fun WorkshopDetailScreen(
                     ModifyButton(
                         modifier = Modifier.size(width = 112.dp, height = 40.dp),
                         onClick = {
+                            onModifyClick(workshopId)
                         }
                     )
                 }

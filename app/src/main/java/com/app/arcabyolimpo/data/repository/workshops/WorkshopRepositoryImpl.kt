@@ -125,4 +125,24 @@ class WorkshopRepositoryImpl
         Log.d("Validacion", "Si llego ")
     }
 
+    override suspend fun modifyWorkshop(modifiedWorkshop: WorkshopDto): Workshop {
+        val workshopId = modifiedWorkshop.id
+        val response = api.modifyWorkshop(
+            id = workshopId!!,
+            requestBody = modifiedWorkshop
+        )
+        return Workshop(
+            id = modifiedWorkshop.id,
+            idUser = modifiedWorkshop.idUser,
+            nameWorkshop = modifiedWorkshop.name,
+            url = modifiedWorkshop.image,
+            status = modifiedWorkshop.status,
+            description = modifiedWorkshop.description,
+            startHour = modifiedWorkshop.startHour,
+            finishHour = modifiedWorkshop.finishHour,
+            date = modifiedWorkshop.date,
+            videoTraining = modifiedWorkshop.videoTraining
+        )
+    }
+
 }

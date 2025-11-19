@@ -179,6 +179,14 @@ interface ArcaApi {
         @Body requestBody: WorkshopDto,
     ): AddNewWorkshopDto
 
+    @POST("workshop/modify/{idTaller}")
+    suspend fun modifyWorkshop(
+        @Path("idTaller") id: String,
+        @Body requestBody: WorkshopDto,
+    ): AddNewWorkshopDto
+
+
+
     /**
      * Deletes a single Workshop from the backend.
      *
