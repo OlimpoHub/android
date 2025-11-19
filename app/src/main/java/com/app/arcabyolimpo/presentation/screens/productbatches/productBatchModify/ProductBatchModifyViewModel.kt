@@ -9,6 +9,8 @@ import com.app.arcabyolimpo.domain.usecase.productbatches.ModifyProductBatchUseC
 import com.app.arcabyolimpo.presentation.screens.productbatches.mapper.toDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,14 +27,95 @@ class ProductBatchModifyViewModel
             value: String,
         ) {
             when (field) {
-                "precioVenta" -> uiState = uiState.copy(precioVenta = value)
-                "cantidadProducida" -> uiState = uiState.copy(cantidadProducida = value)
-                "fechaCaducidad" -> uiState = uiState.copy(fechaCaducidad = value)
-                "fechaRealizacion" -> uiState = uiState.copy(fechaRealizacion = value)
+                "precioVenta" ->
+                    uiState =
+                        uiState.copy(
+                            precioVenta = value,
+                            isPrecioVentaError = false,
+                        )
+                "cantidadProducida" ->
+                    uiState =
+                        uiState.copy(
+                            cantidadProducida = value,
+                            isCantidadProducidaError = false,
+                        )
+                "fechaCaducidad" ->
+                    uiState =
+                        uiState.copy(
+                            fechaCaducidad = value,
+                            isFechaCaducidadError = false,
+                        )
+                "fechaRealizacion" ->
+                    uiState =
+                        uiState.copy(
+                            fechaRealizacion = value,
+                            isFechaRealizacionError = false,
+                        )
             }
         }
 
-        fun modify(
+        fun validateAndModify(
+            id: String,
+            onSuccess: () -> Unit,
+        ) {
+            val precioVentaInvalid = uiState.precioVenta.isBlank()
+            val cantidadProducidaInvalid = uiState.cantidadProducida.isBlank() || uiState.cantidadProducida == "0"
+            val fechaRealizacionInvalid = uiState.fechaRealizacion.isBlank()
+
+            var fechaCaducidadInvalid = false
+
+            if (uiState.fechaCaducidad.isNotBlank()) {
+                if (uiState.fechaRealizacion.isNotBlank()) {
+                    if (isDateBefore(uiState.fechaCaducidad, uiState.fechaRealizacion)) {
+                        fechaCaducidadInvalid = true
+                    }
+                }
+            }
+
+            uiState =
+                uiState.copy(
+                    isPrecioVentaError = precioVentaInvalid,
+                    isCantidadProducidaError = cantidadProducidaInvalid,
+                    isFechaCaducidadError = fechaCaducidadInvalid,
+                    isFechaRealizacionError = fechaRealizacionInvalid,
+                )
+
+            val hasError =
+                listOf(
+                    precioVentaInvalid,
+                    cantidadProducidaInvalid,
+                    fechaCaducidadInvalid,
+                    fechaRealizacionInvalid,
+                ).any { it }
+
+            if (!hasError) {
+                modify(
+                    id = id,
+                    onSuccess = onSuccess,
+                )
+            }
+        }
+
+        private fun isDateBefore(
+            finalDate: String,
+            referenceDate: String,
+        ): Boolean =
+            try {
+                val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
+                val date1 = format.parse(finalDate)
+                val date2 = format.parse(referenceDate)
+
+                if (date1 != null && date2 != null) {
+                    date1.before(date2)
+                } else {
+                    false
+                }
+            } catch (e: Exception) {
+                true
+            }
+
+        private fun modify(
             id: String,
             onSuccess: () -> Unit,
         ) {
