@@ -1,10 +1,23 @@
+## [0.1.0] - 18/11/2025
+
+### Fixed
+- Fixed the possibility to add or modify one supply with the same name
+- Fixed the date format in supplyDetailContent screen
+- Fixed error in register workshop
+- Fixed error in view Workshops after a delete
+
+### Added
+- US for RBAC main screens and navigation accross the app
+- Added filter and order supply batches
+
 ## [0.1.0] - 17/11/2025
 
 ### Changed
  - UploadImageInput modified to not save persistantly the photo, instead to 
    receive the URI value from the view model  
-   
-### Added
+
+## [0.1.0] - 17/11/2025
+
 - US for modify Supply with MVVM and clean architecture principles
 - Delete supply batch
 - Added filter and order products
@@ -30,6 +43,9 @@
 
 ## [0.1.0] - 15/11/2025
 ### Fixed
+
+### Fixed
+- Fixed merge conflicts with products
 
 ## [0.1.0] - 15/11/2025
 

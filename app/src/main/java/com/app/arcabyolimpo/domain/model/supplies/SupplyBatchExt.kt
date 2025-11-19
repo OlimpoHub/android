@@ -24,3 +24,15 @@ data class Batch(
     val expirationDate: String = "",
     val adquisitionType: String = "",
 )
+
+/** ---------------------------------------------------------------------------------------------- *
+ * FilteredBatch -> Secondary class that contains all the extra attributes from a supply batch
+ * ---------------------------------------------------------------------------------------------- */
+
+data class FilteredBatch(
+    val id: String = "",
+    val idSupply: String = "",
+    val quantity: Int = 0,
+    val expirationDate: String = "",
+    val adquisitionType: String = "",
+)

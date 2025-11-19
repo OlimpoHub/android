@@ -2,15 +2,18 @@ package com.app.arcabyolimpo.data.repository.supplies
 
 import android.content.Context
 import android.net.Uri
+import retrofit2.HttpException
 import android.util.Log
 import com.app.arcabyolimpo.data.mapper.supplies.toDomain
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteSupplyBatchDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.FilterRequestDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.RegisterSupplyBatchDto
 import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.domain.model.supplies.Acquisition
+import com.app.arcabyolimpo.domain.model.supplies.Batch
 import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
 import com.app.arcabyolimpo.domain.model.supplies.SuccessMessage
 import com.app.arcabyolimpo.domain.model.supplies.Supply
@@ -22,8 +25,11 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
+import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.String
 
 /**
  * Retrieves detailed information for a specific supply by its [id].
@@ -76,6 +82,32 @@ class SupplyRepositoryImpl
          * getSupplyBatchById -> calls the API to fetch a supply batch by its ID.
          * --------------------------------------------------------------------------------------- */
         override suspend fun getSupplyBatchById(id: String): SupplyBatchExt = api.getSupplyBatchById(id).toDomain()
+
+        /**
+         * Sends a filter request to the API and maps the response to a list of [Batch].
+         *
+         * @param idSupply The ID of the supply being filtered.
+         * @param filters The filter data selected by the user.
+         * @return A list of filtered batches.
+         */
+        override suspend fun filterSupplyBatch(idSupply: String, filters: FilterDto): List<Batch> {
+            val body = FilterRequestDto(
+                idSupply = idSupply,
+                filters = filters.filters,
+                order = filters.order
+            )
+
+            val response = api.filterSupplyBatch(body)
+            return response.map { it.toDomain() }
+        }
+
+
+        /**
+         * Fetches available filter metadata and maps it to [FilterData].
+         *
+         * @return The available filter categories and values.
+         */
+        override suspend fun getFilterBatchData(): FilterData = api.getFilterSupplyBatch().toDomain()
 
         /**
          * Register a new supply batch in the backend.
@@ -213,6 +245,20 @@ class SupplyRepositoryImpl
                     imagenInsumo = imagePart,
                 )
                 Result.success(Unit)
+            } catch (e: HttpException) {
+                // 1. Capturamos errores HTTP (400, 404, 500)
+                val error = e.response()?.errorBody()?.string()
+                val message = try {
+                    JSONObject(error ?: "").getString("message")
+
+                } catch (jsonException: Exception) {
+                    "Error al agregar insumo: ${e.message()}"
+
+                }
+                Result.failure(Exception(message))
+            } catch (e: IOException) {
+                Result.failure(Exception("No hay conexión a internet"))
+
             } catch (e: Exception) {
                 Result.failure(e)
             }
@@ -260,6 +306,19 @@ class SupplyRepositoryImpl
                     imagenInsumo = imagePart,
                 )
                 Result.success(Unit)
+            } catch (e: HttpException) {
+                val error = e.response()?.errorBody()?.string()
+                val message = try {
+                    JSONObject(error ?: "").getString("message")
+
+                } catch (jsonException: Exception) {
+                    "Error al modificar insumo: ${e.message()}"
+                }
+                Result.failure(Exception(message))
+
+            } catch (e: IOException) {
+                Result.failure(Exception("No hay conexión a internet"))
+
             } catch (e: Exception) {
                 Result.failure(e)
             }

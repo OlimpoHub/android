@@ -13,6 +13,9 @@ class SessionViewModel
     constructor(
         private val sessionManager: SessionManager,
     ) : ViewModel() {
+        val username = sessionManager.getUsername()
+        val role = sessionManager.getUserRole()
+
         fun logout() {
             viewModelScope.launch {
                 sessionManager.logout()
