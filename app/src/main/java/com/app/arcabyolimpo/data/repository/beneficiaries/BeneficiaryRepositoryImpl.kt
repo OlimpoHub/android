@@ -36,6 +36,7 @@ class BeneficiaryRepositoryImpl
          */
         override suspend fun getBeneficiariesList(): List<Beneficiary> {
             val response = api.getBeneficiariesList()
+
             return response.map { dto ->
                 val fullName =
                     listOfNotNull(
@@ -140,6 +141,10 @@ class BeneficiaryRepositoryImpl
 
         override suspend fun addBeneficiary(newBeneficiary: BeneficiaryDto): Beneficiary {
             val response = api.addBeneficiary(newBeneficiary)
+
+            if (!response.success) {
+                throw Exception(response.message)
+            }
 
             val fullName = listOfNotNull(
                 newBeneficiary.firstName,
