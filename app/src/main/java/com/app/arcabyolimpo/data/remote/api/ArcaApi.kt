@@ -261,6 +261,7 @@ interface ArcaApi {
         @Part imagenInsumo: MultipartBody.Part?,
     )
 
+    // productBatch -------------
     @Multipart
     @PUT("supplies/update/{idSupply}")
     suspend fun updateSupply(
@@ -271,7 +272,7 @@ interface ArcaApi {
         @Part("idCategoria") idCategory: RequestBody,
         @Part("status") status: RequestBody,
         @Part imagenInsumo: MultipartBody.Part?,
-    )
+
 
     @GET("productBatch/")
     suspend fun getProductBatches(): List<ProductBatchDto>
@@ -291,6 +292,12 @@ interface ArcaApi {
         @Path("id") id: String,
         @Body batch: ProductBatchModifyDto,
     )
+
+    @GET("productBatch/search")
+    suspend fun searchProductBatch(@Query("q") term: String): List<ProductBatchDto>
+
+    @POST("productBatch/filter")
+    suspend fun filterProductBatch(@Body filters: FilterDto): List<ProductBatchDto>
 
     @DELETE("productBatch/{id}")
     suspend fun deleteProductBatch(

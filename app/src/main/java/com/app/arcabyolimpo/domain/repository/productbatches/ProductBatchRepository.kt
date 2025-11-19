@@ -2,6 +2,7 @@ package com.app.arcabyolimpo.domain.repository.productbatches
 
 import com.app.arcabyolimpo.data.mapper.productbatches.toDto
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
+import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.domain.model.productbatches.ProductBatch
 
 interface ProductBatchRepository {
@@ -18,6 +19,10 @@ interface ProductBatchRepository {
         batch: ProductBatch,
         id: String,
     )
+
+    suspend fun searchProductBatch(term: String): List<ProductBatch>
+
+    suspend fun filterProductBatch(filters: FilterDto): List<ProductBatch>
 
     suspend fun deleteProductBatch(id: String)
 }
