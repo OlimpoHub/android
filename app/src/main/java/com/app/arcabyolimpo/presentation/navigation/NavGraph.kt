@@ -55,6 +55,7 @@ import com.app.arcabyolimpo.presentation.screens.user.updateuser.UpdateUserScree
 import com.app.arcabyolimpo.presentation.screens.workshop.AddNewWorkshopScreen
 import com.app.arcabyolimpo.presentation.screens.workshop.WorkshopDetailScreen
 import com.app.arcabyolimpo.presentation.screens.workshop.WorkshopsListScreen
+import com.app.arcabyolimpo.presentation.screens.workshop.modifyWorkshopScreen
 
 /**
  * Defines all available destinations (routes) in the application.
@@ -109,6 +110,10 @@ sealed class Screen(
     }
 
     object AddNewWorkshop : Screen("workshop/add")
+
+    object ModifyWorkshop : Screen("workshop/modify/{idTaller}"){
+        fun createRoute(idTaller: String) = "workshop/modify/$idTaller"
+    }
 
     object BeneficiaryList : Screen("beneficiary_list")
 
@@ -477,7 +482,11 @@ fun ArcaNavGraph(
             arguments = listOf(navArgument("id") { type = NavType.StringType }),
         ) { backStackEntry ->
             val workshopId = backStackEntry.arguments?.getString("id") ?: ""
-            WorkshopDetailScreen(navController, workshopId)
+            WorkshopDetailScreen(navController,
+                workshopId,
+                onModifyClick = { workshopId ->
+                    navController.navigate(Screen.ModifyWorkshop.createRoute(workshopId))
+                })
         }
 
         /**
@@ -498,6 +507,19 @@ fun ArcaNavGraph(
                 onSuccess = {
                     navController.popBackStack()
                 },
+            )
+        }
+
+        composable(
+            route = Screen.ModifyWorkshop.route,
+            arguments = listOf(navArgument("idTaller") { type = NavType.StringType }),
+
+        ){ backStackEntry ->
+            val workshopId = backStackEntry.arguments?.getString("idTaller") ?: ""
+            modifyWorkshopScreen(
+                navController = navController,
+                viewModel = hiltViewModel(),
+                workshopId = workshopId
             )
         }
 
