@@ -35,6 +35,12 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.status.InactiveStat
 import com.app.arcabyolimpo.presentation.ui.components.molecules.SupplyBatchRow
 import com.app.arcabyolimpo.presentation.ui.components.molecules.TextValue
 import com.app.arcabyolimpo.ui.theme.White
+import formatExpirationDate
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 /** ---------------------------------------------------------------------------------------------- *
  * SupplyDetailContent -> Its the container of the view that its just called in the main
@@ -184,7 +190,7 @@ fun SupplyDetailContent(
               batches.forEachIndexed { index, batch ->
                   SupplyBatchRow(
                       quantity = batch.quantity,
-                      date = batch.expirationDate,
+                      date = formatExpirationDate(rawDate = batch.expirationDate),
                       adquisition = batch.adquisitionType,
                       onModifyClick = modifySupplyBatch,
                       onDeleteClick = { deleteSupplyBatch(batch.id) },
