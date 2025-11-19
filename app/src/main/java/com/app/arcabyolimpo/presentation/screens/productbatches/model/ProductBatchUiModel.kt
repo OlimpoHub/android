@@ -28,6 +28,11 @@ data class ProductBatchUiModel(
     val imagen: String?,
     val disponible: String,
     val idInventario: String,
+
+    val precioVenta: Double,
+    val fechaCaducidad: String?,
+    val fechaRealizacion: String,
+
     val precioVentaFormatted: String,
     val cantidadProducida: Int,
     val fechaCaducidadFormatted: String?,
