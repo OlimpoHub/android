@@ -31,6 +31,7 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.FilterIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SearchInput
+import com.app.arcabyolimpo.presentation.ui.components.molecules.FunctionalNavBar
 import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
 import com.app.arcabyolimpo.presentation.ui.components.molecules.WorkshopCard
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
@@ -101,11 +102,6 @@ fun WorkshopsListScreen(
                     AddButton(
                         onClick = { navController.navigate(Screen.AddNewWorkshop.route) }
                     )
-                },
-                bottomBar = {
-                    Box(modifier = Modifier.padding(bottom = 8.dp)) {
-                        NavBar()
-                    }
                 }
             ) { padding ->
                 Column(

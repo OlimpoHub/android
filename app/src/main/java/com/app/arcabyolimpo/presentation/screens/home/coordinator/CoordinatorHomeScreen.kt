@@ -23,8 +23,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.app.arcabyolimpo.presentation.navigation.Screen
+import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
 import com.app.arcabyolimpo.presentation.screens.home.HomeScreen
 import com.app.arcabyolimpo.presentation.screens.home.InventoryScreen
+import com.app.arcabyolimpo.presentation.screens.workshop.WorkshopsListScreen
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
 import com.app.arcabyolimpo.presentation.ui.components.molecules.FunctionalNavBar
 
@@ -44,15 +47,19 @@ fun CoordinatorHomeScreen(navController: NavHostController) {
         modifier = Modifier.fillMaxSize(),
     ) {
         Box(
-            modifier =
-                Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .background(Color(0xFF040610)),
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .background(Color(0xFF040610)),
         ) {
             when (selectedTab) {
                 0 -> HomeScreen(navController)
-                1 -> Text("Pantalla Talleres")
+                1 -> WorkshopsListScreen(
+                    navController = navController,
+                    workshopClick = { id ->
+                        navController.navigate(Screen.WorkshopDetail.createRoute(id))
+                    }
+                )
                 2 ->
                     TopAppBar(
                         title = {
@@ -74,7 +81,14 @@ fun CoordinatorHomeScreen(navController: NavHostController) {
                         },
                     )
                 3 -> InventoryScreen(navController)
-                4 -> Text("Pantalla Beneficiarios")
+                4 -> BeneficiaryListScreen(
+                    navController = navController,
+                    onBeneficiaryClick = { beneficiaryId ->
+                        navController.navigate(Screen.BeneficiaryDetail.createRoute(beneficiaryId))
+                    },
+                    onFilterClick = {  },
+                    onNotificationClick = { }
+                )
             }
         }
         FunctionalNavBar(
