@@ -6,6 +6,7 @@
  - US for modify User with MVVM and clean architecture principles.
 
 ### Fixed
+- Product add necesary image
 - Fixed search bar in workshop list.
 - Fixed the product error message
 - Error now properly appearing when registering new beneficiary
