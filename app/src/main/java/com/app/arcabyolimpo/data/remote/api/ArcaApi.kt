@@ -323,6 +323,9 @@ interface ArcaApi {
         @Query("q") query: String,
     ): List<ProductDto>
 
+    @GET("product/{id}")
+    suspend fun getProductById(@Path("id") productId: String): ProductDto?
+
     @GET("product/add")
     suspend fun getProductFilters(): ProductRegisterInfoDto
 

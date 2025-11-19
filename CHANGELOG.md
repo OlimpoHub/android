@@ -43,6 +43,9 @@
 ### Fixed
 
 
+### Fixed
+- Fixed merge conflicts with products
+
 ## [0.1.0] - 15/11/2025
 
 ### Added
