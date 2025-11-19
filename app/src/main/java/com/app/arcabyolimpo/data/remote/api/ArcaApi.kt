@@ -14,9 +14,9 @@ import com.app.arcabyolimpo.data.remote.dto.password.RecoverPasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
-import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchDto
 import com.app.arcabyolimpo.data.remote.dto.product.ProductDto
 import com.app.arcabyolimpo.data.remote.dto.product.ProductRegisterInfoDto
+import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchModifyDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchRegisterDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.AcquisitionDto
@@ -40,8 +40,8 @@ import com.app.arcabyolimpo.data.remote.dto.workshops.AddNewWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.DeleteResponseWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.DeleteWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
-import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopResponseDto
+import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -129,7 +129,7 @@ interface ArcaApi {
 
     @POST("/supplyBatch/filter")
     suspend fun filterSupplyBatch(
-        @Body body: FilterRequestDto
+        @Body body: FilterRequestDto,
     ): List<FilteredBatchDto>
 
     @GET("supplyBatch/filter/data")
@@ -207,8 +207,6 @@ interface ArcaApi {
         // DeleteResponseDto is for the response, for the snackbar
     ): DeleteResponseWorkshopDto
 
-
-
     // Beneficiary -------------
     @GET("beneficiary/list")
     suspend fun getBeneficiariesList(): List<BeneficiariesListDto>
@@ -272,7 +270,7 @@ interface ArcaApi {
         @Part("idCategoria") idCategory: RequestBody,
         @Part("status") status: RequestBody,
         @Part imagenInsumo: MultipartBody.Part?,
-
+    )
 
     @GET("productBatch/")
     suspend fun getProductBatches(): List<ProductBatchDto>
@@ -294,10 +292,14 @@ interface ArcaApi {
     )
 
     @GET("productBatch/search")
-    suspend fun searchProductBatch(@Query("q") term: String): List<ProductBatchDto>
+    suspend fun searchProductBatch(
+        @Query("q") term: String,
+    ): List<ProductBatchDto>
 
     @POST("productBatch/filter")
-    suspend fun filterProductBatch(@Body filters: FilterDto): List<ProductBatchDto>
+    suspend fun filterProductBatch(
+        @Body filters: FilterDto,
+    ): List<ProductBatchDto>
 
     @DELETE("productBatch/{id}")
     suspend fun deleteProductBatch(
@@ -317,6 +319,7 @@ interface ArcaApi {
         @Part("Disponible") status: RequestBody,
         @Part image: MultipartBody.Part?,
     )
+
     @DELETE("product/{idProduct}")
     suspend fun deleteProduct(
         @Path("idProduct") idProduct: String,
@@ -331,7 +334,9 @@ interface ArcaApi {
     ): List<ProductDto>
 
     @GET("product/{id}")
-    suspend fun getProductById(@Path("id") productId: String): ProductDto?
+    suspend fun getProductById(
+        @Path("id") productId: String,
+    ): ProductDto?
 
     @GET("product/add")
     suspend fun getProductFilters(): ProductRegisterInfoDto
@@ -340,7 +345,6 @@ interface ArcaApi {
     suspend fun getProductsByAvailability(
         @Query("disponible") disponible: Int,
     ): List<ProductDto>
-
 
     @GET("product/workshop")
     suspend fun getProductsByWorkshop(
