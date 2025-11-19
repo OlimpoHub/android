@@ -1,3 +1,8 @@
+## [0.1.0] - 19/11/2025
+
+### Fixed
+- Fixed search bar in workshop list.
+
 ## [0.1.0] - 18/11/2025
 
 ### Fixed
