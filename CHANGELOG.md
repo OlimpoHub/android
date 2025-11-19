@@ -1,7 +1,9 @@
 ## [0.1.0] - 19/11/2025
 
 ### Added
-- US for modify User with MVVM and clean architecture principles.
+ - US for modify supply batch
+ - US for display of supply batches based on date and idSupply
+ - US for modify User with MVVM and clean architecture principles.
 
 ### Fixed
 - Fixed search bar in workshop list.

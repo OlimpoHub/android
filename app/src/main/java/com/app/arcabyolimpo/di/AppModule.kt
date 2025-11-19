@@ -10,8 +10,8 @@ import com.app.arcabyolimpo.data.repository.auth.UserRepositoryImpl
 import com.app.arcabyolimpo.data.repository.beneficiaries.BeneficiaryRepositoryImpl
 import com.app.arcabyolimpo.data.repository.disabilities.DisabilityRepositoryImpl
 import com.app.arcabyolimpo.data.repository.password.PasswordUserRepositoryImpl
-import com.app.arcabyolimpo.data.repository.productbatches.ProductBatchRepositoryImpl
 import com.app.arcabyolimpo.data.repository.product.ProductRepositoryImpl
+import com.app.arcabyolimpo.data.repository.productbatches.ProductBatchRepositoryImpl
 import com.app.arcabyolimpo.data.repository.supplies.SupplyRepositoryImpl
 import com.app.arcabyolimpo.data.repository.user.UsersRepositoryImpl
 import com.app.arcabyolimpo.data.repository.workshops.WorkshopRepositoryImpl
@@ -180,5 +180,4 @@ object AppModule {
     @Provides
     @Singleton
     fun provideProductBatchRepository(api: ArcaApi): ProductBatchRepository = ProductBatchRepositoryImpl(api)
-
 }

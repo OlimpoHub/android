@@ -19,6 +19,7 @@ import com.app.arcabyolimpo.data.remote.dto.supplies.AcquisitionDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchDto
 import com.app.arcabyolimpo.data.remote.dto.product.ProductDetailDto
 import com.app.arcabyolimpo.data.remote.dto.product.ProductRegisterInfoDto
+import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchModifyDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchRegisterDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
@@ -32,6 +33,9 @@ import com.app.arcabyolimpo.data.remote.dto.supplies.RegisterSupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuccessMessageDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuppliesListDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchItemDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchListDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchOneDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.WorkshopCategoryListDto
 import com.app.arcabyolimpo.data.remote.dto.user.UserDto
@@ -41,8 +45,9 @@ import com.app.arcabyolimpo.data.remote.dto.workshops.AddNewWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.DeleteResponseWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.DeleteWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
-import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopResponseDto
+import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
+import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -141,6 +146,11 @@ interface ArcaApi {
         @Path("id") id: String,
     ): SupplyBatchDto
 
+    @GET("supplyBatch/modify/{idSupplyBatch}")
+    suspend fun getSupplyBatchOne(
+        @Path("idSupplyBatch") idSupplyBatch: String,
+    ): SupplyBatchOneDto
+
     @POST("supplyBatch/addBatch")
     suspend fun registerSupplyBatch(
         @Body request: RegisterSupplyBatchDto,
@@ -207,8 +217,6 @@ interface ArcaApi {
         @Body requestBody: DeleteWorkshopDto,
         // DeleteResponseDto is for the response, for the snackbar
     ): DeleteResponseWorkshopDto
-
-
 
     // Beneficiary -------------
     @GET("beneficiary/list")
@@ -318,6 +326,7 @@ interface ArcaApi {
         @Part("Disponible") status: RequestBody,
         @Part image: MultipartBody.Part?,
     )
+
     @DELETE("product/{idProduct}")
     suspend fun deleteProduct(
         @Path("idProduct") idProduct: String,
@@ -342,7 +351,6 @@ interface ArcaApi {
         @Query("disponible") disponible: Int,
     ): List<ProductDto>
 
-
     @GET("product/workshop")
     suspend fun getProductsByWorkshop(
         @Query("idTaller") idTaller: String,
@@ -353,6 +361,24 @@ interface ArcaApi {
         @Query("orderBy") orderBy: String,
         @Query("direction") direction: String,
     ): List<ProductDto>
+
+    /**
+     * Modifies a supply batch.
+     *
+     * @param idSupplyBatch The ID of the supply batch to be modified.
+     */
+    @POST("supplyBatch/update/{idSupplyBatch}")
+    suspend fun modifySupplyBatch(
+        @Path("idSupplyBatch") idSupplyBatch: String,
+        @Body batch: RegisterSupplyBatchDto,
+    ): SuccessMessageDto
+
+    @GET("supplyBatch/dates/{date}/{idInsumo}")
+    suspend fun supplyBatchList(
+        @Path("date") expirationDate: String,
+        @Path("idInsumo") idSupply: String,
+    ): List<SupplyBatchItemDto>
+        
     @GET("product/{idProduct}/update")
     suspend fun getProduct(
         @Path("idProduct") idProduct: String,

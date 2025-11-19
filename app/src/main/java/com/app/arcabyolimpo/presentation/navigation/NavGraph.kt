@@ -38,9 +38,12 @@ import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchModi
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchRegister.ProductBatchRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchesList.ProductBatchesListScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
+import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
+import com.app.arcabyolimpo.presentation.screens.supply.supplyBatchList.SupplyBatchListScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
+import com.app.arcabyolimpo.presentation.screens.supply.supplybatchmodify.SupplyBatchModifyScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyUpdate.SupplyUpdateScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplybatchregister.SupplyBatchRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
@@ -143,6 +146,17 @@ sealed class Screen(
 
     object ProductDeleteTest : Screen("test_delete_product")
 
+    object SupplyBatchModify : Screen("supply_batch_modify/{id}") {
+        fun createRoute(batchId: String) = "supply_batch_modify/$batchId"
+    }
+
+    object SupplyBatchList : Screen("supply_batch_list/dates/{date}?idInsumo={idInsumo}") {
+        fun createRoute(
+            date: String,
+            idInsumo: String,
+        ) = "supply_batch_list/dates/$date?idInsumo=$idInsumo"
+    }
+    
     object ProductDetail : Screen("product/{productId}") {
         fun createRoute(productId: String) = "product/$productId"
     }
@@ -509,6 +523,17 @@ fun ArcaNavGraph(
             )
         }
 
+        /**
+         * Supply Batch Register Screen.
+         *
+         * This composable represents the screen where users can view and interact with
+         * the register of a new supply batch.
+         *
+         * It connects to the [SupplyBatchRegisterScreen] composable, which displays the UI and
+         * interacts with its corresponding [SupplyBatchRegisterViewModel] to handle data fetching,
+         * loading states, and errors.
+         *
+         */
         composable(
             Screen.RegisterBatchSupply.route,
             arguments = listOf(navArgument("supplyId") { type = NavType.StringType }),
@@ -525,6 +550,23 @@ fun ArcaNavGraph(
                 },
             )
         }
+
+        composable(
+            Screen.SupplyBatchModify.route,
+            arguments = listOf(navArgument("id") { type = NavType.StringType }),
+        ) { backStackEntry ->
+            val batchId = backStackEntry.arguments?.getString("id") ?: ""
+            SupplyBatchModifyScreen(
+                supplyBatchId = batchId,
+                onRegisterClick = {
+                    navController.popBackStack()
+                },
+                onBackClick = {
+                    navController.popBackStack()
+                },
+            )
+        }
+
         composable(
             route = Screen.SupplyDetail.route,
             arguments = listOf(navArgument("idSupply") { type = NavType.StringType }),
@@ -544,8 +586,14 @@ fun ArcaNavGraph(
                         navController.navigate(Screen.SupplyUpdate.createRoute(idSupply))
                     }
                 },
-                modifySupplyBatch = {
-                    // TODO: Add when delete a supply is ready
+                onViewBatches = { date, supplyId ->
+                    // Navigate to the batch list for this supply and date.
+                    try {
+                        android.util.Log.d("NavGraph", "Navigating to SupplyBatchList with date=$date, idSupply=$supplyId")
+                        navController.navigate(Screen.SupplyBatchList.createRoute(date, supplyId))
+                    } catch (e: Exception) {
+                        android.util.Log.e("NavGraph", "Failed to navigate to SupplyBatchList", e)
+                    }
                 },
                 deleteSupplyBatch = {
                     // TODO: Add when delete a supply is ready
@@ -747,6 +795,34 @@ fun ArcaNavGraph(
                 onCancel = {
                     navController.popBackStack()
                 },
+            )
+        }
+
+        composable(
+            Screen.SupplyBatchList.route,
+            arguments =
+                listOf(
+                    navArgument("date") { type = NavType.StringType },
+                    navArgument("idInsumo") {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    },
+                ),
+        ) { backStackEntry ->
+            val date = backStackEntry.arguments?.getString("date") ?: ""
+            val idInsumo = backStackEntry.arguments?.getString("idInsumo") ?: ""
+            android.util.Log.d("NavGraph", "SupplyBatchList args received: date=$date, idInsumo=$idInsumo")
+                SupplyBatchListScreen(
+                supplyId = idInsumo,
+                supplyName = "",
+                date = date,
+                onModifyClick = { batchId ->
+                    android.util.Log.d("NavGraph", "Modify clicked, batchId=$batchId")
+                    if (batchId.isNotBlank()) {
+                        navController.navigate(Screen.SupplyBatchModify.createRoute(batchId))
+                    }
+                },
+                onBackClick = { navController.popBackStack() },
             )
         }
 

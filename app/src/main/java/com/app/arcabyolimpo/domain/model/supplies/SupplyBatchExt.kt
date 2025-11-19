@@ -12,7 +12,7 @@ data class SupplyBatchExt(
     val workshop: String,
     val category: String,
     val status: Int,
-    val batch: List<Batch> = emptyList()
+    val batch: List<Batch> = emptyList(),
 )
 
 /** ---------------------------------------------------------------------------------------------- *
