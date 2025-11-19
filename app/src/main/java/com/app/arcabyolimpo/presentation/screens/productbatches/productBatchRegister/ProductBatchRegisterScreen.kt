@@ -119,6 +119,7 @@ fun ProductBatchRegisterScreen(
                 selectedOption = state.idProducto,
                 options = products,
                 isError = state.isIdProductoError,
+                errorMessage = if (state.isIdProductoError) "Selecciona un producto" else "",
                 onOptionSelected = { viewModel.onFieldChange("idProducto", it) },
                 modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
             )
@@ -132,12 +133,14 @@ fun ProductBatchRegisterScreen(
                 placeholder = "0.00",
                 keyboardType = KeyboardType.Decimal,
                 isError = state.isPrecioVentaError,
+                errorMessage = if (state.isPrecioVentaError) "Ingresa un precio de venta" else "",
             )
 
             NumberStepper(
                 label = "Cantidad producida",
                 value = state.cantidadProducida,
                 isError = state.isCantidadProducidaError,
+                errorMessage = if (state.isCantidadProducidaError) "Ingresa una cantidad mayor a 0" else "",
                 onValueChange = {
                     viewModel.onFieldChange("cantidadProducida", it)
                 },
@@ -161,6 +164,7 @@ fun ProductBatchRegisterScreen(
                     label = "Fecha de Elaboración",
                     value = state.fechaRealizacion,
                     isError = state.isFechaRealizacionError,
+                    errorMessage = if (state.isFechaRealizacionError) "Selecciona una fecha" else "",
                     onValueChange = {
                         viewModel.onFieldChange("fechaRealizacion", it)
                     },
@@ -173,6 +177,7 @@ fun ProductBatchRegisterScreen(
                     label = "Fecha de Caducidad",
                     value = state.fechaCaducidad,
                     isError = state.isFechaCaducidadError,
+                    errorMessage = if (state.isFechaCaducidadError) "Fecha no válida" else "",
                     onValueChange = {
                         viewModel.onFieldChange("fechaCaducidad", it)
                     },

@@ -24,6 +24,7 @@ fun DateInput(
     label: String = "Fecha de Elaboración",
     placeholder: String = "dd/MM/yyyy",
     isError: Boolean = false,
+    errorMessage: String = "",
     value: String = "",
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -47,6 +48,7 @@ fun DateInput(
         placeholder = placeholder,
         value = value,
         isError = isError,
+        errorMessage = errorMessage,
         onValueChange = { /* bloqueado para escritura */ },
         modifier =
             modifier
