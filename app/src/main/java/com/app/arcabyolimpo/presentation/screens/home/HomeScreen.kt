@@ -24,6 +24,7 @@ import androidx.navigation.NavHostController
 import com.app.arcabyolimpo.presentation.navigation.Screen
 import com.app.arcabyolimpo.presentation.screens.home.components.MainMenu
 import com.app.arcabyolimpo.presentation.screens.home.components.TopBarContent
+import com.app.arcabyolimpo.presentation.screens.qr.workshopselection.QrWorkshopsListScreen
 import com.app.arcabyolimpo.presentation.screens.user.UserListScreen
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
@@ -59,32 +60,10 @@ fun HomeScreen(navController: NavHostController) {
                 } else {
                     when (selectedOption) {
                         "qr" ->
-                            TopAppBar(
-                                title = {
-                                    Text(
-                                        "QR Asistencia",
-                                        color = Color.White,
-                                        fontSize = 24.sp,
-                                        fontWeight = FontWeight.Bold,
-                                    )
-                                },
-                                navigationIcon = {
-                                    IconButton(onClick = { selectedOption = null }) {
-                                        Icon(
-                                            imageVector = Icons.Default.ArrowBack,
-                                            contentDescription = "Regresar",
-                                            tint = Color.White,
-                                        )
-                                    }
-                                },
-                                colors =
-                                    TopAppBarDefaults.topAppBarColors(
-                                        containerColor = Color(0xFF040610),
-                                    ),
-                                actions = {
-                                    IconButton(onClick = { }) {
-                                        NotificationIcon()
-                                    }
+                            QrWorkshopsListScreen(
+                                onBackClick = { selectedOption = null },
+                                workshopClick = { id, name ->
+                                    navController.navigate(Screen.CreateQr.createRoute(id, name))
                                 },
                             )
                         "users" ->
