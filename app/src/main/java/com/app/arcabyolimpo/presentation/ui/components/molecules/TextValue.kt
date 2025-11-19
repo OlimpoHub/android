@@ -1,16 +1,15 @@
 package com.app.arcabyolimpo.presentation.ui.components.molecules
 
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.app.arcabyolimpo.presentation.theme.Poppins
-import com.app.arcabyolimpo.ui.theme.White
+import androidx.compose.ui.text.style.TextOverflow
+import com.app.arcabyolimpo.presentation.ui.components.atoms.status.Poppins
 
 /** ---------------------------------------------------------------------------------------------- *
  * TextValue -> component that receives two Strings, the first one makes it bolder and the second
@@ -22,23 +21,26 @@ import com.app.arcabyolimpo.ui.theme.White
 @Composable
 fun TextValue(
     label: String,
-    value: String,
+    value: String
 ) {
-    Row {
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
         Text(
             text = "$label:",
-            color = White,
-            fontFamily = Poppins,
+            style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold,
-            fontSize = 15.sp,
+            color = Color.White
         )
-        Spacer(modifier = Modifier.width(4.dp))
         Text(
             text = value,
-            color = White,
-            fontFamily = Poppins,
-            fontWeight = FontWeight.Normal,
-            fontSize = 15.sp,
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color.White,
+            maxLines = Int.MAX_VALUE,
+            overflow = TextOverflow.Visible,
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }
+
+

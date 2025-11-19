@@ -18,7 +18,7 @@ import com.google.gson.annotations.SerializedName
 data class SupplyBatchDto(
     @SerializedName("idInsumo") val idSupply: String,
     @SerializedName("nombre") val name: String,
-    @SerializedName("imagenInsumo") val imageUrl: String,
+    @SerializedName("imagenInsumo") val imageUrl: String?,
     @SerializedName("unidadMedida") val unitMeasure: String,
     @SerializedName("cantidad") val totalQuantity: Int,
     @SerializedName("nombreTaller") val workshop: String,

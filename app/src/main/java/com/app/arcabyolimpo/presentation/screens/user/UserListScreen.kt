@@ -6,6 +6,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
@@ -17,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.app.arcabyolimpo.presentation.navigation.Screen
 import com.app.arcabyolimpo.presentation.screens.user.components.UserCard
 import com.app.arcabyolimpo.presentation.screens.user.register.UserRegisterScreen
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
@@ -58,6 +61,7 @@ fun UserListScreen(
     viewModel: UserListViewModel = hiltViewModel(),
     onCollabClick: (String) -> Unit,
     onAddClick: () -> Unit,
+    onBack: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
@@ -85,6 +89,15 @@ fun UserListScreen(
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
                         )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = { onBack() }) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "Regresar",
+                                tint = Color.White,
+                            )
+                        }
                     },
                     colors =
                         TopAppBarDefaults.topAppBarColors(
@@ -127,9 +140,6 @@ fun UserListScreen(
                     }
                 }
             }
-        },
-        bottomBar = {
-            NavBar()
         },
         floatingActionButton = {
             AddButton(

@@ -18,23 +18,34 @@ import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
 import com.app.arcabyolimpo.domain.model.auth.UserRole
 import com.app.arcabyolimpo.presentation.common.components.LoadingShimmer
 import com.app.arcabyolimpo.presentation.screens.accountactivation.AccountActivationScreen
+import com.app.arcabyolimpo.presentation.screens.beneficiary.AddNewBeneficiaryScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
-import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
+import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
 import com.app.arcabyolimpo.presentation.screens.home.assistant.CollaboratorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.home.coordinator.CoordinatorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.login.LoginScreen
 import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecoveryScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
+import com.app.arcabyolimpo.presentation.screens.product.addProduct.ProductAddScreen
+import com.app.arcabyolimpo.presentation.screens.product.updateProduct.ProductUpdateScreen
+import com.app.arcabyolimpo.presentation.screens.product.list.ProductListScreen
+import com.app.arcabyolimpo.presentation.screens.product.list.ProductListUiState
+import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDetailScreen
+// import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDeleteTestScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchDetail.ProductBatchDetailScreen
+import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchModify.ProductBatchModifyScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchRegister.ProductBatchRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchesList.ProductBatchesListScreen
 import com.app.arcabyolimpo.presentation.screens.qr.qr.QrScreen
 import com.app.arcabyolimpo.presentation.screens.qr.workshopselection.QrWorkshopsListScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
+import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
+import com.app.arcabyolimpo.presentation.screens.supply.supplyUpdate.SupplyUpdateScreen
+import com.app.arcabyolimpo.presentation.screens.supply.supplybatchregister.SupplyBatchRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
 import com.app.arcabyolimpo.presentation.screens.user.UserListScreen
@@ -96,9 +107,15 @@ sealed class Screen(
 
     object BeneficiaryList : Screen("beneficiary_list")
 
+    object RegisterBatchSupply : Screen("register-batch-supply/{supplyId}") {
+        fun createRoute(supplyId: String) = "register-batch-supply/$supplyId"
+    }
+
     object BeneficiaryDetail : Screen("beneficiary_detail/{beneficiaryId}") {
         fun createRoute(beneficiaryId: String) = "beneficiary_detail/$beneficiaryId"
     }
+
+    object AddNewBeneficiary : Screen("beneficiary/create")
 
     object SupplyDetail : Screen("supply/{idSupply}") {
         fun createRoute(idSupply: String) = "supply/$idSupply"
@@ -115,6 +132,28 @@ sealed class Screen(
     }
 
     object ProductBatchRegister : Screen("product_batch_register")
+
+    object ProductBatchModify : Screen("product_batch_modify/{batchId}") {
+        fun createRoute(batchId: String) = "product_batch_modify/$batchId"
+    }
+
+    object ProductAdd : Screen("product/add")
+
+    object ProductDeleteTest : Screen("test_delete_product")
+
+    object ProductDetail : Screen("product/{productId}") {
+        fun createRoute(productId: String) = "product/$productId"
+    }
+
+    object SupplyUpdate : Screen("supply/update/{idSupply}") {
+        fun createRoute(idSupply: String) = "supply/update/$idSupply"
+    }
+
+    object ProductUpdate : Screen("product/update/{idProduct}") {
+        fun createRoute(idProduct: String) = "product/update/$idProduct"
+    }
+
+    object ProductList : Screen("product/")
 
     object QrWorkshopSelection : Screen("qr/workshop_selection")
 
@@ -148,7 +187,7 @@ fun ArcaNavGraph(
      */
     LaunchedEffect(sessionManager) {
         sessionManager.sessionExpired.collect {
-            navController.navigate(Screen.Login.route) {
+            navController.navigate(Screen.ProductList.route) {
                 popUpTo(0) { inclusive = true }
                 launchSingleTop = true
             }
@@ -161,7 +200,7 @@ fun ArcaNavGraph(
     NavHost(
         navController = navController,
         // TODO: Cambiar a Screen.Splash.route cuando acabe
-        startDestination = Screen.Login.route,
+        startDestination = Screen.ProductList.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -172,14 +211,17 @@ fun ArcaNavGraph(
                         navController.navigate(Screen.CoordinatorHome.route) {
                             popUpTo(Screen.Splash.route) { inclusive = true }
                         }
+
                     UserRole.ASISTENTE ->
                         navController.navigate(Screen.CollaboratorHome.route) {
                             popUpTo(Screen.Splash.route) { inclusive = true }
                         }
+
                     UserRole.BECARIO ->
                         navController.navigate(Screen.CollaboratorHome.route) {
                             popUpTo(Screen.Splash.route) { inclusive = true }
                         }
+
                     null ->
                         navController.navigate(Screen.Login.route) {
                             popUpTo(Screen.Splash.route) { inclusive = true }
@@ -197,10 +239,12 @@ fun ArcaNavGraph(
                             navController.navigate(Screen.CoordinatorHome.route) {
                                 popUpTo(Screen.Login.route) { inclusive = true }
                             }
+
                         UserRole.ASISTENTE ->
                             navController.navigate(Screen.CollaboratorHome.route) {
                                 popUpTo(Screen.Login.route) { inclusive = true }
                             }
+
                         UserRole.BECARIO ->
                             navController.navigate(Screen.CollaboratorHome.route) {
                                 popUpTo(Screen.Login.route) { inclusive = true }
@@ -346,17 +390,6 @@ fun ArcaNavGraph(
             CollaboratorHomeScreen()
         }
 
-        composable(Screen.UserList.route) {
-            UserListScreen(
-                onCollabClick = { id ->
-                    navController.navigate(Screen.UserDetail.createRoute(id))
-                },
-                onAddClick = {
-                    navController.navigate(Screen.UserRegister.route)
-                },
-            )
-        }
-
         /** User Detail Screen */
         composable(
             route = Screen.UserDetail.route,
@@ -368,11 +401,7 @@ fun ArcaNavGraph(
                 onEditClick = { id ->
                     // TODO: Navigate to edit screen when you create it
                 },
-                onDeleteClick = {
-                    navController.navigate(Screen.UserList.route) {
-                        popUpTo(Screen.UserList.route) { inclusive = true }
-                    }
-                },
+                onDeleteClick = { navController.popBackStack() },
             )
         }
 
@@ -382,17 +411,6 @@ fun ArcaNavGraph(
                 onDismiss = { navController.popBackStack() },
                 onSuccess = {
                     navController.popBackStack()
-                },
-            )
-        }
-
-        composable(Screen.UserList.route) {
-            UserListScreen(
-                onCollabClick = { id ->
-                    navController.navigate(Screen.UserDetail.createRoute(id))
-                },
-                onAddClick = {
-                    navController.navigate(Screen.UserRegister.route)
                 },
             )
         }
@@ -480,6 +498,22 @@ fun ArcaNavGraph(
         }
 
         composable(
+            Screen.RegisterBatchSupply.route,
+            arguments = listOf(navArgument("supplyId") { type = NavType.StringType }),
+        ) { backStackEntry ->
+            val supplyId = backStackEntry.arguments?.getString("supplyId") ?: ""
+
+            SupplyBatchRegisterScreen(
+                supplyId = supplyId,
+                onRegisterClick = {
+                    navController.popBackStack()
+                },
+                onBackClick = {
+                    navController.popBackStack()
+                },
+            )
+        }
+        composable(
             route = Screen.SupplyDetail.route,
             arguments = listOf(navArgument("idSupply") { type = NavType.StringType }),
         ) { backStackEntry ->
@@ -488,13 +522,15 @@ fun ArcaNavGraph(
                 idInsumo = idSupply ?: "",
                 onBackClick = { navController.popBackStack() },
                 onClickAddSupplyBatch = {
-                    // TODO: Add when add a supply batch is ready
+                    navController.navigate(Screen.RegisterBatchSupply.createRoute(idSupply ?: ""))
                 },
                 onClickDelete = {
                     // TODO: Add when delete a supply is ready
                 },
                 onClickModify = {
-                    // TODO: Add when delete a supply is ready
+                    if (idSupply != null) {
+                        navController.navigate(Screen.SupplyUpdate.createRoute(idSupply))
+                    }
                 },
                 modifySupplyBatch = {
                     // TODO: Add when delete a supply is ready
@@ -510,7 +546,8 @@ fun ArcaNavGraph(
          * Shows the grid of beneficiaries.
          */
         composable(Screen.BeneficiaryList.route) {
-            BeneficiaryList(
+            BeneficiaryListScreen(
+                navController = navController,
                 onBeneficiaryClick = { beneficiaryId ->
                     navController.navigate(Screen.BeneficiaryDetail.createRoute(beneficiaryId))
                 },
@@ -550,6 +587,19 @@ fun ArcaNavGraph(
                 },
             )
         }
+        /**
+         * Add new beneficiary
+         */
+
+        composable(Screen.AddNewBeneficiary.route) {
+            AddNewBeneficiaryScreen(
+                navController = navController,
+                viewModel = hiltViewModel(),
+                onSuccess = {
+                    navController.popBackStack()
+                },
+            )
+        }
 
         /**
          * Product Batches List Screen.
@@ -582,6 +632,9 @@ fun ArcaNavGraph(
             val batchId = backStackEntry.arguments?.getString("batchId") ?: ""
             ProductBatchDetailScreen(
                 batchId = batchId,
+                onModifyClick = { id ->
+                    navController.navigate(Screen.ProductBatchModify.createRoute(id))
+                },
                 onBackClick = { navController.popBackStack() },
             )
         }
@@ -595,6 +648,110 @@ fun ArcaNavGraph(
             ProductBatchRegisterScreen(
                 onCreated = { navController.popBackStack() },
                 onBackClick = { navController.popBackStack() },
+            )
+        }
+
+        /**
+         * Product Batches Modify Screen.
+         *
+         * Allows the modification of a defined product batch.
+         */
+        composable(
+            route = Screen.ProductBatchModify.route,
+            arguments = listOf(navArgument("batchId") { type = NavType.StringType }),
+        ) { backStackEntry ->
+            val batchId = backStackEntry.arguments?.getString("batchId") ?: ""
+            ProductBatchModifyScreen(
+                batchId = batchId,
+                onModified = { navController.popBackStack() },
+                onBackClick = { navController.popBackStack() },
+            )
+        }
+
+        composable(Screen.ProductAdd.route) {
+            ProductAddScreen(
+                onSaveSuccess = {
+                    navController.popBackStack()
+                },
+                onCancel = {
+                    navController.popBackStack()
+                },
+            )
+        }
+
+        composable(Screen.ProductList.route) {
+            ProductListScreen(
+                onProductClick = { productId ->
+                    navController.navigate(Screen.ProductDetail.createRoute(productId))
+                },
+                onAddProductClick = {
+                    navController.navigate(Screen.ProductAdd.route)
+                },
+            )
+        }
+
+        composable(
+            route = Screen.ProductDetail.route,
+            arguments = listOf(navArgument("productId") { type = NavType.StringType }),
+        ) { backStackEntry ->
+            val productId = backStackEntry.arguments?.getString("productId") ?: ""
+            ProductDetailScreen(
+                productId = productId,
+                onBackClick = { navController.popBackStack() },
+                onEditClick = { id ->
+                    navController.navigate(Screen.ProductUpdate.createRoute(id))
+                },
+                onDeleteClick = {
+                },
+            )
+        }
+
+        /*
+        composable(Screen.ProductDeleteTest.route) {
+            ProductDeleteTestScreen(
+                onDeleted = {
+                    navController.popBackStack()
+                },
+            )
+        }
+         */
+
+        composable(
+            route = Screen.ProductUpdate.route,
+            arguments = listOf(
+                navArgument("idProduct") { type = NavType.StringType }
+            )
+        ) {
+            ProductUpdateScreen(
+                onModifyClick = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("shouldRefresh", true)
+
+                    navController.popBackStack()
+                },
+                onCancel = {
+                    navController.popBackStack()
+                },
+            )
+        }
+
+        composable(
+            route = Screen.SupplyUpdate.route,
+            arguments = listOf(navArgument("idSupply") { type = NavType.StringType })
+        ) { backStackEntry ->
+
+            SupplyUpdateScreen(
+                onModifyClick = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("shouldRefresh", true)
+
+                    navController.popBackStack()
+                },
+                onCancel = {
+                    navController.popBackStack()
+                }
             )
         }
 

@@ -1,14 +1,95 @@
+## [0.1.0] - 19/11/2025
+
+### Fixed
+- Fixed search bar in workshop list.
+
+## [0.1.0] - 18/11/2025
+
+### Added
+- ProductList screen to navgraph
+- Modify product implementation
+
+### Fixed
+- Fixed the possibility to add or modify one supply with the same name
+- Fixed the date format in supplyDetailContent screen
+- Fixed error in register workshop
+- Fixed error in view Workshops after a delete
+
+### Added
+- US for RBAC main screens and navigation accross the app
+- Added filter and order supply batches
+
+## [0.1.0] - 17/11/2025
+
+### Changed
+ - UploadImageInput modified to not save persistantly the photo, instead to 
+   receive the URI value from the view model  
+
+## [0.1.0] - 17/11/2025
+
+- US for modify Supply with MVVM and clean architecture principles
+- Delete supply batch
+- Added filter and order products
+- Added filter and order product batches
+- Added functional product batch search bar
+- Added register Beneficiary View
+- Added Consult Disabilities List
+
+## [0.1.0] - 16/11/2025
+
+### Added
+- Added products search
+- Add DeleteWorkshop Logic, Data and Domain
+- Add way to get users for workshops
+- Added functionality search beneficiaries
+- Added functionality view a Workshop (Video functionality needs more info)
+- Filter and order beneficiaries functionality
+- Fixed merge conflicts
+- Added US to Delete Product Batches
+
+### Fixed
+- Refreshing on Product Batches List
+
+## [0.1.0] - 15/11/2025
+### Fixed
+
+### Fixed
+- Fixed merge conflicts with products
+
+## [0.1.0] - 15/11/2025
+
+### Added
+- Added function to the delete products button
+- Added US to Register Product Batches
+
+### Fixed
+- Fixed StandardInput missing parameter
+- Fixed error from standard input attibutes into register supply batch screen
+
+## [0.1.0] - 14/11/2025
+
+### Fixed
+ - Information fetched from the backend for consultBeneficiaries
+
+### Added
+ - Added logic for consultBeneficiaries
+ - Added on detailBeneficiary so that it receives a URL as image from the backend and puts it on display
+
 ## [0.1.0] - 13/11/2025
 
 ### Added
+- RegisterProduct screen implementation.
 - Added Workshop Card atom.
 - Added screen for view Workshop 
 - Added function for searching workshops by name.
+- Added US to Register Product Batches
 
 ### Fixed
 - ArcaApi get all external collabs
 - Search users
+- Added presentation, data and domain for RegisterSupplyBatch
 - Fix snackbar for register new workshops
+- Fix error of implementation in Input atoms
 
 ## [0.1.0] - 12/11/2025
 

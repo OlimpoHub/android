@@ -1,6 +1,7 @@
 package com.app.arcabyolimpo.presentation.ui.components.molecules
 
 import android.content.res.Configuration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -126,6 +127,9 @@ fun <T> SelectObjectInput(
             ExposedDropdownMenu(
                 expanded = isOpen,
                 onDismissRequest = { isOpen = false },
+                modifier =
+                    Modifier
+                        .background(if (isError) InputBackgroundRed else InputBackgroundBlue)
             ) {
                 options.forEach { option ->
                     DropdownMenuItem(
@@ -138,9 +142,8 @@ fun <T> SelectObjectInput(
                         },
                         onClick = {
                             onOptionSelected(getItemId(option))
-                            false
+                            isOpen = false
                         },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
                     )
                 }
             }

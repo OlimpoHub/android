@@ -37,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.CancelButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ModifyButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SaveButton
@@ -47,6 +48,7 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.ImageUploadI
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SelectInput
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardInput
 import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
+import com.app.arcabyolimpo.presentation.ui.components.molecules.NumberStepper
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
 
@@ -65,6 +67,7 @@ fun ProductBatchRegisterScreen(
     viewModel: ProductBatchRegisterViewModel = hiltViewModel(),
 ) {
     val state = viewModel.uiState
+    val products = listOf("p1", "p2", "p3") // Replace with fetchAllProducts
 
     Scaffold(
         containerColor = Background,
@@ -74,6 +77,13 @@ fun ProductBatchRegisterScreen(
                     Text(
                         text = "Registrar Lote",
                         color = White,
+                        fontFamily = Poppins,
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.headlineLarge,
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
                     )
                 },
                 navigationIcon = {
@@ -101,119 +111,107 @@ fun ProductBatchRegisterScreen(
         ) {
             Spacer(modifier = Modifier.height(8.dp))
 
+            Row(modifier = Modifier.padding(vertical = 40.dp)) {}
+
             SelectInput(
                 label = "Selecciona el producto",
-                selectedOption = "",
-                options = listOf(),
-                onOptionSelected = {},
-            )
-
-            ImageUploadInput(
-                label = "Imagen del producto",
-                value = null,
-                onValueChange = {},
+                placeholder = "Producto",
+                selectedOption = state.idProducto,
+                options = products,
+                onOptionSelected = { viewModel.onFieldChange("idProducto", it) },
+                modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
             )
 
             StandardInput(
                 label = "Precio de venta",
-                value = "",
-                onValueChange = {},
+                value = state.precioVenta,
+                onValueChange = {
+                    viewModel.onFieldChange("precioVenta", it)
+                },
                 placeholder = "0.00",
+                keyboardType = KeyboardType.Decimal,
             )
 
             NumberStepper(
                 label = "Cantidad producida",
-                value = "",
-                onValueChange = {},
-                onIncrement = {},
-                onDecrement = {},
-            )
-
-            NumberStepper(
-                label = "Cantidad vendida",
-                value = "",
-                onValueChange = {},
-                onIncrement = {},
-                onDecrement = {},
+                value = state.cantidadProducida,
+                onValueChange = {
+                    viewModel.onFieldChange("cantidadProducida", it)
+                },
+                onIncrement = {
+                    val newVal = (state.cantidadProducida.toIntOrNull() ?: 0) + 1
+                    viewModel.onFieldChange("cantidadProducida", newVal.toString())
+                },
+                onDecrement = {
+                    val current = state.cantidadProducida.toIntOrNull() ?: 0
+                    if (current > 0) {
+                        viewModel.onFieldChange("cantidadProducida", (current - 1).toString())
+                    }
+                },
             )
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    DateInput(
-                        label = "Fecha de Elaboración",
-                        value = "",
-                        onValueChange = {},
-                        modifier = Modifier.fillMaxWidth(),
+                DateInput(
+                    label = "Fecha de Elaboración",
+                    value = state.fechaRealizacion,
+                    onValueChange = {
+                        viewModel.onFieldChange("fechaRealizacion", it)
+                    },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                )
+                DateInput(
+                    label = "Fecha de Caducidad",
+                    value = state.fechaCaducidad,
+                    onValueChange = {
+                        viewModel.onFieldChange("fechaCaducidad", it)
+                    },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                Column(
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .padding(horizontal = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    CancelButton(
+                        onClick = onBackClick,
                     )
                 }
-
-                Column(modifier = Modifier.weight(1f)) {
-                    DateInput(
-                        label = "Fecha de Caducidad",
-                        value = "",
-                        onValueChange = {},
-                        modifier = Modifier.fillMaxWidth(),
+                Column(
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .padding(horizontal = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    SaveButton(
+                        onClick = {
+                            viewModel.register(onSuccess = onCreated)
+                        },
                     )
                 }
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
         }
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 16.dp), // Padding
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            CancelButton(
-                onClick = onBackClick,
-                modifier = Modifier.weight(1f),
-            )
-
-            SaveButton(
-                onClick = onCreated,
-            )
-        }
-    }
-}
-
-@Suppress("ktlint:standard:function-naming")
-@Composable
-private fun NumberStepper(
-    label: String,
-    placeholder: String = "000",
-    value: String,
-    onValueChange: (String) -> Unit,
-    onIncrement: () -> Unit,
-    onDecrement: () -> Unit,
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        StandardInput(
-            label = label,
-            modifier = Modifier.weight(1f),
-            onValueChange = onValueChange,
-            value = value,
-            placeholder = placeholder,
-        )
-        SquareMinusButton(
-            onClick = onDecrement,
-            modifier =
-                Modifier
-                    .offset(y = 12.dp),
-        )
-        SquareAddButton(
-            onClick = onIncrement,
-            modifier =
-                Modifier
-                    .offset(y = 12.dp),
-        )
     }
 }

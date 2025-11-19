@@ -24,7 +24,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.rememberCoroutineScope
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
-import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.SnackbarArca
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.SnackbarVisualsWithError
 import kotlinx.coroutines.launch
 
@@ -98,7 +97,7 @@ fun UserRegisterScreen(
             onDismissRequest = { showConfirmDialog = false },
             onConfirmation = {
                 showConfirmDialog = false
-                viewModel.registerCollab() // Actually register when confirmed
+                viewModel.registerCollab()
             },
             dialogTitle = "¿Estás seguro?",
             dialogText = "¿Deseas registrar este usuario?",
@@ -180,7 +179,7 @@ fun UserRegisterScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Registrar Colaborador",
+                        text = "Registrar Usuario",
                         color = Color.White,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
@@ -204,6 +203,53 @@ fun UserRegisterScreen(
                         .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
+                    // Role Selection
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = "Tipo de Usuario *",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.White,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            // Asistente Button (Role ID = 2)
+                            OutlinedButton(
+                                onClick = { viewModel.updateRoleId("2") },
+                                modifier = Modifier.weight(1f),
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    containerColor = if (uiState.roleId == "2") Color(0xFF3B82F6) else Color.Transparent,
+                                    contentColor = if (uiState.roleId == "2") Color.White else Color(0xFF3B82F6)
+                                ),
+                                border = androidx.compose.foundation.BorderStroke(
+                                    1.dp,
+                                    if (uiState.roleId == "2") Color(0xFF3B82F6) else Color(0xFF3B82F6).copy(alpha = 0.5f)
+                                )
+                            ) {
+                                Text("Asistente")
+                            }
+
+                            // Voluntario Button (Role ID = 3)
+                            OutlinedButton(
+                                onClick = { viewModel.updateRoleId("3") },
+                                modifier = Modifier.weight(1f),
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    containerColor = if (uiState.roleId == "3") Color(0xFF3B82F6) else Color.Transparent,
+                                    contentColor = if (uiState.roleId == "3") Color.White else Color(0xFF3B82F6)
+                                ),
+                                border = androidx.compose.foundation.BorderStroke(
+                                    1.dp,
+                                    if (uiState.roleId == "3") Color(0xFF3B82F6) else Color(0xFF3B82F6).copy(alpha = 0.5f)
+                                )
+                            ) {
+                                Text("Voluntario")
+                            }
+                        }
+                    }
+
                     ModalInput(
                         label = "Nombre *",
                         value = uiState.firstName,
@@ -277,6 +323,91 @@ fun UserRegisterScreen(
                         onValueChange = { viewModel.updateDegree(it) },
                         placeholder = "Ingeniería en..."
                     )
+
+                    // Document Checkboxes
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = "Documentos",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.White,
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { viewModel.updateHasReglamentoInterno(!uiState.hasReglamentoInterno) }
+                                .padding(vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Checkbox(
+                                checked = uiState.hasReglamentoInterno,
+                                onCheckedChange = { viewModel.updateHasReglamentoInterno(it) },
+                                colors = CheckboxDefaults.colors(
+                                    checkedColor = Color(0xFF3B82F6),
+                                    uncheckedColor = Color(0xFF3B82F6).copy(alpha = 0.5f),
+                                    checkmarkColor = Color.White
+                                )
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Reglamento Interno",
+                                color = Color.White,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { viewModel.updateHasCopiaIne(!uiState.hasCopiaIne) }
+                                .padding(vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Checkbox(
+                                checked = uiState.hasCopiaIne,
+                                onCheckedChange = { viewModel.updateHasCopiaIne(it) },
+                                colors = CheckboxDefaults.colors(
+                                    checkedColor = Color(0xFF3B82F6),
+                                    uncheckedColor = Color(0xFF3B82F6).copy(alpha = 0.5f),
+                                    checkmarkColor = Color.White
+                                )
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Copia de INE",
+                                color = Color.White,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { viewModel.updateHasAvisoConfidencialidad(!uiState.hasAvisoConfidencialidad) }
+                                .padding(vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Checkbox(
+                                checked = uiState.hasAvisoConfidencialidad,
+                                onCheckedChange = { viewModel.updateHasAvisoConfidencialidad(it) },
+                                colors = CheckboxDefaults.colors(
+                                    checkedColor = Color(0xFF3B82F6),
+                                    uncheckedColor = Color(0xFF3B82F6).copy(alpha = 0.5f),
+                                    checkmarkColor = Color.White
+                                )
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Aviso de Confidencialidad",
+                                color = Color.White,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                    }
 
                     // Status Toggle
                     Column(modifier = Modifier.fillMaxWidth()) {

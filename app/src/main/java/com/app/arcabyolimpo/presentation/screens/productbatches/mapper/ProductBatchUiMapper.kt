@@ -2,6 +2,7 @@ package com.app.arcabyolimpo.presentation.screens.productbatches.mapper
 
 import com.app.arcabyolimpo.domain.model.productbatches.ProductBatch
 import com.app.arcabyolimpo.presentation.screens.productbatches.model.ProductBatchUiModel
+import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchModify.ProductBatchModifyUiState
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchRegister.ProductBatchRegisterUiState
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -28,6 +29,11 @@ fun ProductBatch.toUiModel(): ProductBatchUiModel {
         imagen = imagen ?: "",
         disponible = if (disponible == 0) "Caducado" else "Disponible",
         idInventario = idInventario,
+
+        precioVenta = precioVenta.toDoubleOrNull() ?: 0.0,
+        fechaCaducidad = fechaCaducidad,
+        fechaRealizacion = fechaRealizacion,
+
         precioVentaFormatted = "$$precioVenta MXN",
         cantidadProducida = cantidadProducida,
         fechaCaducidadFormatted = fechaCaducidad?.toReadableDate(),
@@ -45,7 +51,25 @@ fun ProductBatchRegisterUiState.toDomain() =
         precioVenta = precioVenta,
         descripcion = "",
         disponible = 0,
-        cantidadProducida = 0,
+        cantidadProducida = cantidadProducida.toIntOrNull() ?: 0,
+        fechaRealizacion = fechaRealizacion,
+        fechaCaducidad = fechaCaducidad,
+        idInventario = "",
+        precioUnitario = "0.0",
+        imagen = "",
+    )
+
+/** Maps a [ProductBatchModifyUiState] UI state to a [ProductBatch] domain model for business logic.
+ *  @return ProductBatch
+ */
+fun ProductBatchModifyUiState.toDomain() =
+    ProductBatch(
+        idProducto = "",
+        nombre = "",
+        precioVenta = precioVenta,
+        descripcion = "",
+        disponible = 0,
+        cantidadProducida = cantidadProducida.toIntOrNull() ?: 0,
         fechaRealizacion = fechaRealizacion,
         fechaCaducidad = fechaCaducidad,
         idInventario = "",

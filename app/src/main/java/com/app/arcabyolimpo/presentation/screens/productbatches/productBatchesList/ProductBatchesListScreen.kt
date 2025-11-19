@@ -1,5 +1,6 @@
 package com.app.arcabyolimpo.presentation.screens.productbatches.productBatchesList
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,6 +45,7 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.SearchIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SearchInput
 import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
 import com.app.arcabyolimpo.presentation.ui.components.molecules.ProductBatchItem
+import com.app.arcabyolimpo.presentation.ui.components.organisms.Filter
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
@@ -55,6 +58,7 @@ import com.app.arcabyolimpo.ui.theme.White
  * @param onAddClick () -> Unit -> callback to add a new product batch
  * @param viewModel ProductBatchesListViewModel = hiltViewModel() -> ViewModel for managing UI state
  */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable
@@ -67,6 +71,11 @@ fun ProductBatchesListScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     var text by remember { mutableStateOf("") }
+    var showFilter by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.loadData()
+    }
 
     Scaffold(
         containerColor = Background,
@@ -133,14 +142,20 @@ fun ProductBatchesListScreen(
                 SearchInput(
                     value = text,
                     onValueChange = { text = it },
-                    trailingIcon = { SearchIcon() },
+                    trailingIcon = {
+                        IconButton(onClick = {
+                            viewModel.searchProductBatch(text)
+                        }) {
+                            SearchIcon()
+                        }
+                    },
                     modifier = Modifier.weight(1f),
                 )
 
-                IconButton(onClick = {}) {
-                    FilterIcon(
-                        Modifier.size(32.dp),
-                    )
+                IconButton(onClick = {
+                    showFilter = true
+                }) {
+                    FilterIcon(modifier = Modifier.size(32.dp))
                 }
             }
 
@@ -204,4 +219,23 @@ fun ProductBatchesListScreen(
             }
         }
     }
+
+    // Filtro modal
+    if (showFilter && state.filterData != null) {
+        Filter(
+            data = state.filterData!!,
+            initialSelected = state.filters,
+            onApply = { dto ->
+                viewModel.filterProductBatch(dto)
+                showFilter = false
+            },
+            onDismiss = { showFilter = false },
+            onClearFilters = {
+                viewModel.clearFilters()
+                viewModel.loadData()
+                showFilter = false
+            }
+        )
+    }
+
 }

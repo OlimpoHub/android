@@ -1,6 +1,5 @@
 package com.app.arcabyolimpo.presentation.ui.components.organisms
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,9 +22,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.app.arcabyolimpo.domain.model.supplies.Batch
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
 import com.app.arcabyolimpo.presentation.theme.Poppins
-import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AgregateButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.DeleteButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ModifyButton
@@ -35,6 +34,12 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.status.InactiveStat
 import com.app.arcabyolimpo.presentation.ui.components.molecules.SupplyBatchRow
 import com.app.arcabyolimpo.presentation.ui.components.molecules.TextValue
 import com.app.arcabyolimpo.ui.theme.White
+import formatExpirationDate
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 /** ---------------------------------------------------------------------------------------------- *
  * SupplyDetailContent -> Its the container of the view that its just called in the main
@@ -51,13 +56,15 @@ import com.app.arcabyolimpo.ui.theme.White
 @Composable
 fun SupplyDetailContent(
     supply: SupplyBatchExt,
+    filteredBatches: List<Batch>? = null,
     onClickAddSupplyBatch: () -> Unit,
     onClickDelete: () -> Unit,
     onClickModify: () -> Unit,
     modifySupplyBatch: () -> Unit,
-    deleteSupplyBatch: () -> Unit,
+    deleteSupplyBatch: (String) -> Unit,
+    onFilterClick: () -> Unit,
 ) {
-    val batches = supply.batch
+    val batches = filteredBatches ?: supply.batch
 
     Column(
         modifier =
@@ -152,12 +159,13 @@ fun SupplyDetailContent(
             )
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-                if (batches[0].expirationDate != "") {
+                if (batches.isNotEmpty() && batches[0].expirationDate.isNotEmpty()) {
                     FilterIcon(
-                        modifier =
-                            Modifier
-                                .size(28.dp)
-                                .clickable { /* Implements the filter US */ },
+                        modifier = Modifier
+                            .size(28.dp)
+                            .clickable {
+                                onFilterClick()
+                            },
                     )
                 }
 
@@ -172,7 +180,7 @@ fun SupplyDetailContent(
             verticalArrangement =
                 Arrangement.spacedBy(0.dp),
         ) {
-            if(batches[0].expirationDate == "") {
+            if (batches.isEmpty() || batches[0].expirationDate.isEmpty()) {
                 Text(
                     text = "No hay lotes del insumo",
                     color = White,
@@ -184,10 +192,10 @@ fun SupplyDetailContent(
               batches.forEachIndexed { index, batch ->
                   SupplyBatchRow(
                       quantity = batch.quantity,
-                      date = batch.expirationDate,
+                      date = formatExpirationDate(rawDate = batch.expirationDate),
                       adquisition = batch.adquisitionType,
                       onModifyClick = modifySupplyBatch,
-                      onDeleteClick = deleteSupplyBatch,
+                      onDeleteClick = { deleteSupplyBatch(batch.id) },
                   )
               }
             }

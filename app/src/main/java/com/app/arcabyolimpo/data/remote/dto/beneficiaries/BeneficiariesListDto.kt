@@ -10,7 +10,9 @@ import com.google.gson.annotations.SerializedName
  * @param name The name of the new beneficiary.
  */
 data class BeneficiariesListDto (
-    @SerializedName("idBeneficiario") val id: String,
-    @SerializedName("nombreBeneficiario") val name: String,
-    @SerializedName("foto") val image: String
+    @SerializedName("idBeneficiario") val id: String?,
+    @SerializedName("nombre") val firstName: String?,
+    @SerializedName("apellidoPaterno") val paternalName: String?,
+    @SerializedName("apellidoMaterno") val maternalName: String?,
+    @SerializedName("foto") val image: String?
 )

@@ -1,5 +1,8 @@
 package com.app.arcabyolimpo.presentation.screens.supply.supplyDetail
 
+import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
+import com.app.arcabyolimpo.domain.model.filter.FilterData
+import com.app.arcabyolimpo.domain.model.supplies.Batch
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
 
 /** ---------------------------------------------------------------------------------------------- *
@@ -10,6 +13,15 @@ data class SuppliesDetailUiState(
     val supplyBatchList: SupplyBatchExt? = null,
     val isLoading: Boolean = false,
     val error: String? = null,
+    // Controls the visibility of the delete confirmation dialog
     val decisionDialogVisible: Boolean = false,
+    // Controls whether the snackbar should be shown
     val snackbarVisible: Boolean = false,
+    val deletionType: DeletionType? = null,
+    val snackbarMessage: String? = null,
 )
+
+enum class DeletionType {
+    SUPPLY,
+    BATCH
+}
