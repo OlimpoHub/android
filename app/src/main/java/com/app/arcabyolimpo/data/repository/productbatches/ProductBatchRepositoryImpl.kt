@@ -5,6 +5,7 @@ import com.app.arcabyolimpo.data.mapper.productbatches.toDto
 import com.app.arcabyolimpo.data.mapper.productbatches.toModifyDto
 import com.app.arcabyolimpo.data.mapper.productbatches.toRegisterDto
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
+import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.domain.model.productbatches.ProductBatch
 import com.app.arcabyolimpo.domain.repository.productbatches.ProductBatchRepository
 
@@ -36,7 +37,17 @@ class ProductBatchRepositoryImpl(
         )
     }
 
+
+    override suspend fun searchProductBatch(term: String): List<ProductBatch> {
+        return api.searchProductBatch(term).map { it.toDomain() }
+    }
+
+    override suspend fun filterProductBatch(filters: FilterDto): List<ProductBatch> {
+        return api.filterProductBatch(filters).map { it.toDomain() }
+    }
+
     override suspend fun deleteProductBatch(id: String) {
         api.deleteProductBatch(id)
     }
 }
+
