@@ -7,6 +7,7 @@
 
 ### Fixed
 - Fixed search bar in workshop list.
+- Fixed the product error message
 - Error now properly appearing when registering new beneficiary
 
 ## [0.1.0] - 18/11/2025

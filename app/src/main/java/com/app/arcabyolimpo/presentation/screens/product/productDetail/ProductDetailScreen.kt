@@ -61,7 +61,7 @@ fun ProductDetailScreen(
             val message = if (uiState.error == null) {
                 "Producto eliminado correctamente"
             } else {
-                "Error al eliminar el producto: ${uiState.error}"
+                "Este producto esta relacionado con algun lote de producto, no se puede eliminar: ${uiState.error}"
             }
 
             snackbarHostState.showSnackbar(message)
