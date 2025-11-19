@@ -52,7 +52,7 @@ class WorkshopDetailViewModel @Inject constructor(
         loadWorkshop()
     }
 
-    private fun loadWorkshop() {
+    fun loadWorkshop() {
         if (workshopId.isBlank()) {
             _errorMessage.value = "ID del taller no válido:" + workshopId
             _isLoading.value = false

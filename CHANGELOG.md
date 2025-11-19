@@ -1,4 +1,6 @@
 ## [0.1.0] - 19/11/2025
+### Added
+- Added modify for workshops.
 
 ### Added
  - Supply module conected to the inventory screen.
@@ -7,9 +9,11 @@
  - US for modify User with MVVM and clean architecture principles.
 
 ### Fixed
+- Product add necesary image
 - Fixed search bar in workshop list.
 - Fixed the product error message
 - Error now properly appearing when registering new beneficiary
+- Error in descriptcion in view and modify a workshop
 - Fixed error views in product batches list, detail, register and modify
 - Fixed product fetch in register Product Batch view
 
