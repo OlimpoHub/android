@@ -81,9 +81,6 @@ fun ProductBatchesListScreen(
 
     Scaffold(
         containerColor = Background,
-        bottomBar = {
-            NavBar()
-        },
         floatingActionButton = {
             AddButton(onClick = { onAddClick() })
         },
@@ -245,8 +242,7 @@ fun ProductBatchesListScreen(
                 viewModel.clearFilters()
                 viewModel.loadData()
                 showFilter = false
-            }
+            },
         )
     }
-
 }

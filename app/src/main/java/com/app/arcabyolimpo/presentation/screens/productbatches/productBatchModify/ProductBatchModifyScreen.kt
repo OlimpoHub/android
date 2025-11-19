@@ -81,9 +81,6 @@ fun ProductBatchModifyScreen(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Background),
             )
         },
-        bottomBar = {
-            NavBar()
-        },
     ) { padding ->
         Column(
             modifier =

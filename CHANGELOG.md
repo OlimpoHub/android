@@ -9,6 +9,7 @@
  - US for display of supply batches based on date and idSupply
  - US for modify User with MVVM and clean architecture principles.
  - US for qr generation
+ - Navigation to ProductBatches
 
 ### Fixed
 - Product add necesary image
