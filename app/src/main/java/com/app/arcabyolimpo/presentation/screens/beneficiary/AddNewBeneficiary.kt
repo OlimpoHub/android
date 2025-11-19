@@ -26,6 +26,7 @@ import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.DescriptionInput
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -45,7 +46,6 @@ fun AddNewBeneficiaryScreen(
         val snackbarHostState = remember { SnackbarHostState() }
         val scope = rememberCoroutineScope()
 
-        // Cargar discapacidades al iniciar
         LaunchedEffect(Unit) {
             viewModel.loadDisabilities()
         }
@@ -291,9 +291,13 @@ fun AddNewBeneficiaryScreen(
                     LaunchedEffect(uiState.isSuccess) {
                         if (uiState.isSuccess) {
                             scope.launch {
-                                snackbarHostState.showSnackbar("Beneficiario registrado correctamente")
+                                delay(100)
                             }
                             viewModel.resetForm()
+                            navController.previousBackStackEntry
+                                ?.savedStateHandle
+                                ?.set("success_message", "Beneficiario creado correctamente")
+
                             navController.popBackStack()
                         }
                     }
@@ -301,8 +305,13 @@ fun AddNewBeneficiaryScreen(
                     LaunchedEffect(uiState.error) {
                         if (uiState.error != null) {
                             scope.launch {
-                                snackbarHostState.showSnackbar("Error: ${uiState.error}")
+                                delay(100)
                             }
+                            navController.previousBackStackEntry
+                                ?.savedStateHandle
+                                ?.set("error_message", uiState.error)
+
+                            navController.popBackStack()
                         }
                     }
                 }

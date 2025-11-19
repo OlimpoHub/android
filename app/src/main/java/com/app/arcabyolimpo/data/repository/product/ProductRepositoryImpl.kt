@@ -1,11 +1,17 @@
 package com.app.arcabyolimpo.data.repository.product
 
 import android.content.Context
+import android.util.Log
 import com.app.arcabyolimpo.data.mapper.product.toDomain
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
-import com.app.arcabyolimpo.domain.model.product.Product
+import com.app.arcabyolimpo.data.remote.dto.product.ProductDto
 import com.app.arcabyolimpo.domain.model.product.ProductAdd
 import com.app.arcabyolimpo.domain.repository.product.ProductRepository
+import com.app.arcabyolimpo.domain.model.product.Product
+import com.app.arcabyolimpo.data.mapper.product.toDetailDomain
+import com.app.arcabyolimpo.data.remote.dto.product.ProductDetailDto
+import com.app.arcabyolimpo.domain.model.product.ProductDetail
+import com.app.arcabyolimpo.domain.model.product.ProductUpdate
 import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -81,6 +87,7 @@ class ProductRepositoryImpl @Inject constructor(
         }
     }
 
+
     /**
      * deleteProduct.
      * Deletes a product by its id by calling the API.
@@ -135,4 +142,73 @@ class ProductRepositoryImpl @Inject constructor(
     }
 
 
+
+    /**
+     * Retrieves a detailed product from the remote API by its unique identifier.
+     *
+     * This function calls [ArcaApi.getProduct], handles network errors, and maps
+     * the resulting [ProductDto] to the [Product] domain model.
+     *
+     * @param id The unique identifier of the product to retrieve.
+     * @return A [Result] wrapping the [Product] domain model upon success.
+     */
+    override suspend fun getProduct(id: String): Result<ProductDetail> {
+        return try {
+            val productDetailDto: ProductDetailDto = api.getProduct(idProduct = id)
+
+            val productDomain = productDetailDto.toDetailDomain()
+
+            Result.success(productDomain)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun updateProduct(
+        idProduct: String,
+        product: ProductUpdate
+    ): Result<Unit> {
+        return try {
+            val imagePart = product.image?.let {
+                val input = context.contentResolver.openInputStream(it)
+                val bytes = input?.readBytes()
+                input?.close()
+
+                if (bytes != null) {
+                    val requestFile = bytes.toRequestBody(
+                        context.contentResolver.getType(it)?.toMediaTypeOrNull()
+                    )
+                    MultipartBody.Part.createFormData(
+                        "image",
+                        "image.jpg",
+                        requestFile
+                    )
+                } else null
+            }
+
+            val idWorkshop = product.idWorkshop.toRequestBody("text/plain".toMediaTypeOrNull())
+            val name = product.name.toRequestBody("text/plain".toMediaTypeOrNull())
+            val unitaryPrice = product.unitaryPrice.toRequestBody("text/plain".toMediaTypeOrNull())
+            val idCategory = product.idCategory.toRequestBody("text/plain".toMediaTypeOrNull())
+            val description = product.description.toRequestBody("text/plain".toMediaTypeOrNull())
+            val status = product.status.toString().toRequestBody("text/plain".toMediaTypeOrNull()) // Asumo que status es String/Int
+
+            Log.d("ProductRepositoryImpl", "idWorkshop: $product.idWorkshop")
+
+            api.updateProduct(
+                idProduct = idProduct,
+                idWorkshop = idWorkshop,
+                name = name,
+                unitaryPrice = unitaryPrice,
+                idCategory = idCategory,
+                description = description,
+                status = status,
+                image = imagePart,
+            )
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

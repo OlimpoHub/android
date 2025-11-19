@@ -22,15 +22,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import com.app.arcabyolimpo.domain.model.beneficiaries.Beneficiary
+import com.app.arcabyolimpo.presentation.screens.home.InventoryScreen
 import com.app.arcabyolimpo.presentation.navigation.Screen
-import com.app.arcabyolimpo.presentation.screens.login.LoginScreen
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.SnackbarVisualsWithError
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.DeleteButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ModifyButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.videoView
+import com.app.arcabyolimpo.presentation.ui.components.molecules.FunctionalNavBar
 import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import com.app.arcabyolimpo.ui.theme.Background
@@ -169,7 +169,10 @@ fun WorkshopDetailScreen(
                     }
                 )
             },
-            bottomBar = { NavBar() }
+            bottomBar = {
+                NavBar()
+            }
+
         ) { padding ->
 
             Column(
