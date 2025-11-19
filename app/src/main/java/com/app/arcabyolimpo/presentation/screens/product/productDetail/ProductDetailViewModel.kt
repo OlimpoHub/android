@@ -6,12 +6,12 @@ import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.usecase.product.DeleteProductUseCase
 import com.app.arcabyolimpo.domain.usecase.product.GetProductByIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class ProductDetailViewModel @Inject constructor(
@@ -58,6 +58,11 @@ class ProductDetailViewModel @Inject constructor(
         _uiState.update { it.copy(snackbarVisible = false) }
     }
 
+    // 👇 NUEVO: limpiar la bandera cuando ya navegamos
+    fun onNavigatedBackHandled() {
+        _uiState.update { it.copy(shouldNavigateBack = false) }
+    }
+
     fun deleteProduct(id: String) {
         viewModelScope.launch {
             deleteProductUseCase(id).collect { result ->
@@ -72,6 +77,7 @@ class ProductDetailViewModel @Inject constructor(
                                 error = null,
                                 decisionDialogVisible = false,
                                 snackbarVisible = true,
+                                shouldNavigateBack = true,
                             )
 
                         is Result.Error ->
@@ -80,6 +86,7 @@ class ProductDetailViewModel @Inject constructor(
                                 error = result.exception.message,
                                 decisionDialogVisible = false,
                                 snackbarVisible = true,
+                                shouldNavigateBack = false,
                             )
                     }
                 }
