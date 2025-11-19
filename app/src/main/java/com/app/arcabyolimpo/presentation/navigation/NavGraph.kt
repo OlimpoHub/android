@@ -142,6 +142,12 @@ sealed class Screen(
 
     object ProductDeleteTest : Screen("test_delete_product")
 
+    object ProductsList : Screen("products")
+
+    object ProductDetail : Screen("product/{productId}") {
+        fun createRoute(productId: String) = "product/$productId"
+    }
+
     object SupplyUpdate : Screen("supply/update/{idSupply}") {
         fun createRoute(idSupply: String) = "supply/update/$idSupply"
     }
@@ -668,14 +674,50 @@ fun ArcaNavGraph(
             )
         }
 
-        composable(Screen.ProductList.route) {
-            ProductsListScreen(
-                state = ProductsUiState(),
-                onSearchChange = { },
-                onBackClick= { navController.popBackStack() },
-                onDetailClick= { productId-> navController.navigate(Screen.ProductDetail.createRoute(productId)) },
-                onAddClick= { navController.navigate(Screen.ProductAdd.route) },
-                onFilterClick= {  },
+        composable(Screen.ProductsList.route) {
+            ProductListScreen(
+                onProductClick = { productId ->
+                    navController.navigate(Screen.ProductDetail.createRoute(productId))
+                },
+                onAddProductClick = {
+                    navController.navigate(Screen.ProductAdd.route)
+                },
+            )
+        }
+
+        composable(
+            route = Screen.ProductDetail.route,
+            arguments = listOf(navArgument("productId") { type = NavType.StringType }),
+        ) { backStackEntry ->
+            val productId = backStackEntry.arguments?.getString("productId") ?: ""
+            ProductDetailScreen(
+                productId = productId,
+                onBackClick = { navController.popBackStack() },
+                onEditClick = { id ->
+                    // TODO: Navigate to edit screen when you create it
+                },
+                onDeleteClick = {
+                },
+            )
+        }
+
+        composable(
+            route = Screen.ProductUpdate.route,
+            arguments = listOf(
+                navArgument("idProduct") { type = NavType.StringType }
+            )
+        ) {
+            ProductUpdateScreen(
+                onModifyClick = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("shouldRefresh", true)
+
+                    navController.popBackStack()
+                },
+                onCancel = {
+                    navController.popBackStack()
+                },
             )
         }
 
