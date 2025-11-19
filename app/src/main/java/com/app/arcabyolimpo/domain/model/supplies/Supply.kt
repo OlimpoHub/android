@@ -65,3 +65,16 @@ data class Acquisition(
 data class SuccessMessage(
     val message: String,
 )
+
+data class SupplyBatchItem(
+    val id: String,
+    val quantity: Int,
+    val expirationDate: String,
+    val adquisitionType: String,
+    val boughtDate: String,
+    val measure: String,
+)
+
+data class SupplyBatchList(
+    val batch: List<SupplyBatchItem>,
+)

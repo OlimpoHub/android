@@ -6,6 +6,8 @@ import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.RegisterSupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuccessMessageDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchItemDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchListDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyDto
 import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.domain.model.supplies.Acquisition
@@ -13,6 +15,8 @@ import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
 import com.app.arcabyolimpo.domain.model.supplies.SuccessMessage
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatch
+import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchItem
+import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchList
 import kotlin.String
 import kotlin.collections.List
 
@@ -27,17 +31,18 @@ import kotlin.collections.List
 fun SupplyDto.toDomain(): Supply =
     Supply(
         id = id,
-        imageUrl = image,
+        imageUrl = image ?: "",
         name = name.replaceFirstChar { it.uppercase() },
         unitMeasure = unitMeasure,
-        batch = batch.flatMap { supplyBatchDto ->
-            supplyBatchDto.supplyBatches?.map { spec ->
-                SupplyBatch(
-                    quantity = spec.quantity ?: 0,
-                    expirationDate = spec.expirationDate ?: ""
-                )
-            } ?: emptyList()
-        }
+        batch =
+            batch.flatMap { supplyBatchDto ->
+                supplyBatchDto.supplyBatches?.map { spec ->
+                    SupplyBatch(
+                        quantity = spec.quantity ?: 0,
+                        expirationDate = spec.expirationDate ?: "",
+                    )
+                } ?: emptyList()
+            },
     )
 
 /**
@@ -154,3 +159,19 @@ fun SuccessMessageDto.toDomain(): SuccessMessage =
     SuccessMessage(
         message = message,
     )
+
+/**
+ * Maps a [SupplyBatchItemDto] (data layer) into a [SupplyBatchItem] domain model.
+ * This is used by [SupplyBatchListDto.toDomain] to convert each batch item.
+ */
+fun SupplyBatchItemDto.toDomain(): SupplyBatchItem =
+    SupplyBatchItem(
+        id = id,
+        quantity = quantity,
+        expirationDate = expirationDate,
+        adquisitionType = adquisitionType,
+        boughtDate = boughtDate,
+        measure = measure,
+    )
+
+fun SupplyBatchListDto.toDomain(): SupplyBatchList = SupplyBatchList(batch = batch.orEmpty().map { it.toDomain() })

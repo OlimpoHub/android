@@ -7,6 +7,8 @@ import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchSpecsDto
 import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.domain.model.supplies.Batch
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
+import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchOneDto
+import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
 import kotlin.math.exp
 
 /** ---------------------------------------------------------------------------------------------- *
@@ -24,16 +26,25 @@ fun SupplyBatchDto.toDomain(): SupplyBatchExt =
         workshop = workshop,
         category = category,
         status = status,
-        batch = supplyBatches?.map {
-            Batch(
-                id = it.expirationDate ?: "",
-                quantity = it.quantity ?: 0,
-                expirationDate = it.expirationDate ?: "",
-                adquisitionType = it.adquisitionType ?: "",
-            )
-        } ?: emptyList(),
+        batch =
+            supplyBatches?.map { it ->
+                Batch(
+                    id = it.expirationDate ?: "",
+                    quantity = it.quantity ?: 0,
+                    expirationDate = it.expirationDate ?: "",
+                    adquisitionType = it.adquisitionType ?: "",
+                )
+            } ?: emptyList(),
     )
 
+fun SupplyBatchOneDto.toRegister(): RegisterSupplyBatch =
+                    RegisterSupplyBatch(
+                        supplyId = this.idInsumo.orEmpty(),
+                        quantity = this.cantidadActual ?: 0,
+                        expirationDate = this.fechaCaducidad.orEmpty(),
+                        acquisition = this.idTipoAdquisicion.orEmpty(),
+                        boughtDate = this.fechaActualizacion.orEmpty(),
+                    )
 /**
  * Maps filter metadata from [GetFilterBatchDto] to the domain model [FilterData].
  *
