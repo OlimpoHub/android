@@ -138,8 +138,6 @@ sealed class Screen(
 
     object ProductDeleteTest : Screen("test_delete_product")
 
-    object ProductsList : Screen("products")
-
     object ProductDetail : Screen("product/{productId}") {
         fun createRoute(productId: String) = "product/$productId"
     }
@@ -670,7 +668,7 @@ fun ArcaNavGraph(
             )
         }
 
-        composable(Screen.ProductsList.route) {
+        composable(Screen.ProductList.route) {
             ProductListScreen(
                 onProductClick = { productId ->
                     navController.navigate(Screen.ProductDetail.createRoute(productId))
@@ -690,29 +688,9 @@ fun ArcaNavGraph(
                 productId = productId,
                 onBackClick = { navController.popBackStack() },
                 onEditClick = { id ->
-                    // TODO: Navigate to edit screen when you create it
+                    navController.navigate(Screen.ProductUpdate.createRoute(id))
                 },
                 onDeleteClick = {
-                },
-            )
-        }
-
-        composable(
-            route = Screen.ProductUpdate.route,
-            arguments = listOf(
-                navArgument("idProduct") { type = NavType.StringType }
-            )
-        ) {
-            ProductUpdateScreen(
-                onModifyClick = {
-                    navController.previousBackStackEntry
-                        ?.savedStateHandle
-                        ?.set("shouldRefresh", true)
-
-                    navController.popBackStack()
-                },
-                onCancel = {
-                    navController.popBackStack()
                 },
             )
         }

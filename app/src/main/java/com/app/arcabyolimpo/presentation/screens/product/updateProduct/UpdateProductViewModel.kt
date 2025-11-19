@@ -29,7 +29,7 @@ class UpdateProductViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ProductUpdateUiState())
     val state = _uiState.asStateFlow()
 
-    private val idProduct: String = savedStateHandle.get<String>("idProduct") ?: "3f2d6006-1efe-4683-9b7e-b339c39e1ff1"
+    private val idProduct: String = savedStateHandle.get<String>("idProduct") ?: ""
 
     init {
         loadFormsData()
