@@ -20,7 +20,6 @@ import com.app.arcabyolimpo.presentation.common.components.LoadingShimmer
 import com.app.arcabyolimpo.presentation.screens.accountactivation.AccountActivationScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.AddNewBeneficiaryScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
-import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryList
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
 import com.app.arcabyolimpo.presentation.screens.home.assistant.CollaboratorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.home.coordinator.CoordinatorHomeScreen
@@ -28,16 +27,19 @@ import com.app.arcabyolimpo.presentation.screens.login.LoginScreen
 import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecoveryScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
-import com.app.arcabyolimpo.presentation.screens.product.ProductAddScreen
-import com.app.arcabyolimpo.presentation.screens.product.list.ProductsListRoute
-import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDeleteTestScreen
+import com.app.arcabyolimpo.presentation.screens.product.addProduct.ProductAddScreen
+import com.app.arcabyolimpo.presentation.screens.product.updateProduct.ProductUpdateScreen
+import com.app.arcabyolimpo.presentation.screens.product.list.ProductListScreen
+import com.app.arcabyolimpo.presentation.screens.product.list.ProductListUiState
+import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDetailScreen
+//import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDeleteTestScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchDetail.ProductBatchDetailScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchModify.ProductBatchModifyScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchRegister.ProductBatchRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchesList.ProductBatchesListScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
-import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
+import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyUpdate.SupplyUpdateScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplybatchregister.SupplyBatchRegisterScreen
@@ -136,10 +138,19 @@ sealed class Screen(
 
     object ProductDeleteTest : Screen("test_delete_product")
 
+    object ProductDetail : Screen("product/{productId}") {
+        fun createRoute(productId: String) = "product/$productId"
+    }
+
     object SupplyUpdate : Screen("supply/update/{idSupply}") {
         fun createRoute(idSupply: String) = "supply/update/$idSupply"
     }
-}
+
+    object ProductUpdate : Screen("product/update/{idProduct}") {
+        fun createRoute(idProduct: String) = "product/update/$idProduct"
+    }
+
+    object ProductList : Screen("product/")
 
 /**
  * Composable function that defines the main navigation graph of the app.
@@ -163,7 +174,7 @@ fun ArcaNavGraph(
      */
     LaunchedEffect(sessionManager) {
         sessionManager.sessionExpired.collect {
-            navController.navigate(Screen.Login.route) {
+            navController.navigate(Screen.ProductList.route) {
                 popUpTo(0) { inclusive = true }
                 launchSingleTop = true
             }
@@ -175,7 +186,8 @@ fun ArcaNavGraph(
     /** Defines all navigation. The start destination is the Splash screen. */
     NavHost(
         navController = navController,
-        startDestination = Screen.Splash.route,
+        // TODO: Cambiar a Screen.Splash.route cuando acabe
+        startDestination = Screen.ProductList.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -186,10 +198,12 @@ fun ArcaNavGraph(
                         navController.navigate(Screen.CoordinatorHome.route) {
                             popUpTo(Screen.Splash.route) { inclusive = true }
                         }
+
                     UserRole.ASISTENTE ->
                         navController.navigate(Screen.CollaboratorHome.route) {
                             popUpTo(Screen.Splash.route) { inclusive = true }
                         }
+
                     UserRole.BECARIO ->
                         navController.navigate(Screen.CollaboratorHome.route) {
                             popUpTo(Screen.Splash.route) { inclusive = true }
@@ -212,10 +226,12 @@ fun ArcaNavGraph(
                             navController.navigate(Screen.CoordinatorHome.route) {
                                 popUpTo(Screen.Login.route) { inclusive = true }
                             }
+
                         UserRole.ASISTENTE ->
                             navController.navigate(Screen.CollaboratorHome.route) {
                                 popUpTo(Screen.Login.route) { inclusive = true }
                             }
+
                         UserRole.BECARIO ->
                             navController.navigate(Screen.CollaboratorHome.route) {
                                 popUpTo(Screen.Login.route) { inclusive = true }
@@ -525,7 +541,7 @@ fun ArcaNavGraph(
                 onFilterClick = { /* TODO: Lógica de VM */ },
                 onNotificationClick = { /* TODO: Lógica de VM */ },
 
-            )
+                )
         }
 
         /**
@@ -652,16 +668,58 @@ fun ArcaNavGraph(
             )
         }
 
-        composable("products_list") {
-            ProductsListRoute(
-                onProductClick = { /* ir a detalle si quieres */ },
-                onBackClick = { navController.popBackStack() },
+        composable(Screen.ProductList.route) {
+            ProductListScreen(
+                onProductClick = { productId ->
+                    navController.navigate(Screen.ProductDetail.createRoute(productId))
+                },
+                onAddProductClick = {
+                    navController.navigate(Screen.ProductAdd.route)
+                },
             )
         }
 
+        composable(
+            route = Screen.ProductDetail.route,
+            arguments = listOf(navArgument("productId") { type = NavType.StringType }),
+        ) { backStackEntry ->
+            val productId = backStackEntry.arguments?.getString("productId") ?: ""
+            ProductDetailScreen(
+                productId = productId,
+                onBackClick = { navController.popBackStack() },
+                onEditClick = { id ->
+                    navController.navigate(Screen.ProductUpdate.createRoute(id))
+                },
+                onDeleteClick = {
+                },
+            )
+        }
+
+        /*
         composable(Screen.ProductDeleteTest.route) {
             ProductDeleteTestScreen(
                 onDeleted = {
+                    navController.popBackStack()
+                },
+            )
+        }
+         */
+
+        composable(
+            route = Screen.ProductUpdate.route,
+            arguments = listOf(
+                navArgument("idProduct") { type = NavType.StringType }
+            )
+        ) {
+            ProductUpdateScreen(
+                onModifyClick = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("shouldRefresh", true)
+
+                    navController.popBackStack()
+                },
+                onCancel = {
                     navController.popBackStack()
                 },
             )
@@ -686,4 +744,5 @@ fun ArcaNavGraph(
             )
         }
     }
+}
 }

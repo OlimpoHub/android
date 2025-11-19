@@ -29,6 +29,11 @@ fun ProductBatch.toUiModel(): ProductBatchUiModel {
         imagen = imagen ?: "",
         disponible = if (disponible == 0) "Caducado" else "Disponible",
         idInventario = idInventario,
+
+        precioVenta = precioVenta.toDoubleOrNull() ?: 0.0,
+        fechaCaducidad = fechaCaducidad,
+        fechaRealizacion = fechaRealizacion,
+
         precioVentaFormatted = "$$precioVenta MXN",
         cantidadProducida = cantidadProducida,
         fechaCaducidadFormatted = fechaCaducidad?.toReadableDate(),
