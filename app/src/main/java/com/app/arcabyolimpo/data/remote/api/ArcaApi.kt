@@ -3,9 +3,11 @@ import com.app.arcabyolimpo.data.remote.dto.auth.LoginRequestDto
 import com.app.arcabyolimpo.data.remote.dto.auth.LoginResponseDto
 import com.app.arcabyolimpo.data.remote.dto.auth.RefreshRequestDto
 import com.app.arcabyolimpo.data.remote.dto.auth.RefreshResponseDto
+import com.app.arcabyolimpo.data.remote.dto.beneficiaries.AddNewBeneficiaryDto
 import com.app.arcabyolimpo.data.remote.dto.beneficiaries.BeneficiariesListDto
 import com.app.arcabyolimpo.data.remote.dto.beneficiaries.BeneficiaryDto
 import com.app.arcabyolimpo.data.remote.dto.beneficiaries.GetBeneficiariesDisabilitiesDto
+import com.app.arcabyolimpo.data.remote.dto.disabilities.DisabilityDto
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.data.remote.dto.password.RecoverPasswordDto
 import com.app.arcabyolimpo.data.remote.dto.password.RecoverPasswordResponseDto
@@ -21,6 +23,9 @@ import com.app.arcabyolimpo.data.remote.dto.supplies.AcquisitionDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteResponseDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteSupplyBatchDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.FilterRequestDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.FilteredBatchDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.GetFilterBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.RegisterSupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuccessMessageDto
@@ -70,10 +75,6 @@ interface ArcaApi {
     suspend fun refresh(
         @Body request: RefreshRequestDto,
     ): RefreshResponseDto
-
-    // External Collabs ----------------
-    // @GET("externalCollabs/")
-    // suspend fun getAllCollabs(): List<ExternalCollabDto>
 
     @GET("user/{id}")
     suspend fun getUserById(
@@ -129,6 +130,14 @@ interface ArcaApi {
 
     @GET("supplies/filter/data")
     suspend fun getFilterSupplies(): GetFiltersDto
+
+    @POST("/supplyBatch/filter")
+    suspend fun filterSupplyBatch(
+        @Body body: FilterRequestDto
+    ): List<FilteredBatchDto>
+
+    @GET("supplyBatch/filter/data")
+    suspend fun getFilterSupplyBatch(): GetFilterBatchDto
 
     @GET("supplyBatch/{id}")
     suspend fun getSupplyBatchById(
@@ -237,12 +246,32 @@ interface ArcaApi {
         @Query("term") searchTerm: String,
     ): List<BeneficiaryDto>
 
+    @POST("beneficiary/create")
+    suspend fun addBeneficiary(
+        @Body requestBody: BeneficiaryDto,
+    ): okhttp3.ResponseBody
+
+    @GET("/disabilities/list")
+    suspend fun getDisabilitiesList(): List<DisabilityDto>
+
     @GET("supplies/workshop/category")
     suspend fun getWorkshopCategoryList(): WorkshopCategoryListDto
 
     @Multipart
     @POST("supplies/add")
     suspend fun addSupply(
+        @Part("idTaller") idWorkshop: RequestBody,
+        @Part("nombre") name: RequestBody,
+        @Part("unidadMedida") measureUnit: RequestBody,
+        @Part("idCategoria") idCategory: RequestBody,
+        @Part("status") status: RequestBody,
+        @Part imagenInsumo: MultipartBody.Part?,
+    )
+
+    @Multipart
+    @PUT("supplies/update/{idSupply}")
+    suspend fun updateSupply(
+        @Path("idSupply") idSupply: String,
         @Part("idTaller") idWorkshop: RequestBody,
         @Part("nombre") name: RequestBody,
         @Part("unidadMedida") measureUnit: RequestBody,

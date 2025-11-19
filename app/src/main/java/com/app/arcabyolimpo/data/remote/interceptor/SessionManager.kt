@@ -1,8 +1,10 @@
 package com.app.arcabyolimpo.data.remote.interceptor
 
 import com.app.arcabyolimpo.data.local.auth.UserPreferences
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -27,7 +29,23 @@ class SessionManager
          * and emitting a session expiration event to UI observers.
          */
         suspend fun logout() {
-            userPreferences.clearAll()
             _sessionExpired.emit(Unit)
+            userPreferences.clearAll()
         }
+
+        /** Returns the first two words of the stored username. */
+        fun getUsername(): Flow<String> =
+            userPreferences.getUsername().map { username ->
+                username
+                    ?.split(" ")
+                    ?.take(2)
+                    ?.joinToString(" ")
+                    ?: ""
+            }
+
+        /** Returns the stored user role. */
+        fun getUserRole(): Flow<String> =
+            userPreferences.getUserRole().map { role ->
+                role?.uppercase() ?: ""
+            }
     }

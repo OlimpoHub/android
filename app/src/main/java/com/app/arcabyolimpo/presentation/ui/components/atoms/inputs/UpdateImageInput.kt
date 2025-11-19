@@ -28,11 +28,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import coil.compose.AsyncImage
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.UploadIcon
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import com.app.arcabyolimpo.ui.theme.ErrorRed
@@ -71,22 +73,16 @@ fun ImageUploadInput(
     errorMessage: String? = null,
     height: Dp = 160.dp,
 ) {
-    var imageUri by rememberSaveable { mutableStateOf(value?.toString()) }
-    val currentUri: Uri? = imageUri?.takeIf { it.isNotBlank() }?.let(Uri::parse)
-
     val shape = RoundedCornerShape(12.dp)
     val backgroundColor =
         if (isError) InputBackgroundRed else InputBackgroundBlue
     val borderColor =
         if (isError) HighlightRed else HighlightInputBlue
-    val borderColorFocused =
-        if (isError) HighlightRed else SelectInputBlue
     val textColor = White
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
-        imageUri = uri?.toString().orEmpty()
         onValueChange(uri)
     }
 
@@ -114,18 +110,15 @@ fun ImageUploadInput(
                 .padding(12.dp),
             contentAlignment = Alignment.Center
         ) {
-            if (currentUri != null) {
-                AndroidView(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(shape),
-                    factory = { ctx ->
-                        ImageView(ctx).apply {
-                            adjustViewBounds = true
-                            scaleType = ImageView.ScaleType.CENTER_CROP
-                        }
-                    },
-                    update = { it.setImageURI(currentUri) },
+            if (value != null) {
+                AsyncImage(
+                    model = value,
+                    contentDescription = "Imagen seleccionada por el usuario",
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .clip(shape),
+                    contentScale = ContentScale.Crop
                 )
             } else {
                 Column(

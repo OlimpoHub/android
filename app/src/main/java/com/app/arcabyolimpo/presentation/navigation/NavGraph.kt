@@ -18,6 +18,7 @@ import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
 import com.app.arcabyolimpo.domain.model.auth.UserRole
 import com.app.arcabyolimpo.presentation.common.components.LoadingShimmer
 import com.app.arcabyolimpo.presentation.screens.accountactivation.AccountActivationScreen
+import com.app.arcabyolimpo.presentation.screens.beneficiary.AddNewBeneficiaryScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
 import com.app.arcabyolimpo.presentation.screens.home.assistant.CollaboratorHomeScreen
@@ -39,6 +40,7 @@ import com.app.arcabyolimpo.presentation.screens.supply.supplyBatchList.SupplyBa
 import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplybatchmodify.SupplyBatchModifyScreen
+import com.app.arcabyolimpo.presentation.screens.supply.supplyUpdate.SupplyUpdateScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplybatchregister.SupplyBatchRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
@@ -109,6 +111,8 @@ sealed class Screen(
         fun createRoute(beneficiaryId: String) = "beneficiary_detail/$beneficiaryId"
     }
 
+    object AddNewBeneficiary : Screen("beneficiary/create")
+
     object SupplyDetail : Screen("supply/{idSupply}") {
         fun createRoute(idSupply: String) = "supply/$idSupply"
     }
@@ -142,6 +146,10 @@ sealed class Screen(
             date: String,
             idInsumo: String,
         ) = "supply_batch_list/dates/$date?idInsumo=$idInsumo"
+    }
+    
+    object SupplyUpdate : Screen("supply/update/{idSupply}") {
+        fun createRoute(idSupply: String) = "supply/update/$idSupply"
     }
 }
 
@@ -179,8 +187,7 @@ fun ArcaNavGraph(
     /** Defines all navigation. The start destination is the Splash screen. */
     NavHost(
         navController = navController,
-        // TODO: Cambiar a Screen.Splash.route cuando acabe
-        startDestination = Screen.SuppliesList.route,
+        startDestination = Screen.Splash.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -366,17 +373,6 @@ fun ArcaNavGraph(
             CollaboratorHomeScreen()
         }
 
-        composable(Screen.UserList.route) {
-            UserListScreen(
-                onCollabClick = { id ->
-                    navController.navigate(Screen.UserDetail.createRoute(id))
-                },
-                onAddClick = {
-                    navController.navigate(Screen.UserRegister.route)
-                },
-            )
-        }
-
         /** User Detail Screen */
         composable(
             route = Screen.UserDetail.route,
@@ -388,11 +384,7 @@ fun ArcaNavGraph(
                 onEditClick = { id ->
                     // TODO: Navigate to edit screen when you create it
                 },
-                onDeleteClick = {
-                    navController.navigate(Screen.UserList.route) {
-                        popUpTo(Screen.UserList.route) { inclusive = true }
-                    }
-                },
+                onDeleteClick = { navController.popBackStack() },
             )
         }
 
@@ -402,17 +394,6 @@ fun ArcaNavGraph(
                 onDismiss = { navController.popBackStack() },
                 onSuccess = {
                     navController.popBackStack()
-                },
-            )
-        }
-
-        composable(Screen.UserList.route) {
-            UserListScreen(
-                onCollabClick = { id ->
-                    navController.navigate(Screen.UserDetail.createRoute(id))
-                },
-                onAddClick = {
-                    navController.navigate(Screen.UserRegister.route)
                 },
             )
         }
@@ -558,7 +539,9 @@ fun ArcaNavGraph(
                     // TODO: Add when delete a supply is ready
                 },
                 onClickModify = {
-                    // TODO: Add when delete a supply is ready
+                    if (idSupply != null) {
+                        navController.navigate(Screen.SupplyUpdate.createRoute(idSupply))
+                    }
                 },
                 onViewBatches = { date, supplyId ->
                     // Navigate to the batch list for this supply and date.
@@ -587,6 +570,7 @@ fun ArcaNavGraph(
                 },
                 onFilterClick = { /* TODO: Lógica de VM */ },
                 onNotificationClick = { /* TODO: Lógica de VM */ },
+
             )
         }
 
@@ -603,6 +587,20 @@ fun ArcaNavGraph(
                 onBackClick = { navController.popBackStack() },
                 onModifyClick = { /* TODO: Lógica de VM */ },
                 viewModel = hiltViewModel(),
+            )
+        }
+
+        /**
+         * Add new beneficiary
+         */
+
+        composable(Screen.AddNewBeneficiary.route) {
+            AddNewBeneficiaryScreen(
+                navController = navController,
+                viewModel = hiltViewModel(),
+                onSuccess = {
+                    navController.popBackStack()
+                }
             )
         }
 
@@ -740,6 +738,25 @@ fun ArcaNavGraph(
                     }
                 },
                 onBackClick = { navController.popBackStack() },
+            )
+        }
+
+        composable(
+            route = Screen.SupplyUpdate.route,
+            arguments = listOf(navArgument("idSupply") { type = NavType.StringType })
+        ) { backStackEntry ->
+
+            SupplyUpdateScreen(
+                onModifyClick = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("shouldRefresh", true)
+
+                    navController.popBackStack()
+                },
+                onCancel = {
+                    navController.popBackStack()
+                }
             )
         }
     }
