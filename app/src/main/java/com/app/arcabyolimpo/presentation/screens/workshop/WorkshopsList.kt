@@ -55,6 +55,7 @@ fun WorkshopsListScreen(
     val snackbarMessage = savedStateHandle?.get<String>("snackbarMessage")
     val snackbarSuccess = savedStateHandle?.get<Boolean>("snackbarSuccess") ?: true
 
+
     LaunchedEffect(Unit) {
         viewModel.loadWorkshopsList()
     }
