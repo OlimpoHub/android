@@ -2,6 +2,7 @@
 
 ### Fixed
 - Fixed search bar in workshop list.
+- Fixed the product error message
 
 ## [0.1.0] - 18/11/2025
 
