@@ -51,6 +51,7 @@ import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerifica
 import com.app.arcabyolimpo.presentation.screens.user.UserListScreen
 import com.app.arcabyolimpo.presentation.screens.user.detail.UserDetailScreen
 import com.app.arcabyolimpo.presentation.screens.user.register.UserRegisterScreen
+import com.app.arcabyolimpo.presentation.screens.user.updateuser.UpdateUserScreen
 import com.app.arcabyolimpo.presentation.screens.workshop.AddNewWorkshopScreen
 import com.app.arcabyolimpo.presentation.screens.workshop.WorkshopDetailScreen
 import com.app.arcabyolimpo.presentation.screens.workshop.WorkshopsListScreen
@@ -77,6 +78,10 @@ sealed class Screen(
 
     object UserDetail : Screen("user_detail/{userId}") {
         fun createRoute(userId: String) = "user_detail/$userId"
+    }
+
+    object UpdateUserScreen : Screen("update_user/{userId}") {
+        fun createRoute(userId: String) = "update_user/$userId"
     }
 
     object TokenVerification : Screen("user/verify-token?token={token}") {
@@ -391,6 +396,7 @@ fun ArcaNavGraph(
             CollaboratorHomeScreen()
         }
 
+
         /** User Detail Screen */
         composable(
             route = Screen.UserDetail.route,
@@ -400,7 +406,7 @@ fun ArcaNavGraph(
             UserDetailScreen(
                 onBackClick = { navController.popBackStack() },
                 onEditClick = { id ->
-                    // TODO: Navigate to edit screen when you create it
+                    navController.navigate(Screen.UpdateUserScreen.createRoute(id))
                 },
                 onDeleteClick = { navController.popBackStack() },
             )
@@ -413,6 +419,25 @@ fun ArcaNavGraph(
                 onSuccess = {
                     navController.popBackStack()
                 },
+            )
+        }
+
+        /** User Update Screen */
+        composable(
+            route = Screen.UpdateUserScreen.route,
+            arguments = listOf(navArgument("userId") { type = NavType.StringType }),
+        ) { backStackEntry ->
+            val userId = requireNotNull(backStackEntry.arguments?.getString("userId"))
+
+            UpdateUserScreen(
+                onDismiss = { navController.popBackStack() },
+                onSuccess = {
+                    // avisa al detalle que debe recargar y regresa
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("refresh_detail_$userId", true)
+                    navController.popBackStack()
+                }
             )
         }
 

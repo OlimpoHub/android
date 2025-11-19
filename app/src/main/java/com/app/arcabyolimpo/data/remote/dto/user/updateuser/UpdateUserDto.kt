@@ -1,9 +1,10 @@
-package com.app.arcabyolimpo.data.remote.dto.user.registeruser
-
+package com.app.arcabyolimpo.data.remote.dto.user.updateuser
 
 import com.google.gson.annotations.SerializedName
 
-data class RegisterUserDto(
+data class UpdateUserDto(
+    @SerializedName("id")
+    val id: String,
 
     @SerializedName("externalCollab_roleId")
     val roleId: String,

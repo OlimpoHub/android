@@ -2,6 +2,7 @@ package com.app.arcabyolimpo.data.repository.user
 
 import com.app.arcabyolimpo.data.mapper.user.toDomain
 import com.app.arcabyolimpo.data.mapper.user.toRegisterDto
+import com.app.arcabyolimpo.data.mapper.user.toUpdateDto
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.dto.user.UserDto
 import com.app.arcabyolimpo.domain.common.Result
@@ -40,6 +41,16 @@ class UsersRepositoryImpl @Inject constructor(
             user
         } catch (e: Exception) {
             throw Exception("Error al registrar usuario: ${e.message}", e)
+        }
+    }
+
+    override suspend fun updateUser(user: UserDto): UserDto {
+        return try {
+            val dto = user.toUpdateDto()
+            api.updateUser(dto)
+            user
+        } catch (e: Exception) {
+            throw Exception("Error al actualizar usuario: ${e.message}", e)
         }
     }
 
