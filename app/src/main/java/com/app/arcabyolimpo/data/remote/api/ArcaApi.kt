@@ -21,13 +21,14 @@ import com.app.arcabyolimpo.data.remote.dto.supplies.AcquisitionDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteResponseDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteSupplyBatchDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.FilterRequestDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.FilteredBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFilterBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.RegisterSupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuccessMessageDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuppliesListDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
-import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchSpecsDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.WorkshopCategoryListDto
 import com.app.arcabyolimpo.data.remote.dto.user.UserDto
@@ -130,8 +131,8 @@ interface ArcaApi {
 
     @POST("/supplyBatch/filter")
     suspend fun filterSupplyBatch(
-        @Body params: FilterDto,
-    ): List<SupplyBatchSpecsDto>
+        @Body body: FilterRequestDto
+    ): List<FilteredBatchDto>
 
     @GET("supplyBatch/filter/data")
     suspend fun getFilterSupplyBatch(): GetFilterBatchDto

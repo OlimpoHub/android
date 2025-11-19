@@ -8,6 +8,7 @@ import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteSupplyBatchDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.FilterRequestDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.RegisterSupplyBatchDto
 import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.domain.model.supplies.Acquisition
@@ -25,6 +26,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.String
 
 /**
  * Retrieves detailed information for a specific supply by its [id].
@@ -78,17 +80,30 @@ class SupplyRepositoryImpl
          * --------------------------------------------------------------------------------------- */
         override suspend fun getSupplyBatchById(id: String): SupplyBatchExt = api.getSupplyBatchById(id).toDomain()
 
-        override suspend fun filterSupplyBatch(filters: FilterDto): List<Batch> {
-            val response = api.filterSupplyBatch(filters)
-            return response.map { dto ->
-                Batch(
-                    quantity = dto.quantity ?: 0,
-                    expirationDate = dto.expirationDate?: "",
-                    adquisitionType = dto.adquisitionType?: "",
-                )
-            }
+        /**
+         * Sends a filter request to the API and maps the response to a list of [Batch].
+         *
+         * @param idSupply The ID of the supply being filtered.
+         * @param filters The filter data selected by the user.
+         * @return A list of filtered batches.
+         */
+        override suspend fun filterSupplyBatch(idSupply: String, filters: FilterDto): List<Batch> {
+            val body = FilterRequestDto(
+                idSupply = idSupply,
+                filters = filters.filters,
+                order = filters.order
+            )
+
+            val response = api.filterSupplyBatch(body)
+            return response.map { it.toDomain() }
         }
 
+
+        /**
+         * Fetches available filter metadata and maps it to [FilterData].
+         *
+         * @return The available filter categories and values.
+         */
         override suspend fun getFilterBatchData(): FilterData = api.getFilterSupplyBatch().toDomain()
 
         /**

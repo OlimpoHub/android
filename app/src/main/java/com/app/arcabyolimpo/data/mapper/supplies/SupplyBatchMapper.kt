@@ -1,11 +1,13 @@
 package com.app.arcabyolimpo.data.mapper.supplies
 
+import com.app.arcabyolimpo.data.remote.dto.supplies.FilteredBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFilterBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchSpecsDto
 import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.domain.model.supplies.Batch
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
+import kotlin.math.exp
 
 /** ---------------------------------------------------------------------------------------------- *
  * Helper function that maps the Dto of supplyBatch to return it into a kotlin object
@@ -32,14 +34,32 @@ fun SupplyBatchDto.toDomain(): SupplyBatchExt =
         } ?: emptyList(),
     )
 
+/**
+ * Maps filter metadata from [GetFilterBatchDto] to the domain model [FilterData].
+ *
+ * @return A [FilterData] instance containing UI-usable filter information.
+ */
 fun GetFilterBatchDto.toDomain(): FilterData {
     val map = mutableMapOf<String, List<String>>()
+
     if (!acquisitionType.isNullOrEmpty()) {
         map["Tipo de Adquisición"] = acquisitionType
-    }
-    if (!expirationDate.isNullOrEmpty()) {
-        map["Fecha de caducidad"] = expirationDate
     }
 
     return FilterData(map)
 }
+
+/**
+ * Maps a [FilteredBatchDto] into the domain model [Batch].
+ *
+ * @return A [Batch] object representing a filtered batch.
+ */
+fun FilteredBatchDto.toDomain(): Batch {
+    return Batch(
+        id = id ?: "",
+        adquisitionType = adquisitionType ?: "",
+        expirationDate = expirationDate ?: "",
+        quantity = quantity ?: 0,
+    )
+}
+

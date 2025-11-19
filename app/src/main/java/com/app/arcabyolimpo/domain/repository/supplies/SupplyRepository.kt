@@ -44,7 +44,23 @@ interface SupplyRepository {
      */
     suspend fun deleteSupplyBatch(idSupply: String, expirationDate: String)
 
-    suspend fun filterSupplyBatch(params: FilterDto): List<Batch>
+    /**
+     * Retrieves a list of supply batches filtered according to the provided parameters.
+     *
+     * @param supplyId The ID of the supply whose batches are being filtered.
+     * @param params The filter configuration, including selected filter values and sort order.
+     * @return A list of batches that match the filtering criteria.
+     */
+    suspend fun filterSupplyBatch(supplyId: String, params: FilterDto): List<Batch>
+
+    /**
+     * Fetches all available filter metadata for supply batches.
+     *
+     * This includes the possible values that can be used to build
+     * the filter UI (e.g., acquisition types, expiration options, etc.).
+     *
+     * @return A [FilterData] object containing the available filter options.
+     */
     suspend fun getFilterBatchData(): FilterData
 
     /**

@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.app.arcabyolimpo.domain.model.supplies.Batch
 import com.app.arcabyolimpo.presentation.common.components.ErrorView
 import com.app.arcabyolimpo.presentation.common.components.LoadingShimmer
 import com.app.arcabyolimpo.presentation.ui.components.organisms.SupplyDetailContent
@@ -84,11 +85,7 @@ fun SuppliesDetailScreen(
 
     // In this case, if there is no error in the uiState,
     // we consider it a success.
-    val haserror = if (uiState.error == null){
-        true
-    }else {
-        false
-    }
+    val haserror = uiState.error == null
 
     LaunchedEffect(idInsumo) {
         viewModel.getSupply(idInsumo)
@@ -98,7 +95,7 @@ fun SuppliesDetailScreen(
     // If true, the snackbar is displayed and the system waits to dismiss it.
     LaunchedEffect(uiState.snackbarVisible) {
 
-        if (uiState.snackbarVisible == true){
+        if (uiState.snackbarVisible){
             // show snackbar as a suspend function
             scope.launch {
 
@@ -127,7 +124,7 @@ fun SuppliesDetailScreen(
     }
 
     // Displays a confirmation dialog when the user wants to delete an item.
-    if (uiState.decisionDialogVisible == true) {
+    if (uiState.decisionDialogVisible) {
         val (title, text) = when (uiState.deletionType) {
             DeletionType.SUPPLY ->
                 "¿Estás seguro de eliminar este Insumo?" to
@@ -160,7 +157,7 @@ fun SuppliesDetailScreen(
             SnackbarHost(snackbarHostState) { data ->
                 // Every time a snackbar is displayed, our custom component is called
                 Snackbarcustom(
-                    data.visuals.message.toString(),
+                    data.visuals.message,
                     modifier = Modifier,
                     // the type of snack bar (whether it's red or blue).
                     ifSucces = haserror,
@@ -186,7 +183,7 @@ fun SuppliesDetailScreen(
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
-                            Icons.Default.ArrowBack,
+                            Icons.AutoMirrored.Filled.ArrowBack,
                             "Back",
                             tint = White,
                         )
@@ -222,9 +219,38 @@ fun SuppliesDetailScreen(
                     )
                 }
                 uiState.supplyBatchList != null -> {
+                    fun applyOrder(list: List<Batch>, order: String?): List<Batch> {
+                        return when (order?.uppercase()) {
+                            "ASC" -> list.sortedBy { it.quantity }
+                            "DESC" -> list.sortedByDescending { it.quantity }
+                            else -> list
+                        }
+                    }
+
+                    val hasActiveFilters =
+                        filterState.selectedFilters.filters.any { entry -> entry.value.isNotEmpty() }
+
+                    val isDefaultOrder =
+                        filterState.selectedFilters.order.isNullOrBlank() ||
+                                filterState.selectedFilters.order == "ASC"
+
+                    val hasOrderOnly = !hasActiveFilters && !isDefaultOrder
+
+                    val supplyBatches = state.supplyBatchList?.batch ?: emptyList()
+                    val filteredBatches = filterState.result
+
+                    val listToShow = when {
+                        hasActiveFilters -> applyOrder(filteredBatches, filterState.selectedFilters.order)
+                        hasOrderOnly -> applyOrder(supplyBatches, filterState.selectedFilters.order)
+                        else -> supplyBatches
+                    }
+
+                    val filteredShown =
+                        if (hasActiveFilters || hasOrderOnly) listToShow else null
+
                     SupplyDetailContent(
                         supply = uiState.supplyBatchList!!,
-                        filteredBatches = filterState.result.takeIf { it.isNotEmpty() },
+                        filteredBatches = filteredShown,
                         onClickAddSupplyBatch = {},
                         onClickDelete = {
                             // When you press delete in the details, we display the dialog
@@ -248,6 +274,7 @@ fun SuppliesDetailScreen(
             }
         }
     }
+
     if (showFilter && filterState.filterData != null) {
         Filter(
             data = filterState.filterData!!,

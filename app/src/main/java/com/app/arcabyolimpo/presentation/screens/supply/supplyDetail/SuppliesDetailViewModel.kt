@@ -47,6 +47,9 @@ class SuppliesDetailViewModel
             loadFilterData()
         }
 
+        /**
+         * Loads the available filter metadata from the backend.
+         */
         fun loadFilterData() {
             viewModelScope.launch {
                 getFilterBatchDataUseCase().collect { result ->
@@ -257,43 +260,23 @@ class SuppliesDetailViewModel
             }
         }
 
+        /**
+         * Applies the selected filters to the current supply and updates the UI state accordingly.
+         *
+         * Triggers the use case execution and listens for loading, success, or error events.
+         */
         fun filterSupplyBatch(filters: FilterDto) {
-            // Guardamos la selección en el UIState
             _uiFiltersState.update { it.copy(selectedFilters = filters) }
 
-            val apiFilters = mutableMapOf<String, List<String>>()
-
-            filters.filters.forEach { (uiKey, values) ->
-                val apiKey = when (uiKey) {
-                    // Mapeo 1: Clave de la UI -> Clave de la API/Backend
-                    "Tipo de Adquisición" -> "TipoAdquisicion"
-
-                    // Mapeo 2: Clave de la UI -> Clave de la API/Backend
-                    "Fecha de caducidad" -> "FechaCaducidad"
-
-                    // Si hay otras claves de filtro, pasarlas directamente
-                    else -> uiKey
-                }
-
-                // Solo incluir filtros si tienen valores seleccionados
-                if (values.isNotEmpty()) {
-                    apiFilters[apiKey] = values
-                }
-            }
-
-            val apiFilterDto = FilterDto(
-                filters = apiFilters.toMap(), // Convertir a inmutable
-                order = filters.order // Mantener el orden original
-            )
+            val idSupply = currentSupplyId ?: return
 
             viewModelScope.launch {
-                filterSupplyBatchUseCase(apiFilterDto).collect { result ->
+                filterSupplyBatchUseCase(idSupply, filters).collect { result ->
                     when (result) {
-                        is Result.Loading -> {
+                        is Result.Loading ->
                             _uiFiltersState.update { it.copy(isLoading = true) }
-                        }
 
-                        is Result.Success -> {
+                        is Result.Success ->
                             _uiFiltersState.update { state ->
                                 state.copy(
                                     result = result.data,
@@ -301,30 +284,29 @@ class SuppliesDetailViewModel
                                     error = null,
                                 )
                             }
-                        }
 
-                        is Result.Error -> {
+                        is Result.Error ->
                             _uiFiltersState.update { state ->
                                 state.copy(
                                     error = result.exception.message,
                                     isLoading = false,
                                 )
                             }
-                        }
                     }
                 }
             }
         }
 
+        /**
+         * Clears all active filters and resets the filter state.
+         */
         fun clearFilters() {
             _uiFiltersState.update {
                 it.copy(
-                    selectedFilters =
-                        FilterDto(
-                            filters = emptyMap(),
-                            order = "ASC",
-                        ),
-                        result = emptyList()
+                    selectedFilters = FilterDto(
+                        filters = emptyMap(),
+                        order = "ASC",
+                    ),
                 )
             }
         }
