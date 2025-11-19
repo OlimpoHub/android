@@ -1,6 +1,7 @@
 ## [0.1.0] - 18/11/2025
 
 ### Fixed
+- Fixed the possibility to add or modify one supply with the same name
 - Fixed the date format in supplyDetailContent screen
 - Fixed error in register workshop
 - Fixed error in view Workshops after a delete
