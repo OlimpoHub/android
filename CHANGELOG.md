@@ -1,3 +1,9 @@
+## [0.1.0] - 19/11/2025
+
+### Added
+ - US for modify supply batch
+ - US for display of supply batches based on date and idSupply
+
 ## [0.1.0] - 18/11/2025
 
 ### Fixed

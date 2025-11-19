@@ -2,7 +2,6 @@ package com.app.arcabyolimpo.data.repository.supplies
 
 import android.content.Context
 import android.net.Uri
-import retrofit2.HttpException
 import android.util.Log
 import com.app.arcabyolimpo.data.mapper.supplies.toDomain
 import com.app.arcabyolimpo.data.mapper.supplies.toRegister
@@ -28,6 +27,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
+import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -93,23 +93,27 @@ class SupplyRepositoryImpl
             return dto.toRegister()
         }
 
+        /**
          * Sends a filter request to the API and maps the response to a list of [Batch].
          *
          * @param idSupply The ID of the supply being filtered.
          * @param filters The filter data selected by the user.
          * @return A list of filtered batches.
          */
-        override suspend fun filterSupplyBatch(idSupply: String, filters: FilterDto): List<Batch> {
-            val body = FilterRequestDto(
-                idSupply = idSupply,
-                filters = filters.filters,
-                order = filters.order
-            )
+        override suspend fun filterSupplyBatch(
+            idSupply: String,
+            filters: FilterDto,
+        ): List<Batch> {
+            val body =
+                FilterRequestDto(
+                    idSupply = idSupply,
+                    filters = filters.filters,
+                    order = filters.order,
+                )
 
             val response = api.filterSupplyBatch(body)
             return response.map { it.toDomain() }
         }
-
 
         /**
          * Fetches available filter metadata and maps it to [FilterData].
@@ -261,17 +265,15 @@ class SupplyRepositoryImpl
             } catch (e: HttpException) {
                 // 1. Capturamos errores HTTP (400, 404, 500)
                 val error = e.response()?.errorBody()?.string()
-                val message = try {
-                    JSONObject(error ?: "").getString("message")
-
-                } catch (jsonException: Exception) {
-                    "Error al agregar insumo: ${e.message()}"
-
-                }
+                val message =
+                    try {
+                        JSONObject(error ?: "").getString("message")
+                    } catch (jsonException: Exception) {
+                        "Error al agregar insumo: ${e.message()}"
+                    }
                 Result.failure(Exception(message))
             } catch (e: IOException) {
                 Result.failure(Exception("No hay conexión a internet"))
-
             } catch (e: Exception) {
                 Result.failure(e)
             }
@@ -279,7 +281,7 @@ class SupplyRepositoryImpl
         override suspend fun updateSupply(
             idSupply: String,
             supply: SupplyAdd,
-            image: Uri?
+            image: Uri?,
         ): Result<Unit> =
             try {
                 val imagePart =
@@ -291,7 +293,8 @@ class SupplyRepositoryImpl
                             val requestFile =
                                 bytes.toRequestBody(
                                     context.contentResolver
-                                        .getType(it)?.toMediaTypeOrNull(),
+                                        .getType(it)
+                                        ?.toMediaTypeOrNull(),
                                 )
                             MultipartBody.Part.createFormData(
                                 "imagenInsumo",
@@ -321,17 +324,15 @@ class SupplyRepositoryImpl
                 Result.success(Unit)
             } catch (e: HttpException) {
                 val error = e.response()?.errorBody()?.string()
-                val message = try {
-                    JSONObject(error ?: "").getString("message")
-
-                } catch (jsonException: Exception) {
-                    "Error al modificar insumo: ${e.message()}"
-                }
+                val message =
+                    try {
+                        JSONObject(error ?: "").getString("message")
+                    } catch (jsonException: Exception) {
+                        "Error al modificar insumo: ${e.message()}"
+                    }
                 Result.failure(Exception(message))
-
             } catch (e: IOException) {
                 Result.failure(Exception("No hay conexión a internet"))
-
             } catch (e: Exception) {
                 Result.failure(e)
             }
@@ -366,7 +367,9 @@ class SupplyRepositoryImpl
             try {
                 Log.d(
                     "SupplyRepo",
-                    "api returned responseSize=${response.size}, combinedItems=${combinedItems.size}, ids=${combinedItems.joinToString { it.id }}",
+                    "api returned responseSize=${response.size}, combinedItems=${combinedItems.size}, ids=${combinedItems.joinToString {
+                        it.id
+                    }}",
                 )
             } catch (t: Throwable) {
                 Log.d("SupplyRepo", "api returned responseSize=${response.size}, combinedItems=${combinedItems.size}")
