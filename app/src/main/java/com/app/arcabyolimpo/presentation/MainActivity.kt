@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Scaffold
 import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
-import com.app.arcabyolimpo.presentation.navigation.Screen.AccountActivation.ArcaNavGraph
+import com.app.arcabyolimpo.presentation.navigation.ArcaNavGraph
 import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,4 +35,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-

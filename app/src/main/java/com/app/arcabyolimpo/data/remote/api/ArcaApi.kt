@@ -20,6 +20,7 @@ import com.app.arcabyolimpo.data.remote.dto.product.ProductRegisterInfoDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchModifyDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchRegisterDto
+import com.app.arcabyolimpo.data.remote.dto.qr.CreateQrDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.AcquisitionDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteResponseDto
@@ -49,6 +50,7 @@ import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
 import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -408,4 +410,9 @@ interface ArcaApi {
         @Part("Disponible") status: RequestBody,
         @Part image: MultipartBody.Part?,
     )
+
+    @POST("qr/create")
+    suspend fun postCreateQr(
+        @Body request: CreateQrDto,
+    ): ResponseBody
 }
