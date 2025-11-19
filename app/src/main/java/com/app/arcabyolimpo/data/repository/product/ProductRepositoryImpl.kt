@@ -13,6 +13,9 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.HttpException
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+
 
 /**
  * Implementation for the repository for product management, which
@@ -96,7 +99,12 @@ class ProductRepositoryImpl @Inject constructor(
      * Fetches the full list of products from the API.
      */
     override suspend fun getProducts(): List<Product> {
-        return api.getProducts().map { it.toDomain() }
+        val dtos = api.getProducts()
+        println("🔍 API returned ${dtos.size} products")
+        dtos.forEach { dto ->
+            println("🔍 DTO: idProducto='${dto.idProducto}', nombre='${dto.nombre}'")
+        }
+        return dtos.map { it.toDomain() }
     }
 
     /**
@@ -106,4 +114,25 @@ class ProductRepositoryImpl @Inject constructor(
     override suspend fun searchProducts(query: String): List<Product> {
         return api.searchProducts(query).map { it.toDomain() }
     }
+
+    override fun getProductById(productId: String): Flow<com.app.arcabyolimpo.domain.common.Result<Product>> = flow {
+        emit(com.app.arcabyolimpo.domain.common.Result.Loading)
+        try {
+            val productDto = api.getProductById(productId)
+            println("🔍 getProductById API response: idProducto='${productDto?.idProducto}', nombre='${productDto?.nombre}'")
+
+            if (productDto == null) {
+                emit(com.app.arcabyolimpo.domain.common.Result.Error(Exception("Producto no encontrado")))
+            } else {
+                val product = productDto.toDomain()
+                emit(com.app.arcabyolimpo.domain.common.Result.Success(product))
+            }
+        } catch (e: Exception) {
+            println("🔴 getProductById error: ${e.message}")
+            e.printStackTrace()
+            emit(com.app.arcabyolimpo.domain.common.Result.Error(e))
+        }
+    }
+
+
 }

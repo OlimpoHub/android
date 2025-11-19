@@ -35,39 +35,42 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.status.InactiveStat
 fun UserDetailContent(
     collab: UserDto,
     onEditClick: () -> Unit,
-    onDeleteClick: () -> Unit
+    onDeleteClick: () -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         // Profile Photo
         if (collab.foto != null) {
             AsyncImage(
                 model = collab.foto,
                 contentDescription = "Profile Photo",
-                modifier = Modifier
-                    .size(120.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
+                modifier =
+                    Modifier
+                        .size(120.dp)
+                        .clip(CircleShape),
+                contentScale = ContentScale.Crop,
             )
         } else {
             // Placeholder if no photo
             Box(
-                modifier = Modifier
-                    .size(120.dp)
-                    .clip(CircleShape)
-                    .background(Color(0xFF1E293B)),
-                contentAlignment = Alignment.Center
+                modifier =
+                    Modifier
+                        .size(120.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFF1E293B)),
+                contentAlignment = Alignment.Center,
             ) {
                 Text(
                     text = "${collab.nombre.firstOrNull() ?: ""}${collab.apellidoPaterno.firstOrNull() ?: ""}",
                     color = Color.White,
                     fontSize = 40.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
             }
         }
@@ -79,7 +82,7 @@ fun UserDetailContent(
             text = "${collab.nombre} ${collab.apellidoPaterno} ${collab.apellidoMaterno}",
             color = Color.White,
             fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -98,19 +101,20 @@ fun UserDetailContent(
         InfoCard(label = "Teléfono", value = collab.telefono)
         InfoCard(label = "Carrera", value = collab.carrera)
         InfoCard(label = "Fecha de Nacimiento", value = formatDate(collab.fechaNacimiento))
-        InfoCard(label = "ID de Rol", value = getRoleName(collab.idRol))
+        InfoCard(label = "Rol", value = getRoleName(collab.idRol))
 
         Spacer(modifier = Modifier.height(32.dp))
 
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Box(
                 modifier = Modifier.weight(1f),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 ModifyButton(
                     onClick = onEditClick,
@@ -119,11 +123,10 @@ fun UserDetailContent(
 
             Box(
                 modifier = Modifier.weight(1f),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 DeleteButton(
                     onClick = onDeleteClick,
-                    modifier = Modifier.size(width = 140.dp, height = 40.dp)
                 )
             }
         }
@@ -133,21 +136,19 @@ fun UserDetailContent(
 }
 
 // Helper function to format date
-fun formatDate(dateString: String): String {
-    return try {
+fun formatDate(dateString: String): String =
+    try {
         val parts = dateString.split("T")[0].split("-")
         "${parts[2]}/${parts[1]}/${parts[0]}"
     } catch (e: Exception) {
         dateString
     }
-}
 
 // Helper function to get role name from ID
-fun getRoleName(roleId: String?): String {
-    return when (roleId) {
+fun getRoleName(roleId: String?): String =
+    when (roleId) {
         "1" -> "Coordinador"
         "2" -> "Asistente"
         "3" -> "Becario"
         else -> "Desconocido"
     }
-}
