@@ -2,6 +2,7 @@ package com.app.arcabyolimpo.data.repository.supplies
 
 import android.content.Context
 import android.net.Uri
+import retrofit2.HttpException
 import android.util.Log
 import com.app.arcabyolimpo.data.mapper.supplies.toDomain
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
@@ -24,6 +25,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
+import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.String
@@ -242,6 +245,20 @@ class SupplyRepositoryImpl
                     imagenInsumo = imagePart,
                 )
                 Result.success(Unit)
+            } catch (e: HttpException) {
+                // 1. Capturamos errores HTTP (400, 404, 500)
+                val error = e.response()?.errorBody()?.string()
+                val message = try {
+                    JSONObject(error ?: "").getString("message")
+
+                } catch (jsonException: Exception) {
+                    "Error al agregar insumo: ${e.message()}"
+
+                }
+                Result.failure(Exception(message))
+            } catch (e: IOException) {
+                Result.failure(Exception("No hay conexión a internet"))
+
             } catch (e: Exception) {
                 Result.failure(e)
             }
@@ -289,6 +306,19 @@ class SupplyRepositoryImpl
                     imagenInsumo = imagePart,
                 )
                 Result.success(Unit)
+            } catch (e: HttpException) {
+                val error = e.response()?.errorBody()?.string()
+                val message = try {
+                    JSONObject(error ?: "").getString("message")
+
+                } catch (jsonException: Exception) {
+                    "Error al modificar insumo: ${e.message()}"
+                }
+                Result.failure(Exception(message))
+
+            } catch (e: IOException) {
+                Result.failure(Exception("No hay conexión a internet"))
+
             } catch (e: Exception) {
                 Result.failure(e)
             }
