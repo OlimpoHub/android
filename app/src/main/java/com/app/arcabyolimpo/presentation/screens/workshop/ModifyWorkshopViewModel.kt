@@ -111,6 +111,7 @@ class ModifyWorkshopViewModel @Inject constructor(
             try {
                 val workshopData = repository.getWorkshopsById(idWorkshop)
                 _workshop.value = workshopData
+
                 Log.d("WORKSHOP_DEBUG", "Hora Inicio (Cruda): ${workshopData?.startHour}")
                 if (workshopData != null) {
                     val cleanDate = formatWorkshopDate(workshopData.date)
@@ -163,7 +164,7 @@ class ModifyWorkshopViewModel @Inject constructor(
 
     fun modifyWorkshop(idWorkshop: String) {
         if (!validateForm()) return
-
+        Log.d("DEBUG_SAVE", "Intentando guardar -> Nombre: ${_formData.value.name}, Desc: ${_formData.value.description}")
         viewModelScope.launch {
             val workshopDto = WorkshopDto(
                 id = idWorkshop,

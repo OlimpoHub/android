@@ -281,6 +281,7 @@ interface ArcaApi {
         @Part("idCategoria") idCategory: RequestBody,
         @Part("status") status: RequestBody,
         @Part imagenInsumo: MultipartBody.Part?,
+    )
 
 
     @GET("productBatch/")

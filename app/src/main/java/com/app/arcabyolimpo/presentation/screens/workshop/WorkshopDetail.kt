@@ -106,6 +106,9 @@ fun WorkshopDetailScreen(
             }
         }
     }
+        LaunchedEffect(Unit) {
+            viewModel.loadWorkshop()
+        }
 
 
     // Displays a confirmation dialog when the user wants to delete an item.

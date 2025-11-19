@@ -5,6 +5,7 @@
 ### Fixed
 - Fixed search bar in workshop list.
 - Error now properly appearing when registering new beneficiary
+- Error in descriptcion in view and modify a workshop
 
 ## [0.1.0] - 18/11/2025
 
