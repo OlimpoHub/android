@@ -1,5 +1,9 @@
 ## [0.1.0] - 19/11/2025
 ### Added
+- Added modify for workshops.
+
+### Added
+ - Supply module conected to the inventory screen.
  - Added modify for workshops.
  - US for modify supply batch
  - US for display of supply batches based on date and idSupply

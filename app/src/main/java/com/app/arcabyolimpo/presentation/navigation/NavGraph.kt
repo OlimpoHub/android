@@ -224,7 +224,7 @@ fun ArcaNavGraph(
     NavHost(
         navController = navController,
         // TODO: Cambiar a Screen.Splash.route cuando acabe
-        startDestination = Screen.ProductList.route,
+        startDestination = Screen.Splash.route,
         modifier = modifier,
     ) {
         /** Splash Screen */
@@ -675,10 +675,10 @@ fun ArcaNavGraph(
         composable(Screen.SupplyAdd.route) {
             SupplyAddScreen(
                 onSaveSuccess = {
-                    navController.popBackStack()
+                    navController.navigate(Screen.SuppliesList.route)
                 },
                 onCancel = {
-                    navController.popBackStack()
+                    navController.navigate(Screen.SuppliesList.route)
                 },
             )
         }

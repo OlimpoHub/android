@@ -21,8 +21,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.app.arcabyolimpo.presentation.navigation.Screen
 import com.app.arcabyolimpo.presentation.screens.home.components.InventoryMainScreen
 import com.app.arcabyolimpo.presentation.screens.home.components.InventoryTopBar
+import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 
@@ -112,35 +114,16 @@ fun InventoryScreen(navController: NavHostController) {
                                     }
                                 },
                             )
-                        "supplies" ->
-                            TopAppBar(
-                                title = {
-                                    Text(
-                                        "Insumos",
-                                        color = Color.White,
-                                        fontSize = 24.sp,
-                                        fontWeight = FontWeight.Bold,
-                                    )
+                        "supplies" -> {
+                            SupplyListScreen(
+                                onSupplyClick = { id ->
+                                    navController.navigate("supply/$id")
                                 },
-                                navigationIcon = {
-                                    IconButton(onClick = { selectedOption = null }) {
-                                        Icon(
-                                            imageVector = Icons.Default.ArrowBack,
-                                            contentDescription = "Regresar",
-                                            tint = Color.White,
-                                        )
-                                    }
-                                },
-                                colors =
-                                    TopAppBarDefaults.topAppBarColors(
-                                        containerColor = Color(0xFF040610),
-                                    ),
-                                actions = {
-                                    IconButton(onClick = { }) {
-                                        NotificationIcon()
-                                    }
+                                onAddSupplyClick = {
+                                    navController.navigate(Screen.SupplyAdd.route)
                                 },
                             )
+                        }
                     }
                 }
             }
