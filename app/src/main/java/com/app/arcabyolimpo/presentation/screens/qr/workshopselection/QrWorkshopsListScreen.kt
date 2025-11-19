@@ -66,11 +66,6 @@ fun QrWorkshopsListScreen(
                         },
                     )
                 },
-                bottomBar = {
-                    Box(modifier = Modifier.padding(bottom = 8.dp)) {
-                        NavBar()
-                    }
-                },
             ) { padding ->
                 Column(
                     modifier =
