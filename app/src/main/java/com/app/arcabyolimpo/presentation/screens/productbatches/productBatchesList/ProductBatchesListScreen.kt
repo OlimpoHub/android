@@ -30,11 +30,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.app.arcabyolimpo.presentation.common.components.ErrorView
 import com.app.arcabyolimpo.presentation.screens.productbatches.model.ProductBatchUiModel
 import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
@@ -170,11 +172,17 @@ fun ProductBatchesListScreen(
                                 .padding(padding),
                         contentAlignment = Alignment.Center,
                     ) {
-                        Text(
-                            text = "Error: ${state.error}",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.error,
-                        )
+                        MaterialTheme(
+                            colorScheme =
+                                MaterialTheme.colorScheme.copy(
+                                    onSurface = Color.White,
+                                ),
+                        ) {
+                            ErrorView(
+                                message = state.error,
+                                onRetry = { viewModel.loadData() },
+                            )
+                        }
                     }
                 }
 
@@ -186,7 +194,10 @@ fun ProductBatchesListScreen(
                                 .padding(padding),
                         contentAlignment = Alignment.Center,
                     ) {
-                        Text("No product batches found")
+                        Text(
+                            text = "No se encontraron lotes de productos",
+                            color = Color.White,
+                        )
                     }
                 }
 
