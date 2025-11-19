@@ -9,4 +9,5 @@ interface UsersRepository {
     suspend fun registerUser(user: UserDto): UserDto
     suspend fun deleteUser(id: String): Boolean
     suspend fun getUsersDomain(): Result<List<UserDto>>
+    suspend fun updateUser(user: UserDto): UserDto
 }

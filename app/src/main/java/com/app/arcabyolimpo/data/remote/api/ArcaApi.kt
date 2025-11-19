@@ -35,8 +35,8 @@ import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.WorkshopCategoryListDto
 import com.app.arcabyolimpo.data.remote.dto.user.UserDto
-import com.app.arcabyolimpo.data.remote.dto.user.registeruser.RegisterResponseDto
 import com.app.arcabyolimpo.data.remote.dto.user.registeruser.RegisterUserDto
+import com.app.arcabyolimpo.data.remote.dto.user.updateuser.UpdateUserDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.AddNewWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.DeleteResponseWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.DeleteWorkshopDto
@@ -85,8 +85,8 @@ interface ArcaApi {
 
     @POST("user/update")
     suspend fun updateUser(
-        @Body user: UserDto,
-    ): RegisterResponseDto
+        @Body user: UpdateUserDto,
+    ): UserDto
 
     @POST("user/delete/{id}")
     suspend fun deleteUser(
@@ -273,6 +273,7 @@ interface ArcaApi {
         @Part("idCategoria") idCategory: RequestBody,
         @Part("status") status: RequestBody,
         @Part imagenInsumo: MultipartBody.Part?,
+    )
 
 
     @GET("productBatch/")
