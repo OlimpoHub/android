@@ -6,6 +6,7 @@
  - US for modify User with MVVM and clean architecture principles.
 
 ### Fixed
+- All product info for modify necessary
 - All product info necesary
 - Product add necesary image
 - Fixed search bar in workshop list.
