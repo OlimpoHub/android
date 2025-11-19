@@ -15,11 +15,13 @@ import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
 import com.app.arcabyolimpo.data.remote.dto.product.ProductDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.AcquisitionDto
+import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchDto
+import com.app.arcabyolimpo.data.remote.dto.product.ProductDetailDto
 import com.app.arcabyolimpo.data.remote.dto.product.ProductRegisterInfoDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchModifyDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchRegisterDto
-import com.app.arcabyolimpo.data.remote.dto.supplies.AcquisitionDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteResponseDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteSupplyBatchDto
@@ -249,7 +251,7 @@ interface ArcaApi {
     @POST("beneficiary/create")
     suspend fun addBeneficiary(
         @Body requestBody: BeneficiaryDto,
-    ): okhttp3.ResponseBody
+    ): AddNewBeneficiaryDto
 
     @GET("/disabilities/list")
     suspend fun getDisabilitiesList(): List<DisabilityDto>
@@ -268,6 +270,7 @@ interface ArcaApi {
         @Part imagenInsumo: MultipartBody.Part?,
     )
 
+    // productBatch -------------
     @Multipart
     @PUT("supplies/update/{idSupply}")
     suspend fun updateSupply(
@@ -278,7 +281,7 @@ interface ArcaApi {
         @Part("idCategoria") idCategory: RequestBody,
         @Part("status") status: RequestBody,
         @Part imagenInsumo: MultipartBody.Part?,
-    )
+
 
     @GET("productBatch/")
     suspend fun getProductBatches(): List<ProductBatchDto>
@@ -299,13 +302,18 @@ interface ArcaApi {
         @Body batch: ProductBatchModifyDto,
     )
 
+    @GET("productBatch/search")
+    suspend fun searchProductBatch(@Query("q") term: String): List<ProductBatchDto>
+
+    @POST("productBatch/filter")
+    suspend fun filterProductBatch(@Body filters: FilterDto): List<ProductBatchDto>
+
     @DELETE("productBatch/{id}")
     suspend fun deleteProductBatch(
         @Path("id") id: String,
     )
 
     // Products --------------------------
-
     @Multipart
     @POST("product/add")
     suspend fun addProduct(
@@ -330,6 +338,9 @@ interface ArcaApi {
     suspend fun searchProducts(
         @Query("q") query: String,
     ): List<ProductDto>
+
+    @GET("product/{id}")
+    suspend fun getProductById(@Path("id") productId: String): ProductDto?
 
     @GET("product/add")
     suspend fun getProductFilters(): ProductRegisterInfoDto
@@ -366,4 +377,22 @@ interface ArcaApi {
         @Path("date") expirationDate: String,
         @Path("idInsumo") idSupply: String,
     ): List<SupplyBatchItemDto>
+        
+    @GET("product/{idProduct}/update")
+    suspend fun getProduct(
+        @Path("idProduct") idProduct: String,
+    ): ProductDetailDto
+
+    @Multipart
+    @PUT("product/{idProduct}/update")
+    suspend fun updateProduct(
+        @Path("idProduct") idProduct: String,
+        @Part("idTaller") idWorkshop: RequestBody,
+        @Part("Nombre") name: RequestBody,
+        @Part("PrecioUnitario") unitaryPrice: RequestBody,
+        @Part("idCategoria") idCategory: RequestBody,
+        @Part("Descripcion") description: RequestBody,
+        @Part("Disponible") status: RequestBody,
+        @Part image: MultipartBody.Part?
+    )
 }

@@ -22,13 +22,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
@@ -53,7 +58,9 @@ import com.app.arcabyolimpo.presentation.ui.components.organisms.Filter
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.presentation.navigation.Screen
+import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
+import kotlinx.coroutines.launch
 
 /**
  * This composable acts as the main screen, inecting the ViewModel
@@ -70,10 +77,44 @@ fun BeneficiaryListScreen(
     val state by viewModel.uiState.collectAsState()
     val filterState by viewModel.uiFiltersState.collectAsState()
 
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
+    val successMessage = navController.currentBackStackEntry
+        ?.savedStateHandle
+        ?.get<String>("success_message")
+
+    LaunchedEffect(successMessage) {
+        successMessage?.let { message ->
+            scope.launch {
+                snackbarHostState.showSnackbar(message)
+            }
+            navController.currentBackStackEntry
+                ?.savedStateHandle
+                ?.remove<String>("success_message")
+        }
+    }
+
+    val errorMessage = navController.currentBackStackEntry
+        ?.savedStateHandle
+        ?.get<String>("error_message")
+
+    LaunchedEffect(errorMessage) {
+        errorMessage?.let { message ->
+            scope.launch {
+                snackbarHostState.showSnackbar(message)
+            }
+            navController.currentBackStackEntry
+                ?.savedStateHandle
+                ?.remove<String>("error_message")
+        }
+    }
+
     BeneficiaryList(
         navController = navController,
         state = state,
         filterState = filterState,
+        snackbarHostState = snackbarHostState,
         onSearchTextChange = viewModel::onSearchTextChange,
         onBeneficiaryClick = onBeneficiaryClick,
         onFilterClick = onFilterClick,
@@ -85,7 +126,8 @@ fun BeneficiaryListScreen(
         onNotificationClick = onNotificationClick,
         onAddBeneficiaryClick = {
             navController.navigate(Screen.AddNewBeneficiary.route)
-        }
+        },
+
     )
 }
 
@@ -99,6 +141,7 @@ fun BeneficiaryList(
     navController: NavHostController,
     state: BeneficiaryListUiState,
     filterState: BeneficiaryFilterUiState,
+    snackbarHostState: SnackbarHostState,
     onSearchTextChange: (String) -> Unit,
     onBeneficiaryClick: (String) -> Unit,
     onFilterClick: () -> Unit,
@@ -113,6 +156,7 @@ fun BeneficiaryList(
         Box(modifier = Modifier.fillMaxSize()) {
             Scaffold(
                 containerColor = Background,
+
                 topBar = {
                     TopAppBar(
                         title = {
@@ -146,6 +190,7 @@ fun BeneficiaryList(
                     Box(modifier = Modifier.padding(bottom = 8.dp)) {
                         NavBar()
                     }
+
                 },
             ) { padding ->
                 Column(
@@ -320,6 +365,25 @@ fun BeneficiaryList(
                         showFilter = false
                     },
                 )
+            }
+
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 100.dp)
+                    .fillMaxWidth()
+            ) {
+                SnackbarHost(
+                    hostState = snackbarHostState,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                ) { data ->
+                    Snackbarcustom(
+                        title = data.visuals.message,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
         }
     }

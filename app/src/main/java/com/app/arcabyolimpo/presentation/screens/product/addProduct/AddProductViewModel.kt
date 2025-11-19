@@ -1,4 +1,4 @@
-package com.app.arcabyolimpo.presentation.screens.product
+package com.app.arcabyolimpo.presentation.screens.product.addProduct
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
@@ -91,7 +91,7 @@ class AddProductViewModel @Inject constructor(
     /**
      * Handles the click event for the 'Save' button.
      *
-     * Performs final validation and, if successful, creates a [ProductAdd] object
+     * Performs final validation and, if successful, creates a [com.app.arcabyolimpo.domain.model.product.ProductAdd] object
      * and calls the [addProductUseCase] to save the product.
      * Updates the UI state with [isLoading], [success], or [error] status.
      */
