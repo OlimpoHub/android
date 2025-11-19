@@ -5,10 +5,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.arcabyolimpo.domain.common.Result
+import com.app.arcabyolimpo.domain.usecase.product.GetProductsListUseCase
+import com.app.arcabyolimpo.domain.usecase.productbatches.GetProductBatchesUseCase
 import com.app.arcabyolimpo.domain.usecase.productbatches.RegisterProductBatchUseCase
 import com.app.arcabyolimpo.presentation.screens.productbatches.mapper.toDomain
+import com.app.arcabyolimpo.presentation.screens.productbatches.mapper.toUiModel
+import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchesList.ProductBatchesUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Locale
 import javax.inject.Inject
@@ -21,9 +30,42 @@ class ProductBatchRegisterViewModel
     @Inject
     constructor(
         private val registerProductBatchUseCase: RegisterProductBatchUseCase,
+        private val getProductsListUseCase: GetProductsListUseCase,
     ) : ViewModel() {
         var uiState by mutableStateOf(ProductBatchRegisterUiState())
             private set
+
+        fun loadData() {
+            viewModelScope.launch {
+                getProductsListUseCase().collect { result ->
+                    when (result) {
+                        is Result.Loading -> {
+                            uiState = uiState.copy(isLoadingProducts = true)
+                        }
+                        is Result.Success -> {
+                            val products = result.data
+
+                            val ids = products.map { it.id }
+                            val names = products.map { it.name }
+
+                            uiState =
+                                uiState.copy(
+                                    productIds = ids,
+                                    names = names,
+                                    isLoadingProducts = false,
+                                )
+                        }
+                        is Result.Error -> {
+                            uiState =
+                                uiState.copy(
+                                    isLoadingProducts = false,
+                                    error = result.exception.message ?: "Error al cargar productos",
+                                )
+                        }
+                    }
+                }
+            }
+        }
 
         fun onFieldChange(
             field: String,

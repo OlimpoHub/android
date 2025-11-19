@@ -22,4 +22,7 @@ data class ProductBatchRegisterUiState(
     val isCantidadProducidaError: Boolean = false,
     val isFechaRealizacionError: Boolean = false,
     val isFechaCaducidadError: Boolean = false,
+    val productIds: List<String> = emptyList(),
+    val names: List<String> = emptyList(),
+    val isLoadingProducts: Boolean = false,
 )
