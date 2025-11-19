@@ -136,7 +136,6 @@ fun ProductAddScreen(
 
             SelectObjectInput(
                 label = "Selecciona la categoría del producto",
-                // ... (el resto de los campos igual) ...
                 options = uiState.categories,
                 selectedId = uiState.selectedCategoryId,
                 onOptionSelected = viewModel::onCategorySelected,
