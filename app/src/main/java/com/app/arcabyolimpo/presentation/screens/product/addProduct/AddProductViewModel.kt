@@ -98,7 +98,12 @@ class AddProductViewModel @Inject constructor(
     fun onSaveClick() {
         val state = _uiState.value
 
-        if (state.name.isBlank() || state.selectedWorkshopId == null || state.selectedCategoryId == null) {
+        if (
+            state.name.isBlank()
+            || state.selectedWorkshopId == null
+            || state.selectedCategoryId == null
+            || state.selectedImage == null
+            ) {
             _uiState.update { it.copy(error = "Completa todos los campos") }
             return
         }
