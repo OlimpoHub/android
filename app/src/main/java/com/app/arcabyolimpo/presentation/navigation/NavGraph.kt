@@ -14,6 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
 import com.app.arcabyolimpo.domain.model.auth.UserRole
 import com.app.arcabyolimpo.presentation.common.components.LoadingShimmer
@@ -31,6 +32,7 @@ import com.app.arcabyolimpo.presentation.screens.product.addProduct.ProductAddSc
 import com.app.arcabyolimpo.presentation.screens.product.updateProduct.ProductUpdateScreen
 import com.app.arcabyolimpo.presentation.screens.product.list.ProductListScreen
 import com.app.arcabyolimpo.presentation.screens.product.list.ProductListUiState
+import com.app.arcabyolimpo.presentation.screens.product.list.ProductListViewModel
 import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDetailScreen
 // import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDeleteTestScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchDetail.ProductBatchDetailScreen
@@ -785,9 +787,10 @@ fun ArcaNavGraph(
             )
         }
 
+
         composable(
             route = Screen.ProductDetail.route,
-            arguments = listOf(navArgument("productId") { type = NavType.StringType }),
+            arguments = listOf(navArgument("productId") { type = NavType.StringType } ),
         ) { backStackEntry ->
             val productId = backStackEntry.arguments?.getString("productId") ?: ""
             ProductDetailScreen(
@@ -797,19 +800,12 @@ fun ArcaNavGraph(
                     navController.navigate(Screen.ProductUpdate.createRoute(id))
                 },
                 onDeleteClick = {
-                },
-            )
-        }
-
-        /*
-        composable(Screen.ProductDeleteTest.route) {
-            ProductDeleteTestScreen(
-                onDeleted = {
                     navController.popBackStack()
                 },
             )
         }
-         */
+
+
 
         composable(
             route = Screen.ProductUpdate.route,

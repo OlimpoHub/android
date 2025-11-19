@@ -55,7 +55,6 @@ fun ProductDetailScreen(
         viewModel.loadProduct(productId)
     }
 
-    // Manejo de snackbar y navegación cuando termina el delete
     LaunchedEffect(uiState.snackbarVisible, uiState.error) {
         if (uiState.snackbarVisible) {
             val message = if (uiState.error == null) {
@@ -66,11 +65,13 @@ fun ProductDetailScreen(
 
             snackbarHostState.showSnackbar(message)
             viewModel.onSnackbarShown()
+        }
+    }
 
-            // Si no hubo error, regresamos a la pantalla anterior
-            if (uiState.error == null) {
-                onDeleteClick()
-            }
+    LaunchedEffect(uiState.shouldNavigateBack) {
+        if (uiState.shouldNavigateBack) {
+            onDeleteClick()
+            viewModel.onNavigatedBackHandled()
         }
     }
 
@@ -154,17 +155,17 @@ fun ProductDetailScreen(
             }
 
             if (uiState.decisionDialogVisible && uiState.product != null) {
-                val productId = uiState.product!!.id
+                val productIdDialog = uiState.product!!.id
 
                 DeleteConfirmationDialog(
-                    onConfirm = { viewModel.deleteProduct(id = productId) },
+                    onConfirm = { viewModel.deleteProduct(id = productIdDialog) },
                     onDismiss = { viewModel.toggleDecisionDialog(false) },
                 )
             }
-
         }
     }
 }
+
 
 @Composable
 private fun ProductDetailContent(

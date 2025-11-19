@@ -19,6 +19,7 @@
 - Error in descriptcion in view and modify a workshop
 - Fixed error views in product batches list, detail, register and modify
 - Fixed product fetch in register Product Batch view
+- Fixed of list update when deleting product
 
 ## [0.1.0] - 18/11/2025
 
