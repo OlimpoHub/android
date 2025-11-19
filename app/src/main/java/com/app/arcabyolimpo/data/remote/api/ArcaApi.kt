@@ -23,6 +23,9 @@ import com.app.arcabyolimpo.data.remote.dto.supplies.AcquisitionDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteResponseDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteSupplyBatchDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.FilterRequestDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.FilteredBatchDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.GetFilterBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.RegisterSupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuccessMessageDto
@@ -123,6 +126,14 @@ interface ArcaApi {
 
     @GET("supplies/filter/data")
     suspend fun getFilterSupplies(): GetFiltersDto
+
+    @POST("/supplyBatch/filter")
+    suspend fun filterSupplyBatch(
+        @Body body: FilterRequestDto
+    ): List<FilteredBatchDto>
+
+    @GET("supplyBatch/filter/data")
+    suspend fun getFilterSupplyBatch(): GetFilterBatchDto
 
     @GET("supplyBatch/{id}")
     suspend fun getSupplyBatchById(
@@ -258,6 +269,7 @@ interface ArcaApi {
         @Part imagenInsumo: MultipartBody.Part?,
     )
 
+    // productBatch -------------
     @Multipart
     @PUT("supplies/update/{idSupply}")
     suspend fun updateSupply(
@@ -268,7 +280,7 @@ interface ArcaApi {
         @Part("idCategoria") idCategory: RequestBody,
         @Part("status") status: RequestBody,
         @Part imagenInsumo: MultipartBody.Part?,
-    )
+
 
     @GET("productBatch/")
     suspend fun getProductBatches(): List<ProductBatchDto>
@@ -288,6 +300,12 @@ interface ArcaApi {
         @Path("id") id: String,
         @Body batch: ProductBatchModifyDto,
     )
+
+    @GET("productBatch/search")
+    suspend fun searchProductBatch(@Query("q") term: String): List<ProductBatchDto>
+
+    @POST("productBatch/filter")
+    suspend fun filterProductBatch(@Body filters: FilterDto): List<ProductBatchDto>
 
     @DELETE("productBatch/{id}")
     suspend fun deleteProductBatch(
@@ -319,6 +337,9 @@ interface ArcaApi {
     suspend fun searchProducts(
         @Query("q") query: String,
     ): List<ProductDto>
+
+    @GET("product/{id}")
+    suspend fun getProductById(@Path("id") productId: String): ProductDto?
 
     @GET("product/add")
     suspend fun getProductFilters(): ProductRegisterInfoDto

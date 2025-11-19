@@ -1,5 +1,8 @@
 package com.app.arcabyolimpo.presentation.screens.supply.supplyDetail
 
+import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
+import com.app.arcabyolimpo.domain.model.filter.FilterData
+import com.app.arcabyolimpo.domain.model.supplies.Batch
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
 
 /** ---------------------------------------------------------------------------------------------- *
@@ -15,7 +18,7 @@ data class SuppliesDetailUiState(
     // Controls whether the snackbar should be shown
     val snackbarVisible: Boolean = false,
     val deletionType: DeletionType? = null,
-    val snackbarMessage: String? = null
+    val snackbarMessage: String? = null,
 )
 
 enum class DeletionType {
