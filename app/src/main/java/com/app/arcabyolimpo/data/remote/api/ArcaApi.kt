@@ -32,17 +32,21 @@ import com.app.arcabyolimpo.data.remote.dto.supplies.RegisterSupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuccessMessageDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuppliesListDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchItemDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchListDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchOneDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.WorkshopCategoryListDto
 import com.app.arcabyolimpo.data.remote.dto.user.UserDto
-import com.app.arcabyolimpo.data.remote.dto.user.registeruser.RegisterResponseDto
 import com.app.arcabyolimpo.data.remote.dto.user.registeruser.RegisterUserDto
+import com.app.arcabyolimpo.data.remote.dto.user.updateuser.UpdateUserDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.AddNewWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.DeleteResponseWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.DeleteWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopResponseDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
+import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -85,8 +89,8 @@ interface ArcaApi {
 
     @POST("user/update")
     suspend fun updateUser(
-        @Body user: UserDto,
-    ): RegisterResponseDto
+        @Body user: UpdateUserDto,
+    ): UserDto
 
     @POST("user/delete/{id}")
     suspend fun deleteUser(
@@ -140,6 +144,11 @@ interface ArcaApi {
     suspend fun getSupplyBatchById(
         @Path("id") id: String,
     ): SupplyBatchDto
+
+    @GET("supplyBatch/modify/{idSupplyBatch}")
+    suspend fun getSupplyBatchOne(
+        @Path("idSupplyBatch") idSupplyBatch: String,
+    ): SupplyBatchOneDto
 
     @POST("supplyBatch/addBatch")
     suspend fun registerSupplyBatch(
@@ -356,6 +365,23 @@ interface ArcaApi {
         @Query("orderBy") orderBy: String,
         @Query("direction") direction: String,
     ): List<ProductDto>
+
+    /**
+     * Modifies a supply batch.
+     *
+     * @param idSupplyBatch The ID of the supply batch to be modified.
+     */
+    @POST("supplyBatch/update/{idSupplyBatch}")
+    suspend fun modifySupplyBatch(
+        @Path("idSupplyBatch") idSupplyBatch: String,
+        @Body batch: RegisterSupplyBatchDto,
+    ): SuccessMessageDto
+
+    @GET("supplyBatch/dates/{date}/{idInsumo}")
+    suspend fun supplyBatchList(
+        @Path("date") expirationDate: String,
+        @Path("idInsumo") idSupply: String,
+    ): List<SupplyBatchItemDto>
 
     @GET("product/{idProduct}/update")
     suspend fun getProduct(

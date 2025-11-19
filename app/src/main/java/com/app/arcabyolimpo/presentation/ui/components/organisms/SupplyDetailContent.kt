@@ -41,6 +41,37 @@ import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
+private fun formatToIso(dateStr: String): String {
+    if (dateStr.isBlank()) return ""
+    return try {
+        // If the date is an ISO datetime like 2025-11-21T06:00:00.000Z, extract the date part
+        if (dateStr.contains('T')) {
+            val datePart = dateStr.substringBefore('T')
+            // basic validation: yyyy-MM-dd
+            if (Regex("\\d{4}-\\d{2}-\\d{2}").matches(datePart)) return datePart
+            return datePart
+        }
+
+        // Expecting dd/MM/yyyy -> convert to yyyy-MM-dd
+        if (dateStr.contains("/")) {
+            val parts = dateStr.split('/')
+            if (parts.size == 3) {
+                val d = parts[0].toIntOrNull() ?: return dateStr
+                val m = parts[1].toIntOrNull() ?: return dateStr
+                val y = parts[2].toIntOrNull() ?: return dateStr
+                String.format("%04d-%02d-%02d", y, m, d)
+            } else {
+                dateStr
+            }
+        } else {
+            // If already looks like yyyy-MM-dd or another format, return as-is
+            dateStr
+        }
+    } catch (e: Exception) {
+        dateStr
+    }
+}
+
 /** ---------------------------------------------------------------------------------------------- *
  * SupplyDetailContent -> Its the container of the view that its just called in the main
  * SuppliesDetailScreen, has the information of the Supply and its batches and its the bridge to
@@ -60,7 +91,7 @@ fun SupplyDetailContent(
     onClickAddSupplyBatch: () -> Unit,
     onClickDelete: () -> Unit,
     onClickModify: () -> Unit,
-    modifySupplyBatch: () -> Unit,
+    viewAllBatches: (String, String) -> Unit,
     deleteSupplyBatch: (String) -> Unit,
     onFilterClick: () -> Unit,
 ) {
@@ -116,7 +147,7 @@ fun SupplyDetailContent(
                         fontWeight = FontWeight.Bold,
                         fontSize = 15.sp,
                     )
-                    if (supply.status == 1){
+                    if (supply.status == 1) {
                         ActiveStatus()
                     } else {
                         InactiveStatus()
@@ -186,18 +217,20 @@ fun SupplyDetailContent(
                     color = White,
                     fontFamily = Poppins,
                     fontSize = 18.sp,
-                    modifier = Modifier.padding(vertical = 8.dp)
+                    modifier = Modifier.padding(vertical = 8.dp),
                 )
             } else {
-              batches.forEachIndexed { index, batch ->
-                  SupplyBatchRow(
-                      quantity = batch.quantity,
-                      date = formatExpirationDate(rawDate = batch.expirationDate),
-                      adquisition = batch.adquisitionType,
-                      onModifyClick = modifySupplyBatch,
-                      onDeleteClick = { deleteSupplyBatch(batch.id) },
-                  )
-              }
+                batches.forEachIndexed { index, batch ->
+                    val isoDate = formatToIso(batch.expirationDate)
+                    SupplyBatchRow(
+                        batchId = batch.id,
+                        quantity = batch.quantity,
+                        date = isoDate,
+                        adquisition = batch.adquisitionType,
+                        onViewClick = { date -> viewAllBatches(date, supply.id) },
+                        onDeleteClick = { deleteSupplyBatch(batch.id) },
+                    )
+                }
             }
         }
 
