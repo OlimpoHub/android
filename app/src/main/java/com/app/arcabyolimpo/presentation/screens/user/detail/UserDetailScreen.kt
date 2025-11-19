@@ -13,12 +13,11 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.app.arcabyolimpo.presentation.screens.user.detail.components.UserDetailContent
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
+import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.ReturnIcon
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
-
-
 
 
 @Suppress("ktlint:standard:function-naming")
@@ -74,7 +73,7 @@ fun UserDetailScreen(
                         "Detalles del Usuario",
                         color = Color.White,
                         fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
                 },
                 navigationIcon = {
@@ -82,37 +81,59 @@ fun UserDetailScreen(
                         ReturnIcon(tint = Color.White)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF040610)
-                )
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color(0xFF040610),
+                    ),
             )
         },
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+        snackbarHost = {
+            SnackbarHost(snackbarHostState) { data ->
+
+                Box(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Snackbarcustom(
+                        title = data.visuals.message,
+                        modifier =
+                            Modifier
+                                .fillMaxWidth(0.85f),
+                        ifSucces = uiState.deleteError == null,
+                    )
+                }
+            }
+        },
     ) { padding ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(padding),
         ) {
             when {
                 uiState.isLoading -> {
                     CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center),
-                        color = Color.White
+                        color = Color.White,
                     )
                 }
 
                 uiState.error != null -> {
                     Column(
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        modifier =
+                            Modifier
+                                .align(Alignment.Center)
+                                .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Text(
                             text = "Error: ${uiState.error}",
                             color = Color.White,
-                            style = MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.bodyLarge,
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(onClick = { viewModel.loadCollabDetail() }) {
@@ -125,7 +146,7 @@ fun UserDetailScreen(
                     UserDetailContent(
                         collab = uiState.collab!!,
                         onEditClick = { uiState.collab?.idUsuario?.let { onEditClick(it.toString()) } },
-                        onDeleteClick = { showConfirmDialog = true }
+                        onDeleteClick = { showConfirmDialog = true },
                     )
                 }
             }
@@ -135,13 +156,12 @@ fun UserDetailScreen(
                     onDismissRequest = { showConfirmDialog = false },
                     onConfirmation = {
                         showConfirmDialog = false
-                        // lanzar delete
                         uiState.collab?.idUsuario?.toString()?.let { idStr ->
                             viewModel.deleteCollabById(idStr)
                         }
                     },
-                    dialogTitle = "Eliminar colaborador",
-                    dialogText = "¿Estás seguro que deseas eliminar este colaborador? Esta acción no se puede deshacer.",
+                    dialogTitle = "¿Está seguro de eliminar a este colaborador?",
+                    dialogText = "Esta acción marcará al colaborador como inactivo.",
                     confirmText = "Eliminar",
                     dismissText = "Cancelar",
                 )
