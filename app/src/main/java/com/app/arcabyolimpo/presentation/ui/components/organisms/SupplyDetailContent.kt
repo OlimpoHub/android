@@ -39,6 +39,14 @@ import com.app.arcabyolimpo.ui.theme.White
 private fun formatToIso(dateStr: String): String {
     if (dateStr.isBlank()) return ""
     return try {
+        // If the date is an ISO datetime like 2025-11-21T06:00:00.000Z, extract the date part
+        if (dateStr.contains('T')) {
+            val datePart = dateStr.substringBefore('T')
+            // basic validation: yyyy-MM-dd
+            if (Regex("\\d{4}-\\d{2}-\\d{2}").matches(datePart)) return datePart
+            return datePart
+        }
+
         // Expecting dd/MM/yyyy -> convert to yyyy-MM-dd
         if (dateStr.contains("/")) {
             val parts = dateStr.split('/')
@@ -180,8 +188,7 @@ fun SupplyDetailContent(
                     FilterIcon(
                         modifier =
                             Modifier
-                                .size(28.dp)
-                                .clickable { viewAllBatches(headerIso, supply.id) },
+                                .size(28.dp),
                     )
                 }
 

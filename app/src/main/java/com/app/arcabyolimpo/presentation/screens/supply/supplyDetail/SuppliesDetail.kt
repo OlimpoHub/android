@@ -80,7 +80,9 @@ fun SuppliesDetailScreen(
                     val m = parts[1].toIntOrNull() ?: return dateStr
                     val y = parts[2].toIntOrNull() ?: return dateStr
                     String.format("%04d-%02d-%02d", y, m, d)
-                } else dateStr
+                } else {
+                    dateStr
+                }
             } else {
                 dateStr
             }
@@ -234,30 +236,30 @@ fun SuppliesDetailScreen(
                     )
                 }
                 uiState.supplyBatchList != null -> {
-                        SupplyDetailContent(
-                            supply = uiState.supplyBatchList!!,
-                            onClickAddSupplyBatch = {},
-                            onClickDelete = {
-                                // When you press delete in the details, we display the dialog
-                                viewModel.toggledecisionDialog(
-                                    showdecisionDialog = true,
-                                    deletionType = DeletionType.SUPPLY,
-                                )
-                            },
-                            onClickModify = onClickModify,
-                            viewAllBatches = { date, supplyId ->
-                                // convert incoming date (dd/MM/yyyy or other) to SQL yyyy-MM-dd before forwarding
-                                val sqlDate = toSqlDate(date)
-                                onViewBatches(sqlDate, supplyId)
-                            },
-                            deleteSupplyBatch = { batchId ->
-                                viewModel.selectedBatchExpirationDate = batchId
-                                viewModel.toggledecisionDialog(
-                                    showdecisionDialog = true,
-                                    deletionType = DeletionType.BATCH,
-                                )
-                            },
-                        )
+                    SupplyDetailContent(
+                        supply = uiState.supplyBatchList!!,
+                        onClickAddSupplyBatch = onClickAddSupplyBatch,
+                        onClickDelete = {
+                            // When you press delete in the details, we display the dialog
+                            viewModel.toggledecisionDialog(
+                                showdecisionDialog = true,
+                                deletionType = DeletionType.SUPPLY,
+                            )
+                        },
+                        onClickModify = onClickModify,
+                        viewAllBatches = { date, supplyId ->
+                            // convert incoming date (dd/MM/yyyy or other) to SQL yyyy-MM-dd before forwarding
+                            val sqlDate = toSqlDate(date)
+                            onViewBatches(sqlDate, supplyId)
+                        },
+                        deleteSupplyBatch = { batchId ->
+                            viewModel.selectedBatchExpirationDate = batchId
+                            viewModel.toggledecisionDialog(
+                                showdecisionDialog = true,
+                                deletionType = DeletionType.BATCH,
+                            )
+                        },
+                    )
                 }
             }
         }

@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Divider
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Card
@@ -23,6 +26,9 @@ import androidx.compose.ui.unit.sp
 import com.app.arcabyolimpo.presentation.screens.supply.supplyBatchList.SupplyBatchListUiState
 import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.ui.theme.White
+import android.util.Log
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.text.style.TextAlign
 
 
 private fun formatDisplayDate(dateStr: String): String {
@@ -55,6 +61,24 @@ fun SupplyBatchListContent(
     onModifyClick: (String) -> Unit,
 ) {
     val list = uiState.supplyBatchList?.batch ?: emptyList()
+    Log.d("SupplyBatchListContent", "date=$date, batchesSize=${list.size}")
+
+    if (list.isEmpty()) {
+        // show small fallback to help debugging when the API returned no items
+        Box(modifier = Modifier.fillMaxSize()) {
+            Text(
+                text = "No hay lotes para la fecha ${if (date.isBlank()) "(todas)" else date}",
+                color = White,
+                fontFamily = Poppins,
+                fontSize = 16.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp),
+                textAlign = TextAlign.Center,
+            )
+        }
+        return
+    }
 
     LazyColumn {
         itemsIndexed(list) { index, item ->
@@ -68,66 +92,77 @@ fun SupplyBatchListContent(
                         .fillMaxWidth()
                         .padding(12.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    horizontalArrangement = Arrangement.Start,
                 ) {
-                    // Left: index and main info
-                    Column(modifier = Modifier.weight(1f)) {
+                    // Number column
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(end = 12.dp)
+                    ) {
                         Text(
                             text = "${index + 1}",
                             color = White,
                             fontFamily = Poppins,
                             fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
+                            fontSize = 18.sp,
                         )
+                    }
+
+                    // Main info column
+                    Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = "Cantidad: ${item.quantity} ${item.measure}",
                             color = White,
                             fontFamily = Poppins,
-                            fontSize = 14.sp,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
                         )
-                        Text(
-                            text = "Tipo de adquisición: ${item.adquisitionType}",
-                            color = White,
-                            fontFamily = Poppins,
-                            fontSize = 14.sp,
-                        )
+
+                        Spacer(modifier = Modifier.width(4.dp))
+
+                        Row(horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                            Column {
+                                Text(
+                                    text = "Fecha de Compra",
+                                    color = White,
+                                    fontFamily = Poppins,
+                                    fontSize = 12.sp,
+                                )
+                                Text(
+                                    text = formatDisplayDate(item.boughtDate),
+                                    color = White,
+                                    fontFamily = Poppins,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            }
+
+                            Column {
+                                Text(
+                                    text = "Tipo de adquisición",
+                                    color = White,
+                                    fontFamily = Poppins,
+                                    fontSize = 12.sp,
+                                )
+                                Text(
+                                    text = item.adquisitionType,
+                                    color = White,
+                                    fontFamily = Poppins,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            }
+                        }
                     }
 
-                    // Right: dates and actions
+                    // Action column
                     Column(horizontalAlignment = Alignment.End) {
-                        Text(
-                            text = "Fecha de Compra",
-                            color = White,
-                            fontFamily = Poppins,
-                            fontSize = 12.sp,
-                        )
-                        Text(
-                            text = formatDisplayDate(item.boughtDate),
-                            color = White,
-                            fontFamily = Poppins,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold,
-                        )
-
-                        Text(
-                            text = "Caducidad",
-                            color = White,
-                            fontFamily = Poppins,
-                            fontSize = 12.sp,
-                        )
-                        Text(
-                            text = formatDisplayDate(item.expirationDate),
-                            color = White,
-                            fontFamily = Poppins,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold,
-                        )
-
                         IconButton(onClick = { onModifyClick(item.id) }) {
                             Icon(imageVector = Icons.Default.Create, contentDescription = "modify", tint = White)
                         }
                     }
                 }
+                Divider(color = White.copy(alpha = 0.12f), thickness = 0.7.dp)
             }
         }
     }

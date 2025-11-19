@@ -729,7 +729,7 @@ fun ArcaNavGraph(
             val date = backStackEntry.arguments?.getString("date") ?: ""
             val idInsumo = backStackEntry.arguments?.getString("idInsumo") ?: ""
             android.util.Log.d("NavGraph", "SupplyBatchList args received: date=$date, idInsumo=$idInsumo")
-            SupplyBatchListScreen(
+                SupplyBatchListScreen(
                 supplyId = idInsumo,
                 supplyName = "",
                 date = date,

@@ -54,6 +54,8 @@ fun SupplyBatchListScreen(
     LaunchedEffect(supplyId) {
         // use provided date (sql format yyyy-MM-dd) to fetch batches
         viewModel.getSupplyBatch(date, supplyId)
+        // also fetch supply details (name) to display in the title
+        viewModel.getSupplyDetails(supplyId)
     }
 
     Scaffold(
@@ -70,8 +72,9 @@ fun SupplyBatchListScreen(
         topBar = {
             TopAppBar(
                 title = {
+                    val titleName = state.supplyName ?: supplyName
                     Text(
-                        text = "Registrar Lotes",
+                        text = "Lotes de ${titleName.ifBlank { supplyName }}",
                         color = White,
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Bold,

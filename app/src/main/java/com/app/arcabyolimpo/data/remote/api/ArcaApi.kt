@@ -26,6 +26,7 @@ import com.app.arcabyolimpo.data.remote.dto.supplies.RegisterSupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuccessMessageDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuppliesListDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchItemDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchListDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchOneDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyDto
@@ -335,5 +336,5 @@ interface ArcaApi {
     suspend fun supplyBatchList(
         @Path("date") expirationDate: String,
         @Path("idInsumo") idSupply: String,
-    ): List<SupplyBatchListDto>
+    ): List<SupplyBatchItemDto>
 }

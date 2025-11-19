@@ -254,8 +254,18 @@ class SupplyRepositoryImpl
             expirationDate: String,
             idSupply: String,
         ): SupplyBatchList {
+            Log.d("SupplyRepo", "supplyBatchList request expirationDate=$expirationDate idSupply=$idSupply")
             val response = api.supplyBatchList(expirationDate, idSupply)
-            val combinedItems = response.flatMap { it.batch }
+            // Retrofit now returns a flat list of SupplyBatchItemDto for this endpoint.
+            val combinedItems = response
+            try {
+                Log.d(
+                    "SupplyRepo",
+                    "api returned responseSize=${response.size}, combinedItems=${combinedItems.size}, ids=${combinedItems.joinToString { it.id }}",
+                )
+            } catch (t: Throwable) {
+                Log.d("SupplyRepo", "api returned responseSize=${response.size}, combinedItems=${combinedItems.size}")
+            }
             return SupplyBatchList(batch = combinedItems.map { it.toDomain() })
         }
     }

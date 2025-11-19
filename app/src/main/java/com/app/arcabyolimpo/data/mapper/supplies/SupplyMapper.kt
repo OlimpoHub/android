@@ -174,4 +174,4 @@ fun SupplyBatchItemDto.toDomain(): SupplyBatchItem =
         measure = measure,
     )
 
-fun SupplyBatchListDto.toDomain(): SupplyBatchList = SupplyBatchList(batch = batch.map { it.toDomain() })
+fun SupplyBatchListDto.toDomain(): SupplyBatchList = SupplyBatchList(batch = batch.orEmpty().map { it.toDomain() })
