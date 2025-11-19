@@ -45,6 +45,7 @@ class AddNewBeneficiaryViewModel @Inject constructor(
     private val _disabilities = MutableStateFlow<List<Disability>>(emptyList())
     val disabilities: StateFlow<List<Disability>> = _disabilities.asStateFlow()
 
+
     /**
      * Loads the list of disabilities from the repository.
      */
@@ -117,7 +118,7 @@ class AddNewBeneficiaryViewModel @Inject constructor(
 
                         is Result.Error -> state.copy(
                             isLoading = false,
-                            error = result.exception.message ?: "Error al crear el beneficiario",
+                            error = result.exception.message,
                             isSuccess = false
                         )
                     }

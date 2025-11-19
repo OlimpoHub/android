@@ -23,6 +23,8 @@ import java.util.*
 fun DateInput(
     label: String = "Fecha de Elaboración",
     placeholder: String = "dd/MM/yyyy",
+    isError: Boolean = false,
+    errorMessage: String = "",
     value: String = "",
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -45,6 +47,8 @@ fun DateInput(
         label = label,
         placeholder = placeholder,
         value = value,
+        isError = isError,
+        errorMessage = errorMessage,
         onValueChange = { /* bloqueado para escritura */ },
         modifier =
             modifier

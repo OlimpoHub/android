@@ -4,6 +4,7 @@ package com.app.arcabyolimpo.data.remote.dto.user.registeruser
 import com.google.gson.annotations.SerializedName
 
 data class RegisterUserDto(
+
     @SerializedName("externalCollab_roleId")
     val roleId: String,
 

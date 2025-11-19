@@ -18,6 +18,8 @@ fun NumberStepper(
     label: String,
     placeholder: String = "000",
     value: String,
+    isError: Boolean = false,
+    errorMessage: String = "",
     onValueChange: (String) -> Unit,
     onIncrement: () -> Unit,
     onDecrement: () -> Unit,
@@ -30,6 +32,8 @@ fun NumberStepper(
         StandardInput(
             label = label,
             modifier = Modifier.weight(1f),
+            isError = isError,
+            errorMessage = errorMessage,
             onValueChange = onValueChange,
             value = value,
             placeholder = placeholder,

@@ -22,6 +22,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -101,11 +102,15 @@ fun ProductBatchModifyScreen(
                 onValueChange = { viewModel.onFieldChange("precioVenta", it) },
                 placeholder = "0.00",
                 keyboardType = KeyboardType.Decimal,
+                isError = state.isPrecioVentaError,
+                errorMessage = if (state.isPrecioVentaError) "Ingresa un precio de venta" else "",
             )
 
             NumberStepper(
                 label = "Cantidad producida",
                 value = state.cantidadProducida,
+                isError = state.isCantidadProducidaError,
+                errorMessage = if (state.isCantidadProducidaError) "Ingresa una cantidad mayor a 0" else "",
                 onValueChange = { viewModel.onFieldChange("cantidadProducida", it) },
                 onIncrement = {
                     val newVal = (state.cantidadProducida.toIntOrNull() ?: 0) + 1
@@ -126,6 +131,8 @@ fun ProductBatchModifyScreen(
                 DateInput(
                     label = "Fecha de Elaboración",
                     value = state.fechaRealizacion,
+                    isError = state.isFechaRealizacionError,
+                    errorMessage = if (state.isFechaRealizacionError) "Selecciona una fecha" else "",
                     onValueChange = { viewModel.onFieldChange("fechaRealizacion", it) },
                     modifier =
                         Modifier
@@ -136,6 +143,8 @@ fun ProductBatchModifyScreen(
                 DateInput(
                     label = "Fecha de Caducidad",
                     value = state.fechaCaducidad,
+                    isError = state.isFechaCaducidadError,
+                    errorMessage = if (state.isFechaCaducidadError) "Fecha no válida" else "",
                     onValueChange = { viewModel.onFieldChange("fechaCaducidad", it) },
                     modifier =
                         Modifier
@@ -173,7 +182,7 @@ fun ProductBatchModifyScreen(
                 ) {
                     ModifyButton(
                         onClick = {
-                            viewModel.modify(
+                            viewModel.validateAndModify(
                                 id = batchId,
                                 onSuccess = onModified,
                             )

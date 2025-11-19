@@ -33,17 +33,21 @@ import com.app.arcabyolimpo.data.remote.dto.supplies.RegisterSupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuccessMessageDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuppliesListDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchItemDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchListDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchOneDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.WorkshopCategoryListDto
 import com.app.arcabyolimpo.data.remote.dto.user.UserDto
-import com.app.arcabyolimpo.data.remote.dto.user.registeruser.RegisterResponseDto
 import com.app.arcabyolimpo.data.remote.dto.user.registeruser.RegisterUserDto
+import com.app.arcabyolimpo.data.remote.dto.user.updateuser.UpdateUserDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.AddNewWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.DeleteResponseWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.DeleteWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopResponseDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
+import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -87,8 +91,8 @@ interface ArcaApi {
 
     @POST("user/update")
     suspend fun updateUser(
-        @Body user: UserDto,
-    ): RegisterResponseDto
+        @Body user: UpdateUserDto,
+    ): UserDto
 
     @POST("user/delete/{id}")
     suspend fun deleteUser(
@@ -143,6 +147,11 @@ interface ArcaApi {
         @Path("id") id: String,
     ): SupplyBatchDto
 
+    @GET("supplyBatch/modify/{idSupplyBatch}")
+    suspend fun getSupplyBatchOne(
+        @Path("idSupplyBatch") idSupplyBatch: String,
+    ): SupplyBatchOneDto
+
     @POST("supplyBatch/addBatch")
     suspend fun registerSupplyBatch(
         @Body request: RegisterSupplyBatchDto,
@@ -193,6 +202,23 @@ interface ArcaApi {
         @Body requestBody: WorkshopDto,
     ): AddNewWorkshopDto
 
+    /**
+     * Deletes a single Workshop from the backend.
+     *
+     * This endpoint receives a [DeleteWorkshopDto] with the information needed
+     * to identify which supply should be removed ( its ID).
+     *
+     * @param requestBody Data transfer object that contains the supply
+     * information required by the API to perform the delete operation.
+     * @return [DeleteResponseWorkshopDto] containing the result of the delete
+     * operation, such as a success flag and/or a confirmation message.
+     */
+    @POST("workshop/delete")
+    suspend fun deleteWorkshops(
+        @Body requestBody: DeleteWorkshopDto,
+        // DeleteResponseDto is for the response, for the snackbar
+    ): DeleteResponseWorkshopDto
+
     // Beneficiary -------------
     @GET("beneficiary/list")
     suspend fun getBeneficiariesList(): List<BeneficiariesListDto>
@@ -226,7 +252,7 @@ interface ArcaApi {
     @POST("beneficiary/create")
     suspend fun addBeneficiary(
         @Body requestBody: BeneficiaryDto,
-    ): okhttp3.ResponseBody
+    ): AddNewBeneficiaryDto
 
     @GET("/disabilities/list")
     suspend fun getDisabilitiesList(): List<DisabilityDto>
@@ -244,23 +270,6 @@ interface ArcaApi {
         @Part("status") status: RequestBody,
         @Part imagenInsumo: MultipartBody.Part?,
     )
-
-    /**
-     * Deletes a single Workshop from the backend.
-     *
-     * This endpoint receives a [DeleteWorkshopDto] with the information needed
-     * to identify which supply should be removed ( its ID).
-     *
-     * @param requestBody Data transfer object that contains the supply
-     * information required by the API to perform the delete operation.
-     * @return [DeleteResponseWorkshopDto] containing the result of the delete
-     * operation, such as a success flag and/or a confirmation message.
-     */
-    @POST("workshop/delete")
-    suspend fun deleteWorkshops(
-        @Body requestBody: DeleteWorkshopDto,
-        // DeleteResponseDto is for the response, for the snackbar
-    ): DeleteResponseWorkshopDto
 
     // productBatch -------------
     @Multipart
@@ -358,6 +367,23 @@ interface ArcaApi {
         @Query("orderBy") orderBy: String,
         @Query("direction") direction: String,
     ): List<ProductDto>
+
+    /**
+     * Modifies a supply batch.
+     *
+     * @param idSupplyBatch The ID of the supply batch to be modified.
+     */
+    @POST("supplyBatch/update/{idSupplyBatch}")
+    suspend fun modifySupplyBatch(
+        @Path("idSupplyBatch") idSupplyBatch: String,
+        @Body batch: RegisterSupplyBatchDto,
+    ): SuccessMessageDto
+
+    @GET("supplyBatch/dates/{date}/{idInsumo}")
+    suspend fun supplyBatchList(
+        @Path("date") expirationDate: String,
+        @Path("idInsumo") idSupply: String,
+    ): List<SupplyBatchItemDto>
 
     @GET("product/{idProduct}/update")
     suspend fun getProduct(
