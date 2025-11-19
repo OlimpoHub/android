@@ -15,11 +15,13 @@ import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordDto
 import com.app.arcabyolimpo.data.remote.dto.password.UpdatePasswordResponseDto
 import com.app.arcabyolimpo.data.remote.dto.password.VerifyTokenResponseDto
 import com.app.arcabyolimpo.data.remote.dto.product.ProductDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.AcquisitionDto
+import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchDto
+import com.app.arcabyolimpo.data.remote.dto.product.ProductDetailDto
 import com.app.arcabyolimpo.data.remote.dto.product.ProductRegisterInfoDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchModifyDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchRegisterDto
-import com.app.arcabyolimpo.data.remote.dto.supplies.AcquisitionDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteResponseDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteSupplyBatchDto
@@ -307,7 +309,6 @@ interface ArcaApi {
     )
 
     // Products --------------------------
-
     @Multipart
     @POST("product/add")
     suspend fun addProduct(
@@ -356,4 +357,21 @@ interface ArcaApi {
         @Query("orderBy") orderBy: String,
         @Query("direction") direction: String,
     ): List<ProductDto>
+    @GET("product/{idProduct}/update")
+    suspend fun getProduct(
+        @Path("idProduct") idProduct: String,
+    ): ProductDetailDto
+
+    @Multipart
+    @PUT("product/{idProduct}/update")
+    suspend fun updateProduct(
+        @Path("idProduct") idProduct: String,
+        @Part("idTaller") idWorkshop: RequestBody,
+        @Part("Nombre") name: RequestBody,
+        @Part("PrecioUnitario") unitaryPrice: RequestBody,
+        @Part("idCategoria") idCategory: RequestBody,
+        @Part("Descripcion") description: RequestBody,
+        @Part("Disponible") status: RequestBody,
+        @Part image: MultipartBody.Part?
+    )
 }
