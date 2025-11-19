@@ -78,4 +78,10 @@ interface SupplyRepository {
         supply: SupplyAdd,
         image: Uri?
     ): Result<Unit>
+
+    suspend fun updateSupply(
+        id: String,
+        supply: SupplyAdd,
+        image: Uri?
+    ): Result<Unit>
 }
