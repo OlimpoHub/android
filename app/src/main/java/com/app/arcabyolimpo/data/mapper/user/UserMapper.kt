@@ -2,6 +2,7 @@ package com.app.arcabyolimpo.data.mapper.user
 
 import com.app.arcabyolimpo.data.remote.dto.user.UserDto
 import com.app.arcabyolimpo.data.remote.dto.user.registeruser.RegisterUserDto
+import com.app.arcabyolimpo.data.remote.dto.user.updateuser.UpdateUserDto
 
 /**
  * Maps a [UserDto] object to a domain-level [UserDto].
@@ -69,6 +70,25 @@ fun UserDto.toRegisterDto(): RegisterUserDto {
         confidentialityNotice = avisoConfidencialidad
     )
 }
+
+fun UserDto.toUpdateDto(): UpdateUserDto {
+    return UpdateUserDto(
+        id = this.idUsuario ?: "",
+        roleId = idRol ?: "",
+        name = nombre,
+        lastName = apellidoPaterno,
+        secondLastName = apellidoMaterno.ifBlank { "" },
+        birthDate = formatDateForBackend(fechaNacimiento),
+        degree = carrera.ifBlank { "" },
+        email = correoElectronico,
+        phone = telefono,
+        status = estatus ?: 1,
+        internalRegulation = reglamentoInterno,
+        idCopy = copiaINE,
+        confidentialityNotice = avisoConfidencialidad
+    )
+}
+
 
 // Helper function for date formatting
 private fun formatDateForBackend(dateString: String?): String {

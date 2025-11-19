@@ -2,6 +2,11 @@
 ### Added
 - Added modify for workshops.
 
+### Added
+ - US for modify supply batch
+ - US for display of supply batches based on date and idSupply
+ - US for modify User with MVVM and clean architecture principles.
+
 ### Fixed
 - Fixed search bar in workshop list.
 - Error now properly appearing when registering new beneficiary
