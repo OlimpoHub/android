@@ -3,10 +3,9 @@ package com.app.arcabyolimpo.presentation.screens.supply.supplyDetail
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.domain.common.Result
-import com.app.arcabyolimpo.domain.usecase.supplies.DeleteOneSupplyUseCase
-import com.app.arcabyolimpo.domain.usecase.supplies.DeleteSupplyBatchUseCase
-import com.app.arcabyolimpo.domain.usecase.supplies.GetSupplyBatchListUseCase
+import com.app.arcabyolimpo.domain.usecase.supplies.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,6 +26,8 @@ class SuppliesDetailViewModel
     @Inject
     constructor(
         private val getSupplyBatchListUseCase: GetSupplyBatchListUseCase,
+        private val filterSupplyBatchUseCase: FilterSupplyBatchUseCase,
+        private val getFilterBatchDataUseCase: GetFilterBatchDataUseCase,
         private val deleteSupplyBatchUseCase: DeleteSupplyBatchUseCase,
         private val deleteOneSupplyUseCase: DeleteOneSupplyUseCase
     ) : ViewModel() {
@@ -34,8 +35,47 @@ class SuppliesDetailViewModel
         val uiState: StateFlow<SuppliesDetailUiState> = _uiState.asStateFlow()
 
         private var currentSupplyId: String? = null
-        var selectedBatchId: String? = null
         var selectedBatchExpirationDate: String? = null
+
+        // ---------------------------
+        // UI STATE #2 - FILTROS
+        // ---------------------------
+        private val _uiFiltersState = MutableStateFlow(SuppliesDetailFilterUiState())
+        val uiFiltersState: StateFlow<SuppliesDetailFilterUiState> = _uiFiltersState.asStateFlow()
+
+        init {
+            loadFilterData()
+        }
+
+        /**
+         * Loads the available filter metadata from the backend.
+         */
+        fun loadFilterData() {
+            viewModelScope.launch {
+                getFilterBatchDataUseCase().collect { result ->
+                    _uiFiltersState.update { state ->
+                        when (result) {
+                            is Result.Loading -> state.copy(isLoading = true)
+
+                            is Result.Success -> {
+                                Log.d("Filtros", "Datos de Filtro recibidos: ${result.data}")
+                                state.copy(
+                                    isLoading = false,
+                                    filterData = result.data,
+                                    error = null,
+                                )
+                            }
+
+                            is Result.Error ->
+                                state.copy(
+                                    isLoading = false,
+                                    error = result.exception.message,
+                                )
+                        }
+                    }
+                }
+            }
+        }
 
     /** ------------------------------------------------------------------------------------------ *
      * getSupply -> receives the id of a supply then uses the US and updates the status of the views
@@ -217,6 +257,57 @@ class SuppliesDetailViewModel
                         }
                     }
                 }
+            }
+        }
+
+        /**
+         * Applies the selected filters to the current supply and updates the UI state accordingly.
+         *
+         * Triggers the use case execution and listens for loading, success, or error events.
+         */
+        fun filterSupplyBatch(filters: FilterDto) {
+            _uiFiltersState.update { it.copy(selectedFilters = filters) }
+
+            val idSupply = currentSupplyId ?: return
+
+            viewModelScope.launch {
+                filterSupplyBatchUseCase(idSupply, filters).collect { result ->
+                    when (result) {
+                        is Result.Loading ->
+                            _uiFiltersState.update { it.copy(isLoading = true) }
+
+                        is Result.Success ->
+                            _uiFiltersState.update { state ->
+                                state.copy(
+                                    result = result.data,
+                                    isLoading = false,
+                                    error = null,
+                                )
+                            }
+
+                        is Result.Error ->
+                            _uiFiltersState.update { state ->
+                                state.copy(
+                                    error = result.exception.message,
+                                    isLoading = false,
+                                )
+                            }
+                    }
+                }
+            }
+        }
+
+        /**
+         * Clears all active filters and resets the filter state.
+         */
+        fun clearFilters() {
+            _uiFiltersState.update {
+                it.copy(
+                    selectedFilters = FilterDto(
+                        filters = emptyMap(),
+                        order = "ASC",
+                    ),
+                )
             }
         }
 

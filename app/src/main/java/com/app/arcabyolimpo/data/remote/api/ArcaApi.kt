@@ -24,6 +24,9 @@ import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchRegisterD
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteResponseDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteSupplyBatchDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.FilterRequestDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.FilteredBatchDto
+import com.app.arcabyolimpo.data.remote.dto.supplies.GetFilterBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.GetFiltersDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.RegisterSupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuccessMessageDto
@@ -124,6 +127,14 @@ interface ArcaApi {
 
     @GET("supplies/filter/data")
     suspend fun getFilterSupplies(): GetFiltersDto
+
+    @POST("/supplyBatch/filter")
+    suspend fun filterSupplyBatch(
+        @Body body: FilterRequestDto
+    ): List<FilteredBatchDto>
+
+    @GET("supplyBatch/filter/data")
+    suspend fun getFilterSupplyBatch(): GetFilterBatchDto
 
     @GET("supplyBatch/{id}")
     suspend fun getSupplyBatchById(
