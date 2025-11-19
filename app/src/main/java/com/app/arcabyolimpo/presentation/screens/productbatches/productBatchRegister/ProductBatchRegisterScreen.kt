@@ -118,6 +118,7 @@ fun ProductBatchRegisterScreen(
                 placeholder = "Producto",
                 selectedOption = state.idProducto,
                 options = products,
+                isError = state.isIdProductoError,
                 onOptionSelected = { viewModel.onFieldChange("idProducto", it) },
                 modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
             )
@@ -130,11 +131,13 @@ fun ProductBatchRegisterScreen(
                 },
                 placeholder = "0.00",
                 keyboardType = KeyboardType.Decimal,
+                isError = state.isPrecioVentaError,
             )
 
             NumberStepper(
                 label = "Cantidad producida",
                 value = state.cantidadProducida,
+                isError = state.isCantidadProducidaError,
                 onValueChange = {
                     viewModel.onFieldChange("cantidadProducida", it)
                 },
@@ -157,6 +160,7 @@ fun ProductBatchRegisterScreen(
                 DateInput(
                     label = "Fecha de Elaboración",
                     value = state.fechaRealizacion,
+                    isError = state.isFechaRealizacionError,
                     onValueChange = {
                         viewModel.onFieldChange("fechaRealizacion", it)
                     },
@@ -168,6 +172,7 @@ fun ProductBatchRegisterScreen(
                 DateInput(
                     label = "Fecha de Caducidad",
                     value = state.fechaCaducidad,
+                    isError = state.isFechaCaducidadError,
                     onValueChange = {
                         viewModel.onFieldChange("fechaCaducidad", it)
                     },
@@ -207,7 +212,7 @@ fun ProductBatchRegisterScreen(
                 ) {
                     SaveButton(
                         onClick = {
-                            viewModel.register(onSuccess = onCreated)
+                            viewModel.validateAndRegister(onSuccess = onCreated)
                         },
                     )
                 }
