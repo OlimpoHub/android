@@ -2,7 +2,14 @@
 ### Added
 - Added modify for workshops.
 
+### Fixed
+- Fixed search bar in workshop list.
+
 ## [0.1.0] - 18/11/2025
+
+### Added
+- ProductList screen to navgraph
+- Modify product implementation
 
 ### Fixed
 - Fixed the possibility to add or modify one supply with the same name

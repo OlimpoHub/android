@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import javax.inject.Inject
 
 /**
@@ -38,11 +40,11 @@ class WorkshopsListViewModel @Inject constructor(
 
     init {
         loadWorkshopsList()
+        setupSearchDebounce()
     }
 
     fun onSearchQueryChange(text: String) {
         _searchQuery.value = text
-
         if (text.isBlank()) {
             _uiState.update { state ->
                 state.copy(
@@ -51,8 +53,6 @@ class WorkshopsListViewModel @Inject constructor(
                     error = null
                 )
             }
-        } else {
-            searchWorkshops(text)
         }
     }
 
@@ -84,7 +84,20 @@ class WorkshopsListViewModel @Inject constructor(
         }
     }
 
-    fun searchWorkshops(name: String) {
+    private fun setupSearchDebounce() {
+        viewModelScope.launch {
+            _searchQuery
+                .debounce(400)
+                .distinctUntilChanged()
+                .collect { query ->
+                    if (query.isNotBlank()) {
+                        performSearch(query)
+                    }
+                }
+        }
+    }
+
+    private fun performSearch(name: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
