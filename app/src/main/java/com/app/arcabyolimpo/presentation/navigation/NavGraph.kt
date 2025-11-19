@@ -29,16 +29,16 @@ import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordR
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
 import com.app.arcabyolimpo.presentation.screens.product.addProduct.ProductAddScreen
 import com.app.arcabyolimpo.presentation.screens.product.updateProduct.ProductUpdateScreen
-import com.app.arcabyolimpo.presentation.screens.product.list.ProductsListScreen
-import com.app.arcabyolimpo.presentation.screens.product.list.ProductsUiState
-import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDeleteTestScreen
+import com.app.arcabyolimpo.presentation.screens.product.list.ProductListScreen
+import com.app.arcabyolimpo.presentation.screens.product.list.ProductListUiState
+import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDetailScreen
+//import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDeleteTestScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchDetail.ProductBatchDetailScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchModify.ProductBatchModifyScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchRegister.ProductBatchRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchesList.ProductBatchesListScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
-import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDeleteTestScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyUpdate.SupplyUpdateScreen
@@ -135,10 +135,6 @@ sealed class Screen(
     }
 
     object ProductAdd : Screen("product/add")
-
-    object ProductDetail : Screen("product_detail/{productId}") {
-        fun createRoute(productId: String) = "product_detail/$productId"
-    }
 
     object ProductDeleteTest : Screen("test_delete_product")
 
@@ -721,6 +717,7 @@ fun ArcaNavGraph(
             )
         }
 
+        /*
         composable(Screen.ProductDeleteTest.route) {
             ProductDeleteTestScreen(
                 onDeleted = {
@@ -728,6 +725,7 @@ fun ArcaNavGraph(
                 },
             )
         }
+         */
 
         composable(
             route = Screen.ProductUpdate.route,
