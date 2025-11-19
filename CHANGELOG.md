@@ -4,9 +4,11 @@
 
 ### Added
  - Supply module conected to the inventory screen.
+ - Added modify for workshops.
  - US for modify supply batch
  - US for display of supply batches based on date and idSupply
  - US for modify User with MVVM and clean architecture principles.
+ - US for qr generation
 
 ### Fixed
 - Product add necesary image
