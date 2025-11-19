@@ -2,7 +2,9 @@
 
 ### Fixed
 - Fixed search bar in workshop list.
+- Error now properly appearing when registering new beneficiary
 - Fixed error views in product batches list, detail, register and modify
+- Fixed product fetch in register Product Batch view
 
 ## [0.1.0] - 18/11/2025
 
