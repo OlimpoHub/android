@@ -2,6 +2,7 @@
 
 ### Fixed
 - Fixed search bar in workshop list.
+- Fixed error views in product batches list, detail, register and modify
 
 ## [0.1.0] - 18/11/2025
 
