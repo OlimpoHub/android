@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -67,7 +68,18 @@ fun ProductBatchRegisterScreen(
     viewModel: ProductBatchRegisterViewModel = hiltViewModel(),
 ) {
     val state = viewModel.uiState
-    val products = listOf("p1", "p2", "p3") // Replace with fetchAllProducts
+
+    LaunchedEffect(Unit) {
+        viewModel.loadData()
+    }
+
+    val selectedProductIndex = state.productIds.indexOf(state.idProducto)
+    val selectedProductName =
+        if (selectedProductIndex != -1) {
+            state.names.getOrNull(selectedProductIndex) ?: ""
+        } else {
+            ""
+        }
 
     Scaffold(
         containerColor = Background,
@@ -116,9 +128,17 @@ fun ProductBatchRegisterScreen(
             SelectInput(
                 label = "Selecciona el producto",
                 placeholder = "Producto",
-                selectedOption = state.idProducto,
-                options = products,
-                onOptionSelected = { viewModel.onFieldChange("idProducto", it) },
+                selectedOption = selectedProductName,
+                options = state.names,
+                isError = state.isIdProductoError,
+                errorMessage = if (state.isIdProductoError) "Selecciona un producto" else "",
+                onOptionSelected = { selectedName ->
+                    val index = state.names.indexOf(selectedName)
+                    if (index != -1) {
+                        val id = state.productIds[index]
+                        viewModel.onFieldChange("idProducto", id)
+                    }
+                },
                 modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
             )
 
@@ -130,11 +150,15 @@ fun ProductBatchRegisterScreen(
                 },
                 placeholder = "0.00",
                 keyboardType = KeyboardType.Decimal,
+                isError = state.isPrecioVentaError,
+                errorMessage = if (state.isPrecioVentaError) "Ingresa un precio de venta" else "",
             )
 
             NumberStepper(
                 label = "Cantidad producida",
                 value = state.cantidadProducida,
+                isError = state.isCantidadProducidaError,
+                errorMessage = if (state.isCantidadProducidaError) "Ingresa una cantidad mayor a 0" else "",
                 onValueChange = {
                     viewModel.onFieldChange("cantidadProducida", it)
                 },
@@ -157,6 +181,8 @@ fun ProductBatchRegisterScreen(
                 DateInput(
                     label = "Fecha de Elaboración",
                     value = state.fechaRealizacion,
+                    isError = state.isFechaRealizacionError,
+                    errorMessage = if (state.isFechaRealizacionError) "Selecciona una fecha" else "",
                     onValueChange = {
                         viewModel.onFieldChange("fechaRealizacion", it)
                     },
@@ -168,6 +194,8 @@ fun ProductBatchRegisterScreen(
                 DateInput(
                     label = "Fecha de Caducidad",
                     value = state.fechaCaducidad,
+                    isError = state.isFechaCaducidadError,
+                    errorMessage = if (state.isFechaCaducidadError) "Fecha no válida" else "",
                     onValueChange = {
                         viewModel.onFieldChange("fechaCaducidad", it)
                     },
@@ -207,7 +235,7 @@ fun ProductBatchRegisterScreen(
                 ) {
                     SaveButton(
                         onClick = {
-                            viewModel.register(onSuccess = onCreated)
+                            viewModel.validateAndRegister(onSuccess = onCreated)
                         },
                     )
                 }
