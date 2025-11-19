@@ -154,8 +154,6 @@ fun ProductAddScreen(
             DescriptionInput(
                 value = uiState.description,
                 onValueChange =viewModel::onDescriptionChange,
-                widthFraction = 0.92f,
-                maxWidthDp = 560.dp
             )
 
             Spacer(Modifier.height(16.dp))

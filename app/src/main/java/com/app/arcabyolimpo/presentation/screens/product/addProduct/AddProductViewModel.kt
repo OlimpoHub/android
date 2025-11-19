@@ -100,6 +100,9 @@ class AddProductViewModel @Inject constructor(
 
         if (
             state.name.isBlank()
+            || state.unitaryPrice == null
+            || state.description == null
+            || state.status == null
             || state.selectedWorkshopId == null
             || state.selectedCategoryId == null
             || state.selectedImage == null
