@@ -784,6 +784,9 @@ fun ArcaNavGraph(
                 onAddProductClick = {
                     navController.navigate(Screen.ProductAdd.route)
                 },
+                onBackClick ={
+                  navController.navigateUp()
+                },
             )
         }
 

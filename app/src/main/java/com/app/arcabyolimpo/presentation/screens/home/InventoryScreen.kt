@@ -66,6 +66,7 @@ fun InventoryScreen(navController: NavHostController) {
                                 onAddProductClick = {
                                     navController.navigate(Screen.ProductAdd.route)
                                 },
+                                onBackClick = { selectedOption = null },
                             )
                         "product_batches" ->
                             ProductBatchesListScreen(
