@@ -9,7 +9,7 @@ data class UserDto(
     @SerializedName("nombre") val nombre: String,
     @SerializedName("apellidoPaterno") val apellidoPaterno: String,
     @SerializedName("apellidoMaterno") val apellidoMaterno: String? = null,
-    @SerializedName("fechaNacimiento") val fechaNacimiento: String,
+    @SerializedName("fechaNacimiento") val fechaNacimiento: String? = null,
     @SerializedName("carrera") val carrera: String,
     @SerializedName("correoElectronico") val correoElectronico: String,
     @SerializedName("contrasena") val contrasena: String? = null,
