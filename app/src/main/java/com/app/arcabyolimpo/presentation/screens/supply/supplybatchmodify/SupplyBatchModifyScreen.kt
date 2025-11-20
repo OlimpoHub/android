@@ -128,7 +128,6 @@ fun SupplyBatchModifyScreen(
                         onBackClick()
                     },
                 )
-                NavBar()
             }
         },
     ) { padding ->
