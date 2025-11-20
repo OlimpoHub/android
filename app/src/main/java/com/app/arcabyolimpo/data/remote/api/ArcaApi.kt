@@ -183,7 +183,7 @@ interface ArcaApi {
     // Workshop ---------------------------
 
     @GET("workshop")
-    suspend fun getWorkshopsList(): List<WorkshopsListDto>
+    suspend fun getWorkshops(): List<WorkshopDto>
 
     @GET("workshop/search")
     suspend fun searchWorkshops(
