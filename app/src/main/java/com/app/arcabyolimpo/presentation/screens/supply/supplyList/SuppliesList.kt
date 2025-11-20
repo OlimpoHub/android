@@ -2,6 +2,8 @@ package com.app.arcabyolimpo.presentation.screens.supply.supplyList
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -45,6 +47,7 @@ fun SupplyListScreen(
     onSupplyClick: (String) -> Unit,
     onAddSupplyClick: () -> Unit,
     viewModel: SuppliesListViewModel = hiltViewModel(),
+    onBack: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -93,6 +96,15 @@ fun SupplyListScreen(
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
                     )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { onBack() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Regresar",
+                            tint = Color.White,
+                        )
+                    }
                 },
                 actions = {
                     NotificationIcon(
