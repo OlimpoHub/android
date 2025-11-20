@@ -35,6 +35,7 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.FunctionalNavBa
 import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
 import com.app.arcabyolimpo.presentation.ui.components.molecules.WorkshopCard
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
+import com.app.arcabyolimpo.presentation.ui.components.organisms.Filter
 import com.app.arcabyolimpo.ui.theme.Background
 import kotlinx.coroutines.launch
 import com.app.arcabyolimpo.ui.theme.White
@@ -50,6 +51,7 @@ fun WorkshopsListScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val searchText by viewModel.searchQuery.collectAsState()
+    var showFilter by remember { mutableStateOf(false) }
 
     val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
     val snackbarMessage = savedStateHandle?.get<String>("snackbarMessage")
@@ -127,10 +129,12 @@ fun WorkshopsListScreen(
                                 .padding(end = 20.dp)
                         )
 
-                        FilterIcon(
-                            modifier = Modifier
-                                .padding(start = 16.dp)
-                        )
+                        IconButton(
+                            onClick = { showFilter = true },
+                            modifier = Modifier.size(30.dp),
+                        ) {
+                            FilterIcon()
+                        }
                     }
 
                     when {
@@ -179,6 +183,23 @@ fun WorkshopsListScreen(
                         }
                     }
                 }
+            }
+
+            // Filters
+            if (showFilter) {
+                Filter(
+                    data = uiState.filterData,
+                    initialSelected = uiState.selectedFilters,
+                    onApply = { dto ->
+                        showFilter = false
+                        viewModel.applyFilters(dto)
+                    },
+                    onDismiss = { showFilter = false },
+                    onClearFilters = {
+                        viewModel.clearFilters()
+                        showFilter = false
+                    },
+                )
             }
 
             Box(
