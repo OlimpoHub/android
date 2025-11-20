@@ -84,14 +84,6 @@ fun CoordinatorHomeScreen(navController: NavHostController) {
                         },
                     )
                 3 -> InventoryScreen(navController)
-                4 -> BeneficiaryListScreen(
-                    navController = navController,
-                    onBeneficiaryClick = { beneficiaryId ->
-                        navController.navigate(Screen.BeneficiaryDetail.createRoute(beneficiaryId))
-                    },
-                    onFilterClick = {  },
-                    onNotificationClick = { }
-                )
                 **/
                 2 -> {
                     Column(modifier = Modifier.fillMaxSize()) {
@@ -165,45 +157,14 @@ fun CoordinatorHomeScreen(navController: NavHostController) {
                     }
                 }
 
-                4 -> {
-                    Column(modifier = Modifier.fillMaxSize()) {
-                        TopAppBar(
-                            title = {
-                                Text(
-                                    "Beneficiarios",
-                                    color = Color.White,
-                                    fontSize = 24.sp,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                            },
-                            colors = TopAppBarDefaults.topAppBarColors(
-                                containerColor = Color(0xFF040610),
-                            ),
-                            navigationIcon = {
-                                IconButton(onClick = { navController.navigate(Screen.CoordinatorHome.route) }) {
-                                    Icon(
-                                        imageVector = Icons.Default.ArrowBack,
-                                        contentDescription = "Regresar",
-                                        tint = Color.White
-                                    )
-                                }
-                            },
-                        )
-
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                        ) {
-                            BeneficiaryListScreen(
-                                navController = navController,
-                                onBeneficiaryClick = { beneficiaryId ->
-                                    navController.navigate(Screen.BeneficiaryDetail.createRoute(beneficiaryId))
-                                },
-                                onFilterClick = { },
-                                onNotificationClick = { }
-                            )
-                        }
-                    }
-                }
+                4 -> BeneficiaryListScreen(
+                    navController = navController,
+                    onBeneficiaryClick = { beneficiaryId ->
+                        navController.navigate(Screen.BeneficiaryDetail.createRoute(beneficiaryId))
+                    },
+                    onFilterClick = {  },
+                    onNotificationClick = { }
+                )
             }
         }
         FunctionalNavBar(
