@@ -1,7 +1,10 @@
 package com.app.arcabyolimpo.presentation.screens.home
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -51,43 +54,59 @@ fun InventoryScreen(navController: NavHostController) {
                 },
             ) { paddingValues ->
 
-                if (selectedOption == null) {
-                    InventoryMainScreen(
-                        paddingValues = paddingValues,
-                        onSelect = { selectedOption = it },
-                    )
-                } else {
-                    when (selectedOption) {
-                        "products" ->
-                            ProductListScreen(
-                                onProductClick = { productId ->
-                                    navController.navigate(Screen.ProductDetail.createRoute(productId))
-                                },
-                                onAddProductClick = {
-                                    navController.navigate(Screen.ProductAdd.route)
-                                },
-                                onBackClick = { selectedOption = null },
-                            )
-                        "product_batches" ->
-                            ProductBatchesListScreen(
-                                onBackClick = { selectedOption = null },
-                                onDetailClick = { id ->
-                                    navController.navigate(Screen.ProductBatchDetail.createRoute(id))
-                                },
-                                onAddClick = {
-                                    navController.navigate(Screen.ProductBatchRegister.route)
-                                },
-                            )
-                        "supplies" -> {
-                            SupplyListScreen(
-                                onSupplyClick = { id ->
-                                    navController.navigate("supply/$id")
-                                },
-                                onAddSupplyClick = {
-                                    navController.navigate(Screen.SupplyAdd.route)
-                                },
-                                onBack = { selectedOption = null },
-                            )
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    if (selectedOption == null) {
+                        InventoryMainScreen(
+                            paddingValues = paddingValues,
+                            onSelect = { selectedOption = it },
+                        )
+                    } else {
+                        when (selectedOption) {
+                            "products" ->
+                                ProductListScreen(
+                                    onProductClick = { productId ->
+                                        navController.navigate(
+                                            Screen.ProductDetail.createRoute(
+                                                productId
+                                            )
+                                        )
+                                    },
+                                    onAddProductClick = {
+                                        navController.navigate(Screen.ProductAdd.route)
+                                    },
+                                    onBackClick = { selectedOption = null },
+                                )
+
+                            "product_batches" ->
+                                ProductBatchesListScreen(
+                                    onBackClick = { selectedOption = null },
+                                    onDetailClick = { id ->
+                                        navController.navigate(
+                                            Screen.ProductBatchDetail.createRoute(
+                                                id
+                                            )
+                                        )
+                                    },
+                                    onAddClick = {
+                                        navController.navigate(Screen.ProductBatchRegister.route)
+                                    },
+                                )
+
+                            "supplies" -> {
+                                SupplyListScreen(
+                                    onSupplyClick = { id ->
+                                        navController.navigate("supply/$id")
+                                    },
+                                    onAddSupplyClick = {
+                                        navController.navigate(Screen.SupplyAdd.route)
+                                    },
+                                    onBack = { selectedOption = null },
+                                )
+                            }
                         }
                     }
                 }
