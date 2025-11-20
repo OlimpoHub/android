@@ -500,7 +500,7 @@ fun ArcaNavGraph(
             WorkshopDetailScreen(navController,
                 workshopId,
                 onModifyClick = { workshopId ->
-                    navController.navigate(Screen.ModifyWorkshop.createRoute(workshopId))
+                    navController.popBackStack()
                 })
         }
 
