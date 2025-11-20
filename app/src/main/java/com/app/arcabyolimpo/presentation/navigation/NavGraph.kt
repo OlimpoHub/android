@@ -14,6 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
 import com.app.arcabyolimpo.domain.model.auth.UserRole
 import com.app.arcabyolimpo.presentation.common.components.LoadingShimmer
@@ -31,17 +32,21 @@ import com.app.arcabyolimpo.presentation.screens.product.addProduct.ProductAddSc
 import com.app.arcabyolimpo.presentation.screens.product.updateProduct.ProductUpdateScreen
 import com.app.arcabyolimpo.presentation.screens.product.list.ProductListScreen
 import com.app.arcabyolimpo.presentation.screens.product.list.ProductListUiState
+import com.app.arcabyolimpo.presentation.screens.product.list.ProductListViewModel
 import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDetailScreen
-//import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDeleteTestScreen
+// import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDeleteTestScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchDetail.ProductBatchDetailScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchModify.ProductBatchModifyScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchRegister.ProductBatchRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchesList.ProductBatchesListScreen
+import com.app.arcabyolimpo.presentation.screens.qr.qr.QrScreen
+import com.app.arcabyolimpo.presentation.screens.qr.workshopselection.QrWorkshopsListScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyBatchList.SupplyBatchListScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
+import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplybatchmodify.SupplyBatchModifyScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyUpdate.SupplyUpdateScreen
@@ -175,6 +180,16 @@ sealed class Screen(
     }
 
     object ProductList : Screen("product/")
+
+    object QrWorkshopSelection : Screen("qr/workshop_selection")
+
+    object CreateQr : Screen("qr/workshop_selection/show_qr/{workshopID}/{workshopName}") {
+        fun createRoute(
+            workshopID: String,
+            workshopName: String,
+        ) = "qr/workshop_selection/show_qr/$workshopID/$workshopName"
+    }
+}
 
 /**
  * Composable function that defines the main navigation graph of the app.
@@ -635,8 +650,7 @@ fun ArcaNavGraph(
                 },
                 onFilterClick = { /* TODO: Lógica de VM */ },
                 onNotificationClick = { /* TODO: Lógica de VM */ },
-
-                )
+            )
         }
 
         /**
@@ -656,6 +670,21 @@ fun ArcaNavGraph(
         }
 
         /**
+         * Add New Supply Screen.
+         *
+         * Pantalla para registrar un nuevo insumo.
+         */
+        composable(Screen.SupplyAdd.route) {
+            SupplyAddScreen(
+                onSaveSuccess = {
+                    navController.navigate(Screen.SuppliesList.route)
+                },
+                onCancel = {
+                    navController.navigate(Screen.SuppliesList.route)
+                },
+            )
+        }
+        /**
          * Add new beneficiary
          */
 
@@ -664,22 +693,6 @@ fun ArcaNavGraph(
                 navController = navController,
                 viewModel = hiltViewModel(),
                 onSuccess = {
-                    navController.popBackStack()
-                }
-            )
-        }
-
-        /**
-         * Add New Supply Screen.
-         *
-         * Pantalla para registrar un nuevo insumo.
-         */
-        composable(Screen.SupplyAdd.route) {
-            SupplyAddScreen(
-                onSaveSuccess = {
-                    navController.popBackStack()
-                },
-                onCancel = {
                     navController.popBackStack()
                 },
             )
@@ -771,12 +784,16 @@ fun ArcaNavGraph(
                 onAddProductClick = {
                     navController.navigate(Screen.ProductAdd.route)
                 },
+                onBackClick ={
+                  navController.navigateUp()
+                },
             )
         }
 
+
         composable(
             route = Screen.ProductDetail.route,
-            arguments = listOf(navArgument("productId") { type = NavType.StringType }),
+            arguments = listOf(navArgument("productId") { type = NavType.StringType } ),
         ) { backStackEntry ->
             val productId = backStackEntry.arguments?.getString("productId") ?: ""
             ProductDetailScreen(
@@ -786,19 +803,12 @@ fun ArcaNavGraph(
                     navController.navigate(Screen.ProductUpdate.createRoute(id))
                 },
                 onDeleteClick = {
-                },
-            )
-        }
-
-        /*
-        composable(Screen.ProductDeleteTest.route) {
-            ProductDeleteTestScreen(
-                onDeleted = {
                     navController.popBackStack()
                 },
             )
         }
-         */
+
+
 
         composable(
             route = Screen.ProductUpdate.route,
@@ -866,6 +876,33 @@ fun ArcaNavGraph(
                 }
             )
         }
+
+        composable(Screen.QrWorkshopSelection.route) {
+            QrWorkshopsListScreen(
+                onBackClick = { navController.popBackStack() },
+                workshopClick = { id, name ->
+                    navController.navigate(Screen.CreateQr.createRoute(id, name))
+                },
+            )
+        }
+
+        composable(
+            route = Screen.CreateQr.route,
+            arguments =
+                listOf(
+                    navArgument("workshopID") { type = NavType.StringType },
+                    navArgument("workshopName") { type = NavType.StringType },
+                ),
+        ) { backStackEntry ->
+
+            val id = backStackEntry.arguments?.getString("workshopID") ?: ""
+            val name = backStackEntry.arguments?.getString("workshopName") ?: ""
+
+            QrScreen(
+                onBackClick = { navController.popBackStack() },
+                workshopId = id,
+                workshopName = name,
+            )
+        }
     }
-}
 }

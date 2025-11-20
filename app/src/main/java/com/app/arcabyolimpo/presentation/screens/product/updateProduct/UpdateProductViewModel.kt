@@ -139,8 +139,15 @@ class UpdateProductViewModel @Inject constructor(
             return
         }
 
-        if (formData.selectedIdWorkshop == null || formData.selectedIdCategory == null) {
-            _uiState.update { it.copy(error = "El taller y categoría no pueden estar vacios") }
+        if (
+            formData.selectedIdWorkshop == null
+            || formData.selectedIdCategory == null
+            || formData.name == null
+            || formData.unitaryPrice == null
+            || formData.description == null
+            || formData.selectedImageUrl == null
+        ) {
+            _uiState.update { it.copy(error = "Ningún campo puede estar vacío") }
             return
         }
 

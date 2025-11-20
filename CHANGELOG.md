@@ -1,13 +1,21 @@
 ## [0.1.0] - 19/11/2025
 ### Added
-- Added modify for workshops.
-
-### Added
+ - Added modify for workshops.
+ - Supply module conected to the inventory screen.
+ - Added modify for workshops.
  - US for modify supply batch
  - US for display of supply batches based on date and idSupply
  - US for modify User with MVVM and clean architecture principles.
+ - US for qr generation
+ - Navigation to ProductBatches
 
 ### Fixed
+ - buttons from product detail screen and navigation for products
+ - Return Icon from profuct list screen to the navigation of inventory
+
+### Fixed
+- All product info for modify necessary
+- All product info necesary
 - Product add necesary image
 - Fixed search bar in workshop list.
 - Fixed the product error message
@@ -15,6 +23,7 @@
 - Error in descriptcion in view and modify a workshop
 - Fixed error views in product batches list, detail, register and modify
 - Fixed product fetch in register Product Batch view
+- Fixed of list update when deleting product
 
 ## [0.1.0] - 18/11/2025
 

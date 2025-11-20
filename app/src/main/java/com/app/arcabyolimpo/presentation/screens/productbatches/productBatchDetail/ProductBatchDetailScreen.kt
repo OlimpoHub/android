@@ -79,9 +79,6 @@ fun ProductBatchDetailScreen(
 
     Scaffold(
         containerColor = Background,
-        bottomBar = {
-            NavBar()
-        },
         topBar = {
             TopAppBar(
                 title = {
