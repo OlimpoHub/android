@@ -118,6 +118,7 @@ fun BeneficiaryDetailContent(
             onConfirmation = {
                 onDismissDialog()
                 onDeleteClick()
+                onBackClick()
             },
             confirmText = "Confirmar",
             dismissText = "Cancelar"
