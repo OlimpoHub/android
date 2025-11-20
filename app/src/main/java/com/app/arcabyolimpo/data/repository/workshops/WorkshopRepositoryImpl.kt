@@ -138,6 +138,7 @@ class WorkshopRepositoryImpl
 
     override suspend fun modifyWorkshop(modifiedWorkshop: WorkshopDto): Workshop {
         val workshopId = modifiedWorkshop.id
+        Log.d("WORKSHOP_DEBUG", "Fecha: ${modifiedWorkshop}")
         val response = api.modifyWorkshop(
             id = workshopId!!,
             requestBody = modifiedWorkshop
