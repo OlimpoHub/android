@@ -2,6 +2,8 @@ package com.app.arcabyolimpo.presentation.screens.supply.supplyList
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -42,6 +44,7 @@ import com.app.arcabyolimpo.ui.theme.White
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SupplyListScreen(
+    onBackClick: () -> Unit,
     onSupplyClick: (String) -> Unit,
     onAddSupplyClick: () -> Unit,
     viewModel: SuppliesListViewModel = hiltViewModel(),
@@ -94,13 +97,14 @@ fun SupplyListScreen(
                                 .padding(horizontal = 16.dp),
                     )
                 },
-                actions = {
-                    NotificationIcon(
-                        modifier =
-                            Modifier
-                                .padding(horizontal = 24.dp)
-                                .size(28.dp),
-                    )
+                navigationIcon = {
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            "Back",
+                            tint = White,
+                        )
+                    }
                 },
                 colors =
                     TopAppBarDefaults.topAppBarColors(

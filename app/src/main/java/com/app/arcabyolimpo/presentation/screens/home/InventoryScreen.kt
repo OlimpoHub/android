@@ -86,6 +86,7 @@ fun InventoryScreen(navController: NavHostController) {
                                 onAddSupplyClick = {
                                     navController.navigate(Screen.SupplyAdd.route)
                                 },
+                                onBackClick = { selectedOption = null },
                             )
                         }
                     }
