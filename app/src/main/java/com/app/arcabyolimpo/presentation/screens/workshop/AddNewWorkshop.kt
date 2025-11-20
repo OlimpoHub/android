@@ -22,6 +22,7 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcust
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.CancelButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SaveButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.CalendarIcon
+import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.DateInput
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.DescriptionInput
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.ImageUploadInput
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SelectInput
@@ -162,13 +163,15 @@ fun AddNewWorkshopScreen(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 /** Date */
-                StandardInput(
+                DateInput(
                     label = "Fecha del taller",
-                    placeholder = "Ej. 2016-07-30",
+                    placeholder = "dd/MM/yyyy",
                     value = formData.date,
-                    onValueChange = { viewModel.updateFormData { copy(date = it) } },
+                    onValueChange = { newDate ->
+                        viewModel.updateFormData { copy(date = newDate) }
+                    },
                     isError = fieldErrors["date"] == true,
-                    errorMessage = null,
+                    errorMessage = "",
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))

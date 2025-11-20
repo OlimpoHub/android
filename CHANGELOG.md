@@ -4,6 +4,7 @@
 
 ### Fixed
 - Fix beneficiary list navbar
+- Fix workshops date input
 
 ## [0.1.0] - 19/11/2025
 ### Added
