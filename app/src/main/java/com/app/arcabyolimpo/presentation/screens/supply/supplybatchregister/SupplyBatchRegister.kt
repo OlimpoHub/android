@@ -97,6 +97,9 @@ fun SupplyBatchRegisterScreen(
                         isError = false,
                     ),
                 )
+                // After showing success message, navigate back and clear VM flags
+                onRegisterClick()
+                viewModel.clearRegisterStatus()
             }
         }
     }
@@ -140,15 +143,14 @@ fun SupplyBatchRegisterScreen(
                 SupplyBatchRegisterBottomBar(
                     uiState = state,
                     onRegisterClick = {
+                        // Only trigger ViewModel action; navigation happens on registerSuccess
                         viewModel.registerBatch()
-                        onRegisterClick()
                     },
                     onBackClick = {
                         viewModel.clearRegisterStatus()
                         onBackClick()
                     },
                 )
-                NavBar()
             }
         },
     ) { padding ->
@@ -158,25 +160,25 @@ fun SupplyBatchRegisterScreen(
         val scrollModifier = if (isLandscape) Modifier.verticalScroll(rememberScrollState()) else Modifier
 
         Box(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(padding)
-                        .padding(8.dp)
-                        .then(scrollModifier),
-            ) {
-                // Reuse the content composable so we keep single-source-of-truth for UI
-                SupplyBatchRegisterContent(
-                    uiState = state,
-                    onSelectSupply = { viewModel.onSelectSupply(it) },
-                    onQuantityChanged = { viewModel.onQuantityChanged(it) },
-                    onExpirationDateChanged = { viewModel.onExpirationDateChanged(it) },
-                    onBoughtDateChanged = { viewModel.onBoughtDateChanged(it) },
-                    onIncrementQuantity = { viewModel.onIncrementQuantity() },
-                    onDecrementQuantity = { viewModel.onDecrementQuantity() },
-                    onAcquisitionTypeSelected = { viewModel.onAcquisitionTypeSelected(it) },
-                )
-            }
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(padding)
+                    .padding(8.dp)
+                    .then(scrollModifier),
+        ) {
+            // Reuse the content composable so we keep single-source-of-truth for UI
+            SupplyBatchRegisterContent(
+                uiState = state,
+                onSelectSupply = { viewModel.onSelectSupply(it) },
+                onQuantityChanged = { viewModel.onQuantityChanged(it) },
+                onExpirationDateChanged = { viewModel.onExpirationDateChanged(it) },
+                onBoughtDateChanged = { viewModel.onBoughtDateChanged(it) },
+                onIncrementQuantity = { viewModel.onIncrementQuantity() },
+                onDecrementQuantity = { viewModel.onDecrementQuantity() },
+                onAcquisitionTypeSelected = { viewModel.onAcquisitionTypeSelected(it) },
+            )
+        }
     }
 }
 

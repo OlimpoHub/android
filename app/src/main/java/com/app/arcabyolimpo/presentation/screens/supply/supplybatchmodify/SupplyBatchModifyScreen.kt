@@ -80,6 +80,9 @@ fun SupplyBatchModifyScreen(
                         isError = false,
                     ),
                 )
+                // Navigate back after success and clear flags
+                onRegisterClick()
+                viewModel.clearRegisterStatus()
             }
         }
     }
@@ -123,8 +126,8 @@ fun SupplyBatchModifyScreen(
                 SupplyBatchModifyBottomBar(
                     uiState = state,
                     onRegisterClick = {
+                        // Only trigger ViewModel action; navigation happens on registerSuccess
                         viewModel.updateBatch()
-                        onRegisterClick()
                     },
                     onBackClick = {
                         viewModel.clearRegisterStatus()
@@ -140,13 +143,13 @@ fun SupplyBatchModifyScreen(
         val scrollModifier = if (isLandscape) Modifier.verticalScroll(rememberScrollState()) else Modifier
 
         Box(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(padding)
-                        .padding(8.dp)
-                        .then(scrollModifier),
-            ) {
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(padding)
+                    .padding(8.dp)
+                    .then(scrollModifier),
+        ) {
             // If we're loading the batch details, show a centered progress indicator
             if (state.isLoading) {
                 Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -255,7 +258,6 @@ fun SupplyBatchRegisterPreview() {
                         onRegisterClick = {}, // Acciones de mock
                         onBackClick = {}, // Acciones de mock
                     )
-                    NavBar()
                 }
             },
         ) { padding ->
