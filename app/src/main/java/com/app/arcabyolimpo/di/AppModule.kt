@@ -41,7 +41,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    private const val BASE_URL = "http://74.208.78.8:8080/"
+    private const val BASE_URL = "http://192.168.1.72:8080"
 
     /**
      * Provides a configured [OkHttpClient] instance.
