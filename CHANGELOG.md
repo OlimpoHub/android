@@ -2,6 +2,9 @@
 ### Added
 - US for filter and order workshops.
 
+### Fixed
+- Fix beneficiary list navbar
+
 ## [0.1.0] - 19/11/2025
 ### Added
  - Added modify for workshops.
