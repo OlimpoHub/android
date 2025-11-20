@@ -190,11 +190,7 @@ fun modifyWorkshopScreen(
                 StandardInput(
                     label = "Fecha del taller",
                     placeholder = "Ej. 2016-07-30",
-                    value = if (formData.date.isNotBlank() && !fieldErrors.containsKey("date") && formattedDate.isNotBlank()) {
-                        formattedDate
-                    } else {
-                        formData.date
-                    },
+                    value = formData.date,
                     onValueChange = { viewModel.updateFormData { copy(date = it) } },
                     isError = fieldErrors["date"] == true,
                     errorMessage = null,
