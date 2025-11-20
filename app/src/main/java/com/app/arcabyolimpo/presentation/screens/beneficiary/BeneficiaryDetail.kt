@@ -146,7 +146,7 @@ fun BeneficiaryDetailContent(
                 }
             )
         },
-        bottomBar = { NavBar() }
+        // bottomBar = { NavBar() }
     ) { paddingValues ->
         when {
             uiState.isScreenLoading -> {
