@@ -48,17 +48,17 @@ class UpdateUserViewModel @Inject constructor(
                         _uiState.value = _uiState.value.copy(
 
                             // mapeo a los campos del formulario
-                            id             = user.idUsuario.orEmpty(),
+                            id             = user.idUsuario ?: "",
                             roleId         = user.idRol ?: _uiState.value.roleId,
-                            firstName      = user.nombre.orEmpty(),
-                            lastName       = user.apellidoPaterno.orEmpty(),
-                            secondLastName = user.apellidoMaterno.orEmpty(),
-                            birthDate      = user.fechaNacimiento.orEmpty(),
-                            degree         = user.carrera.orEmpty(),
-                            email          = user.correoElectronico.orEmpty(),
-                            phone          = user.telefono.orEmpty(),
-                            isActive       = user.estatus,
-                            photoUrl       = user.foto.orEmpty(),
+                            firstName      = user.nombre ?: "",
+                            lastName       = user.apellidoPaterno ?: "",
+                            secondLastName = user.apellidoMaterno ?: "",
+                            birthDate      = user.fechaNacimiento ?: "",
+                            degree         = user.carrera ?: "",
+                            email          = user.correoElectronico ?: "",
+                            phone          = user.telefono ?: "",
+                            isActive       = user.estatus ?: 1,
+                            photoUrl       = user.foto ?: "",
 
                             isLoading = false,
                             error = null

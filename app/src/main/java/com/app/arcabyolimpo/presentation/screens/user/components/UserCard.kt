@@ -92,7 +92,7 @@ fun UserCard(
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        text = "${user.apellidoPaterno.firstOrNull() ?: ""}${user.apellidoMaterno?.firstOrNull() ?: ""}",
+                        text = "${user.apellidoPaterno?.firstOrNull() ?: ""}${user.apellidoMaterno?.firstOrNull() ?: ""}",
                         color = Color.White,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,

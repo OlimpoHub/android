@@ -9,10 +9,10 @@ data class RegisterUserDto(
     val roleId: String,
 
     @SerializedName("externalCollab_name")
-    val name: String,
+    val name: String?,
 
     @SerializedName("externalCollab_lastName")
-    val lastName: String,
+    val lastName: String?,
 
     @SerializedName("externalCollab_secondLastName")
     val secondLastName: String,
@@ -24,10 +24,10 @@ data class RegisterUserDto(
     val degree: String,
 
     @SerializedName("externalCollab_email")
-    val email: String,
+    val email: String?,
 
     @SerializedName("externalCollab_phone")
-    val phone: String,
+    val phone: String?,
 
     @SerializedName("externalCollab_status")
     val status: Int,
