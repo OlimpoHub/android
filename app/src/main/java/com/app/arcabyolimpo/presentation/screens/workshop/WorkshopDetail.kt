@@ -174,9 +174,6 @@ fun WorkshopDetailScreen(
                     }
                 )
             },
-            bottomBar = {
-                NavBar()
-            }
 
         ) { padding ->
 
