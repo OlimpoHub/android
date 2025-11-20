@@ -677,10 +677,10 @@ fun ArcaNavGraph(
         composable(Screen.SupplyAdd.route) {
             SupplyAddScreen(
                 onSaveSuccess = {
-                    navController.navigate(Screen.SuppliesList.route)
+                    navController.popBackStack()
                 },
                 onCancel = {
-                    navController.navigate(Screen.SuppliesList.route)
+                    navController.popBackStack()
                 },
             )
         }
