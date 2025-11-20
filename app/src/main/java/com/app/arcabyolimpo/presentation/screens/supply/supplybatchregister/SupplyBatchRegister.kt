@@ -256,7 +256,6 @@ fun SupplyBatchRegisterPreview() {
                         onRegisterClick = {}, // Acciones de mock
                         onBackClick = {}, // Acciones de mock
                     )
-                    NavBar()
                 }
             },
         ) { padding ->

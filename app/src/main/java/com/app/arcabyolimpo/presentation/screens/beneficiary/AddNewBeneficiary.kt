@@ -60,7 +60,6 @@ fun AddNewBeneficiaryScreen(
                     )
                 }
             },
-            bottomBar = { NavBar() }
         ) { padding ->
             Column(
                 modifier = Modifier
