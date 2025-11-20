@@ -12,6 +12,7 @@
 - Fix scroll bar for supply batch views
 - Input Validations
 - Fix view to not show the navbar in beneficiary details
+- Fix expiration date availabity for null values
 
 ## [0.1.0] - 19/11/2025
 ### Added
