@@ -84,6 +84,10 @@ fun BeneficiaryListScreen(
         ?.savedStateHandle
         ?.get<String>("success_message")
 
+    LaunchedEffect(Unit) {
+        viewModel.getBeneficiaries()
+    }
+
     LaunchedEffect(successMessage) {
         successMessage?.let { message ->
             scope.launch {
