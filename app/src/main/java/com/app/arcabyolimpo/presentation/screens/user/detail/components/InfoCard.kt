@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun InfoCard(label: String, value: String) {
+fun InfoCard(label: String, value: String?) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -38,12 +38,14 @@ fun InfoCard(label: String, value: String) {
                 fontWeight = FontWeight.Medium
             )
             Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = value,
-                color = Color.White,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Normal
-            )
+            if (value != null) {
+                Text(
+                    text = value,
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Normal
+                )
+            }
         }
     }
 }

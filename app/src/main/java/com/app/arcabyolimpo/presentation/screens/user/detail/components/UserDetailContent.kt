@@ -136,10 +136,10 @@ fun UserDetailContent(
 }
 
 // Helper function to format date
-fun formatDate(dateString: String): String =
+fun formatDate(dateString: String?): String? =
     try {
-        val parts = dateString.split("T")[0].split("-")
-        "${parts[2]}/${parts[1]}/${parts[0]}"
+        val parts = dateString?.split("T")[0]?.split("-")
+        "${parts?.get(2)}/${parts?.get(1)}/${parts?.get(0)}"
     } catch (e: Exception) {
         dateString
     }
