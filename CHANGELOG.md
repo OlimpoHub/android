@@ -1,6 +1,7 @@
 ## [0.1.0] - 20/11/2025
 ### Added
 - US for filter and order workshops.
+- Scroll for login, home and inventory screens.
 
 ### Fixed
 - Fix beneficiary list navbar
