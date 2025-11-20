@@ -88,8 +88,7 @@ fun AddNewWorkshopScreen(
                         modifier = Modifier.padding(16.dp),
                     )
                 }
-            },
-            bottomBar = { NavBar() },
+            }
         ) { padding ->
             Column(
                 modifier =

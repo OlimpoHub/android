@@ -98,7 +98,6 @@ fun modifyWorkshopScreen(
         }
         Scaffold(
             containerColor = Background,
-            bottomBar = { NavBar() },
             snackbarHost = { SnackbarHost(snackbarHostState) }
         ) { padding ->
             Column(
@@ -308,7 +307,7 @@ fun modifyWorkshopScreen(
                         modifier =
                             Modifier
                                 .size(width = 112.dp, height = 40.dp),
-                        onClick = { navController.navigate(Screen.WorkshopsList.route) },
+                        onClick = { navController.popBackStack() },
                     )
 
                     Spacer(modifier = Modifier.width(16.dp))
