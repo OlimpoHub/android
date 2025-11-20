@@ -19,6 +19,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.app.arcabyolimpo.domain.model.product.Product
 import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.presentation.theme.Typography
+import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.DeleteButton
+import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ModifyButton
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.ButtonBlue
 import com.app.arcabyolimpo.ui.theme.DangerGray
@@ -57,11 +59,12 @@ fun ProductDetailScreen(
 
     LaunchedEffect(uiState.snackbarVisible, uiState.error) {
         if (uiState.snackbarVisible) {
-            val message = if (uiState.error == null) {
-                "Producto eliminado correctamente"
-            } else {
-                "Este producto esta relacionado con algun lote de producto, no se puede eliminar: ${uiState.error}"
-            }
+            val message =
+                if (uiState.error == null) {
+                    "Producto eliminado correctamente"
+                } else {
+                    "Este producto esta relacionado con algun lote de producto, no se puede eliminar: ${uiState.error}"
+                }
 
             snackbarHostState.showSnackbar(message)
             viewModel.onSnackbarShown()
@@ -98,9 +101,10 @@ fun ProductDetailScreen(
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Background,
-                ),
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = Background,
+                    ),
             )
         },
     ) { padding ->
@@ -165,7 +169,6 @@ fun ProductDetailScreen(
         }
     }
 }
-
 
 @Composable
 private fun ProductDetailContent(
@@ -345,41 +348,20 @@ private fun ProductDetailContent(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Action buttons
-        Row(
+        Box(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            contentAlignment = Alignment.Center,
         ) {
-            // Delete button
-            Button(
-                onClick = onDeleteClick,
-                modifier = Modifier.weight(1f),
-                colors =
-                    ButtonDefaults.buttonColors(
-                        containerColor = White,
-                    ),
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                Text(
-                    text = "Eliminar",
-                    color = ButtonBlue,
-                    fontWeight = FontWeight.SemiBold,
-                    fontFamily = Poppins,
+                DeleteButton(
+                    modifier = Modifier.size(width = 140.dp, height = 40.dp),
+                    onClick = onDeleteClick,
                 )
-            }
-
-            // Modify button
-            Button(
-                onClick = onEditClick,
-                modifier = Modifier.weight(1f),
-                colors =
-                    ButtonDefaults.buttonColors(
-                        containerColor = ButtonBlue,
-                    ),
-            ) {
-                Text(
-                    text = "Modificar",
-                    color = White,
-                    fontWeight = FontWeight.SemiBold,
-                    fontFamily = Poppins,
+                ModifyButton(
+                    onClick = onEditClick,
+                    modifier = Modifier.size(width = 140.dp, height = 40.dp),
                 )
             }
         }
