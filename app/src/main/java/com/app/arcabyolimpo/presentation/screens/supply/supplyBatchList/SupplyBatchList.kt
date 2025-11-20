@@ -1,12 +1,12 @@
 package com.app.arcabyolimpo.presentation.screens.supply.supplyBatchList
 
-import androidx.compose.foundation.horizontalScroll
+// removed horizontalScroll to avoid horizontal stretching in landscape
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
+// wrapContentWidth not required
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -100,10 +100,12 @@ fun SupplyBatchListScreen(
             )
         },
     ) { padding ->
+        // The content uses a LazyColumn which already provides vertical scrolling.
+        // Horizontal scrolling made the text expand in landscape, so we avoid adding
+        // an outer scroll modifier here and rely on the inner LazyColumn behavior.
         val configuration = LocalConfiguration.current
         val isLandscape = configuration.screenWidthDp > configuration.screenHeightDp
-        val scrollModifier =
-            if (isLandscape) Modifier.horizontalScroll(rememberScrollState()) else Modifier
+        val scrollModifier = Modifier
 
         Box(
             modifier =
