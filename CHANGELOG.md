@@ -1,8 +1,6 @@
 ## [0.1.0] - 19/11/2025
 ### Added
-- Added modify for workshops.
-
-### Added
+ - Added modify for workshops.
  - Supply module conected to the inventory screen.
  - Added modify for workshops.
  - US for modify supply batch
@@ -10,6 +8,9 @@
  - US for modify User with MVVM and clean architecture principles.
  - US for qr generation
  - Navigation to ProductBatches
+
+### Fixed
+ - buttons from product detail screen and navigation for products 
 
 ### Fixed
 - All product info for modify necessary
