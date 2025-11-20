@@ -8,6 +8,7 @@
 - Fix workshops hour input
 - Fix Workshops navbar
 - Fix beneficiary registration navBar appearing
+- Fix view after deleting a beneficiary
 
 ## [0.1.0] - 19/11/2025
 ### Added
