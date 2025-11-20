@@ -10,6 +10,7 @@
 - Fix beneficiary registration navBar appearing
 - Fix view after deleting a beneficiary
 - Fix scroll bar for supply batch views
+- Input Validations
 
 ## [0.1.0] - 19/11/2025
 ### Added

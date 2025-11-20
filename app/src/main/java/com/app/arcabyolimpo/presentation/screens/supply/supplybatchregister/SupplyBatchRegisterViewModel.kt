@@ -155,23 +155,120 @@ class SupplyBatchRegisterViewModel
         }
 
         fun onSelectSupply(id: String) {
-            _uiState.update { it.copy(selectedSupplyId = id) }
+            _uiState.update { it.copy(selectedSupplyId = id, supplyError = null, registerError = null) }
         }
 
         fun onAcquisitionTypeSelected(id: String) {
-            _uiState.update { it.copy(acquisitionInput = id) }
+            _uiState.update { it.copy(acquisitionInput = id, acquisitionError = null, registerError = null) }
         }
 
         fun onQuantityChanged(value: String) {
-            _uiState.update { it.copy(quantityInput = value) }
+            _uiState.update { it.copy(quantityInput = value, quantityError = null, registerError = null) }
         }
 
         fun onExpirationDateChanged(value: String) {
-            _uiState.update { it.copy(expirationDateInput = value) }
+            _uiState.update { it.copy(expirationDateInput = value, expirationDateError = null, registerError = null) }
         }
 
         fun onBoughtDateChanged(value: String) {
-            _uiState.update { it.copy(boughtDateInput = value) }
+            _uiState.update { it.copy(boughtDateInput = value, boughtDateError = null, registerError = null) }
+        }
+
+        private fun validateInputsForRegister(): Boolean {
+            val state = _uiState.value
+            var valid = true
+            val maxLen = 50
+
+            var supplyErr: String? = null
+            var qtyErr: String? = null
+            var expErr: String? = null
+            var boughtErr: String? = null
+            var acqErr: String? = null
+
+            if (state.selectedSupplyId.isNullOrEmpty()) {
+                supplyErr = "Seleccione un insumo"
+                valid = false
+            }
+
+            val qty = state.quantityInput.toIntOrNull()
+            if (state.quantityInput.isBlank() || qty == null) {
+                qtyErr = "Ingrese una cantidad válida"
+                valid = false
+            } else if (qty <= 0) {
+                qtyErr = "La cantidad debe ser mayor a cero"
+                valid = false
+            }
+
+            if (state.expirationDateInput.isBlank()) {
+                expErr = "Ingrese una fecha de caducidad"
+                valid = false
+            } else if (state.expirationDateInput.length > maxLen) {
+                expErr = "Máximo $maxLen caracteres"
+                valid = false
+            } else if (!isValidDate(state.expirationDateInput)) {
+                expErr = "Formato de fecha inválido"
+                valid = false
+            }
+
+            if (state.boughtDateInput.isBlank()) {
+                boughtErr = "Ingrese la fecha de adquisición"
+                valid = false
+            } else if (state.boughtDateInput.length > maxLen) {
+                boughtErr = "Máximo $maxLen caracteres"
+                valid = false
+            } else if (!isValidDate(state.boughtDateInput)) {
+                boughtErr = "Formato de fecha inválido"
+                valid = false
+            }
+
+            if (state.acquisitionInput.isBlank()) {
+                acqErr = "Seleccione un tipo de adquisición"
+                valid = false
+            } else if (state.acquisitionInput.length > maxLen) {
+                acqErr = "Máximo $maxLen caracteres"
+                valid = false
+            }
+
+            _uiState.update { it.copy(
+                supplyError = supplyErr,
+                quantityError = qtyErr,
+                expirationDateError = expErr,
+                boughtDateError = boughtErr,
+                acquisitionError = acqErr,
+                registerError = if (!valid) "Corrija los campos obligatorios" else null,
+            ) }
+
+            return valid
+        }
+
+        // Try to parse common date representations used in the app/backend
+        private fun isValidDate(dateStr: String): Boolean {
+            if (dateStr.isBlank()) return false
+            try {
+                // dd/MM/yyyy
+                val fmt = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")
+                java.time.LocalDate.parse(dateStr, fmt)
+                return true
+            } catch (_: Exception) {
+            }
+            try {
+                // yyyy-MM-dd or ISO local date
+                java.time.LocalDate.parse(dateStr)
+                return true
+            } catch (_: Exception) {
+            }
+            try {
+                // OffsetDateTime (ISO)
+                java.time.OffsetDateTime.parse(dateStr)
+                return true
+            } catch (_: Exception) {
+            }
+            try {
+                java.time.Instant.parse(dateStr)
+                return true
+            } catch (_: Exception) {
+            }
+            return false
         }
 
         fun registerBatch() {
@@ -183,33 +280,24 @@ class SupplyBatchRegisterViewModel
             val bought = current.boughtDateInput
             val acquisition = current.acquisitionInput
 
-            // Log user input state before validation / network call
+            // Run form validation (per-field errors will be set on _uiState)
             Log.d(
                 TAG,
                 "registerBatch: called with supplyId=$supplyId, quantity=${current.quantityInput}, expiration=$expiration, bought=$bought",
             )
 
-            if (supplyId.isNullOrEmpty() || quantity == null || acquisition.isNullOrEmpty()) {
-                Log.w(TAG, "registerBatch: validation failed - required fields missing")
-                _uiState.update { it.copy(registerError = "Seleccione un insumo, un tipo de adquisición y coloque una cantidad válida") }
-                return
-            }
-
-            if (quantity < 0) {
-                Log.w(TAG, "registerBatch: validation failed - negative quantity not allowed ($quantity)")
-                _uiState.update {
-                    it.copy(registerError = "La cantidad no puede ser negativa")
-                }
+            if (!validateInputsForRegister()) {
+                Log.w(TAG, "registerBatch: validation failed - see uiState field errors")
                 return
             }
 
             val batch =
                 RegisterSupplyBatch(
-                    supplyId = supplyId,
-                    quantity = quantity,
+                    supplyId = supplyId!!,
+                    quantity = quantity!!,
                     expirationDate = expiration,
-                    boughtDate = bought,
                     acquisition = acquisition,
+                    boughtDate = bought,
                 )
 
             viewModelScope.launch {
