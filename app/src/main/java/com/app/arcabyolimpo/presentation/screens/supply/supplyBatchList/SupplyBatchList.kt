@@ -93,11 +93,6 @@ fun SupplyBatchListScreen(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Background),
             )
         },
-        bottomBar = {
-            Column {
-                NavBar()
-            }
-        },
     ) { padding ->
         Box(
             modifier =
