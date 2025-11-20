@@ -2,6 +2,8 @@ package com.app.arcabyolimpo.presentation.screens.supply.supplyList
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -16,6 +18,7 @@ import com.app.arcabyolimpo.presentation.theme.Typography
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.FilterIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
+import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.ReturnIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.SearchIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardIconInput
 import com.app.arcabyolimpo.presentation.ui.components.organisms.Filter
@@ -43,6 +46,7 @@ import com.app.arcabyolimpo.ui.theme.White
 @Composable
 fun SupplyListScreen(
     onSupplyClick: (String) -> Unit,
+    onBackClick: () -> Unit,
     onAddSupplyClick: () -> Unit,
     viewModel: SuppliesListViewModel = hiltViewModel(),
 ) {
@@ -94,13 +98,14 @@ fun SupplyListScreen(
                                 .padding(horizontal = 16.dp),
                     )
                 },
-                actions = {
-                    NotificationIcon(
-                        modifier =
-                            Modifier
-                                .padding(horizontal = 24.dp)
-                                .size(28.dp),
-                    )
+                navigationIcon = {
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            "Back",
+                            tint = White,
+                        )
+                    }
                 },
                 colors =
                     TopAppBarDefaults.topAppBarColors(

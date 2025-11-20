@@ -99,11 +99,6 @@ fun HomeScreen(navController: NavHostController) {
                                     TopAppBarDefaults.topAppBarColors(
                                         containerColor = Color(0xFF040610),
                                     ),
-                                actions = {
-                                    IconButton(onClick = { }) {
-                                        NotificationIcon()
-                                    }
-                                },
                             )
                         "analysis" ->
                             TopAppBar(
@@ -128,11 +123,6 @@ fun HomeScreen(navController: NavHostController) {
                                     TopAppBarDefaults.topAppBarColors(
                                         containerColor = Color(0xFF040610),
                                     ),
-                                actions = {
-                                    IconButton(onClick = { }) {
-                                        NotificationIcon()
-                                    }
-                                },
                             )
                     }
                 }

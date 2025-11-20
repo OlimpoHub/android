@@ -103,14 +103,6 @@ fun ProductBatchDetailScreen(
                         )
                     }
                 },
-                actions = {
-                    NotificationIcon(
-                        modifier =
-                            Modifier
-                                .padding(horizontal = 24.dp)
-                                .size(24.dp),
-                    )
-                },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = Background,

@@ -75,11 +75,6 @@ fun CoordinatorHomeScreen(navController: NavHostController) {
                             TopAppBarDefaults.topAppBarColors(
                                 containerColor = Color(0xFF040610),
                             ),
-                        actions = {
-                            IconButton(onClick = { }) {
-                                NotificationIcon()
-                            }
-                        },
                     )
                 3 -> InventoryScreen(navController)
                 4 -> BeneficiaryListScreen(

@@ -55,9 +55,6 @@ fun TopBarContent(sessionViewModel: SessionViewModel = hiltViewModel()) {
                     containerColor = Color(0xFF040610),
                 ),
             actions = {
-                IconButton(onClick = { /* TODO: Notifications action */ }) {
-                    NotificationIcon()
-                }
                 IconButton(onClick = { sessionViewModel.logout() }) {
                     LogoutIcon()
                 }

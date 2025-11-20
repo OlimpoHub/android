@@ -557,6 +557,9 @@ fun ArcaNavGraph(
                 onAddSupplyClick = {
                     navController.navigate(Screen.SupplyAdd.route)
                 },
+                onBackClick = {
+                    navController.popBackStack()
+                }
             )
         }
 

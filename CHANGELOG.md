@@ -1,9 +1,14 @@
 ## [0.1.0] - 20/11/2025
 ### Added
 - US for filter and order workshops.
+- Functional go back button to Supplies List Screen
 
 ### Fixed
 - Fix beneficiary list navbar
+- Fix the go back buttons of Products, Product Batches and Supplies to be the same
+
+### Deleted
+- All the NotificationIcon buttons of the screens
 
 ## [0.1.0] - 19/11/2025
 ### Added

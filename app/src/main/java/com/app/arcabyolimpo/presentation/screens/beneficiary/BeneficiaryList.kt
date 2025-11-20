@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -33,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,6 +62,8 @@ import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.presentation.navigation.Screen
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
+import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.ReturnIcon
+import com.app.arcabyolimpo.ui.theme.White
 import kotlinx.coroutines.launch
 
 /**
@@ -109,6 +113,7 @@ fun BeneficiaryListScreen(
                 ?.remove<String>("error_message")
         }
     }
+    var selectedOption by rememberSaveable { mutableStateOf<String?>(null) }
 
     BeneficiaryList(
         navController = navController,
@@ -124,6 +129,9 @@ fun BeneficiaryListScreen(
             viewModel.getBeneficiaries()
         },
         onNotificationClick = onNotificationClick,
+        onBackClick = {
+            navController.navigate(Screen.CoordinatorHome.route)
+        },
         onAddBeneficiaryClick = {
             navController.navigate(Screen.AddNewBeneficiary.route)
         },
@@ -148,7 +156,8 @@ fun BeneficiaryList(
     onNotificationClick: () -> Unit,
     onApplyFilters: (FilterDto) -> Unit,
     onClearFilters: () -> Unit,
-    onAddBeneficiaryClick: () -> Unit
+    onAddBeneficiaryClick: () -> Unit,
+    onBackClick: () -> Unit,
 ) {
     var showFilter by remember { mutableStateOf(false) }
 
@@ -168,18 +177,13 @@ fun BeneficiaryList(
                             )
                         },
                         navigationIcon = {
-                            IconButton(onClick = { navController.navigate(Screen.CoordinatorHome.route) }) {
-                                Icon(
-                                    imageVector = Icons.Default.ArrowBack,
-                                    contentDescription = "Regresar",
-                                    tint = Color.White,
-                                )
-                            }
-                        },
-                        actions = {
-                            Box(modifier = Modifier.padding(end = 28.dp)) {
-                                NotificationIcon()
-                            }
+                            ReturnIcon(
+                                modifier = Modifier
+                                    .padding(start = 16.dp)
+                                    .size(28.dp)
+                                    .clickable { onBackClick() },
+                                tint = White
+                            )
                         },
                     )
                 },

@@ -94,11 +94,6 @@ fun WorkshopsListScreen(
                                 )
                             }
                         },
-                        actions = {
-                            Box(modifier = Modifier.padding(end = 28.dp)) {
-                                NotificationIcon()
-                            }
-                        }
                     )
                 },
                 floatingActionButton = {
