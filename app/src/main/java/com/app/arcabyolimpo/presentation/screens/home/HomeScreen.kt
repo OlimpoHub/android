@@ -1,6 +1,7 @@
 package com.app.arcabyolimpo.presentation.screens.home
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -16,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -66,6 +68,7 @@ fun HomeScreen(navController: NavHostController) {
                                     navController.navigate(Screen.CreateQr.createRoute(id, name))
                                 },
                             )
+
                         "users" ->
                             UserListScreen(
                                 onCollabClick = { id ->
@@ -76,54 +79,85 @@ fun HomeScreen(navController: NavHostController) {
                                 },
                                 onBack = { selectedOption = null },
                             )
-                        "training" ->
-                            TopAppBar(
-                                title = {
-                                    Text(
-                                        "Capacitaciones",
-                                        color = Color.White,
-                                        fontSize = 24.sp,
-                                        fontWeight = FontWeight.Bold,
-                                    )
-                                },
-                                navigationIcon = {
-                                    IconButton(onClick = { selectedOption = null }) {
-                                        Icon(
-                                            imageVector = Icons.Default.ArrowBack,
-                                            contentDescription = "Regresar",
-                                            tint = Color.White,
+                        "training" -> {
+                            Column(modifier = Modifier.fillMaxSize()) {
+                                TopAppBar(
+                                    title = {
+                                        Text(
+                                            "Capacitaciones",
+                                            color = Color.White,
+                                            fontSize = 24.sp,
+                                            fontWeight = FontWeight.Bold,
                                         )
-                                    }
-                                },
-                                colors =
-                                    TopAppBarDefaults.topAppBarColors(
+                                    },
+                                    navigationIcon = {
+                                        IconButton(onClick = { selectedOption = null }) {
+                                            Icon(
+                                                imageVector = Icons.Default.ArrowBack,
+                                                contentDescription = "Regresar",
+                                                tint = Color.White,
+                                            )
+                                        }
+                                    },
+                                    colors = TopAppBarDefaults.topAppBarColors(
                                         containerColor = Color(0xFF040610),
                                     ),
-                            )
-                        "analysis" ->
-                            TopAppBar(
-                                title = {
+                                )
+
+                                // Aquí va el mensaje En Proceso...
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
                                     Text(
-                                        "Análisis",
+                                        text = "En Proceso...",
                                         color = Color.White,
                                         fontSize = 24.sp,
-                                        fontWeight = FontWeight.Bold,
+                                        fontWeight = FontWeight.Bold
                                     )
-                                },
-                                navigationIcon = {
-                                    IconButton(onClick = { selectedOption = null }) {
-                                        Icon(
-                                            imageVector = Icons.Default.ArrowBack,
-                                            contentDescription = "Regresar",
-                                            tint = Color.White,
+                                }
+                            }
+                        }
+
+                        "analysis" -> {
+                            Column(modifier = Modifier.fillMaxSize()) {
+                                TopAppBar(
+                                    title = {
+                                        Text(
+                                            "Análisis",
+                                            color = Color.White,
+                                            fontSize = 24.sp,
+                                            fontWeight = FontWeight.Bold,
                                         )
-                                    }
-                                },
-                                colors =
-                                    TopAppBarDefaults.topAppBarColors(
+                                    },
+                                    navigationIcon = {
+                                        IconButton(onClick = { selectedOption = null }) {
+                                            Icon(
+                                                imageVector = Icons.Default.ArrowBack,
+                                                contentDescription = "Regresar",
+                                                tint = Color.White,
+                                            )
+                                        }
+                                    },
+                                    colors = TopAppBarDefaults.topAppBarColors(
                                         containerColor = Color(0xFF040610),
                                     ),
-                            )
+                                )
+
+                                // Aquí va el mensaje En Proceso...
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "En Proceso...",
+                                        color = Color.White,
+                                        fontSize = 24.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }

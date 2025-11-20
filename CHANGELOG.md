@@ -2,10 +2,12 @@
 ### Added
 - US for filter and order workshops.
 - Functional go back button to Supplies List Screen
+- Functional go back buttons to Orders and Inventory Screens
 
 ### Fixed
 - Fix beneficiary list navbar
 - Fix the go back buttons of Products, Product Batches and Supplies to be the same
+- - Fix the go back button of teh Beneficiary Screen to be the same icon of the Workshop screen
 
 ### Deleted
 - All the NotificationIcon buttons of the screens

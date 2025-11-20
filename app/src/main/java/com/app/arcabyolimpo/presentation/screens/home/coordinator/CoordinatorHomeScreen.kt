@@ -19,6 +19,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -61,6 +62,7 @@ fun CoordinatorHomeScreen(navController: NavHostController) {
                         navController.navigate(Screen.WorkshopDetail.createRoute(id))
                     }
                 )
+                /**
                 2 ->
                     TopAppBar(
                         title = {
@@ -75,6 +77,11 @@ fun CoordinatorHomeScreen(navController: NavHostController) {
                             TopAppBarDefaults.topAppBarColors(
                                 containerColor = Color(0xFF040610),
                             ),
+                        actions = {
+                            IconButton(onClick = { }) {
+                                NotificationIcon()
+                            }
+                        },
                     )
                 3 -> InventoryScreen(navController)
                 4 -> BeneficiaryListScreen(
@@ -85,6 +92,118 @@ fun CoordinatorHomeScreen(navController: NavHostController) {
                     onFilterClick = {  },
                     onNotificationClick = { }
                 )
+                **/
+                2 -> {
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        TopAppBar(
+                            title = {
+                                Text(
+                                    "Pedidos",
+                                    color = Color.White,
+                                    fontSize = 24.sp,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            },
+                            colors = TopAppBarDefaults.topAppBarColors(
+                                containerColor = Color(0xFF040610),
+                            ),
+                            navigationIcon = {
+                                IconButton(onClick = { navController.navigate(Screen.CoordinatorHome.route) }) {
+                                    Icon(
+                                        imageVector = Icons.Default.ArrowBack,
+                                        contentDescription = "Regresar",
+                                        tint = Color.White
+                                    )
+                                }
+                            },
+                        )
+
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "En Proceso...",
+                                color = Color.White,
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                }
+
+                3 -> {
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        TopAppBar(
+                            title = {
+                                Text(
+                                    "Inventario",
+                                    color = Color.White,
+                                    fontSize = 24.sp,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            },
+                            colors = TopAppBarDefaults.topAppBarColors(
+                                containerColor = Color(0xFF040610),
+                            ),
+                            navigationIcon = {
+                                IconButton(onClick = { navController.navigate(Screen.CoordinatorHome.route) }) {
+                                    Icon(
+                                        imageVector = Icons.Default.ArrowBack,
+                                        contentDescription = "Regresar",
+                                        tint = Color.White
+                                    )
+                                }
+                            },
+                        )
+
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                        ) {
+                            InventoryScreen(navController)
+                        }
+                    }
+                }
+
+                4 -> {
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        TopAppBar(
+                            title = {
+                                Text(
+                                    "Beneficiarios",
+                                    color = Color.White,
+                                    fontSize = 24.sp,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            },
+                            colors = TopAppBarDefaults.topAppBarColors(
+                                containerColor = Color(0xFF040610),
+                            ),
+                            navigationIcon = {
+                                IconButton(onClick = { navController.navigate(Screen.CoordinatorHome.route) }) {
+                                    Icon(
+                                        imageVector = Icons.Default.ArrowBack,
+                                        contentDescription = "Regresar",
+                                        tint = Color.White
+                                    )
+                                }
+                            },
+                        )
+
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                        ) {
+                            BeneficiaryListScreen(
+                                navController = navController,
+                                onBeneficiaryClick = { beneficiaryId ->
+                                    navController.navigate(Screen.BeneficiaryDetail.createRoute(beneficiaryId))
+                                },
+                                onFilterClick = { },
+                                onNotificationClick = { }
+                            )
+                        }
+                    }
+                }
             }
         }
         FunctionalNavBar(
