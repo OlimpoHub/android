@@ -10,7 +10,8 @@
  - Navigation to ProductBatches
 
 ### Fixed
- - buttons from product detail screen and navigation for products 
+ - buttons from product detail screen and navigation for products
+ - Return Icon from profuct list screen to the navigation of inventory
 
 ### Fixed
 - All product info for modify necessary
