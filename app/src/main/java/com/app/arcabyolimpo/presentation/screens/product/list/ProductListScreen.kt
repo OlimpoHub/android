@@ -37,6 +37,7 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.FilterIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.SearchIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardIconInput
+import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.ReturnIcon
 import com.app.arcabyolimpo.presentation.ui.components.organisms.Filter
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import com.app.arcabyolimpo.ui.theme.Background
@@ -62,6 +63,7 @@ import com.app.arcabyolimpo.ui.theme.White
 fun ProductListScreen(
     onProductClick: (String) -> Unit,
     onAddProductClick: () -> Unit,
+    onBackClick: () -> Unit,
     viewModel: ProductListViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -103,6 +105,15 @@ fun ProductListScreen(
         },
         topBar = {
             TopAppBar(
+                navigationIcon = {
+                    ReturnIcon(
+                        modifier = Modifier
+                            .padding(start = 16.dp)
+                            .size(28.dp)
+                            .clickable { onBackClick() },
+                        tint = White
+                    )
+                },
                 title = {
                     Text(
                         text = "Productos",
