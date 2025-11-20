@@ -4,6 +4,8 @@
 
 ### Fixed
 - Fix beneficiary list navbar
+- Fix workshops date input
+- Fix workshops hour input
 - Fix Workshops navbar
 - Fix beneficiary registration navBar appearing
 
