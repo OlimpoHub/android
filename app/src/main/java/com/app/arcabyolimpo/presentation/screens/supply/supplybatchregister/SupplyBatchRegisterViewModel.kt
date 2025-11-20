@@ -163,7 +163,11 @@ class SupplyBatchRegisterViewModel
         }
 
         fun onQuantityChanged(value: String) {
-            _uiState.update { it.copy(quantityInput = value, quantityError = null, registerError = null) }
+            val trimmed = value.trim()
+            val intValue = trimmed.toIntOrNull()
+            val qtyError = if (intValue == null || intValue <= 0) null else null
+            // If valid number > 0, clear quantityError; otherwise we keep validation to registration step
+            _uiState.update { it.copy(quantityInput = trimmed, quantityError = if (intValue != null && intValue > 0) null else it.quantityError, registerError = null) }
         }
 
         fun onExpirationDateChanged(value: String) {

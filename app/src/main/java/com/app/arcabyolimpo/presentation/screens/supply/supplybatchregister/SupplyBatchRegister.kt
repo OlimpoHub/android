@@ -90,17 +90,9 @@ fun SupplyBatchRegisterScreen(
     }
     LaunchedEffect(state.registerSuccess) {
         if (state.registerSuccess) {
-            scope.launch {
-                snackbarHostState.showSnackbar(
-                    SnackbarVisualsWithError(
-                        message = "Lote registrado correctamente",
-                        isError = false,
-                    ),
-                )
-                // After showing success message, navigate back and clear VM flags
-                onRegisterClick()
-                viewModel.clearRegisterStatus()
-            }
+            // Navigate back; previous screen will display snackbar using savedStateHandle
+            onRegisterClick()
+            viewModel.clearRegisterStatus()
         }
     }
     // Match the outer structure/style of SuppliesListScreen: Scaffold with TopAppBar

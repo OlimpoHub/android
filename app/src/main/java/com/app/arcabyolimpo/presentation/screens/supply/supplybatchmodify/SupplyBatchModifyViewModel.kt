@@ -196,7 +196,9 @@ class SupplyBatchModifyViewModel
         }
 
         fun onQuantityChanged(value: String) {
-            _uiState.update { it.copy(quantityInput = value, quantityError = null, registerError = null) }
+            val trimmed = value.trim()
+            val intValue = trimmed.toIntOrNull()
+            _uiState.update { it.copy(quantityInput = trimmed, quantityError = if (intValue != null && intValue > 0) null else it.quantityError, registerError = null) }
         }
 
         fun onExpirationDateChanged(value: String) {
