@@ -67,7 +67,7 @@ fun UserDetailContent(
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    text = "${collab.nombre.firstOrNull() ?: ""}${collab.apellidoPaterno.firstOrNull() ?: ""}",
+                    text = "${collab.nombre?.firstOrNull() ?: ""}${collab.apellidoPaterno?.firstOrNull() ?: ""}",
                     color = Color.White,
                     fontSize = 40.sp,
                     fontWeight = FontWeight.Bold,
