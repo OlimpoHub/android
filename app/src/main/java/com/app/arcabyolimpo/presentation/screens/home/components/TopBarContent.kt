@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.app.arcabyolimpo.presentation.screens.session.SessionViewModel
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.ConfigurationIcon
+import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.LogoutIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
 
 /**
@@ -58,7 +59,7 @@ fun TopBarContent(sessionViewModel: SessionViewModel = hiltViewModel()) {
                     NotificationIcon()
                 }
                 IconButton(onClick = { sessionViewModel.logout() }) {
-                    ConfigurationIcon()
+                    LogoutIcon()
                 }
             },
         )
