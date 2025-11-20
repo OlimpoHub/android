@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import com.app.arcabyolimpo.presentation.navigation.Screen
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.CancelButton
@@ -26,9 +25,8 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.DateInput
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.DescriptionInput
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.ImageUploadInput
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SelectInput
-import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardIconInput
+import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.TimeInput
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardInput
-import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
@@ -47,6 +45,8 @@ import kotlinx.coroutines.launch
  * @param navController The way to go through different screens that are in the [NavGraph]
  * @param viewModel The [WorkshopsListViewModel] used to manage the UI state.
  */
+@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun AddNewWorkshopScreen(
     navController: NavHostController,
@@ -131,31 +131,25 @@ fun AddNewWorkshopScreen(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     /** Start Hour */
-                    StandardIconInput(
+                    TimeInput(
                         label = "Hora de entrada",
                         placeholder = "Ej. 08:00",
                         value = formData.startHour,
                         onValueChange = { viewModel.updateFormData { copy(startHour = it) } },
                         isError = fieldErrors["startHour"] == true,
-                        errorMessage = null,
-                        trailingIcon = {
-                            CalendarIcon(tint = MaterialTheme.colorScheme.onSurface)
-                        },
-                        modifier = Modifier.weight(1f),
+                        errorMessage = "",
+                        modifier = Modifier.weight(1f)
                     )
 
-                    /** Finish Hour*/
-                    StandardIconInput(
+                    /** Finish Hour */
+                    TimeInput(
                         label = "Hora de salida",
                         placeholder = "Ej. 12:00",
                         value = formData.finishHour,
                         onValueChange = { viewModel.updateFormData { copy(finishHour = it) } },
                         isError = fieldErrors["finishHour"] == true,
-                        errorMessage = null,
-                        trailingIcon = {
-                            CalendarIcon(tint = MaterialTheme.colorScheme.onSurface)
-                        },
-                        modifier = Modifier.weight(1f),
+                        errorMessage = "",
+                        modifier = Modifier.weight(1f)
                     )
                 }
 
