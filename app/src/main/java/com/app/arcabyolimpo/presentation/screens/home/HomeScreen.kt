@@ -1,10 +1,7 @@
 package com.app.arcabyolimpo.presentation.screens.home
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -55,102 +52,88 @@ fun HomeScreen(navController: NavHostController) {
                 },
             ) { paddingValues ->
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    if (selectedOption == null) {
-                        MainMenu(
-                            paddingValues = paddingValues,
-                            onSelect = { selectedOption = it },
-                        )
-                    } else {
-                        when (selectedOption) {
-                            "qr" ->
-                                QrWorkshopsListScreen(
-                                    onBackClick = { selectedOption = null },
-                                    workshopClick = { id, name ->
-                                        navController.navigate(
-                                            Screen.CreateQr.createRoute(
-                                                id,
-                                                name
-                                            )
+                if (selectedOption == null) {
+                    MainMenu(
+                        paddingValues = paddingValues,
+                        onSelect = { selectedOption = it },
+                    )
+                } else {
+                    when (selectedOption) {
+                        "qr" ->
+                            QrWorkshopsListScreen(
+                                onBackClick = { selectedOption = null },
+                                workshopClick = { id, name ->
+                                    navController.navigate(Screen.CreateQr.createRoute(id, name))
+                                },
+                            )
+                        "users" ->
+                            UserListScreen(
+                                onCollabClick = { id ->
+                                    navController.navigate(Screen.UserDetail.createRoute(id))
+                                },
+                                onAddClick = {
+                                    navController.navigate(Screen.UserRegister.route)
+                                },
+                                onBack = { selectedOption = null },
+                            )
+                        "training" ->
+                            TopAppBar(
+                                title = {
+                                    Text(
+                                        "Capacitaciones",
+                                        color = Color.White,
+                                        fontSize = 24.sp,
+                                        fontWeight = FontWeight.Bold,
+                                    )
+                                },
+                                navigationIcon = {
+                                    IconButton(onClick = { selectedOption = null }) {
+                                        Icon(
+                                            imageVector = Icons.Default.ArrowBack,
+                                            contentDescription = "Regresar",
+                                            tint = Color.White,
                                         )
-                                    },
-                                )
-
-                            "users" ->
-                                UserListScreen(
-                                    onCollabClick = { id ->
-                                        navController.navigate(Screen.UserDetail.createRoute(id))
-                                    },
-                                    onAddClick = {
-                                        navController.navigate(Screen.UserRegister.route)
-                                    },
-                                    onBack = { selectedOption = null },
-                                )
-
-                            "training" ->
-                                TopAppBar(
-                                    title = {
-                                        Text(
-                                            "Capacitaciones",
-                                            color = Color.White,
-                                            fontSize = 24.sp,
-                                            fontWeight = FontWeight.Bold,
+                                    }
+                                },
+                                colors =
+                                    TopAppBarDefaults.topAppBarColors(
+                                        containerColor = Color(0xFF040610),
+                                    ),
+                                actions = {
+                                    IconButton(onClick = { }) {
+                                        NotificationIcon()
+                                    }
+                                },
+                            )
+                        "analysis" ->
+                            TopAppBar(
+                                title = {
+                                    Text(
+                                        "Análisis",
+                                        color = Color.White,
+                                        fontSize = 24.sp,
+                                        fontWeight = FontWeight.Bold,
+                                    )
+                                },
+                                navigationIcon = {
+                                    IconButton(onClick = { selectedOption = null }) {
+                                        Icon(
+                                            imageVector = Icons.Default.ArrowBack,
+                                            contentDescription = "Regresar",
+                                            tint = Color.White,
                                         )
-                                    },
-                                    navigationIcon = {
-                                        IconButton(onClick = { selectedOption = null }) {
-                                            Icon(
-                                                imageVector = Icons.Default.ArrowBack,
-                                                contentDescription = "Regresar",
-                                                tint = Color.White,
-                                            )
-                                        }
-                                    },
-                                    colors =
-                                        TopAppBarDefaults.topAppBarColors(
-                                            containerColor = Color(0xFF040610),
-                                        ),
-                                    actions = {
-                                        IconButton(onClick = { }) {
-                                            NotificationIcon()
-                                        }
-                                    },
-                                )
-
-                            "analysis" ->
-                                TopAppBar(
-                                    title = {
-                                        Text(
-                                            "Análisis",
-                                            color = Color.White,
-                                            fontSize = 24.sp,
-                                            fontWeight = FontWeight.Bold,
-                                        )
-                                    },
-                                    navigationIcon = {
-                                        IconButton(onClick = { selectedOption = null }) {
-                                            Icon(
-                                                imageVector = Icons.Default.ArrowBack,
-                                                contentDescription = "Regresar",
-                                                tint = Color.White,
-                                            )
-                                        }
-                                    },
-                                    colors =
-                                        TopAppBarDefaults.topAppBarColors(
-                                            containerColor = Color(0xFF040610),
-                                        ),
-                                    actions = {
-                                        IconButton(onClick = { }) {
-                                            NotificationIcon()
-                                        }
-                                    },
-                                )
-                        }
+                                    }
+                                },
+                                colors =
+                                    TopAppBarDefaults.topAppBarColors(
+                                        containerColor = Color(0xFF040610),
+                                    ),
+                                actions = {
+                                    IconButton(onClick = { }) {
+                                        NotificationIcon()
+                                    }
+                                },
+                            )
                     }
                 }
             }
