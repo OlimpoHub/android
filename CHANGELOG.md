@@ -1,3 +1,7 @@
+## [0.1.0] - 20/11/2025
+### Added
+- US for filter and order workshops.
+
 ## [0.1.0] - 19/11/2025
 ### Added
  - Added modify for workshops.
