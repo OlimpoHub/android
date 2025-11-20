@@ -19,6 +19,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -94,13 +97,18 @@ fun SupplyBatchListScreen(
             )
         },
     ) { padding ->
+        val configuration = LocalConfiguration.current
+        val isLandscape = configuration.screenWidthDp > configuration.screenHeightDp
+        val scrollModifier = if (isLandscape) Modifier.verticalScroll(rememberScrollState()) else Modifier
+
         Box(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(padding)
-                    .padding(8.dp),
-        ) {
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(padding)
+                        .padding(8.dp)
+                        .then(scrollModifier),
+            ) {
             SupplyBatchListContent(
                 uiState = state,
                 date = date,

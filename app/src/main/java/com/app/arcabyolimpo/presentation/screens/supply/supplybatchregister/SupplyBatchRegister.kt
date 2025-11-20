@@ -24,6 +24,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -150,25 +153,30 @@ fun SupplyBatchRegisterScreen(
         },
     ) { padding ->
         // Box to respect the scaffold content padding and mirror SuppliesListScreen layout
+        val configuration = LocalConfiguration.current
+        val isLandscape = configuration.screenWidthDp > configuration.screenHeightDp
+        val scrollModifier = if (isLandscape) Modifier.verticalScroll(rememberScrollState()) else Modifier
+
         Box(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(padding)
-                    .padding(8.dp),
-        ) {
-            // Reuse the content composable so we keep single-source-of-truth for UI
-            SupplyBatchRegisterContent(
-                uiState = state,
-                onSelectSupply = { viewModel.onSelectSupply(it) },
-                onQuantityChanged = { viewModel.onQuantityChanged(it) },
-                onExpirationDateChanged = { viewModel.onExpirationDateChanged(it) },
-                onBoughtDateChanged = { viewModel.onBoughtDateChanged(it) },
-                onIncrementQuantity = { viewModel.onIncrementQuantity() },
-                onDecrementQuantity = { viewModel.onDecrementQuantity() },
-                onAcquisitionTypeSelected = { viewModel.onAcquisitionTypeSelected(it) },
-            )
-        }
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(padding)
+                        .padding(8.dp)
+                        .then(scrollModifier),
+            ) {
+                // Reuse the content composable so we keep single-source-of-truth for UI
+                SupplyBatchRegisterContent(
+                    uiState = state,
+                    onSelectSupply = { viewModel.onSelectSupply(it) },
+                    onQuantityChanged = { viewModel.onQuantityChanged(it) },
+                    onExpirationDateChanged = { viewModel.onExpirationDateChanged(it) },
+                    onBoughtDateChanged = { viewModel.onBoughtDateChanged(it) },
+                    onIncrementQuantity = { viewModel.onIncrementQuantity() },
+                    onDecrementQuantity = { viewModel.onDecrementQuantity() },
+                    onAcquisitionTypeSelected = { viewModel.onAcquisitionTypeSelected(it) },
+                )
+            }
     }
 }
 
