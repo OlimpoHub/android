@@ -33,22 +33,24 @@ class WorkshopRepositoryImpl
      *
      * @return A list of [Workshop] objects representing the available supplies.
      */
+
     override suspend fun getWorkshopsList(): List<Workshop> {
-        val response = api.getWorkshopsList()
+        val response = api.getWorkshops()
         return response.map { dto ->
             Workshop(
                 id = dto.id,
                 idUser = dto.idUser,
                 nameWorkshop = dto.name,
-                url = dto.image.orEmpty(),
-                status = 0,
-                description = "",
-                startHour = "",
-                finishHour = "",
-                date = "",
-                videoTraining = ""
+                url = dto.image,
+                status = dto.status ?: 1,
+                description = dto.description ?: "",
+                startHour = dto.startHour ?: "",
+                finishHour = dto.finishHour ?: "",
+                date = dto.date ?: "",
+                videoTraining = dto.videoTraining ?: ""
             )
         }
+
     }
 
     /**

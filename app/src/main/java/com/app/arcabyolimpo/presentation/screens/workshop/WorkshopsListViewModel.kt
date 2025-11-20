@@ -2,6 +2,7 @@ package com.app.arcabyolimpo.presentation.screens.workshop
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.model.workshops.Workshop
 import com.app.arcabyolimpo.domain.usecase.workshops.GetWorkshopsListUseCase
@@ -66,10 +67,22 @@ class WorkshopsListViewModel @Inject constructor(
 
                         is Result.Success -> {
                             originalWorkshopsList = result.data
+
+                            val uniqueDates =
+                                result.data
+                                    .mapNotNull { it.date?.take(10) } // "2025-11-03T06:00:00.000Z" -> "2025-11-03"
+                                    .distinct()
+                                    .sorted()
+
                             state.copy(
                                 workshopsList = result.data,
                                 isLoading = false,
-                                error = null
+                                error = null,
+                                filterData =
+                                    state.filterData.copy(
+                                        sections =
+                                            state.filterData.sections + ("Fecha" to uniqueDates)
+                                    )
                             )
                         }
 
@@ -124,6 +137,76 @@ class WorkshopsListViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    fun clearFilters() {
+        _uiState.update { current ->
+            current.copy(
+                selectedFilters = FilterDto(emptyMap(), order = "ASC"),
+                workshopsList = originalWorkshopsList,
+            )
+        }
+    }
+
+    fun applyFilters(filterDto: FilterDto) {
+        _uiState.update { current ->
+            val dateFilter = filterDto.filters["Fecha"]
+            val hourFilter = filterDto.filters["Hora de Entrada"]
+            val statusFilter = filterDto.filters["Estado"]
+
+            val filteredWorkshops =
+                originalWorkshopsList.filter { workshop ->
+
+                    // ----- Fecha -----
+                    val normalizedDate = (workshop.date ?: "").take(10)
+                    val matchesDate =
+                        when {
+                            dateFilter.isNullOrEmpty() -> true
+                            else -> normalizedDate in dateFilter
+                        }
+
+                    // ----- Hora de entrada -----
+                    val matchesHour =
+                        when {
+                            hourFilter.isNullOrEmpty() -> true
+                            workshop.startHour.isNullOrBlank() -> false
+                            else -> {
+                                val workshopHour = workshop.startHour.take(5)   // "07:00:00" -> "07:00"
+                                hourFilter.any { selected ->
+                                    val selectedNorm = selected.take(5)         // por si acaso
+                                    workshopHour == selectedNorm
+                                }
+                            }
+                        }
+
+                    // ----- Estatus -----
+                    val matchesStatus =
+                        when {
+                            statusFilter.isNullOrEmpty() -> true
+                            else -> {
+                                statusFilter.any { selected ->
+                                    val mapped = if (selected == "Activo") 1 else 0
+                                    workshop.status == mapped
+                                }
+                            }
+                        }
+
+
+                    matchesDate && matchesHour && matchesStatus
+                }
+
+            val filteredWorkshopsFinal =
+                if (filterDto.order == "ASC") {
+                    filteredWorkshops.sortedBy { it.nameWorkshop }
+                } else {
+                    filteredWorkshops.sortedByDescending { it.nameWorkshop }
+                }
+
+            current.copy(
+                selectedFilters = filterDto,
+                workshopsList = filteredWorkshopsFinal,
+            )
         }
     }
 }

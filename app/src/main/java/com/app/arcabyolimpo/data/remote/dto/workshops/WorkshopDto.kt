@@ -26,6 +26,6 @@ data class WorkshopDto(
     @SerializedName("horaSalida") val finishHour: String?,
     @SerializedName("estatus") val status: Int,
     @SerializedName("descripcion",["Descripcion"]) val description: String?,
-    @SerializedName("fecha") val date: String?,
+    @SerializedName("Fecha") val date: String?,
     @SerializedName("videoCapacitacion") val videoTraining: String?
 )
