@@ -264,10 +264,10 @@ fun BeneficiaryDetailContent(
 
                         Spacer(modifier = Modifier.width(16.dp))
 
-                        ModifyButton(
+                        /*ModifyButton(
                             modifier = Modifier.size(width = 112.dp, height = 40.dp),
                             onClick = onModifyClick
-                        )
+                        )*/
                     }
                 }
             }
