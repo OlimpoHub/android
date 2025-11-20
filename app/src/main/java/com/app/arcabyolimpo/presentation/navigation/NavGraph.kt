@@ -539,6 +539,31 @@ fun ArcaNavGraph(
         }
 
         /**
+         * Supply List Screen.
+         *
+         * This composable represents the screen where users can view and interact with
+         * the list of available supplies.
+         *
+         * It connects to the [SupplyListScreen] composable, which displays the UI and
+         * interacts with its corresponding [SuppliesListViewModel] to handle data fetching,
+         * loading states, and errors.
+         *
+         */
+        composable(Screen.SuppliesList.route) {
+            SupplyListScreen(
+                onSupplyClick = { id ->
+                    navController.navigate("supply/$id")
+                },
+                onAddSupplyClick = {
+                    navController.navigate(Screen.SupplyAdd.route)
+                },
+                onBackClick = {
+                    navController.navigateUp()
+                },
+            )
+        }
+
+        /**
          * Supply Batch Register Screen.
          *
          * This composable represents the screen where users can view and interact with
