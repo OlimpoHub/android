@@ -21,6 +21,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.app.arcabyolimpo.presentation.screens.supply.commonSupplyBatch.SupplyBatchUiStateBase
 import com.app.arcabyolimpo.presentation.screens.supply.supplybatchregister.SupplyBatchRegisterUiState
+import com.app.arcabyolimpo.presentation.screens.supply.supplybatchmodify.SupplyBatchModifyUiState
 import com.app.arcabyolimpo.presentation.theme.Typography
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SquareAddButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SquareMinusButton
@@ -53,6 +54,37 @@ fun SupplyBatchRegisterContent(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            // Resolve per-field error messages from concrete UI state types
+            val supplyErrorMsg = when (uiState) {
+                is SupplyBatchRegisterUiState -> uiState.supplyError
+                is SupplyBatchModifyUiState -> uiState.supplyError
+                else -> null
+            }
+
+            val quantityErrorMsg = when (uiState) {
+                is SupplyBatchRegisterUiState -> uiState.quantityError
+                is SupplyBatchModifyUiState -> uiState.quantityError
+                else -> null
+            }
+
+            val acquisitionErrorMsg = when (uiState) {
+                is SupplyBatchRegisterUiState -> uiState.acquisitionError
+                is SupplyBatchModifyUiState -> uiState.acquisitionError
+                else -> null
+            }
+
+            val boughtDateErrorMsg = when (uiState) {
+                is SupplyBatchRegisterUiState -> uiState.boughtDateError
+                is SupplyBatchModifyUiState -> uiState.boughtDateError
+                else -> null
+            }
+
+            val expirationDateErrorMsg = when (uiState) {
+                is SupplyBatchRegisterUiState -> uiState.expirationDateError
+                is SupplyBatchModifyUiState -> uiState.expirationDateError
+                else -> null
+            }
+
             // Supply selection using the shared SelectInput atom
             val supplies = uiState.suppliesList
             val selectedSupplyName = supplies.firstOrNull { it.id == uiState.selectedSupplyId }?.name ?: ""
@@ -66,6 +98,8 @@ fun SupplyBatchRegisterContent(
                         val supply = supplies.firstOrNull { it.name == name }
                         if (supply != null) onSelectSupply(supply.id)
                     },
+                    isError = !supplyErrorMsg.isNullOrEmpty(),
+                    errorMessage = supplyErrorMsg,
                 )
             }
 
@@ -87,6 +121,8 @@ fun SupplyBatchRegisterContent(
                         modifier = Modifier.weight(0.5f),
                         placeholder = "E.G 10",
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        isError = !quantityErrorMsg.isNullOrEmpty(),
+                        errorMessage = quantityErrorMsg,
                     )
                 }
 
@@ -123,6 +159,8 @@ fun SupplyBatchRegisterContent(
                         val acq = acquisitionTypes.firstOrNull { it.description == description }
                         if (acq != null) onAcquisitionTypeSelected(acq.id)
                     },
+                    isError = !acquisitionErrorMsg.isNullOrEmpty(),
+                    errorMessage = acquisitionErrorMsg,
                 )
             }
 
@@ -134,6 +172,8 @@ fun SupplyBatchRegisterContent(
                         onValueChange = onBoughtDateChanged,
                         modifier = Modifier.weight(0.45f),
                         placeholder = "dd/mm/yyyy",
+                        isError = !boughtDateErrorMsg.isNullOrEmpty(),
+                        errorMessage = boughtDateErrorMsg ?: "",
                     )
                 }
 
@@ -144,6 +184,8 @@ fun SupplyBatchRegisterContent(
                         onValueChange = onExpirationDateChanged,
                         modifier = Modifier.weight(0.45f),
                         placeholder = "dd/mm/yyyy",
+                        isError = !expirationDateErrorMsg.isNullOrEmpty(),
+                        errorMessage = expirationDateErrorMsg ?: "",
                     )
                 }
             }

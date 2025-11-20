@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavHostController
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -62,6 +63,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SuppliesDetailScreen(
+    navController: NavHostController,
     idInsumo: String,
     onBackClick: () -> Unit,
     onClickAddSupplyBatch: () -> Unit,
@@ -144,6 +146,26 @@ fun SuppliesDetailScreen(
                     SnackbarResult.ActionPerformed -> {}
                 }
             }
+        }
+    }
+
+    // Read snackbar message passed from other screens via savedStateHandle (e.g., after register/modify)
+    val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+    val snackbarMessageFromNav = savedStateHandle?.get<String>("snackbarMessage")
+    val snackbarSuccessFromNav = savedStateHandle?.get<Boolean>("snackbarSuccess") ?: true
+
+    LaunchedEffect(snackbarMessageFromNav) {
+        snackbarMessageFromNav?.let { msg ->
+            scope.launch {
+                snackbarHostState.showSnackbar(
+                    SnackbarVisualsWithError(
+                        message = msg,
+                        isError = !snackbarSuccessFromNav,
+                    ),
+                )
+            }
+            savedStateHandle?.remove<String>("snackbarMessage")
+            savedStateHandle?.remove<Boolean>("snackbarSuccess")
         }
     }
 
