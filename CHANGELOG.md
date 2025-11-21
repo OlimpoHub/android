@@ -1,6 +1,8 @@
 ## [0.1.0] - 20/11/2025
 ### Added
 - US for filter and order workshops.
+- Validations for supply add and update
+- Scroll in detail view of a supply
 - Scroll for login, home and inventory screens.
 
 ### Fixed

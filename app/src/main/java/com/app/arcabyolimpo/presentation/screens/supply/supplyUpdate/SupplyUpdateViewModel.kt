@@ -28,6 +28,7 @@ class SupplyUpdateViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     private val idSupply: String = checkNotNull(savedStateHandle["idSupply"])
+    private val regexValidation = Regex("^[a-zA-Z0-9 áéíóúÁÉÍÓÚñÑ]*$")
 
     init {
         loadFormsData()
@@ -105,10 +106,31 @@ class SupplyUpdateViewModel @Inject constructor(
     }
 
     fun onNameChange(name: String) {
-        _uiState.update { it.copy(name = name) }
+        if (name.length > 35) {
+            return
+        }
+        if (name.matches(regexValidation)) {
+            _uiState.update {
+                it.copy(
+                    name = name,
+                    nameError = null
+                )
+            }
+        }
     }
     fun onUnitMeasureChange(measureUnit: String) {
-        _uiState.update { it.copy(measureUnit = measureUnit) }
+        if (measureUnit.length > 25) {
+            return
+        }
+
+        if (measureUnit.matches(regexValidation)) {
+            _uiState.update {
+                it.copy(
+                    measureUnit = measureUnit,
+                    measureUnitError = null
+                )
+            }
+        }
     }
     fun onImageSelected(uri: Uri?) {
         _uiState.update { it.copy(selectedImageUrl = uri) }
@@ -117,22 +139,52 @@ class SupplyUpdateViewModel @Inject constructor(
         _uiState.update { it.copy(status = newStatus) }
     }
     fun onWorkshopSelected(idWorkshop: String) {
-        _uiState.update { it.copy(selectedIdWorkshop = idWorkshop) }
+        _uiState.update {
+            it.copy(
+                selectedIdWorkshop = idWorkshop,
+                noWorkshop = null
+            )
+        }
     }
     fun onCategorySelected(idCategory: String) {
-        _uiState.update { it.copy(selectedIdCategory = idCategory) }
+        _uiState.update {
+            it.copy(
+                selectedIdCategory = idCategory,
+                noCategory = null
+            )
+        }
     }
 
     fun onModifyClick() {
         val formData = _uiState.value
+        var hasError = false
 
         if (!formData.hadChanged) {
             _uiState.update { it.copy(error = "No se realizó ningun cambio") }
             return
         }
 
-        if (formData.selectedIdWorkshop == null || formData.selectedIdCategory == null) {
-            _uiState.update { it.copy(error = "El taller y categoría no pueden estar vacios") }
+        if (formData.selectedIdWorkshop == null) {
+            _uiState.update { it.copy(noWorkshop = "El taller no puede estar vacio") }
+            hasError = true
+        }
+
+        if (formData.selectedIdCategory == null) {
+            _uiState.update { it.copy(noCategory = "La categoría no puede estar vacio") }
+            hasError = true
+        }
+
+        if (formData.name.isBlank()) {
+            _uiState.update { it.copy(nameError = "Completa el nombre") }
+            hasError = true
+        }
+
+        if (formData.measureUnit.isBlank()) {
+            _uiState.update { it.copy(measureUnitError = "Completa el nombre") }
+            hasError = true
+        }
+
+        if (hasError) {
             return
         }
 
@@ -141,9 +193,9 @@ class SupplyUpdateViewModel @Inject constructor(
 
             val supply = SupplyAdd(
                 name = formData.name,
-                idWorkshop = formData.selectedIdWorkshop,
+                idWorkshop = formData.selectedIdWorkshop!!,
                 measureUnit = formData.measureUnit,
-                idCategory = formData.selectedIdCategory,
+                idCategory = formData.selectedIdCategory!!,
                 status = formData.status,
             )
 
@@ -168,6 +220,4 @@ class SupplyUpdateViewModel @Inject constructor(
             }
         }
     }
-
-
 }
