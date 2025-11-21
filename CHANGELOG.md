@@ -1,6 +1,9 @@
 ## [0.1.0] - 20/11/2025
 ### Added
 - US for filter and order workshops.
+- Validations for supply add and update
+- Scroll in detail view of a supply
+- Scroll for login, home and inventory screens.
 
 ### Fixed
 - Fix beneficiary list navbar
@@ -9,10 +12,16 @@
 - Fix Workshops navbar
 - Fix beneficiary registration navBar appearing
 - Fix view after deleting a beneficiary
+- Fix date input
 - Fix scroll bar for supply batch views
 - Input Validations
 - Fix view to not show the navbar in beneficiary details
 - Fix expiration date availabity for null values
+- Fix modify workshops for date and hour
+- Fix workshops scroll and notifications
+- Fixed Date on Register Beneficiary now using the calendar
+- Return button on Register Beneficiary
+- Errors now indicate whats wrong on Register beneficiary
 
 ## [0.1.0] - 19/11/2025
 ### Added

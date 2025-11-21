@@ -674,6 +674,7 @@ fun ArcaNavGraph(
                 onCancel = {
                     navController.popBackStack()
                 },
+                onBackClick = { navController.popBackStack() },
             )
         }
         /**
@@ -865,7 +866,8 @@ fun ArcaNavGraph(
                 },
                 onCancel = {
                     navController.popBackStack()
-                }
+                },
+                onBackClick = { navController.popBackStack() },
             )
         }
 
