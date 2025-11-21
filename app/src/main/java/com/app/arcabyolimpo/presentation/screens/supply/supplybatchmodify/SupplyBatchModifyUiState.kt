@@ -16,6 +16,11 @@ data class SupplyBatchModifyUiState(
     override val registerError: String? = null,
     override val error: String? = null,
     override val registerSuccess: Boolean = false,
+    val supplyError: String? = null,
+    val quantityError: String? = null,
+    val expirationDateError: String? = null,
+    val boughtDateError: String? = null,
+    val acquisitionError: String? = null,
     val isLoading: Boolean = false,
     val registerLoading: Boolean = false,
 ) : SupplyBatchUiStateBase

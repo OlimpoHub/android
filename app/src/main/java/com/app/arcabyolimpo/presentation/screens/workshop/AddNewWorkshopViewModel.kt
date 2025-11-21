@@ -129,6 +129,17 @@ class AddNewWorkshopViewModel @Inject constructor(
         _fieldErrors.value = emptyMap()
     }
 
+    private fun isValidUrl(url: String?): Boolean {
+        if (url.isNullOrBlank()) return false
+
+        val regex = Regex(
+            pattern = "^(https?://)([\\w.-]+)\\.([a-z\\.]{2,6})([/\\w .-]*)*/?$",
+            options = setOf(RegexOption.IGNORE_CASE)
+        )
+
+        return regex.matches(url)
+    }
+
     private fun validateForm(): Boolean {
         val data = _formData.value
         val errors = mutableMapOf<String, Boolean>()
@@ -141,7 +152,13 @@ class AddNewWorkshopViewModel @Inject constructor(
         if (data.date.isBlank()) errors["date"] = true
         if (data.description.isBlank()) errors["description"] = true
         if (data.idUser.isBlank()) errors["idUser"] = true
-        if (data.videoTraining.isBlank()) errors["videoTraining"] = true
+        if (data.videoTraining.isBlank()) {
+            errors["videoTraining"] = true
+        } else {
+            if (!isValidUrl(data.videoTraining)) {
+                errors["videoTraining"] = true
+            }
+        }
 
         if (data.startHour.isNotBlank() && !hourRegex.matches(data.startHour)) {
             errors["startHour"] = true
@@ -152,8 +169,10 @@ class AddNewWorkshopViewModel @Inject constructor(
         if (data.date.isNotBlank() && !dateRegex.matches(data.date)) {
             errors["date"] = true
         }
+
         _fieldErrors.value = errors
         return errors.isEmpty()
     }
+
 }
 
