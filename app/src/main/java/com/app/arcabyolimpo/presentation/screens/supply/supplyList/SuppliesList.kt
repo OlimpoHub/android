@@ -49,6 +49,7 @@ fun SupplyListScreen(
     onBackClick: () -> Unit,
     onAddSupplyClick: () -> Unit,
     viewModel: SuppliesListViewModel = hiltViewModel(),
+    onBack: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 

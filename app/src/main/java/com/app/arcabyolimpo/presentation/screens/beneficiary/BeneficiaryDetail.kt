@@ -118,6 +118,7 @@ fun BeneficiaryDetailContent(
             onConfirmation = {
                 onDismissDialog()
                 onDeleteClick()
+                onBackClick()
             },
             confirmText = "Confirmar",
             dismissText = "Cancelar"
@@ -145,7 +146,7 @@ fun BeneficiaryDetailContent(
                 }
             )
         },
-        bottomBar = { NavBar() }
+        // bottomBar = { NavBar() }
     ) { paddingValues ->
         when {
             uiState.isScreenLoading -> {
@@ -264,10 +265,10 @@ fun BeneficiaryDetailContent(
 
                         Spacer(modifier = Modifier.width(16.dp))
 
-                        ModifyButton(
+                        /*ModifyButton(
                             modifier = Modifier.size(width = 112.dp, height = 40.dp),
                             onClick = onModifyClick
-                        )
+                        )*/
                     }
                 }
             }

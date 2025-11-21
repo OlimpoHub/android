@@ -1,9 +1,8 @@
 package com.app.arcabyolimpo.presentation.screens.login
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,8 +11,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,6 +24,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
@@ -50,6 +54,8 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
+    val focusManager = LocalFocusManager.current
+
 
     LaunchedEffect(state.user) {
         state.user?.let { user ->
@@ -57,18 +63,49 @@ fun LoginScreen(
         }
     }
 
-    Box(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .background(Background)
-                .padding(start = 32.dp, top = 0.dp, end = 32.dp, bottom = 50.dp),
-    ) {
+    Scaffold(
+        containerColor = Background,
+        bottomBar = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row {
+                    Text(
+                        text = "Si es tu primer ingreso, ",
+                        style = Typography.bodyMedium,
+                        color = White,
+                    )
+
+                    Text(
+                        text = "activa tu cuenta",
+                        style = Typography.bodyMedium,
+                        textDecoration = TextDecoration.Underline,
+                        color = Color(0xFF3D59C2),
+                        modifier = Modifier.clickable { onAccountActivationClick() },
+                    )
+                }
+            }
+        }
+    ) { paddingValues ->
+
         Column(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize()
+                .pointerInput(Unit) {
+                    detectTapGestures {
+                        focusManager.clearFocus()
+                    }
+                }
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 32.dp, vertical = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top,
-            modifier = Modifier.align(Alignment.Center),
+            verticalArrangement = Arrangement.Center
         ) {
+
             ArcaLogo(size = 180.dp)
 
             Spacer(modifier = Modifier.height(50.dp))
@@ -138,27 +175,6 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(text = it, color = MaterialTheme.colorScheme.error)
             }
-        }
-
-        Row(
-            modifier =
-                Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 16.dp),
-        ) {
-            Text(
-                text = "Si es tu primer ingreso, ",
-                style = Typography.bodyMedium,
-                color = White,
-            )
-
-            Text(
-                text = "activa tu cuenta",
-                style = Typography.bodyMedium,
-                textDecoration = TextDecoration.Underline,
-                color = Color(0xFF3D59C2),
-                modifier = Modifier.clickable { onAccountActivationClick() },
-            )
         }
     }
 }

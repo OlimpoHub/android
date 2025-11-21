@@ -539,6 +539,7 @@ fun ArcaNavGraph(
         }
 
         /**
+
          * Supply List Screen.
          *
          * This composable represents the screen where users can view and interact with
@@ -564,6 +565,7 @@ fun ArcaNavGraph(
         }
 
         /**
+
          * Supply Batch Register Screen.
          *
          * This composable represents the screen where users can view and interact with
@@ -583,6 +585,13 @@ fun ArcaNavGraph(
             SupplyBatchRegisterScreen(
                 supplyId = supplyId,
                 onRegisterClick = {
+                    // Pass a snackbar message to the previous back stack entry so it shows the toast after navigation
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("snackbarMessage", "Lote registrado correctamente")
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("snackbarSuccess", true)
                     navController.popBackStack()
                 },
                 onBackClick = {
@@ -599,6 +608,12 @@ fun ArcaNavGraph(
             SupplyBatchModifyScreen(
                 supplyBatchId = batchId,
                 onRegisterClick = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("snackbarMessage", "Lote modificado correctamente")
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("snackbarSuccess", true)
                     navController.popBackStack()
                 },
                 onBackClick = {
@@ -613,6 +628,7 @@ fun ArcaNavGraph(
         ) { backStackEntry ->
             val idSupply = backStackEntry.arguments?.getString("idSupply")
             SuppliesDetailScreen(
+                navController = navController,
                 idInsumo = idSupply ?: "",
                 onBackClick = { navController.popBackStack() },
                 onClickAddSupplyBatch = {
@@ -680,10 +696,10 @@ fun ArcaNavGraph(
         composable(Screen.SupplyAdd.route) {
             SupplyAddScreen(
                 onSaveSuccess = {
-                    navController.navigate(Screen.SuppliesList.route)
+                    navController.popBackStack()
                 },
                 onCancel = {
-                    navController.navigate(Screen.SuppliesList.route)
+                    navController.popBackStack()
                 },
             )
         }

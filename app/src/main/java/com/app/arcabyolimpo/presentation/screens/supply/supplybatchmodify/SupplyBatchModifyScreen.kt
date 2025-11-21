@@ -18,6 +18,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -70,14 +73,9 @@ fun SupplyBatchModifyScreen(
     }
     LaunchedEffect(state.registerSuccess) {
         if (state.registerSuccess) {
-            scope.launch {
-                snackbarHostState.showSnackbar(
-                    SnackbarVisualsWithError(
-                        message = "Lote registrado correctamente",
-                        isError = false,
-                    ),
-                )
-            }
+            // Navigate back; previous screen will display snackbar using savedStateHandle
+            onRegisterClick()
+            viewModel.clearRegisterStatus()
         }
     }
     // Match the outer structure/style of SuppliesListScreen: Scaffold with TopAppBar
@@ -120,25 +118,29 @@ fun SupplyBatchModifyScreen(
                 SupplyBatchModifyBottomBar(
                     uiState = state,
                     onRegisterClick = {
+                        // Only trigger ViewModel action; navigation happens on registerSuccess
                         viewModel.updateBatch()
-                        onRegisterClick()
                     },
                     onBackClick = {
                         viewModel.clearRegisterStatus()
                         onBackClick()
                     },
                 )
-                NavBar()
             }
         },
     ) { padding ->
         // Box to respect the scaffold content padding and mirror SuppliesListScreen layout
+        val configuration = LocalConfiguration.current
+        val isLandscape = configuration.screenWidthDp > configuration.screenHeightDp
+        val scrollModifier = if (isLandscape) Modifier.verticalScroll(rememberScrollState()) else Modifier
+
         Box(
             modifier =
                 Modifier
                     .fillMaxWidth()
                     .padding(padding)
-                    .padding(8.dp),
+                    .padding(8.dp)
+                    .then(scrollModifier),
         ) {
             // If we're loading the batch details, show a centered progress indicator
             if (state.isLoading) {
@@ -248,7 +250,6 @@ fun SupplyBatchRegisterPreview() {
                         onRegisterClick = {}, // Acciones de mock
                         onBackClick = {}, // Acciones de mock
                     )
-                    NavBar()
                 }
             },
         ) { padding ->

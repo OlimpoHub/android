@@ -98,7 +98,6 @@ fun modifyWorkshopScreen(
         }
         Scaffold(
             containerColor = Background,
-            bottomBar = { NavBar() },
             snackbarHost = { SnackbarHost(snackbarHostState) }
         ) { padding ->
             Column(
@@ -191,11 +190,7 @@ fun modifyWorkshopScreen(
                 StandardInput(
                     label = "Fecha del taller",
                     placeholder = "Ej. 2016-07-30",
-                    value = if (formData.date.isNotBlank() && !fieldErrors.containsKey("date") && formattedDate.isNotBlank()) {
-                        formattedDate
-                    } else {
-                        formData.date
-                    },
+                    value = formData.date,
                     onValueChange = { viewModel.updateFormData { copy(date = it) } },
                     isError = fieldErrors["date"] == true,
                     errorMessage = null,
@@ -308,7 +303,7 @@ fun modifyWorkshopScreen(
                         modifier =
                             Modifier
                                 .size(width = 112.dp, height = 40.dp),
-                        onClick = { navController.navigate(Screen.WorkshopsList.route) },
+                        onClick = { navController.popBackStack() },
                     )
 
                     Spacer(modifier = Modifier.width(16.dp))

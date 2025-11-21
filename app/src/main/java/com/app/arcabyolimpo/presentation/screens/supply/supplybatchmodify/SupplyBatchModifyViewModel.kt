@@ -153,7 +153,7 @@ class SupplyBatchModifyViewModel
         }
 
         fun onSelectSupply(id: String) {
-            _uiState.update { it.copy(selectedSupplyId = id) }
+            _uiState.update { it.copy(selectedSupplyId = id, supplyError = null, registerError = null) }
         }
 
         fun onSelectBatch(id: String) {
@@ -192,19 +192,116 @@ class SupplyBatchModifyViewModel
         }
 
         fun onAcquisitionTypeSelected(id: String) {
-            _uiState.update { it.copy(acquisitionInput = id) }
+            _uiState.update { it.copy(acquisitionInput = id, acquisitionError = null, registerError = null) }
         }
 
         fun onQuantityChanged(value: String) {
-            _uiState.update { it.copy(quantityInput = value) }
+            val trimmed = value.trim()
+            val intValue = trimmed.toIntOrNull()
+            _uiState.update { it.copy(quantityInput = trimmed, quantityError = if (intValue != null && intValue > 0) null else it.quantityError, registerError = null) }
         }
 
         fun onExpirationDateChanged(value: String) {
-            _uiState.update { it.copy(expirationDateInput = value) }
+            _uiState.update { it.copy(expirationDateInput = value, expirationDateError = null, registerError = null) }
         }
 
         fun onBoughtDateChanged(value: String) {
-            _uiState.update { it.copy(boughtDateInput = value) }
+            _uiState.update { it.copy(boughtDateInput = value, boughtDateError = null, registerError = null) }
+        }
+
+        // Validate inputs for modify action
+        private fun validateInputsForModify(): Boolean {
+            val state = _uiState.value
+            var valid = true
+            val maxLen = 50
+
+            var supplyErr: String? = null
+            var qtyErr: String? = null
+            var expErr: String? = null
+            var boughtErr: String? = null
+            var acqErr: String? = null
+
+            if (state.selectedSupplyId.isNullOrEmpty()) {
+                supplyErr = "Seleccione un insumo"
+                valid = false
+            }
+
+            val qty = state.quantityInput.toIntOrNull()
+            if (state.quantityInput.isBlank() || qty == null) {
+                qtyErr = "Ingrese una cantidad válida"
+                valid = false
+            } else if (qty <= 0) {
+                qtyErr = "La cantidad debe ser mayor a cero"
+                valid = false
+            }
+
+            if (state.expirationDateInput.isBlank()) {
+                expErr = "Ingrese una fecha de caducidad"
+                valid = false
+            } else if (state.expirationDateInput.length > maxLen) {
+                expErr = "Máximo $maxLen caracteres"
+                valid = false
+            } else if (!isValidDate(state.expirationDateInput)) {
+                expErr = "Formato de fecha inválido"
+                valid = false
+            }
+
+            if (state.boughtDateInput.isBlank()) {
+                boughtErr = "Ingrese la fecha de adquisición"
+                valid = false
+            } else if (state.boughtDateInput.length > maxLen) {
+                boughtErr = "Máximo $maxLen caracteres"
+                valid = false
+            } else if (!isValidDate(state.boughtDateInput)) {
+                boughtErr = "Formato de fecha inválido"
+                valid = false
+            }
+
+            if (state.acquisitionInput.isBlank()) {
+                acqErr = "Seleccione un tipo de adquisición"
+                valid = false
+            } else if (state.acquisitionInput.length > maxLen) {
+                acqErr = "Máximo $maxLen caracteres"
+                valid = false
+            }
+
+            _uiState.update { it.copy(
+                supplyError = supplyErr,
+                quantityError = qtyErr,
+                expirationDateError = expErr,
+                boughtDateError = boughtErr,
+                acquisitionError = acqErr,
+                registerError = if (!valid) "Corrija los campos obligatorios" else null,
+            ) }
+
+            return valid
+        }
+
+        // Shared date validator (tries common formats)
+        private fun isValidDate(dateStr: String): Boolean {
+            if (dateStr.isBlank()) return false
+            try {
+                val fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+                LocalDate.parse(dateStr, fmt)
+                return true
+            } catch (_: Exception) {
+            }
+            try {
+                LocalDate.parse(dateStr)
+                return true
+            } catch (_: Exception) {
+            }
+            try {
+                OffsetDateTime.parse(dateStr)
+                return true
+            } catch (_: Exception) {
+            }
+            try {
+                Instant.parse(dateStr)
+                return true
+            } catch (_: Exception) {
+            }
+            return false
         }
 
         fun updateBatch() {
@@ -217,33 +314,30 @@ class SupplyBatchModifyViewModel
             val bought = current.boughtDateInput
             val acquisition = current.acquisitionInput
 
-            // Log user input state before validation / network call
+            // Log user input state and run validation
             Log.d(
                 TAG,
-                "registerBatch: called with batchId=$batchId, supplyId=$supplyId, quantity=${current.quantityInput}, expiration=$expiration, bought=$bought",
+                "updateBatch: called with batchId=$batchId, supplyId=$supplyId, quantity=${current.quantityInput}, expiration=$expiration, bought=$bought",
             )
 
-            if (batchId.isNullOrEmpty() || supplyId.isNullOrEmpty() || quantity == null || acquisition.isNullOrEmpty()) {
-                Log.w(TAG, "registerBatch: validation failed - required fields missing")
-                _uiState.update { it.copy(registerError = "Seleccione un campo válido") }
+            if (batchId.isNullOrEmpty()) {
+                Log.w(TAG, "updateBatch: missing batchId")
+                _uiState.update { it.copy(registerError = "Lote no válido seleccionado") }
                 return
             }
 
-            if (quantity < 0) {
-                Log.w(TAG, "registerBatch: validation failed - negative quantity not allowed ($quantity)")
-                _uiState.update {
-                    it.copy(registerError = "La cantidad no puede ser negativa")
-                }
+            if (!validateInputsForModify()) {
+                Log.w(TAG, "updateBatch: validation failed - see uiState field errors")
                 return
             }
 
             val batch =
                 RegisterSupplyBatch(
-                    supplyId = supplyId,
-                    quantity = quantity,
+                    supplyId = supplyId!!,
+                    quantity = quantity!!,
                     expirationDate = expiration,
-                    boughtDate = bought,
                     acquisition = acquisition,
+                    boughtDate = bought,
                 )
 
             viewModelScope.launch {
