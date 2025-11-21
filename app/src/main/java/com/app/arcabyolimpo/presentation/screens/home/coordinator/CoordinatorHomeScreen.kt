@@ -98,16 +98,7 @@ fun CoordinatorHomeScreen(navController: NavHostController) {
                             },
                             colors = TopAppBarDefaults.topAppBarColors(
                                 containerColor = Color(0xFF040610),
-                            ),
-                            navigationIcon = {
-                                IconButton(onClick = { navController.navigate(Screen.CoordinatorHome.route) }) {
-                                    Icon(
-                                        imageVector = Icons.Default.ArrowBack,
-                                        contentDescription = "Regresar",
-                                        tint = Color.White
-                                    )
-                                }
-                            },
+                            )
                         )
 
                         Box(
@@ -124,38 +115,7 @@ fun CoordinatorHomeScreen(navController: NavHostController) {
                     }
                 }
 
-                3 -> {
-                    Column(modifier = Modifier.fillMaxSize()) {
-                        TopAppBar(
-                            title = {
-                                Text(
-                                    "Inventario",
-                                    color = Color.White,
-                                    fontSize = 24.sp,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                            },
-                            colors = TopAppBarDefaults.topAppBarColors(
-                                containerColor = Color(0xFF040610),
-                            ),
-                            navigationIcon = {
-                                IconButton(onClick = { navController.navigate(Screen.CoordinatorHome.route) }) {
-                                    Icon(
-                                        imageVector = Icons.Default.ArrowBack,
-                                        contentDescription = "Regresar",
-                                        tint = Color.White
-                                    )
-                                }
-                            },
-                        )
-
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                        ) {
-                            InventoryScreen(navController)
-                        }
-                    }
-                }
+                3 -> InventoryScreen(navController)
 
                 4 -> BeneficiaryListScreen(
                     navController = navController,
