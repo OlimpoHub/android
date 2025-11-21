@@ -59,7 +59,10 @@ fun ProductBatch.toRegisterDto(): ProductBatchRegisterDto =
         idProducto = idProducto,
         precioVenta = precioVenta.toDoubleOrNull() ?: 0.0,
         cantidadProducida = cantidadProducida,
-        fechaCaducidad = fechaCaducidad?.let { reformatDate(it) },
+        fechaCaducidad =
+            fechaCaducidad
+                ?.takeIf { it.isNotBlank() }
+                ?.let { reformatDate(it) },
         fechaRealizacion = reformatDate(fechaRealizacion),
     )
 
@@ -67,6 +70,9 @@ fun ProductBatch.toModifyDto(): ProductBatchModifyDto =
     ProductBatchModifyDto(
         PrecioVenta = precioVenta.toDoubleOrNull() ?: 0.0,
         CantidadProducida = cantidadProducida,
-        FechaCaducidad = fechaCaducidad?.let { reformatDate(it) },
+        FechaCaducidad =
+            fechaCaducidad
+                ?.takeIf { it.isNotBlank() }
+                ?.let { reformatDate(it) },
         FechaRealizacion = reformatDate(fechaRealizacion),
     )

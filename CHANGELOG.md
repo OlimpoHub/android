@@ -16,6 +16,7 @@
 - Fix scroll bar for supply batch views
 - Input Validations
 - Fix view to not show the navbar in beneficiary details
+- Fix expiration date availabity for null values
 - Fix modify workshops for date and hour
 - Fix workshops scroll and notifications
 - Fixed Date on Register Beneficiary now using the calendar
