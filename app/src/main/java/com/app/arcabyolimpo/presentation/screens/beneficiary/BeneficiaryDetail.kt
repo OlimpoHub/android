@@ -60,14 +60,19 @@ import kotlinx.coroutines.launch
 @Composable
 fun BeneficiaryDetailScreen(
     onBackClick: () -> Unit,
-    onModifyClick: () -> Unit,
-    viewModel: BeneficiaryDetailViewModel = hiltViewModel()
+    onModifyClick: (String) -> Unit,
+    viewModel: BeneficiaryDetailViewModel = hiltViewModel(),
+    beneficiaryId: String,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
     var showDeleteDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.loadBeneficiary(beneficiaryId)
+    }
 
     LaunchedEffect(uiState.deleteSuccess, uiState.deleteError) {
         if (uiState.deleteSuccess) {
@@ -90,12 +95,11 @@ fun BeneficiaryDetailScreen(
         snackbarHostState = snackbarHostState,
         showDeleteDialog = showDeleteDialog,
         onBackClick = onBackClick,
-        onModifyClick = {
-            uiState.beneficiary?.id?.let { onModifyClick() }
-        },
+        onModifyClick = onModifyClick,
         onDeleteClick = viewModel::onDeleteClicked,
         onShowDialog = { showDeleteDialog = true },
-        onDismissDialog = { showDeleteDialog = false }
+        onDismissDialog = { showDeleteDialog = false },
+        beneficiaryId = beneficiaryId,
     )
 }
 @OptIn(ExperimentalMaterial3Api::class)
@@ -105,10 +109,11 @@ fun BeneficiaryDetailContent(
     snackbarHostState: SnackbarHostState,
     showDeleteDialog: Boolean,
     onBackClick: () -> Unit,
-    onModifyClick: () -> Unit,
+    onModifyClick: (String) -> Unit,
     onDeleteClick: () -> Unit,
     onShowDialog: () -> Unit,
-    onDismissDialog: () -> Unit
+    onDismissDialog: () -> Unit,
+    beneficiaryId: String,
 ) {
     if (showDeleteDialog) {
         DecisionDialog(
@@ -265,10 +270,10 @@ fun BeneficiaryDetailContent(
 
                         Spacer(modifier = Modifier.width(16.dp))
 
-                        /*ModifyButton(
+                        ModifyButton(
                             modifier = Modifier.size(width = 112.dp, height = 40.dp),
-                            onClick = onModifyClick
-                        )*/
+                            onClick = { onModifyClick(beneficiaryId) }
+                        )
                     }
                 }
             }
@@ -345,7 +350,8 @@ fun BeneficiaryDetailPreviewActive() {
             onModifyClick = {},
             onDeleteClick = {},
             onShowDialog = {},
-            onDismissDialog = {}
+            onDismissDialog = {},
+            beneficiaryId = ""
         )
     }
 }
@@ -377,7 +383,8 @@ fun BeneficiaryDetailPreviewInactive() {
             onModifyClick = {},
             onDeleteClick = {},
             onShowDialog = {},
-            onDismissDialog = {}
+            onDismissDialog = {},
+            beneficiaryId = ""
         )
     }
 }
