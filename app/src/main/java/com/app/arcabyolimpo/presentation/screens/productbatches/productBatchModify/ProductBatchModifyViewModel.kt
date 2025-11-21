@@ -5,8 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.arcabyolimpo.domain.usecase.productbatches.GetProductBatchUseCase
 import com.app.arcabyolimpo.domain.usecase.productbatches.ModifyProductBatchUseCase
 import com.app.arcabyolimpo.presentation.screens.productbatches.mapper.toDomain
+import com.app.arcabyolimpo.presentation.screens.productbatches.mapper.toUiModel
+import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchDetail.ProductBatchDetailUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -18,9 +21,35 @@ class ProductBatchModifyViewModel
     @Inject
     constructor(
         private val modifyProductBatchModifyUseCase: ModifyProductBatchUseCase,
+        private val getProductBatchUseCase: GetProductBatchUseCase,
     ) : ViewModel() {
         var uiState by mutableStateOf(ProductBatchModifyUiState())
             private set
+
+        fun loadBatch(id: String) {
+            viewModelScope.launch {
+                try {
+                    val batch = getProductBatchUseCase(id).toUiModel()
+
+                    val formattedFechaRealizacion = formatDate(batch.fechaRealizacion)
+                    val formattedFechaCaducidad = batch.fechaCaducidad?.let { formatDate(it) } ?: ""
+
+                    uiState =
+                        uiState.copy(
+                            precioVenta = batch.precioVenta.toString(),
+                            cantidadProducida = batch.cantidadProducida.toString(),
+                            fechaRealizacion = formattedFechaRealizacion,
+                            fechaCaducidad = formattedFechaCaducidad,
+                            error = null,
+                        )
+                } catch (e: Exception) {
+                    uiState =
+                        uiState.copy(
+                            error = "No se pudo cargar el lote",
+                        )
+                }
+            }
+        }
 
         fun onFieldChange(
             field: String,
@@ -95,6 +124,17 @@ class ProductBatchModifyViewModel
                 )
             }
         }
+
+        private fun formatDate(isoDate: String): String =
+            try {
+                val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+                val outputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
+                val date = inputFormat.parse(isoDate)
+                date?.let { outputFormat.format(it) } ?: ""
+            } catch (e: Exception) {
+                ""
+            }
 
         private fun isDateBefore(
             finalDate: String,
