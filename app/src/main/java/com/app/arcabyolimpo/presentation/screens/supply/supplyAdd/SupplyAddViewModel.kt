@@ -1,5 +1,6 @@
 package com.app.arcabyolimpo.presentation.screens.supply.supplyAdd
 
+import android.health.connect.datatypes.units.Length
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,6 +31,8 @@ class SupplyAddViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(SupplyAddUiState())
     val uiState = _uiState.asStateFlow()
 
+    private val regexValidation = Regex("^[a-zA-Z0-9 áéíóúÁÉÍÓÚñÑ]*$")
+
     init {
         loadDropDownData()
     }
@@ -58,10 +61,32 @@ class SupplyAddViewModel @Inject constructor(
     }
 
     fun onNameChange(name: String) {
-        _uiState.update { it.copy(name = name) }
+        if (name.length > 50){
+            return
+        }
+
+        if (name.matches(regexValidation)) {
+            _uiState.update {
+                it.copy(
+                    name = name,
+                    nameError = null
+                )
+            }
+        }
     }
     fun onUnitMeasureChange(measureUnit: String) {
-        _uiState.update { it.copy(measureUnit = measureUnit) }
+        if (measureUnit.length > 25) {
+            return
+        }
+
+        if(measureUnit.matches(regexValidation)) {
+            _uiState.update {
+                it.copy(
+                    measureUnit = measureUnit,
+                    measureUnitError = null
+                )
+            }
+        }
     }
     fun onImageSelected(uri: Uri?) {
         _uiState.update { it.copy(selectedImage = uri) }
@@ -77,20 +102,45 @@ class SupplyAddViewModel @Inject constructor(
     }
     fun onSaveClick() {
         val state = _uiState.value
+        var hasError = false
 
-        if (state.name.isBlank() || state.selectedWorkshopId == null || state.selectedCategoryId == null) {
-            _uiState.update { it.copy(error = "Completa todos los campos") }
+        if (state.name.isBlank()) {
+            _uiState.update { it.copy(nameError = "Completa el nombre") }
+            hasError = true
+        }
+
+        if (state.selectedWorkshopId == null) {
+            _uiState.update { it.copy(noWorkshop = "Es necesario tener el taller") }
+            hasError = true
+        }
+
+        if (state.selectedCategoryId == null) {
+            _uiState.update { it.copy(noCategory = "Es necesaria una categoria") }
+            hasError = true
+        }
+
+        if (state.measureUnit.isBlank()) {
+            _uiState.update { it.copy(measureUnitError = "Completa la unidad de medida") }
+            hasError = true
+        }
+
+        if(hasError) {
             return
         }
 
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
+            _uiState.update {
+                it.copy(
+                    isLoading = true,
+                    error = null
+                )
+            }
 
             val supply = SupplyAdd(
-                idWorkshop = state.selectedWorkshopId,
+                idWorkshop = state.selectedWorkshopId!!,
                 name = state.name,
                 measureUnit = state.measureUnit,
-                idCategory = state.selectedCategoryId,
+                idCategory = state.selectedCategoryId!!,
                 status = state.status
             )
 

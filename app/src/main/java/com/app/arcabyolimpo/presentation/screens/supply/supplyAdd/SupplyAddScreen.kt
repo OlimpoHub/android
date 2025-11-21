@@ -103,7 +103,8 @@ fun SupplyAddScreen(
                 value = uiState.name,
                 onValueChange = viewModel::onNameChange,
                 placeholder = "Harina de trigo",
-                isError = uiState.error?.contains("Nombre") == true
+                isError = uiState.nameError != null,
+                errorMessage = uiState.nameError
             )
 
             ImageUploadInput(
@@ -120,7 +121,8 @@ fun SupplyAddScreen(
                 onOptionSelected = viewModel::onWorkshopSelected,
                 getItemName = { it.name },
                 getItemId = { it.idWorkshop },
-                isError = uiState.error?.contains("Taller") == true
+                isError = uiState.noWorkshop != null,
+                errorMessage = uiState.noWorkshop
             )
 
             SelectObjectInput(
@@ -131,14 +133,17 @@ fun SupplyAddScreen(
                 onOptionSelected = viewModel::onCategorySelected,
                 getItemName = { it.type },
                 getItemId = { it.idCategory },
-                isError = uiState.error?.contains("Categoría") == true
+                isError = uiState.noCategory != null,
+                errorMessage = uiState.noCategory
             )
 
             StandardInput(
                 label = "Unidad de medida",
                 value = uiState.measureUnit,
                 onValueChange = viewModel::onUnitMeasureChange,
-                placeholder = "gramos"
+                placeholder = "gramos",
+                isError = uiState.measureUnitError != null,
+                errorMessage = uiState.measureUnitError
             )
 
             StatusSelector(
@@ -169,5 +174,4 @@ fun SupplyAddScreen(
             }
         }
     }
-
 }
