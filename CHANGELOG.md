@@ -14,6 +14,8 @@
 - Fix scroll bar for supply batch views
 - Input Validations
 - Fix view to not show the navbar in beneficiary details
+- Fix modify workshops for date and hour
+- Fix workshops scroll and notifications
 
 ## [0.1.0] - 19/11/2025
 ### Added
