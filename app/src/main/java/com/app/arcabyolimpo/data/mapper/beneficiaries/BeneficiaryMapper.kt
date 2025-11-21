@@ -26,6 +26,9 @@ fun BeneficiaryDto.toDomain(): Beneficiary {
     return Beneficiary(
         id = id.orEmpty(),
         name = fullName.ifEmpty { "Nombre no disponible" },
+        firstName = firstName.orEmpty(),
+        paternalName = paternalName.orEmpty(),
+        maternalName = maternalName.orEmpty(),
         birthdate = formatApiDate(birthdate),
         emergencyNumber = emergencyNumber.orEmpty(),
         emergencyName = emergencyName.orEmpty(),
@@ -165,6 +168,9 @@ fun BeneficiaryFormData.toDomain(): Beneficiary {
     return Beneficiary(
         id = id ?: "",
         name = fullName.ifEmpty { "Nombre no disponible" },
+        firstName = nombre,
+        paternalName = apellidoPaterno,
+        maternalName = apellidoMaterno,
         birthdate = fechaNacimiento,
         emergencyNumber = numeroEmergencia,
         emergencyName = nombreContactoEmergencia,
