@@ -14,7 +14,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
 import com.app.arcabyolimpo.domain.model.auth.UserRole
 import com.app.arcabyolimpo.presentation.common.components.LoadingShimmer
@@ -31,10 +30,7 @@ import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordR
 import com.app.arcabyolimpo.presentation.screens.product.addProduct.ProductAddScreen
 import com.app.arcabyolimpo.presentation.screens.product.updateProduct.ProductUpdateScreen
 import com.app.arcabyolimpo.presentation.screens.product.list.ProductListScreen
-import com.app.arcabyolimpo.presentation.screens.product.list.ProductListUiState
-import com.app.arcabyolimpo.presentation.screens.product.list.ProductListViewModel
 import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDetailScreen
-// import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDeleteTestScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchDetail.ProductBatchDetailScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchModify.ProductBatchModifyScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchRegister.ProductBatchRegisterScreen
@@ -45,15 +41,12 @@ import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyBatchList.SupplyBatchListScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
-import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
-import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplybatchmodify.SupplyBatchModifyScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyUpdate.SupplyUpdateScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplybatchregister.SupplyBatchRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
-import com.app.arcabyolimpo.presentation.screens.user.UserListScreen
 import com.app.arcabyolimpo.presentation.screens.user.detail.UserDetailScreen
 import com.app.arcabyolimpo.presentation.screens.user.register.UserRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.user.updateuser.UpdateUserScreen
