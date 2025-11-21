@@ -80,6 +80,7 @@ fun InventoryScreen(navController: NavHostController) {
                             )
                         "supplies" -> {
                             SupplyListScreen(
+                                onBackClick = { selectedOption = null },
                                 onSupplyClick = { id ->
                                     navController.navigate("supply/$id")
                                 },
