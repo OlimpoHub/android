@@ -108,7 +108,9 @@ fun SupplyUpdateScreen(
                     label = "Nombre",
                     value = uiState.name,
                     onValueChange = viewModel::onNameChange,
-                    placeholder = "Harina de trigo"
+                    placeholder = "Harina de trigo",
+                    isError = uiState.nameError != null,
+                    errorMessage = uiState.nameError,
                 )
 
                 val imageUri = uiState.selectedImageUrl ?: uiState.currentImageUrl
@@ -127,7 +129,9 @@ fun SupplyUpdateScreen(
                     selectedId = uiState.selectedIdWorkshop,
                     onOptionSelected = viewModel::onWorkshopSelected,
                     getItemName = { it.name },
-                    getItemId = { it.idWorkshop }
+                    getItemId = { it.idWorkshop },
+                    isError = uiState.noWorkshop != null,
+                    errorMessage = uiState.noWorkshop,
                 )
 
                 SelectObjectInput(
@@ -137,6 +141,8 @@ fun SupplyUpdateScreen(
                     onOptionSelected = viewModel::onCategorySelected,
                     getItemName = { it.type },
                     getItemId = { it.idCategory },
+                    isError = uiState.noCategory != null,
+                    errorMessage = uiState.noCategory,
                 )
 
                 StandardInput(
@@ -144,6 +150,8 @@ fun SupplyUpdateScreen(
                     value = uiState.measureUnit,
                     onValueChange = viewModel::onUnitMeasureChange,
                     placeholder = "Gramos",
+                    isError = uiState.measureUnitError != null,
+                    errorMessage = uiState.measureUnitError,
                 )
 
                 StatusSelector(

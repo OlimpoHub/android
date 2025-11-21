@@ -61,7 +61,7 @@ class SupplyAddViewModel @Inject constructor(
     }
 
     fun onNameChange(name: String) {
-        if (name.length > 50){
+        if (name.length > 35){
             return
         }
 
@@ -95,10 +95,20 @@ class SupplyAddViewModel @Inject constructor(
         _uiState.update { it.copy(status = newStatus) }
     }
     fun onWorkshopSelected(idWorkshop: String) {
-        _uiState.update { it.copy(selectedWorkshopId = idWorkshop) }
+        _uiState.update {
+            it.copy(
+                selectedWorkshopId = idWorkshop,
+                noWorkshop = null
+            )
+        }
     }
     fun onCategorySelected(idCategory: String) {
-        _uiState.update { it.copy(selectedCategoryId = idCategory) }
+        _uiState.update {
+            it.copy(
+                selectedCategoryId = idCategory,
+                noCategory = null
+            )
+        }
     }
     fun onSaveClick() {
         val state = _uiState.value

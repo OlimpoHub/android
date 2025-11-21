@@ -127,7 +127,6 @@ fun SupplyAddScreen(
 
             SelectObjectInput(
                 label = "Selecciona la categoría del insumo",
-                // ... (el resto de los campos igual) ...
                 options = uiState.categories,
                 selectedId = uiState.selectedCategoryId,
                 onOptionSelected = viewModel::onCategorySelected,
