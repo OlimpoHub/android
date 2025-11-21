@@ -4,6 +4,8 @@ import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
@@ -17,7 +19,7 @@ import androidx.navigation.NavHostController
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardInput
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SelectInput
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.ImageUploadInput
-import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
+import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.DateInput
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SaveButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.CancelButton
 import com.app.arcabyolimpo.ui.theme.Background
@@ -28,7 +30,9 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcust
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.DescriptionInput
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddNewBeneficiaryScreen(
     navController: NavHostController,
@@ -46,12 +50,44 @@ fun AddNewBeneficiaryScreen(
         val snackbarHostState = remember { SnackbarHostState() }
         val scope = rememberCoroutineScope()
 
+        // Calcular fechas límite
+        val maxDateMillis = remember { Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis }
+        val minBirthDateMillis = remember {
+            Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
+                add(Calendar.YEAR, -100) // Máximo 100 años atrás
+            }.timeInMillis
+        }
+
         LaunchedEffect(Unit) {
             viewModel.loadDisabilities()
         }
 
         Scaffold(
             containerColor = Background,
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = "Registrar Beneficiario",
+                            style = MaterialTheme.typography.headlineLarge,
+                            color = White,
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = { navController.popBackStack() }) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "Regresar",
+                                tint = White
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Background
+                    )
+                )
+            },
             snackbarHost = {
                 SnackbarHost(snackbarHostState) { data ->
                     Snackbarcustom(
@@ -70,22 +106,6 @@ fun AddNewBeneficiaryScreen(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.Start
             ) {
-                Spacer(modifier = Modifier.height(24.dp))
-
-                /** Title */
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Registrar Beneficiario",
-                        style = MaterialTheme.typography.headlineLarge,
-                        color = White,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Row(
@@ -117,8 +137,8 @@ fun AddNewBeneficiaryScreen(
                             placeholder = "",
                             value = formData.nombre,
                             onValueChange = { viewModel.updateFormData { copy(nombre = it) } },
-                            isError = fieldErrors["nombre"] == true,
-                            errorMessage = null
+                            isError = fieldErrors["nombre"] != null,
+                            errorMessage = fieldErrors["nombre"]
                         )
 
                         /** Apellido Paterno */
@@ -127,8 +147,8 @@ fun AddNewBeneficiaryScreen(
                             placeholder = "",
                             value = formData.apellidoPaterno,
                             onValueChange = { viewModel.updateFormData { copy(apellidoPaterno = it) } },
-                            isError = fieldErrors["apellidoPaterno"] == true,
-                            errorMessage = null
+                            isError = fieldErrors["apellidoPaterno"] != null,
+                            errorMessage = fieldErrors["apellidoPaterno"]
                         )
 
                         /** Apellido Materno */
@@ -137,8 +157,8 @@ fun AddNewBeneficiaryScreen(
                             placeholder = "",
                             value = formData.apellidoMaterno,
                             onValueChange = { viewModel.updateFormData { copy(apellidoMaterno = it) } },
-                            isError = fieldErrors["apellidoMaterno"] == true,
-                            errorMessage = null
+                            isError = fieldErrors["apellidoMaterno"] != null,
+                            errorMessage = fieldErrors["apellidoMaterno"]
                         )
                     }
                 }
@@ -149,15 +169,17 @@ fun AddNewBeneficiaryScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    /** Fecha de Nacimiento */
-                    StandardInput(
+                    /** Fecha de Nacimiento - CON DATEINPUT */
+                    DateInput(
                         label = "Fecha de Nacimiento:",
                         placeholder = "YYYY-MM-DD",
                         value = formData.fechaNacimiento,
                         onValueChange = { viewModel.updateFormData { copy(fechaNacimiento = it) } },
-                        isError = fieldErrors["fechaNacimiento"] == true,
-                        errorMessage = null,
-                        modifier = Modifier.weight(1f)
+                        isError = fieldErrors["fechaNacimiento"] != null,
+                        errorMessage = if (fieldErrors["fechaNacimiento"] != null) "La fecha es un campo obligatorio" else "",
+                        modifier = Modifier.weight(1f),
+                        minDateUtcMillis = minBirthDateMillis,
+                        maxDateUtcMillis = maxDateMillis
                     )
 
                     /** Relación del tutor */
@@ -166,8 +188,8 @@ fun AddNewBeneficiaryScreen(
                         placeholder = "",
                         value = formData.relacionContactoEmergencia,
                         onValueChange = { viewModel.updateFormData { copy(relacionContactoEmergencia = it) } },
-                        isError = fieldErrors["relacionContactoEmergencia"] == true,
-                        errorMessage = null,
+                        isError = fieldErrors["relacionContactoEmergencia"] != null,
+                        errorMessage = fieldErrors["relacionContactoEmergencia"],
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -178,25 +200,26 @@ fun AddNewBeneficiaryScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    /** Ingreso (Fecha de Ingreso) */
-                    StandardInput(
-                        label = "Ingreso",
+                    /** Ingreso (Fecha de Ingreso) - CON DATEINPUT */
+                    DateInput(
+                        label = "Ingreso:",
                         placeholder = "YYYY-MM-DD",
                         value = formData.fechaIngreso,
                         onValueChange = { viewModel.updateFormData { copy(fechaIngreso = it) } },
-                        isError = fieldErrors["fechaIngreso"] == true,
-                        errorMessage = null,
-                        modifier = Modifier.weight(1f)
+                        isError = fieldErrors["fechaIngreso"] != null,
+                        errorMessage = if (fieldErrors["fechaIngreso"] != null) "La fecha es un campo obligatorio" else "",
+                        modifier = Modifier.weight(1f),
+                        maxDateUtcMillis = maxDateMillis
                     )
 
                     /** Número de teléfono */
                     StandardInput(
-                        label = "Numero de telefono",
+                        label = "Numero de telefono:",
                         placeholder = "",
                         value = formData.numeroEmergencia,
                         onValueChange = { viewModel.updateFormData { copy(numeroEmergencia = it) } },
-                        isError = fieldErrors["numeroEmergencia"] == true,
-                        errorMessage = null,
+                        isError = fieldErrors["numeroEmergencia"] != null,
+                        errorMessage = fieldErrors["numeroEmergencia"],
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -209,8 +232,8 @@ fun AddNewBeneficiaryScreen(
                     placeholder = "",
                     value = formData.nombreContactoEmergencia,
                     onValueChange = { viewModel.updateFormData { copy(nombreContactoEmergencia = it) } },
-                    isError = fieldErrors["nombreContactoEmergencia"] == true,
-                    errorMessage = null,
+                    isError = fieldErrors["nombreContactoEmergencia"] != null,
+                    errorMessage = fieldErrors["nombreContactoEmergencia"],
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -218,28 +241,29 @@ fun AddNewBeneficiaryScreen(
 
                 /** Discapacidades - Selector desde base de datos */
                 SelectInput(
-                    label = "Discapacidades",
+                    label = "Discapacidades:",
                     selectedOption = disabilities.firstOrNull { it.id == formData.discapacidad }?.name
                         ?: "Seleccionar",
-                    options = disabilities.map { it.name},
+                    options = disabilities.map { it.name },
                     onOptionSelected = { selectedNombre ->
                         val selectedDisability = disabilities.find { it.name == selectedNombre }
                         viewModel.updateFormData { copy(discapacidad = selectedDisability?.id ?: "") }
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    isError = fieldErrors["discapacidad"] == true
+                    isError = fieldErrors["discapacidad"] != null,
+                    errorMessage = fieldErrors["discapacidad"]
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
                 /** Descripción */
                 DescriptionInput(
-                    label = "Descripción",
+                    label = "Descripción:",
                     placeholder = "",
                     value = formData.descripcion,
                     onValueChange = { viewModel.updateFormData { copy(descripcion = it) } },
-                    isError = fieldErrors["descripcion"] == true,
-                    errorMessage = null,
+                    isError = fieldErrors["descripcion"] != null,
+                    errorMessage = fieldErrors["descripcion"],
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(120.dp)
@@ -254,8 +278,7 @@ fun AddNewBeneficiaryScreen(
                 ) {
                     /** Cancel */
                     CancelButton(
-                        modifier = Modifier
-                            .size(width = 112.dp, height = 40.dp),
+                        modifier = Modifier.size(width = 112.dp, height = 40.dp),
                         onClick = { navController.popBackStack() }
                     )
 
