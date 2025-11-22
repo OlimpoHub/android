@@ -52,6 +52,10 @@ fun ProductBatchModifyScreen(
 ) {
     val state = viewModel.uiState
 
+    LaunchedEffect(batchId) {
+        viewModel.loadBatch(batchId)
+    }
+
     Scaffold(
         containerColor = Background,
         topBar = {

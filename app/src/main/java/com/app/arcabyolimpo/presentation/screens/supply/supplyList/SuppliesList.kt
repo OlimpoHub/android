@@ -18,6 +18,7 @@ import com.app.arcabyolimpo.presentation.theme.Typography
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.FilterIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
+import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.ReturnIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.SearchIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardIconInput
 import com.app.arcabyolimpo.presentation.ui.components.organisms.Filter
@@ -45,9 +46,9 @@ import com.app.arcabyolimpo.ui.theme.White
 @Composable
 fun SupplyListScreen(
     onSupplyClick: (String) -> Unit,
+    onBackClick: () -> Unit,
     onAddSupplyClick: () -> Unit,
     viewModel: SuppliesListViewModel = hiltViewModel(),
-    onBack: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -98,21 +99,13 @@ fun SupplyListScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { onBack() }) {
+                    IconButton(onClick = onBackClick) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Regresar",
-                            tint = Color.White,
+                            Icons.Default.ArrowBack,
+                            "Back",
+                            tint = White,
                         )
                     }
-                },
-                actions = {
-                    NotificationIcon(
-                        modifier =
-                            Modifier
-                                .padding(horizontal = 24.dp)
-                                .size(28.dp),
-                    )
                 },
                 colors =
                     TopAppBarDefaults.topAppBarColors(

@@ -27,6 +27,10 @@ data class SupplyUpdateUiState(
     val success: Boolean = false,
     val error: String? = null,
 
+    val nameError: String? = null,
+    val measureUnitError: String? = null,
+    val noCategory: String? = null,
+    val noWorkshop: String? = null
 ) {
     val hadChanged: Boolean
         get() {

@@ -11,8 +11,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -52,6 +56,7 @@ fun SupplyAddScreen(
     viewModel: SupplyAddViewModel = hiltViewModel(),
     onSaveSuccess: () -> Unit,
     onCancel: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -84,6 +89,15 @@ fun SupplyAddScreen(
                         fontSize = 24.sp,
                     )
                 },
+                navigationIcon = {
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Volver",
+                            tint = White,
+                        )
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Background // O el color que prefieras para la barra
                 )
@@ -103,7 +117,8 @@ fun SupplyAddScreen(
                 value = uiState.name,
                 onValueChange = viewModel::onNameChange,
                 placeholder = "Harina de trigo",
-                isError = uiState.error?.contains("Nombre") == true
+                isError = uiState.nameError != null,
+                errorMessage = uiState.nameError
             )
 
             ImageUploadInput(
@@ -120,25 +135,28 @@ fun SupplyAddScreen(
                 onOptionSelected = viewModel::onWorkshopSelected,
                 getItemName = { it.name },
                 getItemId = { it.idWorkshop },
-                isError = uiState.error?.contains("Taller") == true
+                isError = uiState.noWorkshop != null,
+                errorMessage = uiState.noWorkshop
             )
 
             SelectObjectInput(
                 label = "Selecciona la categoría del insumo",
-                // ... (el resto de los campos igual) ...
                 options = uiState.categories,
                 selectedId = uiState.selectedCategoryId,
                 onOptionSelected = viewModel::onCategorySelected,
                 getItemName = { it.type },
                 getItemId = { it.idCategory },
-                isError = uiState.error?.contains("Categoría") == true
+                isError = uiState.noCategory != null,
+                errorMessage = uiState.noCategory
             )
 
             StandardInput(
                 label = "Unidad de medida",
                 value = uiState.measureUnit,
                 onValueChange = viewModel::onUnitMeasureChange,
-                placeholder = "gramos"
+                placeholder = "gramos",
+                isError = uiState.measureUnitError != null,
+                errorMessage = uiState.measureUnitError
             )
 
             StatusSelector(
@@ -169,5 +187,4 @@ fun SupplyAddScreen(
             }
         }
     }
-
 }
