@@ -1,3 +1,8 @@
+## [0.1.0] - 23/11/2025
+### Changed
+- Modify Workshop's inputs blocks emojis and long texts
+- Add Workshop's inputs blocks emojis and long texts
+
 ## [0.1.0] - 20/11/2025
 ### Added
 - US for filter and order workshops.

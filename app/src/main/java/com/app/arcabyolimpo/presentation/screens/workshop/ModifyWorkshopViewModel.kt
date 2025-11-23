@@ -70,6 +70,15 @@ class ModifyWorkshopViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
+    private val regexValidation = Regex("^[a-zA-Z0-9 áéíóúÁÉÍÓÚñÑ]*$")
+    private val urlTypingRegex = Regex("^[a-zA-Z0-9:/.?=&_\\-]*$")
+
+    fun validateInput(text: String, regex: Regex, maxLength: Int): Boolean
+    {
+        if (text.isEmpty()) {return true}
+        return text.length <= maxLength && regex.matches(text)
+    }
+
 
     fun loadUsers() {
         viewModelScope.launch {
@@ -208,11 +217,24 @@ class ModifyWorkshopViewModel @Inject constructor(
     private fun formatHour(hourString: String?): String {
         return hourString?.takeIf { it.length >= 5 }?.substring(0, 5) ?: ""
     }
+    /** Function that updates the form data, making sure that it follows the regex and dosen't
+     * exceed the char number */
+
     fun updateFormData(update: WorkshopFormData.() -> WorkshopFormData) {
+        val currentState = _formData.value
+        val newState = currentState.update()
+        if (currentState.name != newState.name) {
+            if (!validateInput(newState.name,regexValidation, 50)) return
+        }
+        if (currentState.description != newState.description) {
+            if (!validateInput(newState.name,regexValidation, 400)) return
+        }
+        if (currentState.videoTraining != newState.videoTraining) {
+            if (!validateInput(newState.name,urlTypingRegex, 100)) return
+        }
         _formData.update { it.update() }
         clearFieldErrors()
     }
-
     fun resetForm() {
         _formData.value = WorkshopFormData()
         _fieldErrors.value = emptyMap()
