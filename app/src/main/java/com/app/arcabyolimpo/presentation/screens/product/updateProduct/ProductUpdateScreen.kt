@@ -18,12 +18,17 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -33,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.app.arcabyolimpo.presentation.theme.Poppins
+import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.CancelButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SaveButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.DescriptionInput
@@ -42,6 +48,7 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.SelectObjectInp
 import com.app.arcabyolimpo.presentation.ui.components.molecules.StatusSelector
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
+import kotlinx.coroutines.launch
 
 /**
  * ProductUpdateScreen -> The main composable view for adding a new product.
@@ -63,6 +70,10 @@ fun ProductUpdateScreen(
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
+
+    var showConfirmDialog by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(
         key1 = uiState.success,
@@ -122,21 +133,25 @@ fun ProductUpdateScreen(
                 value = uiState.name,
                 onValueChange = viewModel::onNameChange,
                 placeholder = uiState.name ?: "Galletas de chocolate",
-                isError = uiState.error?.contains("Nombre") == true
+                isError = uiState.isNameError,
+                errorMessage = uiState.nameErrorMessage,
             )
 
             ImageUploadInput(
                 label = "Imagen del producto",
                 value = uiState.selectedImageUrl,
                 onValueChange = viewModel::onImageSelected,
-                isError = uiState.error?.contains("Imagen") == true
+                isError = uiState.isImageError,
+                errorMessage = uiState.imageErrorMessage,
             )
 
             StandardInput(
                 label = "Precio Unitario",
                 value = uiState.unitaryPrice,
                 onValueChange = viewModel::onUnitaryPriceChange,
-                placeholder = "pesos"
+                placeholder = "pesos",
+                isError = uiState.isUnitaryPriceError,
+                errorMessage = uiState.unitaryPriceErrorMessage,
             )
 
             SelectObjectInput(
@@ -146,7 +161,8 @@ fun ProductUpdateScreen(
                 onOptionSelected = viewModel::onWorkshopSelected,
                 getItemName = { it.name },
                 getItemId = { it.idWorkshop },
-                isError = uiState.error?.contains("Taller") == true
+                isError = uiState.isWorkshopError,
+                errorMessage = uiState.workshopErrorMessage,
             )
 
             SelectObjectInput(
@@ -156,7 +172,8 @@ fun ProductUpdateScreen(
                 onOptionSelected = viewModel::onCategorySelected,
                 getItemName = { it.type },
                 getItemId = { it.idCategory },
-                isError = uiState.error?.contains("Categoría") == true
+                isError = uiState.isCategoryError,
+                errorMessage = uiState.categoryErrorMessage,
             )
 
             StatusSelector(
@@ -167,10 +184,12 @@ fun ProductUpdateScreen(
 
 
             DescriptionInput(
+                label = "Descripción del producto",
                 value = uiState.description,
-                onValueChange =viewModel::onDescriptionChange,
-                widthFraction = 0.92f,
-                maxWidthDp = 560.dp
+                onValueChange = viewModel::onDescriptionChange,
+                placeholder = "Descripción del producto",
+                isError = uiState.isDescriptionError,
+                errorMessage = uiState.descriptionErrorMessage,
             )
 
             Spacer(Modifier.height(16.dp))
@@ -189,7 +208,28 @@ fun ProductUpdateScreen(
                     CircularProgressIndicator()
                 } else {
                     CancelButton(onClick = onCancel)
-                    SaveButton(onClick = viewModel::onModifyClick)
+                    SaveButton(
+                        onClick = { showConfirmDialog = true }
+                    )
+
+                    if (showConfirmDialog) {
+                        DecisionDialog(
+                            onDismissRequest = {
+                                showConfirmDialog = false
+                                scope.launch {
+                                    snackbarHostState.showSnackbar("Modificación cancelada")
+                                }
+                            },
+                            onConfirmation = {
+                                showConfirmDialog = false
+                                viewModel.onModifyClick()
+                            },
+                            dialogTitle = "Confirmar Modificación",
+                            dialogText = "¿Deseas modificar este producto? Asegúrate de que todos los datos sean correctos.",
+                            confirmText = "Confirmar",
+                            dismissText = "Cancelar",
+                        )
+                    }
                 }
 
             }
