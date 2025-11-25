@@ -1,4 +1,8 @@
-## [0.1.0] - 20/11/2025
+## [0.1.0] - 25/11/2025
+### Added
+- US for consult attendance
+
+- ## [0.1.0] - 20/11/2025
 ### Added
 - US for filter and order workshops.
 

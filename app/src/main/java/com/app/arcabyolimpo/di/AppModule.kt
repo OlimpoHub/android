@@ -6,6 +6,7 @@ import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.interceptor.AuthInterceptor
 import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
 import com.app.arcabyolimpo.data.remote.interceptor.TokenAuthenticator
+import com.app.arcabyolimpo.data.repository.attendance.AttendanceRepositoryImpl
 import com.app.arcabyolimpo.data.repository.auth.UserRepositoryImpl
 import com.app.arcabyolimpo.data.repository.beneficiaries.BeneficiaryRepositoryImpl
 import com.app.arcabyolimpo.data.repository.disabilities.DisabilityRepositoryImpl
@@ -16,6 +17,7 @@ import com.app.arcabyolimpo.data.repository.qr.QrRepositoryImpl
 import com.app.arcabyolimpo.data.repository.supplies.SupplyRepositoryImpl
 import com.app.arcabyolimpo.data.repository.user.UsersRepositoryImpl
 import com.app.arcabyolimpo.data.repository.workshops.WorkshopRepositoryImpl
+import com.app.arcabyolimpo.domain.repository.attendance.AttendanceRepository
 import com.app.arcabyolimpo.domain.repository.auth.UserRepository
 import com.app.arcabyolimpo.domain.repository.beneficiaries.BeneficiaryRepository
 import com.app.arcabyolimpo.domain.repository.disability.DisabilityRepository
@@ -41,7 +43,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    private const val BASE_URL = "http://74.208.78.8:8080/"
+    private const val BASE_URL = "http://10.0.2.2:8080/"
 
     /**
      * Provides a configured [OkHttpClient] instance.
@@ -186,4 +188,9 @@ object AppModule {
     @Provides
     @Singleton
     fun provideQrRepository(api: ArcaApi): QrRepository = QrRepositoryImpl(api)
+
+    @Provides
+    @Singleton
+    fun provideAttendanceRepository(api: ArcaApi): AttendanceRepository = AttendanceRepositoryImpl(api)
+
 }

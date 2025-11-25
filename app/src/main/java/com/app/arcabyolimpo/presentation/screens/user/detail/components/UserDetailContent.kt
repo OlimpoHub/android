@@ -36,6 +36,7 @@ fun UserDetailContent(
     collab: UserDto,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
+    onAttendanceClick: () -> Unit,
 ) {
     Column(
         modifier =
@@ -128,6 +129,23 @@ fun UserDetailContent(
                 DeleteButton(
                     onClick = onDeleteClick,
                 )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            androidx.compose.material3.Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = onAttendanceClick,
+            ) {
+                Text(text = "Asistencias")
             }
         }
 
