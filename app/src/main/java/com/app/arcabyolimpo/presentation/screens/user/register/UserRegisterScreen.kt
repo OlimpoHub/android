@@ -25,6 +25,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.rememberCoroutineScope
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.SnackbarVisualsWithError
+import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -43,15 +44,16 @@ fun UserRegisterScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    // Helper function to show snackbar
-    fun showSnackbar(message: String, isError: Boolean) {
-        scope.launch {
-            snackbarHostState.showSnackbar(
-                SnackbarVisualsWithError(
-                    message = message,
-                    isError = isError
-                )
-            )
+    LaunchedEffect(uiState.success, uiState.error) {
+        if (uiState.success) {
+            uiState.successMessage?.let { message ->
+                snackbarHostState.showSnackbar(message)
+            }
+        } else if (uiState.error != null) {
+
+            uiState.error?.let { errorMessage ->
+                snackbarHostState.showSnackbar(errorMessage)
+            }
         }
     }
 
@@ -61,20 +63,6 @@ fun UserRegisterScreen(
     // Date picker state
     val datePickerState = rememberDatePickerState()
     var showDatePicker by remember { mutableStateOf(false) }
-
-    // Show error snackbar
-    LaunchedEffect(uiState.error) {
-        uiState.error?.let { errorMessage ->
-            showSnackbar(errorMessage, isError = true)
-        }
-    }
-
-    // Show success snackbar
-    LaunchedEffect(uiState.successMessage) {
-        uiState.successMessage?.let { successMessage ->
-            showSnackbar(successMessage, isError = false)
-        }
-    }
 
     // Show success message
     LaunchedEffect(uiState.success) {
@@ -503,30 +491,25 @@ fun UserRegisterScreen(
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
-            // Snackbar positioned at the top of the BottomSheet
             SnackbarHost(
                 hostState = snackbarHostState,
                 modifier = Modifier
-                    .align(Alignment.TopCenter)
+                    .align(Alignment.BottomCenter)
                     .padding(top = 16.dp)
             ) { data ->
-                val isError = (data.visuals as? SnackbarVisualsWithError)?.isError ?: false
-
-                Snackbar(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .border(
-                            width = 1.dp,
-                            color = if (isError) Color(0xFFEF4444) else Color(0xFF10B981),
-                            shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
-                        ),
-                    containerColor = if (isError) Color(0xFF7F1D1D) else Color(0xFF065F46),
-                    contentColor = Color.White,
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+                Box(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                    contentAlignment = Alignment.Center,
                 ) {
-                    Text(
-                        text = data.visuals.message,
-                        color = Color.White
+                    Snackbarcustom(
+                        title = data.visuals.message,
+                        modifier =
+                            Modifier
+                                .fillMaxWidth(0.85f),
+                        ifSucces = uiState.success,
                     )
                 }
             }

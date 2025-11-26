@@ -124,7 +124,6 @@ fun Snackbarcustom(
             if (ifSucces == true) {
                 ButtonBlue
             } else {
-                snackbartitle= "Error"
                 ErrorRed
             },
     ) {
