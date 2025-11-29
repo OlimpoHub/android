@@ -48,6 +48,7 @@ import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopResponseDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
 import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
+import com.app.arcabyolimpo.domain.usecase.upload.UploadResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -415,4 +416,10 @@ interface ArcaApi {
     suspend fun postCreateQr(
         @Body request: CreateQrDto,
     ): ResponseBody
+
+    @Multipart
+    @POST("upload")
+    suspend fun uploadWorkshopImage(
+        @Part image: MultipartBody.Part
+    ): UploadResponse
 }

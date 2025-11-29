@@ -14,6 +14,7 @@ import com.app.arcabyolimpo.data.repository.product.ProductRepositoryImpl
 import com.app.arcabyolimpo.data.repository.productbatches.ProductBatchRepositoryImpl
 import com.app.arcabyolimpo.data.repository.qr.QrRepositoryImpl
 import com.app.arcabyolimpo.data.repository.supplies.SupplyRepositoryImpl
+import com.app.arcabyolimpo.data.repository.upload.UploadRepositoryImpl
 import com.app.arcabyolimpo.data.repository.user.UsersRepositoryImpl
 import com.app.arcabyolimpo.data.repository.workshops.WorkshopRepositoryImpl
 import com.app.arcabyolimpo.domain.repository.auth.UserRepository
@@ -24,6 +25,7 @@ import com.app.arcabyolimpo.domain.repository.product.ProductRepository
 import com.app.arcabyolimpo.domain.repository.productbatches.ProductBatchRepository
 import com.app.arcabyolimpo.domain.repository.qr.QrRepository
 import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
+import com.app.arcabyolimpo.domain.repository.upload.UploadRepository
 import com.app.arcabyolimpo.domain.repository.user.UsersRepository
 import com.app.arcabyolimpo.domain.repository.workshops.WorkshopRepository
 import com.app.arcabyolimpo.domain.usecase.productbatches.GetProductBatchesUseCase
@@ -186,4 +188,12 @@ object AppModule {
     @Provides
     @Singleton
     fun provideQrRepository(api: ArcaApi): QrRepository = QrRepositoryImpl(api)
+
+    @Provides
+    @Singleton
+    fun provideUploadRepository(
+        uploadRepositoryImpl: UploadRepositoryImpl
+    ): UploadRepository {
+        return uploadRepositoryImpl
+    }
 }

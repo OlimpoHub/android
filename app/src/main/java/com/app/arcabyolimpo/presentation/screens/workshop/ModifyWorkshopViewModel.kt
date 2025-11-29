@@ -9,6 +9,7 @@ import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopFormData
 import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.model.workshops.Workshop
 import com.app.arcabyolimpo.domain.repository.workshops.WorkshopRepository
+import com.app.arcabyolimpo.domain.usecase.upload.PostUploadImage
 import com.app.arcabyolimpo.domain.usecase.user.GetAllUsersUseCase
 import com.app.arcabyolimpo.domain.usecase.workshops.GetWorkshopsListUseCase
 import com.app.arcabyolimpo.domain.usecase.workshops.PostModifyWorkshop
@@ -40,6 +41,7 @@ class ModifyWorkshopViewModel @Inject constructor(
     private val postModifyWorkshop: PostModifyWorkshop,
     private val getAllUsersUseCase: GetAllUsersUseCase,
     private val repository: WorkshopRepository,
+    private val postUploadImage: PostUploadImage
 ) : ViewModel(){
 
     private val _uiState = MutableStateFlow(ModifyWorkshopUiState())
