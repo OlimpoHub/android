@@ -19,7 +19,7 @@ import com.google.gson.annotations.SerializedName
  * @param disabilities Any specific disabilities the beneficiary has.
  * @param status The status of the beneficiary, active = 1, inactive = 0.
  */
-data class BeneficiaryDto (
+data class BeneficiaryDto(
     @SerializedName("idBeneficiario") val id: String?,
     @SerializedName("nombre") val firstName: String?,
     @SerializedName("apellidoPaterno") val paternalName: String?,
@@ -31,6 +31,6 @@ data class BeneficiaryDto (
     @SerializedName("descripcion") val details: String?,
     @SerializedName("fechaIngreso") val entryDate: String?,
     @SerializedName("foto") val image: String?,
-    @SerializedName("discapacidad") val disabilities: String?,
+    @SerializedName("discapacidades") val disabilities: List<String>?,
     @SerializedName("estatus") val status: Int?
 )

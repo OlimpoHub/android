@@ -1,3 +1,8 @@
+## [0.1.0] - 29/11/2025
+
+### Changed
+- Change beneficiary detail for showing more disabilities
+
 ## [0.1.0] - 20/11/2025
 ### Added
 - ModifyProduct validation fields
