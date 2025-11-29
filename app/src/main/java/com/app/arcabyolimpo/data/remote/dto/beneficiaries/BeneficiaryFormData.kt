@@ -12,6 +12,6 @@ data class BeneficiaryFormData (
     val descripcion: String = "",
     val fechaIngreso: String = "",
     val foto: String = "",
-    val discapacidad: String = "",
+    val disabilities: List<String> = emptyList(),
     val estatus: Int = 1
 )

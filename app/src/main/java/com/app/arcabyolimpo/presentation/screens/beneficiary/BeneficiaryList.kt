@@ -179,16 +179,7 @@ fun BeneficiaryList(
                                 color = Color.White,
                                 fontWeight = FontWeight.Bold,
                             )
-                        },
-                        navigationIcon = {
-                            ReturnIcon(
-                                modifier = Modifier
-                                    .padding(start = 16.dp)
-                                    .size(28.dp)
-                                    .clickable { onBackClick() },
-                                tint = White
-                            )
-                        },
+                        }
                     )
                 },
                 floatingActionButton = {
