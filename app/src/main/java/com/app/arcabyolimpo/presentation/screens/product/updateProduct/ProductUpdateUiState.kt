@@ -29,6 +29,21 @@ data class ProductUpdateUiState(
     val success: Boolean = false,
     val error: String? = null,
 
+    val isNameError: Boolean = false,
+    val isUnitaryPriceError: Boolean = false,
+    val isDescriptionError: Boolean = false,
+    val isWorkshopError: Boolean = false,
+    val isCategoryError: Boolean = false,
+    val isImageError: Boolean = false,
+    val isStatusError: Boolean = false,
+
+    val nameErrorMessage: String = "",
+    val unitaryPriceErrorMessage: String = "",
+    val descriptionErrorMessage: String = "",
+    val workshopErrorMessage: String = "",
+    val categoryErrorMessage: String = "",
+    val imageErrorMessage: String = "",
+    val statusErrorMessage: String = "",
     ) {
     val hadChanged: Boolean
         get() {

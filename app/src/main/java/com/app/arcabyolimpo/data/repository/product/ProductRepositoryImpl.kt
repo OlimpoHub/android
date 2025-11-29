@@ -186,10 +186,10 @@ class ProductRepositoryImpl @Inject constructor(
                 } else null
             }
 
-            val idWorkshop = product.idWorkshop.toRequestBody("text/plain".toMediaTypeOrNull())
+            val idWorkshop = product.idWorkshop?.toRequestBody("text/plain".toMediaTypeOrNull())
             val name = product.name.toRequestBody("text/plain".toMediaTypeOrNull())
             val unitaryPrice = product.unitaryPrice.toRequestBody("text/plain".toMediaTypeOrNull())
-            val idCategory = product.idCategory.toRequestBody("text/plain".toMediaTypeOrNull())
+            val idCategory = product.idCategory?.toRequestBody("text/plain".toMediaTypeOrNull())
             val description = product.description.toRequestBody("text/plain".toMediaTypeOrNull())
             val status = product.status.toString().toRequestBody("text/plain".toMediaTypeOrNull()) // Asumo que status es String/Int
 
