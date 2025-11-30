@@ -28,6 +28,7 @@ import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.DescriptionInput
+import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.MultiSelectInput
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
@@ -239,16 +240,19 @@ fun AddNewBeneficiaryScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                /** Discapacidades - Selector desde base de datos */
-                SelectInput(
+                /** Discapacidades - Multi Selector desde base de datos */
+                MultiSelectInput(
                     label = "Discapacidades:",
-                    selectedOption = disabilities.firstOrNull { formData.disabilities.contains(it.id) }?.name
-                        ?: "Seleccionar",
+                    selectedOptions = formData.disabilities.mapNotNull { disabilityId ->
+                        disabilities.find { it.id == disabilityId }?.name
+                    },
                     options = disabilities.map { it.name },
-                    onOptionSelected = { selectedNombre ->
-                        val selectedDisability = disabilities.find { it.name == selectedNombre }
+                    onOptionsSelected = { selectedNames ->
+                        val selectedIds = selectedNames.mapNotNull { name ->
+                            disabilities.find { it.name == name }?.id
+                        }
                         viewModel.updateFormData {
-                            copy(disabilities = listOfNotNull(selectedDisability?.id))
+                            copy(disabilities = selectedIds)
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
