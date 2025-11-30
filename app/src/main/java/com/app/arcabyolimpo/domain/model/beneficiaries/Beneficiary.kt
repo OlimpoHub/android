@@ -28,6 +28,6 @@ data class Beneficiary(
     val details: String,
     val entryDate: String,
     val image: String,
-    val disabilities: String,
+    val disabilities: List<String>,
     val status: Int
 )

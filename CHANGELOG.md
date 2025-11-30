@@ -1,6 +1,17 @@
+## [0.2.0] - 29/11/2025
+
+### Changed
+- Change beneficiary detail for showing more disabilities
+
 ## [0.1.0] - 21/11/2025
 ### Added
 - Modify beneficiary
+
+## [0.1.0] - 20/11/2025
+### Added
+- ModifyProduct validation fields
+- RegisterProduct validation fields
+- Arrow to return register and modify product
 
 ## [0.1.0] - 20/11/2025
 ### Added

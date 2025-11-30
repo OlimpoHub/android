@@ -56,7 +56,7 @@ class BeneficiaryRepositoryImpl
                     details = "",
                     entryDate = "",
                     image = dto.image.orEmpty(),
-                    disabilities = "",
+                    disabilities = emptyList(),
                     status = 0,
                 )
             }
@@ -114,7 +114,7 @@ class BeneficiaryRepositoryImpl
                     details = "",
                     entryDate = "",
                     image = dto.image.orEmpty(),
-                    disabilities = "",
+                    disabilities = emptyList(),
                     status = 0,
                 )
             }

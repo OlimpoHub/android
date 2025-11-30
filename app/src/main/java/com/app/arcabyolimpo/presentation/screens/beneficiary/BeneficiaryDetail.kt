@@ -248,7 +248,14 @@ fun BeneficiaryDetailContent(
                                 StatusField(isActive = beneficiary.status == 1)
                             }
                             Column(modifier = Modifier.weight(1f)) {
-                                TextValue(label = "Discapacidades", value = beneficiary.disabilities.orEmpty())
+                                TextValue(
+                                    label = "Discapacidades",
+                                    value = if (beneficiary.disabilities.isNotEmpty()) {
+                                        beneficiary.disabilities.joinToString(", ")
+                                    } else {
+                                        "Ninguna"
+                                    }
+                                )
                             }
                         }
 
@@ -340,7 +347,7 @@ fun BeneficiaryDetailPreviewActive() {
                     details = "Detalles del beneficiario",
                     entryDate = "01/01/2023",
                     image = "",
-                    disabilities = "Sí",
+                    disabilities = listOf("Visual", "Auditiva"),
                     status = 1
                 )
             ),
@@ -373,7 +380,7 @@ fun BeneficiaryDetailPreviewInactive() {
                     details = "Detalles del beneficiario",
                     entryDate = "01/01/2023",
                     image = "",
-                    disabilities = "Sí",
+                    disabilities = listOf("Si"),
                     status = 0
                 )
             ),

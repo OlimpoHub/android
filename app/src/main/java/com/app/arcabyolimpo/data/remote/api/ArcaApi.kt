@@ -34,7 +34,6 @@ import com.app.arcabyolimpo.data.remote.dto.supplies.SuccessMessageDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuppliesListDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchItemDto
-import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchListDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchOneDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.WorkshopCategoryListDto
@@ -46,8 +45,6 @@ import com.app.arcabyolimpo.data.remote.dto.workshops.DeleteResponseWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.DeleteWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopResponseDto
-import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
-import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -418,10 +415,10 @@ interface ArcaApi {
     @PUT("product/{idProduct}/update")
     suspend fun updateProduct(
         @Path("idProduct") idProduct: String,
-        @Part("idTaller") idWorkshop: RequestBody,
+        @Part("idTaller") idWorkshop: RequestBody?,
         @Part("Nombre") name: RequestBody,
         @Part("PrecioUnitario") unitaryPrice: RequestBody,
-        @Part("idCategoria") idCategory: RequestBody,
+        @Part("idCategoria") idCategory: RequestBody?,
         @Part("Descripcion") description: RequestBody,
         @Part("Disponible") status: RequestBody,
         @Part image: MultipartBody.Part?,

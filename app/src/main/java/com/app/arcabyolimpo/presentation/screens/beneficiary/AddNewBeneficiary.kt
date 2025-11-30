@@ -242,12 +242,14 @@ fun AddNewBeneficiaryScreen(
                 /** Discapacidades - Selector desde base de datos */
                 SelectInput(
                     label = "Discapacidades:",
-                    selectedOption = disabilities.firstOrNull { it.id == formData.discapacidad }?.name
+                    selectedOption = disabilities.firstOrNull { formData.disabilities.contains(it.id) }?.name
                         ?: "Seleccionar",
                     options = disabilities.map { it.name },
                     onOptionSelected = { selectedNombre ->
                         val selectedDisability = disabilities.find { it.name == selectedNombre }
-                        viewModel.updateFormData { copy(discapacidad = selectedDisability?.id ?: "") }
+                        viewModel.updateFormData {
+                            copy(disabilities = listOfNotNull(selectedDisability?.id))
+                        }
                     },
                     modifier = Modifier.fillMaxWidth(),
                     isError = fieldErrors["discapacidad"] != null,
