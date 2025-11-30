@@ -1,4 +1,4 @@
-package com.app.arcabyolimpo.presentation.screens.home.coordinator
+package com.app.arcabyolimpo.presentation.screens.home.scholar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -32,9 +32,10 @@ import com.app.arcabyolimpo.presentation.screens.home.InventoryScreen
 import com.app.arcabyolimpo.presentation.screens.workshop.WorkshopsListScreen
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
 import com.app.arcabyolimpo.presentation.ui.components.molecules.FunctionalNavBar
+import com.app.arcabyolimpo.presentation.ui.components.molecules.ScholarNavBar
 
 /**
- * Displays the coordinator's home screen with a bottom functional navigation bar.
+ * Displays the scholar's home screen with a bottom functional navigation bar.
  * Switches between different sections (Home, Workshops, Orders, etc.) based on the selected tab.
  *
  * @param navController NavController used by the HomeScreen for deeper navigation flows.
@@ -42,7 +43,7 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.FunctionalNavBa
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun CoordinatorHomeScreen(navController: NavHostController) {
+fun ScholarHomeScreen(navController: NavHostController) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     var homePressedTrigger by remember { mutableIntStateOf(0) }
     var inventoryPressedTrigger by remember { mutableIntStateOf(0) }
@@ -65,39 +66,7 @@ fun CoordinatorHomeScreen(navController: NavHostController) {
                     }
                 )
 
-                2 -> {
-                    Column(modifier = Modifier.fillMaxSize()) {
-                        TopAppBar(
-                            title = {
-                                Text(
-                                    "Pedidos",
-                                    color = Color.White,
-                                    fontSize = 24.sp,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                            },
-                            colors = TopAppBarDefaults.topAppBarColors(
-                                containerColor = Color(0xFF040610),
-                            )
-                        )
-
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "En Proceso...",
-                                color = Color.White,
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
-                }
-
-                3 -> InventoryScreen(navController, inventoryPressedTrigger)
-
-                4 -> BeneficiaryListScreen(
+                2 -> BeneficiaryListScreen(
                     navController = navController,
                     onBeneficiaryClick = { beneficiaryId ->
                         navController.navigate(Screen.BeneficiaryDetail.createRoute(beneficiaryId))
@@ -107,14 +76,11 @@ fun CoordinatorHomeScreen(navController: NavHostController) {
                 )
             }
         }
-        FunctionalNavBar(
+        ScholarNavBar(
             selectedIndex = selectedTab,
             onItemSelected = { index ->
                 if (index == 0) {
                     homePressedTrigger++
-                }
-                if (index == 3) {
-                    inventoryPressedTrigger++
                 }
                 selectedTab = index
             },

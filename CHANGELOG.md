@@ -1,7 +1,19 @@
-## [0.1.0] - 23/11/2025
+## [0.2.0] - 29/11/2025
+### Added
+- RBAC for coordinator, assistant, and scholar roles
+
+### Added
+- Atom for Multiple selects
+
 ### Changed
-- Modify Workshop's inputs blocks emojis and long texts
-- Add Workshop's inputs blocks emojis and long texts
+- Change beneficiary detail for showing more disabilities
+- Change so now Beneficiaries can be registered with more disabilities
+
+## [0.1.0] - 20/11/2025
+### Added
+- ModifyProduct validation fields
+- RegisterProduct validation fields
+- Arrow to return register and modify product
 
 ## [0.1.0] - 20/11/2025
 ### Added

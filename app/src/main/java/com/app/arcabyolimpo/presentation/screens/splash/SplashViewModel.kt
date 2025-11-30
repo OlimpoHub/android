@@ -49,7 +49,7 @@ class SplashViewModel
         private fun mapRoleStringToUserRole(role: String): UserRole? =
             when (role.trim().uppercase()) {
                 "COORDINADOR" -> UserRole.COORDINADOR
-                "ASISTENTE" -> UserRole.BECARIO
+                "ASISTENTE" -> UserRole.ASISTENTE
                 "BECARIO" -> UserRole.BECARIO
                 else -> null
             }
