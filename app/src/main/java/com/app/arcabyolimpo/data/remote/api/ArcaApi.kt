@@ -21,6 +21,8 @@ import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchModifyDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchRegisterDto
 import com.app.arcabyolimpo.data.remote.dto.qr.CreateQrDto
+import com.app.arcabyolimpo.data.remote.dto.qr.ValidateQrDto
+import com.app.arcabyolimpo.data.remote.dto.qr.ValidateQrResponseDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.AcquisitionDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteResponseDto
@@ -207,8 +209,6 @@ interface ArcaApi {
         @Path("idTaller") id: String,
         @Body requestBody: WorkshopDto,
     ): AddNewWorkshopDto
-
-
 
     /**
      * Deletes a single Workshop from the backend.
@@ -415,4 +415,9 @@ interface ArcaApi {
     suspend fun postCreateQr(
         @Body request: CreateQrDto,
     ): ResponseBody
+
+    @POST("qr/validate")
+    suspend fun postValidateQr(
+        @Body request: ValidateQrDto,
+    ): Response<ValidateQrResponseDto>
 }

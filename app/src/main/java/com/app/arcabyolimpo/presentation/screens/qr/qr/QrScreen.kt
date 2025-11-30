@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -27,16 +26,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.app.arcabyolimpo.presentation.theme.Typography
-import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SetPasswordButton
-import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.KeyIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.ReturnIcon
-import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardInput
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
 import com.app.arcabyolimpo.ui.theme.gradientBrush
