@@ -2,6 +2,8 @@ package com.app.arcabyolimpo.di
 
 import android.content.Context
 import com.app.arcabyolimpo.data.local.auth.UserPreferences
+import com.app.arcabyolimpo.data.local.supplies.preferences.SupplyLocalDataSource
+import com.app.arcabyolimpo.data.local.supplies.preferences.SupplyPreferences
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.interceptor.AuthInterceptor
 import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
@@ -109,6 +111,20 @@ object AppModule {
     @Singleton
     fun providePasswordUserRepository(api: ArcaApi): PasswordUserRepository = PasswordUserRepositoryImpl(api)
 
+    /** Provides SupplyPreferences for caching supplies data */
+    @Provides
+    @Singleton
+    fun provideSupplyPreferences(
+        @ApplicationContext context: Context
+    ): SupplyPreferences = SupplyPreferences(context)
+
+    /** Provides SupplyLocalDataSource for local supply operations */
+    @Provides
+    @Singleton
+    fun provideSupplyLocalDataSource(
+        preferences: SupplyPreferences
+    ): SupplyLocalDataSource = SupplyLocalDataSource(preferences)
+
     /**
      * Provides the [SupplyRepository] implementation.
      *
@@ -124,8 +140,9 @@ object AppModule {
     @Singleton
     fun provideSupplyRepository(
         api: ArcaApi,
+        localDataSource: SupplyLocalDataSource,
         @ApplicationContext context: Context,
-    ): SupplyRepository = SupplyRepositoryImpl(api, context)
+    ): SupplyRepository = SupplyRepositoryImpl(api, localDataSource,context)
 
     /**
      * Provides the [ProductRepository] implementation.
