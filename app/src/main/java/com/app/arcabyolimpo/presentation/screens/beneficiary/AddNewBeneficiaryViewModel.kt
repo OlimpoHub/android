@@ -210,7 +210,7 @@ class AddNewBeneficiaryViewModel @Inject constructor(
 
         // Validar discapacidad
         if (data.disabilities.isEmpty()) {
-            errors["discapacidad"] = "Debe seleccionar al menos una discapacidad"
+            errors["discapacidad"] = "Debe seleccionar una discapacidad"
         }
 
         // Validar descripción (opcional, depende de tus requisitos)

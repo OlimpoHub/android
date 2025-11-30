@@ -2,12 +2,8 @@
 ### Added
 - RBAC for coordinator, assistant, and scholar roles
 
-### Added
-- Atom for Multiple selects
-
 ### Changed
 - Change beneficiary detail for showing more disabilities
-- Change so now Beneficiaries can be registered with more disabilities
 
 ## [0.1.0] - 20/11/2025
 ### Added
