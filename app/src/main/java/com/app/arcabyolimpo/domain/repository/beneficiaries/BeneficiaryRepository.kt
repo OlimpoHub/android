@@ -18,5 +18,4 @@ interface BeneficiaryRepository {
     suspend fun searchBeneficiaries(query: String): List<Beneficiary>
 
     suspend fun addBeneficiary(newBeneficiary: BeneficiaryDto): Beneficiary
-    suspend fun modifyBeneficiary(modifiedBeneficiary: BeneficiaryDto): Beneficiary
 }
