@@ -1,4 +1,6 @@
-## [0.1.0] - 29/11/2025
+## [0.2.0] - 29/11/2025
+### Added
+- RBAC for coordinator, assistant, and scholar roles
 
 ### Changed
 - Change beneficiary detail for showing more disabilities
