@@ -263,12 +263,11 @@ fun modifyWorkshopScreen(
                         value = selectedImageUri,
                         onValueChange = { uri ->
                             selectedImageUri = uri
-                            viewModel.updateFormData { copy(image = uri?.toString().orEmpty()) }
+                            viewModel.setSelectedImageUri(uri)
                         },
                         isError = fieldErrors["image"] == true,
                         errorMessage = if (fieldErrors["image"] == true) "Imagen requerida" else "",
                     )
-
                     Spacer(modifier = Modifier.height(24.dp))
 
                     Row(
