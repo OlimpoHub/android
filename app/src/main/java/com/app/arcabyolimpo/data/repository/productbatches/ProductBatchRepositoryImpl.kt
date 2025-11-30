@@ -1,5 +1,6 @@
 package com.app.arcabyolimpo.data.repository.productbatches
 
+import com.app.arcabyolimpo.data.local.product.ProductBatchPreferences
 import com.app.arcabyolimpo.data.mapper.productbatches.toDomain
 import com.app.arcabyolimpo.data.mapper.productbatches.toDto
 import com.app.arcabyolimpo.data.mapper.productbatches.toModifyDto
@@ -8,6 +9,7 @@ import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.domain.model.productbatches.ProductBatch
 import com.app.arcabyolimpo.domain.repository.productbatches.ProductBatchRepository
+import java.io.IOException
 
 /**
  * Implementation of ProductBatchRepository that interacts with the remote API.
@@ -16,14 +18,46 @@ import com.app.arcabyolimpo.domain.repository.productbatches.ProductBatchReposit
  */
 class ProductBatchRepositoryImpl(
     private val api: ArcaApi,
+    private val preferences: ProductBatchPreferences,
 ) : ProductBatchRepository {
-    override suspend fun getProductBatches(): List<ProductBatch> = api.getProductBatches().map { it.toDomain() }
+    override suspend fun getProductBatches(): List<ProductBatch> {
+        if (preferences.isCacheValid()) {
+            val cachedData = preferences.getProductBatchCache()
+            if (cachedData != null) {
+                return cachedData.productBatchList
+            }
+        }
 
-    override suspend fun getProductBatch(id: String): ProductBatch = api.getProductBatch(id).toDomain()
-
+        return try {
+            val remoteList = api.getProductBatches().map { it.toDomain() }
+            preferences.saveProductBatchList(remoteList)
+            remoteList
+        } catch (e: IOException) {
+            val cachedData = preferences.getProductBatchCache()
+            if (cachedData != null) {
+                cachedData.productBatchList
+            } else {
+                throw e
+            }
+        }
+    }
+    override suspend fun getProductBatch(id: String): ProductBatch {
+        return try {
+            api.getProductBatch(id).toDomain()
+        } catch (e: IOException) {
+            val cachedData = preferences.getProductBatchCache()
+            val cachedBatch = cachedData?.productBatchList?.find { it.idInventario == id }
+            if (cachedBatch != null) {
+                cachedBatch
+            } else {
+                throw e
+            }
+        }
+    }
     override suspend fun registerProductBatch(batch: ProductBatch) {
         val dto = batch.toRegisterDto()
         api.addProductBatch(dto)
+        preferences.clearCache()
     }
 
     override suspend fun modifyProductBatch(
@@ -35,6 +69,7 @@ class ProductBatchRepositoryImpl(
             id = id,
             batch = dto,
         )
+        preferences.clearCache()
     }
 
 
@@ -48,6 +83,7 @@ class ProductBatchRepositoryImpl(
 
     override suspend fun deleteProductBatch(id: String) {
         api.deleteProductBatch(id)
+        preferences.clearCache()
     }
 }
 

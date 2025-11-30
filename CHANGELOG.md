@@ -5,9 +5,12 @@
 
 ## [0.2.0] - 29/11/2025
 ### Added
-- RBAC for coordinator, assistant, and scholar roles
+- Added offline for product batch list and detail
+
+## [0.2.0] - 29/11/2025
 
 ### Added
+- RBAC for coordinator, assistant, and scholar roles
 - Atom for Multiple selects
 
 ### Changed
