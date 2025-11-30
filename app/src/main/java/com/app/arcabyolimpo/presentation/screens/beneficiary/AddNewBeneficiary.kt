@@ -46,7 +46,7 @@ fun AddNewBeneficiaryScreen(
         val fieldErrors by viewModel.fieldErrors.collectAsStateWithLifecycle()
 
         var showConfirmDialog by remember { mutableStateOf(false) }
-
+        val selectedImageUri by viewModel.selectedImageUri.collectAsStateWithLifecycle()
         val snackbarHostState = remember { SnackbarHostState() }
         val scope = rememberCoroutineScope()
 
@@ -113,16 +113,15 @@ fun AddNewBeneficiaryScreen(
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     /** Upload image - Lado izquierdo */
-                    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
                     ImageUploadInput(
                         label = "",
                         value = selectedImageUri,
                         onValueChange = { uri ->
-                            selectedImageUri = uri
+                            viewModel.setSelectedImageUri(uri)
                             viewModel.updateFormData { copy(foto = uri?.toString().orEmpty()) }
                         },
-                        isError = false,
-                        errorMessage = null,
+                        isError = fieldErrors["foto"] != null,
+                        errorMessage = fieldErrors["foto"],
                         modifier = Modifier.weight(0.4f)
                     )
 

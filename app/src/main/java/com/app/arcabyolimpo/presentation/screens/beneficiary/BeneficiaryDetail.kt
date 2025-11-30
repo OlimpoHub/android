@@ -60,7 +60,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun BeneficiaryDetailScreen(
     onBackClick: () -> Unit,
-    onModifyClick: () -> Unit,
+    onModifyClick: (String) -> Unit,
     viewModel: BeneficiaryDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -91,13 +91,14 @@ fun BeneficiaryDetailScreen(
         showDeleteDialog = showDeleteDialog,
         onBackClick = onBackClick,
         onModifyClick = {
-            uiState.beneficiary?.id?.let { onModifyClick() }
+            uiState.beneficiary?.id?.let(onModifyClick) // Pasamos el ID al navegar
         },
         onDeleteClick = viewModel::onDeleteClicked,
         onShowDialog = { showDeleteDialog = true },
         onDismissDialog = { showDeleteDialog = false }
     )
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BeneficiaryDetailContent(
@@ -161,13 +162,15 @@ fun BeneficiaryDetailContent(
             }
             uiState.beneficiary != null -> {
                 val beneficiary = uiState.beneficiary
+                val imageUrl = beneficiary.image.takeIf { !it.isNullOrBlank() }
+
                 Column(
                     modifier = Modifier
                         .padding(paddingValues)
                         .padding(horizontal = 24.dp)
                         .fillMaxSize()
                 ) {
-                   Column(
+                    Column(
                         modifier = Modifier
                             .weight(1f)
                             .verticalScroll(rememberScrollState()),
@@ -185,7 +188,7 @@ fun BeneficiaryDetailContent(
                             ) {
                                 Image(
                                     painter = rememberAsyncImagePainter(
-                                        model = beneficiary.image,
+                                        model = imageUrl,
                                         placeholder = painterResource(id = R.drawable.ic_beneficiary_icon),
                                         error = painterResource(id = R.drawable.img_arca_logo)
                                     ),
@@ -220,7 +223,7 @@ fun BeneficiaryDetailContent(
                             }
                         }
 
-                       Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -233,7 +236,7 @@ fun BeneficiaryDetailContent(
                                 TextValue(label = "Número de teléfono", value = beneficiary.emergencyNumber.orEmpty())
                             }
                         }
-                       Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -265,10 +268,6 @@ fun BeneficiaryDetailContent(
 
                         Spacer(modifier = Modifier.width(16.dp))
 
-                        /*ModifyButton(
-                            modifier = Modifier.size(width = 112.dp, height = 40.dp),
-                            onClick = onModifyClick
-                        )*/
                     }
                 }
             }
@@ -315,7 +314,6 @@ fun DetailTextRow(label: String, value: String?) {
         )
     }
 }
-
 
 
 @Preview(name = "Activo", showBackground = true, backgroundColor = 0xFF1C1B1F)
@@ -366,7 +364,7 @@ fun BeneficiaryDetailPreviewInactive() {
                     emergencyRelation = "Padre",
                     details = "Detalles del beneficiario",
                     entryDate = "01/01/2023",
-                    image = "",
+                    image = "https://ajemplo.com",
                     disabilities = "Sí",
                     status = 0
                 )

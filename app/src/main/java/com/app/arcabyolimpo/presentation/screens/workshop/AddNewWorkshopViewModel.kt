@@ -110,35 +110,26 @@ class AddNewWorkshopViewModel @Inject constructor(
             var remoteImageUrl: String? = null
             var uploadError: String? = null
 
-            Log.d("WorkshopDebug", "--- INICIO ADD NEW WORKSHOP ---")
-            Log.d("WorkshopDebug", "Selected Image URI: $imageUri")
-
             if (imageUri != null) {
                 val fileToUpload = getFileFromUri(context, imageUri)
 
                 if (fileToUpload == null) {
                     uploadError = "Error al preparar la imagen para la subida."
-                    Log.e("WorkshopDebug", "ERROR: getFileFromUri devolvió NULL")
                 } else {
-                    Log.d("WorkshopDebug", "File to upload: ${fileToUpload.absolutePath}, Size: ${fileToUpload.length()}")
 
                     val uploadResult = postUploadImage(fileToUpload)
                         .let { flow ->
                             flow.first { it !is Result.Loading }
                         }
 
-                    Log.d("WorkshopDebug", "Resultado de subida (Remote): $uploadResult")
-
                     when (uploadResult) {
                         is Result.Success -> {
                             remoteImageUrl = uploadResult.data.url
                             fileToUpload.delete()
-                            Log.d("WorkshopDebug", "Upload SUCCESS. Remote URL: $remoteImageUrl")
                         }
                         is Result.Error -> {
                             uploadError = "Error al subir la imagen: ${uploadResult.exception.message}"
                             fileToUpload.delete()
-                            Log.e("WorkshopDebug", "Upload ERROR: ${uploadResult.exception.message}")
                         }
                         is Result.Loading -> { }
                     }
@@ -150,13 +141,6 @@ class AddNewWorkshopViewModel @Inject constructor(
                 }
             }
 
-            // --- Log de los datos finales del formulario ---
-            Log.d("WorkshopDebug", "--- DATOS FINALES DEL FORMULARIO ---")
-            Log.d("WorkshopDebug", "Name: ${_formData.value.name}")
-            Log.d("WorkshopDebug", "Start Hour: ${_formData.value.startHour}")
-            Log.d("WorkshopDebug", "Date: ${_formData.value.date}")
-            Log.d("WorkshopDebug", "Final Image URL (to DB): $remoteImageUrl") // ESTE ES EL CRÍTICO
-
             val workshopDto = WorkshopDto(
                 id = UUID.randomUUID().toString(),
                 name = _formData.value.name,
@@ -166,7 +150,7 @@ class AddNewWorkshopViewModel @Inject constructor(
                 idUser = _formData.value.idUser,
                 description = _formData.value.description,
                 date = _formData.value.date,
-                image = remoteImageUrl, // <--- Aquí ya deberías tener la URL
+                image = remoteImageUrl,
                 videoTraining = _formData.value.videoTraining
             )
 
