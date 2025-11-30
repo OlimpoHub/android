@@ -41,8 +41,19 @@ class ProductBatchRepositoryImpl(
             }
         }
     }
-    override suspend fun getProductBatch(id: String): ProductBatch = api.getProductBatch(id).toDomain()
-
+    override suspend fun getProductBatch(id: String): ProductBatch {
+        return try {
+            api.getProductBatch(id).toDomain()
+        } catch (e: IOException) {
+            val cachedData = preferences.getProductBatchCache()
+            val cachedBatch = cachedData?.productBatchList?.find { it.idInventario == id }
+            if (cachedBatch != null) {
+                cachedBatch
+            } else {
+                throw e
+            }
+        }
+    }
     override suspend fun registerProductBatch(batch: ProductBatch) {
         val dto = batch.toRegisterDto()
         api.addProductBatch(dto)
