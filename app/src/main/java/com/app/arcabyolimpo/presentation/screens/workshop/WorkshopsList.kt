@@ -24,6 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.app.arcabyolimpo.presentation.navigation.Screen
+import com.app.arcabyolimpo.presentation.screens.session.SessionViewModel
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.FilterIcon
@@ -40,8 +41,10 @@ import com.app.arcabyolimpo.ui.theme.White
 fun WorkshopsListScreen(
     navController: NavHostController,
     workshopClick: (String) -> Unit,
-    viewModel: WorkshopsListViewModel = hiltViewModel()
+    viewModel: WorkshopsListViewModel = hiltViewModel(),
+    sessionViewModel: SessionViewModel = hiltViewModel(),
 ) {
+    val role by sessionViewModel.role.collectAsState()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -83,9 +86,11 @@ fun WorkshopsListScreen(
                     )
                 },
                 floatingActionButton = {
-                    AddButton(
-                        onClick = { navController.navigate(Screen.AddNewWorkshop.route) }
-                    )
+                    if (role != "BECARIO") {
+                        AddButton(
+                            onClick = { navController.navigate(Screen.AddNewWorkshop.route) }
+                        )
+                    }
                 }
             ) { padding ->
 

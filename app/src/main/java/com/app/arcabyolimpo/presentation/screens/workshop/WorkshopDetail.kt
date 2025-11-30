@@ -24,6 +24,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.app.arcabyolimpo.presentation.screens.home.InventoryScreen
 import com.app.arcabyolimpo.presentation.navigation.Screen
+import com.app.arcabyolimpo.presentation.screens.session.SessionViewModel
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.SnackbarVisualsWithError
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
@@ -52,8 +53,10 @@ fun WorkshopDetailScreen(
     navController: NavHostController,
     workshopId: String,
     onModifyClick: (String) -> Unit,
-    viewModel: WorkshopDetailViewModel = hiltViewModel()
+    viewModel: WorkshopDetailViewModel = hiltViewModel(),
+    sessionViewModel: SessionViewModel = hiltViewModel(),
 ) {
+    val role by sessionViewModel.role.collectAsState()
     val workshop by viewModel.workshop.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
@@ -267,23 +270,27 @@ fun WorkshopDetailScreen(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    DeleteButton(
-                        modifier = Modifier.size(width = 112.dp, height = 40.dp),
-                        onClick = {
-                        // When you press delete in the details, we display the dialog
-                        viewModel.toggledecisionDialog(showdecisionDialog = true)
-                        //Log.d("ButtonDelete", "Click ")
-                        }
-                    )
+                    if (role != "BECARIO") {
+                        DeleteButton(
+                            modifier = Modifier.size(width = 112.dp, height = 40.dp),
+                            onClick = {
+                                // When you press delete in the details, we display the dialog
+                                viewModel.toggledecisionDialog(showdecisionDialog = true)
+                                //Log.d("ButtonDelete", "Click ")
+                            }
+                        )
+                    }
 
                     Spacer(modifier = Modifier.width(16.dp))
 
-                    ModifyButton(
-                        modifier = Modifier.size(width = 112.dp, height = 40.dp),
-                        onClick = {
-                            onModifyClick(workshopId)
-                        }
-                    )
+                    if (role != "BECARIO") {
+                        ModifyButton(
+                            modifier = Modifier.size(width = 112.dp, height = 40.dp),
+                            onClick = {
+                                onModifyClick(workshopId)
+                            }
+                        )
+                    }
                 }
             }
 
