@@ -259,6 +259,22 @@ interface ArcaApi {
         @Body requestBody: BeneficiaryDto,
     ): AddNewBeneficiaryDto
 
+    /**
+     * Modifies the selected beneficiary.
+     *
+     * This endpoint receives a [AddNewBeneficiaryDto] (as it uses the same
+     * DTO for both add and modify operations) with all the beneficiary's
+     * information. It updates every field with the new data.
+     *
+     * @param requestBody Data transfer object that contains the beneficiary's
+     * information required by the API to perform the update operation.
+     */
+    @POST("beneficiary/update/{idBeneficiary}")
+    suspend fun modifyBeneficiary(
+        @Path("idBeneficiary") id: String,
+        @Body requestBody: BeneficiaryDto,
+    ): AddNewBeneficiaryDto
+
     @GET("/disabilities/list")
     suspend fun getDisabilitiesList(): List<DisabilityDto>
 
