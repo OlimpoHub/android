@@ -31,7 +31,7 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.LogoutIcon
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarContent(sessionViewModel: SessionViewModel = hiltViewModel()) {
-    val username by sessionViewModel.username.collectAsState(initial = "")
+    val username by sessionViewModel.username.collectAsState()
 
     var showLogoutDialog by remember { mutableStateOf(false) }
 
@@ -61,7 +61,7 @@ fun TopBarContent(sessionViewModel: SessionViewModel = hiltViewModel()) {
                         fontWeight = FontWeight.Normal,
                     )
                     Text(
-                        text = username,
+                        text = username.toString(),
                         style = MaterialTheme.typography.headlineLarge,
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
