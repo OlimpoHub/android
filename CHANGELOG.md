@@ -1,3 +1,24 @@
+## [0.2.0] - 30/11/2025
+
+### Added
+- Added offline for product batch list and detail
+
+## [0.2.0] - 29/11/2025
+
+### Added
+- RBAC for coordinator, assistant, and scholar roles
+- Atom for Multiple selects
+
+### Changed
+- Change beneficiary detail for showing more disabilities
+- Change so now Beneficiaries can be registered with more disabilities
+
+## [0.1.0] - 20/11/2025
+### Added
+- ModifyProduct validation fields
+- RegisterProduct validation fields
+- Arrow to return register and modify product
+
 ## [0.1.0] - 20/11/2025
 ### Added
 - US for filter and order workshops.

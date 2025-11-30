@@ -23,6 +23,7 @@ import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailSc
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
 import com.app.arcabyolimpo.presentation.screens.home.assistant.CollaboratorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.home.coordinator.CoordinatorHomeScreen
+import com.app.arcabyolimpo.presentation.screens.home.scholar.ScholarHomeScreen
 import com.app.arcabyolimpo.presentation.screens.login.LoginScreen
 import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecoveryScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationScreen
@@ -100,6 +101,8 @@ sealed class Screen(
     object CoordinatorHome : Screen("coordinator")
 
     object CollaboratorHome : Screen("collaborator")
+
+    object ScholarHome : Screen("scholar")
 
     object SuppliesList : Screen("supply")
 
@@ -238,12 +241,12 @@ fun ArcaNavGraph(
                         }
 
                     UserRole.ASISTENTE ->
-                        navController.navigate(Screen.CollaboratorHome.route) {
+                        navController.navigate(Screen.CoordinatorHome.route) {
                             popUpTo(Screen.Splash.route) { inclusive = true }
                         }
 
                     UserRole.BECARIO ->
-                        navController.navigate(Screen.CollaboratorHome.route) {
+                        navController.navigate(Screen.ScholarHome.route) {
                             popUpTo(Screen.Splash.route) { inclusive = true }
                         }
 
@@ -266,12 +269,12 @@ fun ArcaNavGraph(
                             }
 
                         UserRole.ASISTENTE ->
-                            navController.navigate(Screen.CollaboratorHome.route) {
+                            navController.navigate(Screen.CoordinatorHome.route) {
                                 popUpTo(Screen.Login.route) { inclusive = true }
                             }
 
                         UserRole.BECARIO ->
-                            navController.navigate(Screen.CollaboratorHome.route) {
+                            navController.navigate(Screen.ScholarHome.route) {
                                 popUpTo(Screen.Login.route) { inclusive = true }
                             }
                     }
@@ -412,7 +415,14 @@ fun ArcaNavGraph(
 
         /** Collaborator Home Screen */
         composable(Screen.CollaboratorHome.route) {
-            CollaboratorHomeScreen(navController)
+            CollaboratorHomeScreen()
+        }
+
+        /** Scholar Home Screen */
+        composable(Screen.ScholarHome.route) {
+            ScholarHomeScreen(
+                navController = navController,
+            )
         }
 
         /** User Detail Screen */

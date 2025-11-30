@@ -97,7 +97,7 @@ class AddNewBeneficiaryViewModel @Inject constructor(
                 details = _formData.value.descripcion,
                 entryDate = _formData.value.fechaIngreso,
                 image = _formData.value.foto,
-                disabilities = _formData.value.discapacidad,
+                disabilities = _formData.value.disabilities,
                 status = 1
             )
 
@@ -209,8 +209,8 @@ class AddNewBeneficiaryViewModel @Inject constructor(
         }
 
         // Validar discapacidad
-        if (data.discapacidad.isBlank()) {
-            errors["discapacidad"] = "Debe seleccionar una discapacidad"
+        if (data.disabilities.isEmpty()) {
+            errors["discapacidad"] = "Debe seleccionar al menos una discapacidad"
         }
 
         // Validar descripción (opcional, depende de tus requisitos)
