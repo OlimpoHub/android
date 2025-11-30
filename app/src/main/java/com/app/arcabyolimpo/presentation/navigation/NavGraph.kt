@@ -21,6 +21,7 @@ import com.app.arcabyolimpo.presentation.screens.accountactivation.AccountActiva
 import com.app.arcabyolimpo.presentation.screens.beneficiary.AddNewBeneficiaryScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
+import com.app.arcabyolimpo.presentation.screens.beneficiary.modifyBeneficiaryScreen
 import com.app.arcabyolimpo.presentation.screens.home.assistant.CollaboratorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.home.coordinator.CoordinatorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.home.scholar.ScholarHomeScreen
@@ -127,6 +128,10 @@ sealed class Screen(
     }
 
     object AddNewBeneficiary : Screen("beneficiary/create")
+
+    object ModifyBeneficiary : Screen("beneficiary/update/{beneficiaryId}"){
+        fun createRoute(beneficiaryId: String) = "beneficiary/update/$beneficiaryId"
+    }
 
     object SupplyDetail : Screen("supply/{idSupply}") {
         fun createRoute(idSupply: String) = "supply/$idSupply"
@@ -685,8 +690,29 @@ fun ArcaNavGraph(
         ) {
             BeneficiaryDetailScreen(
                 onBackClick = { navController.popBackStack() },
-                onModifyClick = { /* TODO: Lógica de VM */ },
+                onModifyClick = { beneficiaryId ->
+                    navController.navigate(Screen.ModifyBeneficiary.createRoute(beneficiaryId))
+                },
                 viewModel = hiltViewModel(),
+                beneficiaryId = it.arguments?.getString("beneficiaryId") ?: ""
+            )
+        }
+
+        /**
+         * Modify Beneficiary Screen.
+         *
+         * Allows the modification of an existing and active beneficiary.
+         */
+        composable(
+            route = Screen.ModifyBeneficiary.route,
+            arguments = listOf(navArgument("beneficiaryId") { type = NavType.StringType }),
+
+            ){ backStackEntry ->
+            val beneficiaryId = backStackEntry.arguments?.getString("beneficiaryId") ?: ""
+            modifyBeneficiaryScreen(
+                navController = navController,
+                viewModel = hiltViewModel(),
+                beneficiaryId = beneficiaryId
             )
         }
 
