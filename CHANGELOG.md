@@ -1,7 +1,12 @@
 ## [0.2.0] - 30/11/2025
 
+### Changed
+- Added a wey to prevent certain chars and emojis in workshop inputs. 
+
+## [0.2.0] - 29/11/2025
 ### Added
 - Added offline for product batch list and detail
+- Added a Capacitations view for Disabilities List
 
 ## [0.2.0] - 29/11/2025
 

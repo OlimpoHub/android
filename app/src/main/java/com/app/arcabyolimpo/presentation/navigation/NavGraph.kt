@@ -21,6 +21,8 @@ import com.app.arcabyolimpo.presentation.screens.accountactivation.AccountActiva
 import com.app.arcabyolimpo.presentation.screens.beneficiary.AddNewBeneficiaryScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
+import com.app.arcabyolimpo.presentation.screens.capacitations.DisabilitiesList
+import com.app.arcabyolimpo.presentation.screens.capacitations.DisabilitiesListScreen
 import com.app.arcabyolimpo.presentation.screens.home.assistant.CollaboratorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.home.coordinator.CoordinatorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.home.scholar.ScholarHomeScreen
@@ -129,6 +131,8 @@ sealed class Screen(
     }
 
     object AddNewBeneficiary : Screen("beneficiary/create")
+
+    object CapacitationScreen : Screen("/disabilities/list")
 
     object SupplyDetail : Screen("supply/{idSupply}") {
         fun createRoute(idSupply: String) = "supply/$idSupply"
@@ -694,6 +698,23 @@ fun ArcaNavGraph(
                 onBackClick = { navController.popBackStack() },
                 onModifyClick = { /* TODO: Lógica de VM */ },
                 viewModel = hiltViewModel(),
+            )
+        }
+
+        /**
+         * Capacitations Screen.
+         *
+         * Shows a list of the disabilities created by the users
+         */
+
+        composable(route = Screen.CapacitationScreen.route) {
+            DisabilitiesListScreen(
+                navController = navController,
+                onDisabilityClick = { id ->
+                    // TODO: Navigate to disability detail when screen is created
+                    // navController.navigate(Screen.DisabilityDetail.createRoute(id))
+                },
+                onBackClick = { navController.popBackStack() }
             )
         }
 
