@@ -1,4 +1,5 @@
 package com.app.arcabyolimpo.data.remote.api
+import com.app.arcabyolimpo.data.remote.dto.attendance.AttendanceDto
 import com.app.arcabyolimpo.data.remote.dto.auth.LoginRequestDto
 import com.app.arcabyolimpo.data.remote.dto.auth.LoginResponseDto
 import com.app.arcabyolimpo.data.remote.dto.auth.RefreshRequestDto
@@ -466,6 +467,15 @@ interface ArcaApi {
     suspend fun postCreateQr(
         @Body request: CreateQrDto,
     ): ResponseBody
+
+    @GET("attendance")
+    suspend fun getAttendanceByUser(
+        @Query("userId") userId: String
+    ): List<AttendanceDto>
+
+
+
+
 
     /**
      * Validates a scanned QR code.

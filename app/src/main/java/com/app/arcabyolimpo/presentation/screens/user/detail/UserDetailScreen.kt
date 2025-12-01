@@ -28,6 +28,7 @@ fun UserDetailScreen(
     onBackClick: () -> Unit,
     onEditClick: (String) -> Unit = {},
     onDeleteClick: () -> Unit = {},
+    onAttendanceClick: (String) -> Unit = {},
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val scaffoldState = rememberScaffoldState()
@@ -147,6 +148,9 @@ fun UserDetailScreen(
                         collab = uiState.collab!!,
                         onEditClick = { uiState.collab?.idUsuario?.let { onEditClick(it.toString()) } },
                         onDeleteClick = { showConfirmDialog = true },
+                        onAttendanceClick = { uiState.collab?.idUsuario?.let { id ->
+                            onAttendanceClick(id.toString())
+                        } }
                     )
                 }
             }

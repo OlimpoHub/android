@@ -5,6 +5,10 @@
 ### Changed
 - Added a wey to prevent certain chars and emojis in workshop inputs. 
 
+### Fixed
+- Fixed attendance date/time formatting.
+- Improved "View Attendance" button alignment and styling.
+
 ## [0.2.0] - 29/11/2025
 ### Added
 - Added offline for product batch list and detail
@@ -20,14 +24,15 @@
 - Change beneficiary detail for showing more disabilities
 - Change so now Beneficiaries can be registered with more disabilities
 
+## [0.1.0] - 25/11/2025
+### Added
+- US for consult attendance
+
 ## [0.1.0] - 20/11/2025
 ### Added
 - ModifyProduct validation fields
 - RegisterProduct validation fields
 - Arrow to return register and modify product
-
-## [0.1.0] - 20/11/2025
-### Added
 - US for filter and order workshops.
 - Functional go back button to Supplies List Screen
 - Functional go back buttons to Orders and Inventory Screens

@@ -18,6 +18,7 @@ import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
 import com.app.arcabyolimpo.domain.model.auth.UserRole
 import com.app.arcabyolimpo.presentation.common.components.LoadingShimmer
 import com.app.arcabyolimpo.presentation.screens.accountactivation.AccountActivationScreen
+import com.app.arcabyolimpo.presentation.screens.attendance.AttendanceListScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.AddNewBeneficiaryScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
@@ -86,6 +87,10 @@ sealed class Screen(
 
     object UpdateUserScreen : Screen("update_user/{userId}") {
         fun createRoute(userId: String) = "update_user/$userId"
+    }
+
+    object AttendanceList : Screen("attendance_list/{userId}") {
+        fun createRoute(userId: String) = "attendance_list/$userId"
     }
 
     object TokenVerification : Screen("user/verify-token?token={token}") {
@@ -441,6 +446,9 @@ fun ArcaNavGraph(
                     navController.navigate(Screen.UpdateUserScreen.createRoute(id))
                 },
                 onDeleteClick = { navController.popBackStack() },
+                onAttendanceClick = { id ->
+                    navController.navigate(Screen.AttendanceList.createRoute(id))
+                },
             )
         }
 
@@ -472,6 +480,17 @@ fun ArcaNavGraph(
                 },
             )
         }
+
+        /** Attendance List Screen */
+        composable(
+            route = Screen.AttendanceList.route,
+            arguments = listOf(navArgument("userId") { type = NavType.StringType }),
+        ) {
+            AttendanceListScreen(
+                onBackClick = { navController.popBackStack() },
+            )
+        }
+
 
         /**
          * Workshops List Screen.
