@@ -1,4 +1,6 @@
 ## [0.2.0] - 30/11/2025
+### Added
+- feature for scanning qr code for attendance
 
 ### Changed
 - Added a wey to prevent certain chars and emojis in workshop inputs. 
