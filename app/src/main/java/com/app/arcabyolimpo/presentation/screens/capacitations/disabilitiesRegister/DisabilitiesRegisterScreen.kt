@@ -90,7 +90,7 @@ fun DisabilitiesRegisterScreen(
                 label = "Nombre",
                 value = state.nombre,
                 onValueChange = { viewModel.onFieldChange("nombre", it) },
-                placeholder = "Galletas de chocolate",
+                placeholder = "Nombre de la discapacidad...",
                 isError = state.isNombreError,
                 errorMessage = if (state.isNombreError) "Ingresa el nombre de la discapacidad" else "",
             )
@@ -103,40 +103,38 @@ fun DisabilitiesRegisterScreen(
                 isError = state.isCaracteristicasError,
                 errorMessage = if (state.isCaracteristicasError) "Ingresa las características de la discapacidad" else "",
             )
-        }
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            Column(
+            Row(
                 modifier =
                     Modifier
-                        .weight(1f)
-                        .padding(horizontal = 8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                CancelButton(
-                    onClick = onBackClick,
-                )
-            }
-            Column(
-                modifier =
-                    Modifier
-                        .weight(1f)
-                        .padding(horizontal = 8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                SaveButton(
-                    onClick = {
-                        viewModel.validateAndRegister(onSuccess = onCreated)
-                    },
-                )
+                Column(
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .padding(horizontal = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    CancelButton(
+                        onClick = onBackClick,
+                    )
+                }
+                Column(
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .padding(horizontal = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    SaveButton(
+                        onClick = {
+                            viewModel.validateAndRegister(onSuccess = onCreated)
+                        },
+                    )
+                }
             }
         }
     }
