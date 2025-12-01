@@ -341,9 +341,9 @@ class SupplyRepositoryImpl
             expirationDate: String,
             idSupply: String,
         ): SupplyBatchList {
-            batchesPreferences.getSupplyBatchCache()?.let { cache ->
-                if (batchesPreferences.isCacheValid()) {
-                    Log.d("SupplyRepo", "Using VALID cache")
+            batchesPreferences.getSupplyBatchCache(expirationDate, idSupply)?.let { cache ->
+                if (batchesPreferences.isCacheValid(expirationDate, idSupply)) {
+                    Log.d("SupplyRepo", "Using VALID cache for expirationDate=$expirationDate, idSupply=$idSupply")
                     return SupplyBatchList(batch = cache.supplyBatchesList)
                 }
             }
@@ -356,10 +356,15 @@ class SupplyRepositoryImpl
                 val domainList = combinedItems.map { it.toDomain() }
 
                 batchesPreferences.saveSupplyBatchesList(
+                    expirationDate = expirationDate,
+                    idSupply = idSupply,
                     supplyBatchesList = domainList,
                 )
 
-                Log.d("SupplyRepo", "API success, saved ${domainList.size} items in cache")
+                Log.d(
+                    "SupplyRepo",
+                    "API success, saved ${domainList.size} items in cache for expirationDate=$expirationDate, idSupply=$idSupply",
+                )
                 Log.d(
                     "SupplyRepo",
                     "api returned responseSize=${response.size}, combinedItems=${combinedItems.size}, ids=${combinedItems.joinToString {
@@ -371,8 +376,8 @@ class SupplyRepositoryImpl
             } catch (e: Exception) {
                 Log.e("SupplyRepo", "API error: ${e.message}. Trying fallback cache")
 
-                batchesPreferences.getSupplyBatchCache()?.let { expiredCache ->
-                    Log.d("SupplyRepo", "Using EXPIRED cache")
+                batchesPreferences.getSupplyBatchCache(expirationDate, idSupply)?.let { expiredCache ->
+                    Log.d("SupplyRepo", "Using EXPIRED cache for expirationDate=$expirationDate, idSupply=$idSupply")
                     return SupplyBatchList(batch = expiredCache.supplyBatchesList)
                 }
 

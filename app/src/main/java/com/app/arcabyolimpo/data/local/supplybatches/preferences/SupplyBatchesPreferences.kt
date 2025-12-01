@@ -26,17 +26,40 @@ class SupplyBatchesPreferences
                 Context.MODE_PRIVATE,
             )
 
-        fun saveSupplyBatchesList(supplyBatchesList: List<SupplyBatchItem>) {
+        /**
+         * Generates a unique key for each supply batch list based on expirationDate and idSupply
+         */
+        private fun generateKey(
+            expirationDate: String,
+            idSupply: String,
+        ): String = "${expirationDate}_$idSupply"
+
+        /**
+         * Saves a supply batch list for a specific expirationDate and idSupply combination
+         */
+        fun saveSupplyBatchesList(
+            expirationDate: String,
+            idSupply: String,
+            supplyBatchesList: List<SupplyBatchItem>,
+        ) {
+            val key = generateKey(expirationDate, idSupply)
             prefs
                 .edit {
-                    putString(KEY_BATCHES_LIST, gson.toJson(supplyBatchesList))
-                        .putLong(KEY_LAST_UPDATE, System.currentTimeMillis())
+                    putString("${SupplyBatchesConstants.KEY_BATCHES_LIST}_$key", gson.toJson(supplyBatchesList))
+                    putLong("${SupplyBatchesConstants.KEY_LAST_UPDATE}_$key", System.currentTimeMillis())
                 }
         }
 
-        fun getSupplyBatchCache(): CachedSupplyBatch? {
-            val json = prefs.getString(KEY_BATCHES_LIST, null)
-            val lastUpdate = prefs.getLong(KEY_LAST_UPDATE, 0)
+        /**
+         * Retrieves cached supply batch list for a specific expirationDate and idSupply
+         */
+        fun getSupplyBatchCache(
+            expirationDate: String,
+            idSupply: String,
+        ): CachedSupplyBatch? {
+            val key = generateKey(expirationDate, idSupply)
+            val json = prefs.getString("${SupplyBatchesConstants.KEY_BATCHES_LIST}_$key", null)
+            val lastUpdate = prefs.getLong("${SupplyBatchesConstants.KEY_LAST_UPDATE}_$key", 0)
 
             if (json.isNullOrEmpty() || lastUpdate == 0L) return null
 
@@ -49,8 +72,12 @@ class SupplyBatchesPreferences
             )
         }
 
-        fun isCacheValid(): Boolean {
-            val lastUpdate = prefs.getLong(KEY_LAST_UPDATE, 0)
+        fun isCacheValid(
+            expirationDate: String,
+            idSupply: String,
+        ): Boolean {
+            val key = generateKey(expirationDate, idSupply)
+            val lastUpdate = prefs.getLong("${SupplyBatchesConstants.KEY_LAST_UPDATE}_$key", 0)
             return System.currentTimeMillis() - lastUpdate < SupplyBatchesConstants.CACHE_DURATION
         }
 
