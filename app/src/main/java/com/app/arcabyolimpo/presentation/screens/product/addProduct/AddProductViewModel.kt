@@ -36,7 +36,7 @@ class AddProductViewModel @Inject constructor(
     private val postUploadImage: PostUploadImage,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(ProductAddUiState())
+    private var _uiState = MutableStateFlow(ProductAddUiState())
 
     private val _selectedImageUri = MutableStateFlow<Uri?>(null)
     val selectedImageUri: StateFlow<Uri?> = _selectedImageUri.asStateFlow()
@@ -65,6 +65,8 @@ class AddProductViewModel @Inject constructor(
      * Exposes the current [ProductAddUiState] as a read-only StateFlow for the UI to observe.
      */
     val uiState = _uiState.asStateFlow()
+    private val regexValidation = Regex("^[a-zA-Z0-9 áéíóúÁÉÍÓÚñÑ.,:;\\-()\\/\"'\n]*$")
+    private val priceValidation = Regex("^(\\d*\\.)?\\d+$")
 
     init {
         loadDropDownData()
@@ -99,25 +101,137 @@ class AddProductViewModel @Inject constructor(
 
     // --------------------------- Input Handlers ---------------------------
     fun onNameChange(name: String) {
-        _uiState.update { it.copy(name = name) }
+        _uiState.update {
+            it.copy(
+                name = name,
+                isNameError = false,
+            )
+        }
     }
     fun onUnitaryPriceChange(unitaryPrice: String) {
-        _uiState.update { it.copy(unitaryPrice = unitaryPrice) }
+        _uiState.update {
+            it.copy(
+                unitaryPrice = unitaryPrice,
+                isUnitaryPriceError = false,
+            )
+        }
+
     }
     fun onImageSelected(uri: Uri?) {
-        _uiState.update { it.copy(selectedImage = uri) }
+        _uiState.update {
+            it.copy(
+                selectedImage = uri,
+                isImageError = false,
+            )
+        }
     }
     fun onStatusChange(newStatus: Int) {
-        _uiState.update { it.copy(status = newStatus) }
+        _uiState.update {
+            it.copy(
+                status = newStatus,
+                isStatusError = false,
+            )
+        }
     }
     fun onWorkshopSelected(idWorkshop: String) {
-        _uiState.update { it.copy(selectedWorkshopId = idWorkshop) }
+        _uiState.update {
+            it.copy(
+                selectedWorkshopId = idWorkshop,
+                isWorkshopError = false,
+            )
+        }
     }
     fun onCategorySelected(idCategory: String) {
-        _uiState.update { it.copy(selectedCategoryId = idCategory) }
+        _uiState.update {
+            it.copy(
+                selectedCategoryId = idCategory,
+                isCategoryError = false,
+            )
+        }
     }
     fun onDescriptionChange(description: String) {
-        _uiState.update { it.copy(description = description) }
+        _uiState.update {
+            it.copy(
+                description = description,
+                isDescriptionError = false,
+            )
+        }
+    }
+
+    fun isValidFields() : Boolean {
+        _uiState.update {
+            it.copy(
+                isNameError = false, nameErrorMessage = "",
+                isUnitaryPriceError = false, unitaryPriceErrorMessage = "",
+                isDescriptionError = false, descriptionErrorMessage = "",
+                isWorkshopError = false, workshopErrorMessage = "",
+                isCategoryError = false, categoryErrorMessage = "",
+                isImageError = false, imageErrorMessage = "",
+                isStatusError = false, statusErrorMessage = "",
+            )
+        }
+
+        val state = _uiState.value
+        var isValid = true
+
+        // 1. Validación de Nombre
+        if (state.name.isBlank()) {
+            _uiState.update { it.copy(isNameError = true, nameErrorMessage = "El nombre no puede estar vacío.") }
+            isValid = false
+        } else if (!state.name.matches(regexValidation)) {
+            _uiState.update { it.copy(isNameError = true, nameErrorMessage = "El nombre contiene caracteres inválidos.") }
+            isValid = false
+        } else if (state.name.length > 35) {
+            _uiState.update { it.copy(isNameError = true, nameErrorMessage = "El nombre no puede exceder los 35 caracteres.") }
+            isValid = false
+        }
+
+        // 2. Validación de Imagen
+        if(state.selectedImage == null) {
+            _uiState.update { it.copy(isImageError = true, imageErrorMessage = "Debes seleccionar una imagen.") }
+            isValid = false
+        }
+
+        // 3. Validación de Precio Unitario
+        if(state.unitaryPrice.isBlank()) {
+            _uiState.update { it.copy(isUnitaryPriceError = true, unitaryPriceErrorMessage = "El precio unitario no puede estar vacío.") }
+            isValid = false
+        } else if(!state.unitaryPrice.matches(priceValidation)) {
+            _uiState.update { it.copy(isUnitaryPriceError = true, unitaryPriceErrorMessage = "Ingresa un precio válido (ej: 10.50 o 10).") }
+            isValid = false
+        }
+
+        // 4. Validación de Taller
+        if(state.selectedWorkshopId.isBlank()) {
+            _uiState.update { it.copy(isWorkshopError = true, workshopErrorMessage = "Debes seleccionar un taller.") }
+            isValid = false
+        }
+
+        // 5. Validación de Categoría
+        if(state.selectedCategoryId.isBlank()) {
+            _uiState.update { it.copy(isCategoryError = true, categoryErrorMessage = "Debes seleccionar una categoría.") }
+            isValid = false
+        }
+
+        // 6. Validación de Estatus
+        if(state.status == 0) {
+            _uiState.update { it.copy(isStatusError = true, statusErrorMessage = "El estatus seleccionado es inválido (no puede ser 0).") }
+            isValid = false
+        }
+
+        // 7. Validación de Descripción
+        if(state.description.isBlank()) {
+            _uiState.update { it.copy(isDescriptionError = true, descriptionErrorMessage = "La descripción no puede estar vacía.") }
+            isValid = false
+        } else if (state.description.length > 401) {
+            _uiState.update { it.copy(isDescriptionError = true, descriptionErrorMessage = "La descripción no puede exceder los 400 caracteres.") }
+            isValid = false
+        } else if (!state.description.matches(regexValidation)) {
+            _uiState.update { it.copy(isDescriptionError = true, descriptionErrorMessage = "La descripción contiene caracteres inválidos.") }
+            isValid = false
+        }
+
+        return isValid
     }
 
     /**
@@ -140,6 +254,7 @@ class AddProductViewModel @Inject constructor(
             || state.selectedImage == null
         ) {
             _uiState.update { it.copy(error = "Completa todos los campos", isLoading = false) }
+        if(!isValidFields()) {
             return
         }
         viewModelScope.launch {

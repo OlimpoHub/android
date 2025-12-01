@@ -20,6 +20,7 @@ import com.app.arcabyolimpo.ui.theme.HighlightInputBlue
 import com.app.arcabyolimpo.ui.theme.HighlightRed
 import com.app.arcabyolimpo.ui.theme.InputBackgroundBlue
 import com.app.arcabyolimpo.ui.theme.InputBackgroundRed
+import com.app.arcabyolimpo.ui.theme.PlaceholderGray
 import com.app.arcabyolimpo.ui.theme.SelectInputBlue
 import com.app.arcabyolimpo.ui.theme.White
 
@@ -57,7 +58,7 @@ fun DescriptionInput(
         Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
-            color = colorScheme.onSurface,
+            color = White,
         )
 
         OutlinedTextField(
@@ -66,7 +67,7 @@ fun DescriptionInput(
             placeholder = {
                 Text(
                     text = placeholder,
-                    color = colorScheme.onSurface.copy(alpha = PLACEHOLDER_ALPHA)
+                    color = PlaceholderGray
                 )
             },
             modifier = Modifier
@@ -76,8 +77,7 @@ fun DescriptionInput(
             shape = RoundedCornerShape(16.dp),
             isError = isError,
             visualTransformation = visualTransformation,
-            textStyle = TextStyle(color = colorScheme.onSurface),
-            minLines = minLines,
+            textStyle = TextStyle(color = White),            minLines = minLines,
             maxLines = maxLines,
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = if (isError) InputBackgroundRed else InputBackgroundBlue,
@@ -103,7 +103,7 @@ fun DescriptionInput(
             Spacer(Modifier.weight(1f))
             Text(
                 text = "${limited.length}/$maxChars",
-                color = if (isError) colorScheme.error else colorScheme.onSurface.copy(alpha = PLACEHOLDER_ALPHA),
+                color = if (isError) colorScheme.error else White,
                 style = MaterialTheme.typography.bodySmall
             )
         }
@@ -116,7 +116,9 @@ fun DescriptionInput(
 private fun DescriptionInputPreview() {
     ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false) {
         var v by remember { mutableStateOf("") }
-        Column(Modifier.fillMaxWidth().padding(16.dp)) {
+        Column(Modifier
+            .fillMaxWidth()
+            .padding(16.dp)) {
             // Example: 92% width, capped at 560.dp
             DescriptionInput(
                 value = v,

@@ -27,6 +27,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,6 +52,7 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDial
 import com.app.arcabyolimpo.presentation.ui.components.atoms.status.ActiveStatus
 import com.app.arcabyolimpo.presentation.ui.components.atoms.status.InactiveStatus
 import com.app.arcabyolimpo.domain.model.beneficiaries.Beneficiary
+import com.app.arcabyolimpo.presentation.screens.session.SessionViewModel
 import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
 import com.app.arcabyolimpo.presentation.ui.components.molecules.TextValue
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
@@ -109,8 +111,11 @@ fun BeneficiaryDetailContent(
     onModifyClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onShowDialog: () -> Unit,
-    onDismissDialog: () -> Unit
+    onDismissDialog: () -> Unit,
+    sessionViewModel: SessionViewModel = hiltViewModel(),
 ) {
+    val role by sessionViewModel.role.collectAsState()
+
     if (showDeleteDialog) {
         DecisionDialog(
             dialogTitle = "¿Seguro que quieres eliminar a ${uiState.beneficiary?.name ?: "..."}?",
@@ -246,7 +251,14 @@ fun BeneficiaryDetailContent(
                                 StatusField(isActive = beneficiary.status == 1)
                             }
                             Column(modifier = Modifier.weight(1f)) {
-                                TextValue(label = "Discapacidades", value = beneficiary.disabilities.orEmpty())
+                                TextValue(
+                                    label = "Discapacidades",
+                                    value = if (beneficiary.disabilities.isNotEmpty()) {
+                                        beneficiary.disabilities.joinToString(", ")
+                                    } else {
+                                        "Ninguna"
+                                    }
+                                )
                             }
                         }
 
@@ -261,10 +273,12 @@ fun BeneficiaryDetailContent(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        DeleteButton(
-                            modifier = Modifier.size(width = 112.dp, height = 40.dp),
-                            onClick = { onShowDialog() }
-                        )
+                        if (role == "COORDINADOR") {
+                            DeleteButton(
+                                modifier = Modifier.size(width = 112.dp, height = 40.dp),
+                                onClick = { onShowDialog() }
+                            )
+                        }
 
                         Spacer(modifier = Modifier.width(16.dp))
 
@@ -333,7 +347,7 @@ fun BeneficiaryDetailPreviewActive() {
                     details = "Detalles del beneficiario",
                     entryDate = "01/01/2023",
                     image = "",
-                    disabilities = "Sí",
+                    disabilities = listOf("Visual", "Auditiva"),
                     status = 1
                 )
             ),
@@ -364,8 +378,13 @@ fun BeneficiaryDetailPreviewInactive() {
                     emergencyRelation = "Padre",
                     details = "Detalles del beneficiario",
                     entryDate = "01/01/2023",
+<<<<<<< HEAD
                     image = "https://ajemplo.com",
                     disabilities = "Sí",
+=======
+                    image = "",
+                    disabilities = listOf("Si"),
+>>>>>>> d85561512dae736dbd5d5c6e4cad4b641ed0fff3
                     status = 0
                 )
             ),

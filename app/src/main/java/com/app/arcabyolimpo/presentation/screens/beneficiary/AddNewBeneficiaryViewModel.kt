@@ -160,8 +160,13 @@ class AddNewBeneficiaryViewModel @Inject constructor(
                 emergencyRelation = _formData.value.relacionContactoEmergencia,
                 details = _formData.value.descripcion,
                 entryDate = _formData.value.fechaIngreso,
+<<<<<<< HEAD
                 image = remoteImageUrl, // ⬅️ URL remota
                 disabilities = _formData.value.discapacidad,
+=======
+                image = _formData.value.foto,
+                disabilities = _formData.value.disabilities,
+>>>>>>> d85561512dae736dbd5d5c6e4cad4b641ed0fff3
                 status = 1
             )
 
@@ -276,8 +281,8 @@ class AddNewBeneficiaryViewModel @Inject constructor(
         }
 
         // Validar discapacidad
-        if (data.discapacidad.isBlank()) {
-            errors["discapacidad"] = "Debe seleccionar una discapacidad"
+        if (data.disabilities.isEmpty()) {
+            errors["discapacidad"] = "Debe seleccionar al menos una discapacidad"
         }
 
         // Validar descripción (opcional, depende de tus requisitos)

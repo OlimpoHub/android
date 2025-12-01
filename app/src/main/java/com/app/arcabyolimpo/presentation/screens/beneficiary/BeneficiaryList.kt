@@ -57,6 +57,7 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.BeneficiaryCard
 import com.app.arcabyolimpo.presentation.ui.components.organisms.Filter
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import com.app.arcabyolimpo.presentation.navigation.Screen
+import com.app.arcabyolimpo.presentation.screens.session.SessionViewModel
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.ReturnIcon
 import com.app.arcabyolimpo.ui.theme.White
@@ -74,6 +75,7 @@ fun BeneficiaryListScreen(
     onNotificationClick: () -> Unit,
     viewModel: BeneficiaryListViewModel = hiltViewModel(),
 ) {
+
     val state by viewModel.uiState.collectAsState()
     val filterState by viewModel.uiFiltersState.collectAsState()
 
@@ -158,7 +160,10 @@ fun BeneficiaryList(
     onClearFilters: () -> Unit,
     onAddBeneficiaryClick: () -> Unit,
     onBackClick: () -> Unit,
+    sessionViewModel: SessionViewModel = hiltViewModel(),
 ) {
+    val role by sessionViewModel.role.collectAsState()
+
     var showFilter by remember { mutableStateOf(false) }
 
     ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false) {
@@ -175,20 +180,13 @@ fun BeneficiaryList(
                                 color = Color.White,
                                 fontWeight = FontWeight.Bold,
                             )
-                        },
-                        navigationIcon = {
-                            ReturnIcon(
-                                modifier = Modifier
-                                    .padding(start = 16.dp)
-                                    .size(28.dp)
-                                    .clickable { onBackClick() },
-                                tint = White
-                            )
-                        },
+                        }
                     )
                 },
                 floatingActionButton = {
-                    AddButton(onClick = onAddBeneficiaryClick)
+                    if (role == "COORDINADOR") {
+                        AddButton(onClick = onAddBeneficiaryClick)
+                    }
                 }
             ) { padding ->
                 Column(

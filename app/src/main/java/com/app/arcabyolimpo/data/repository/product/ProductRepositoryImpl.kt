@@ -153,10 +153,31 @@ class ProductRepositoryImpl @Inject constructor(
         product: ProductUpdate
     ): Result<Unit> {
         return try {
+<<<<<<< HEAD
             val idWorkshop = product.idWorkshop.toRequestBody("text/plain".toMediaTypeOrNull())
+=======
+            val imagePart = product.image?.let {
+                val input = context.contentResolver.openInputStream(it)
+                val bytes = input?.readBytes()
+                input?.close()
+
+                if (bytes != null) {
+                    val requestFile = bytes.toRequestBody(
+                        context.contentResolver.getType(it)?.toMediaTypeOrNull()
+                    )
+                    MultipartBody.Part.createFormData(
+                        "image",
+                        "image.jpg",
+                        requestFile
+                    )
+                } else null
+            }
+
+            val idWorkshop = product.idWorkshop?.toRequestBody("text/plain".toMediaTypeOrNull())
+>>>>>>> d85561512dae736dbd5d5c6e4cad4b641ed0fff3
             val name = product.name.toRequestBody("text/plain".toMediaTypeOrNull())
             val unitaryPrice = product.unitaryPrice.toRequestBody("text/plain".toMediaTypeOrNull())
-            val idCategory = product.idCategory.toRequestBody("text/plain".toMediaTypeOrNull())
+            val idCategory = product.idCategory?.toRequestBody("text/plain".toMediaTypeOrNull())
             val description = product.description.toRequestBody("text/plain".toMediaTypeOrNull())
             val status = product.status.toRequestBody("text/plain".toMediaTypeOrNull())
             val imagePart = product.image?.toRequestBody("text/plain".toMediaTypeOrNull())
