@@ -65,39 +65,9 @@ fun CoordinatorHomeScreen(navController: NavHostController) {
                     }
                 )
 
-                2 -> {
-                    Column(modifier = Modifier.fillMaxSize()) {
-                        TopAppBar(
-                            title = {
-                                Text(
-                                    "Pedidos",
-                                    color = Color.White,
-                                    fontSize = 24.sp,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                            },
-                            colors = TopAppBarDefaults.topAppBarColors(
-                                containerColor = Color(0xFF040610),
-                            )
-                        )
+                2 -> InventoryScreen(navController, inventoryPressedTrigger)
 
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "En Proceso...",
-                                color = Color.White,
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
-                }
-
-                3 -> InventoryScreen(navController, inventoryPressedTrigger)
-
-                4 -> BeneficiaryListScreen(
+                3 -> BeneficiaryListScreen(
                     navController = navController,
                     onBeneficiaryClick = { beneficiaryId ->
                         navController.navigate(Screen.BeneficiaryDetail.createRoute(beneficiaryId))
@@ -115,7 +85,7 @@ fun CoordinatorHomeScreen(navController: NavHostController) {
 
                     when (index) {
                         0 -> homePressedTrigger++
-                        3 -> inventoryPressedTrigger++
+                        2 -> inventoryPressedTrigger++
                     }
 
                 } else {
