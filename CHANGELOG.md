@@ -1,3 +1,7 @@
+## [0.2.0] - 01/12/2025
+### Added
+- Register Disability Functionalities
+
 ## [0.2.0] - 30/11/2025
 ### Added
 - feature for scanning qr code for attendance
