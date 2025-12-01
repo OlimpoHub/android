@@ -306,7 +306,7 @@ interface ArcaApi {
     @GET("/disabilities/list")
     suspend fun getDisabilitiesList(): List<DisabilityDto>
 
-    @GET("/discapacity/add")
+    @POST("discapacity/add")
     suspend fun registerDisability(
         @Body requestBody: DisabilityRegisterDto,
     )
