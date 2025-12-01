@@ -120,15 +120,13 @@ object AppModule {
     @Provides
     @Singleton
     fun provideSupplyPreferences(
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
     ): SupplyPreferences = SupplyPreferences(context)
 
     /** Provides SupplyLocalDataSource for local supply operations */
     @Provides
     @Singleton
-    fun provideSupplyLocalDataSource(
-        preferences: SupplyPreferences
-    ): SupplyLocalDataSource = SupplyLocalDataSource(preferences)
+    fun provideSupplyLocalDataSource(preferences: SupplyPreferences): SupplyLocalDataSource = SupplyLocalDataSource(preferences)
 
     /**
      * Provides the [SupplyRepository] implementation.
@@ -147,7 +145,7 @@ object AppModule {
         api: ArcaApi,
         localDataSource: SupplyLocalDataSource,
         @ApplicationContext context: Context,
-    ): SupplyRepository = SupplyRepositoryImpl(api, localDataSource,context)
+    ): SupplyRepository = SupplyRepositoryImpl(api, localDataSource, context)
 
     /**
      * Provides the [ProductRepository] implementation.
@@ -205,9 +203,7 @@ object AppModule {
     fun provideProductBatchPreferences(
         @ApplicationContext context: Context,
         gson: Gson,
-    ): ProductBatchPreferences {
-        return ProductBatchPreferences(context, gson)
-    }
+    ): ProductBatchPreferences = ProductBatchPreferences(context, gson)
 
     /** Provides the [ProductBatchRepository] implementation.*/
     @Provides
@@ -215,10 +211,12 @@ object AppModule {
     fun provideProductBatchRepository(
         api: ArcaApi,
         preferences: ProductBatchPreferences,
-    ): ProductBatchRepository = ProductBatchRepositoryImpl(
-        api = api,
-        preferences = preferences
-    )
+    ): ProductBatchRepository =
+        ProductBatchRepositoryImpl(
+            api = api,
+            preferences = preferences,
+        )
+
     @Provides
     @Singleton
     fun provideQrRepository(api: ArcaApi): QrRepository = QrRepositoryImpl(api)
