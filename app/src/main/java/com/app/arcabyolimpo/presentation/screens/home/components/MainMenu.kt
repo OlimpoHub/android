@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,21 +38,28 @@ fun MainMenu(
     onSelect: (String) -> Unit,
     sessionViewModel: SessionViewModel = hiltViewModel(),
 ) {
-    val role by sessionViewModel.role.collectAsState(initial = "")
+    val role by sessionViewModel.role.collectAsState()
 
     Column(
         modifier =
             Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(vertical = 24.dp, horizontal = 16.dp),
+                .padding(vertical = 24.dp, horizontal = 16.dp)
+                .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(36.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         HomeScreenCard(
             name = "QR Asistencia",
             image = painterResource(id = R.drawable.img_qr),
-            onClick = { onSelect("qr") },
+            onClick = {
+                if (role == "BECARIO") {
+                    onSelect("readQR")
+                } else {
+                    onSelect("qr")
+                }
+            }
         )
 
         Text(

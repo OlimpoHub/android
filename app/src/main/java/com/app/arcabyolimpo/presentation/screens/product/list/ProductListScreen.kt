@@ -11,7 +11,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -106,13 +110,13 @@ fun ProductListScreen(
         topBar = {
             TopAppBar(
                 navigationIcon = {
-                    ReturnIcon(
-                        modifier = Modifier
-                            .padding(start = 16.dp)
-                            .size(28.dp)
-                            .clickable { onBackClick() },
-                        tint = White
-                    )
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            "Back",
+                            tint = White,
+                        )
+                    }
                 },
                 title = {
                     Text(
@@ -125,14 +129,6 @@ fun ProductListScreen(
                             Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
-                    )
-                },
-                actions = {
-                    NotificationIcon(
-                        modifier =
-                            Modifier
-                                .padding(horizontal = 24.dp)
-                                .size(28.dp),
                     )
                 },
                 colors =

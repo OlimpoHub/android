@@ -6,6 +6,8 @@ import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
@@ -20,7 +22,6 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDial
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.CancelButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SaveButton
-import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.CalendarIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.DateInput
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.DescriptionInput
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.ImageUploadInput
@@ -71,7 +72,6 @@ fun AddNewWorkshopScreen(
             viewModel.loadUsers()
         }
 
-        // Mostrar error de carga de usuarios
         LaunchedEffect(usersError) {
             usersError?.let { error ->
                 scope.launch {
@@ -82,6 +82,11 @@ fun AddNewWorkshopScreen(
 
         Scaffold(
             containerColor = Background,
+            topBar = {
+                AddWorkshopTopBar(
+                    onBackClick = { navController.popBackStack() },
+                )
+            },
             snackbarHost = {
                 SnackbarHost(snackbarHostState) { data ->
                     Snackbarcustom(
@@ -90,6 +95,7 @@ fun AddNewWorkshopScreen(
                     )
                 }
             }
+
         ) { padding ->
             Column(
                 modifier =
@@ -101,19 +107,6 @@ fun AddNewWorkshopScreen(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.Start,
             ) {
-                Spacer(modifier = Modifier.height(24.dp))
-
-                /** Title of the forms */
-                Text(
-                    text = "Registrar Nuevo Taller",
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = White,
-                    modifier = Modifier.padding(bottom = 16.dp),
-                    fontWeight = FontWeight.Bold,
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
                 /** Name of the workshop */
                 StandardInput(
                     label = "Nombre",
@@ -121,8 +114,8 @@ fun AddNewWorkshopScreen(
                     value = formData.name,
                     onValueChange = { viewModel.updateFormData { copy(name = it) } },
                     isError = fieldErrors["name"] == true,
-                    errorMessage = null,
-                )
+                    errorMessage = if (fieldErrors["name"] == true) "Nombre inválido" else "",
+                    )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -137,7 +130,7 @@ fun AddNewWorkshopScreen(
                         value = formData.startHour,
                         onValueChange = { viewModel.updateFormData { copy(startHour = it) } },
                         isError = fieldErrors["startHour"] == true,
-                        errorMessage = "",
+                        errorMessage = if (fieldErrors["startHour"] == true) "Hora inválida, debe ser HH:mm" else "",
                         modifier = Modifier.weight(1f)
                     )
 
@@ -148,7 +141,7 @@ fun AddNewWorkshopScreen(
                         value = formData.finishHour,
                         onValueChange = { viewModel.updateFormData { copy(finishHour = it) } },
                         isError = fieldErrors["finishHour"] == true,
-                        errorMessage = "",
+                        errorMessage = if (fieldErrors["finishHour"] == true) "Hora inválida, debe ser HH:mm" else "",
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -164,8 +157,8 @@ fun AddNewWorkshopScreen(
                         viewModel.updateFormData { copy(date = newDate) }
                     },
                     isError = fieldErrors["date"] == true,
-                    errorMessage = "",
-                )
+                    errorMessage = if (fieldErrors["date"] == true) "Fecha inválida, debe ser dd/MM/yyyy" else "",
+                    )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -176,8 +169,8 @@ fun AddNewWorkshopScreen(
                     value = formData.description,
                     onValueChange = { viewModel.updateFormData { copy(description = it) } },
                     isError = fieldErrors["description"] == true,
-                    errorMessage = null,
-                )
+                    errorMessage = if (fieldErrors["description"] == true) "Descripción requerida" else "",
+                    )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -241,8 +234,8 @@ fun AddNewWorkshopScreen(
                     value = formData.videoTraining,
                     onValueChange = { viewModel.updateFormData { copy(videoTraining = it) } },
                     isError = fieldErrors["videoTraining"] == true,
-                    errorMessage = null,
-                )
+                    errorMessage = if (fieldErrors["videoTraining"] == true) "URL inválida, debe ser https://" else "",
+                    )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -255,8 +248,8 @@ fun AddNewWorkshopScreen(
                         selectedImageUri = uri
                         viewModel.updateFormData { copy(image = uri?.toString().orEmpty()) }
                     },
-                    isError = false,
-                    errorMessage = null,
+                    errorMessage = if (fieldErrors["image"] == true) "Imagen requerida" else "",
+                    isError = fieldErrors["image"] == true,
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -343,3 +336,36 @@ fun AddNewWorkshopScreen(
         }
     }
 }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddWorkshopTopBar(
+    onBackClick: () -> Unit
+) {
+    TopAppBar(
+        title = {
+            Text(
+                text = "Registrar Nuevo Taller",
+                style = MaterialTheme.typography.titleLarge,
+                color = White,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = onBackClick) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Regresar",
+                    tint = White
+                )
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Background,
+            titleContentColor = White,
+            navigationIconContentColor = White
+        )
+    )
+}
+
+
+

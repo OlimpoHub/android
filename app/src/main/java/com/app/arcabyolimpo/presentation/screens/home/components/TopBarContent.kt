@@ -11,14 +11,16 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.app.arcabyolimpo.presentation.screens.session.SessionViewModel
-import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.ConfigurationIcon
+import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.LogoutIcon
-import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
 
 /**
  * Displays the main top bar for the Home screen, showing a welcome message,
@@ -29,10 +31,26 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationI
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarContent(sessionViewModel: SessionViewModel = hiltViewModel()) {
-    val username by sessionViewModel.username.collectAsState(initial = "")
-    val role by sessionViewModel.role.collectAsState(initial = "")
+    val username by sessionViewModel.username.collectAsState()
+
+    var showLogoutDialog by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.fillMaxWidth()) {
+
+        if (showLogoutDialog) {
+            DecisionDialog(
+                onDismissRequest = { showLogoutDialog = false },
+                onConfirmation = {
+                    showLogoutDialog = false
+                    sessionViewModel.logout()
+                },
+                dialogTitle = "Cerrar sesión",
+                dialogText = "¿Estás seguro de que deseas cerrar sesión?",
+                confirmText = "Confirmar",
+                dismissText = "Cancelar"
+            )
+        }
+
         TopAppBar(
             title = {
                 Column {
@@ -43,7 +61,7 @@ fun TopBarContent(sessionViewModel: SessionViewModel = hiltViewModel()) {
                         fontWeight = FontWeight.Normal,
                     )
                     Text(
-                        text = username,
+                        text = username.toString(),
                         style = MaterialTheme.typography.headlineLarge,
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
@@ -55,10 +73,7 @@ fun TopBarContent(sessionViewModel: SessionViewModel = hiltViewModel()) {
                     containerColor = Color(0xFF040610),
                 ),
             actions = {
-                IconButton(onClick = { /* TODO: Notifications action */ }) {
-                    NotificationIcon()
-                }
-                IconButton(onClick = { sessionViewModel.logout() }) {
+                IconButton(onClick = { showLogoutDialog = true  }) {
                     LogoutIcon()
                 }
             },

@@ -41,6 +41,16 @@ class AddNewWorkshopViewModel @Inject constructor(
     private val _usersError = MutableStateFlow<String?>(null)
     val usersError: StateFlow<String?> = _usersError.asStateFlow()
 
+    private val regexValidation = Regex("^[a-zA-Z0-9 áéíóúÁÉÍÓÚñÑ/]*$")
+    private val urlTypingRegex = Regex("^[a-zA-Z0-9:/.?=&_\\-]*$")
+
+    fun validateInput(text: String, regex: Regex, maxLength: Int): Boolean
+    {
+        if (text.isEmpty()) {return true}
+        return text.length <= maxLength && regex.matches(text)
+    }
+
+
     fun loadUsers() {
         viewModelScope.launch {
             _usersLoading.value = true
@@ -114,7 +124,21 @@ class AddNewWorkshopViewModel @Inject constructor(
         }
     }
 
+    /** Function that updates the form data, making sure that it follows the regex and dosen't
+     * exceed the char number */
+
     fun updateFormData(update: WorkshopFormData.() -> WorkshopFormData) {
+        val currentState = _formData.value
+        val newState = currentState.update()
+        if (currentState.name != newState.name) {
+            if (!validateInput(newState.name, regexValidation, maxLength = 50)) return
+        }
+        if (currentState.description != newState.description) {
+            if (!validateInput(newState.description, regexValidation, maxLength = 400)) return
+        }
+        if (currentState.videoTraining != newState.videoTraining) {
+            if (!validateInput(newState.name,urlTypingRegex, 100)) return
+        }
         _formData.update { it.update() }
         clearFieldErrors()
     }
@@ -129,6 +153,17 @@ class AddNewWorkshopViewModel @Inject constructor(
         _fieldErrors.value = emptyMap()
     }
 
+    private fun isValidUrl(url: String?): Boolean {
+        if (url.isNullOrBlank()) return false
+
+        val regex = Regex(
+            pattern = "^(https?://)([\\w.-]+)\\.([a-z\\.]{2,6})([/\\w .-]*)*/?$",
+            options = setOf(RegexOption.IGNORE_CASE)
+        )
+
+        return regex.matches(url)
+    }
+
     private fun validateForm(): Boolean {
         val data = _formData.value
         val errors = mutableMapOf<String, Boolean>()
@@ -141,7 +176,13 @@ class AddNewWorkshopViewModel @Inject constructor(
         if (data.date.isBlank()) errors["date"] = true
         if (data.description.isBlank()) errors["description"] = true
         if (data.idUser.isBlank()) errors["idUser"] = true
-        if (data.videoTraining.isBlank()) errors["videoTraining"] = true
+        if (data.videoTraining.isBlank()) {
+            errors["videoTraining"] = true
+        } else {
+            if (!isValidUrl(data.videoTraining)) {
+                errors["videoTraining"] = true
+            }
+        }
 
         if (data.startHour.isNotBlank() && !hourRegex.matches(data.startHour)) {
             errors["startHour"] = true
@@ -152,8 +193,10 @@ class AddNewWorkshopViewModel @Inject constructor(
         if (data.date.isNotBlank() && !dateRegex.matches(data.date)) {
             errors["date"] = true
         }
+
         _fieldErrors.value = errors
         return errors.isEmpty()
     }
+
 }
 

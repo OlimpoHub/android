@@ -14,7 +14,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
 import com.app.arcabyolimpo.domain.model.auth.UserRole
 import com.app.arcabyolimpo.presentation.common.components.LoadingShimmer
@@ -23,38 +22,37 @@ import com.app.arcabyolimpo.presentation.screens.attendance.AttendanceListScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.AddNewBeneficiaryScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
+import com.app.arcabyolimpo.presentation.screens.capacitations.DisabilitiesList
+import com.app.arcabyolimpo.presentation.screens.capacitations.DisabilitiesListScreen
 import com.app.arcabyolimpo.presentation.screens.home.assistant.CollaboratorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.home.coordinator.CoordinatorHomeScreen
+import com.app.arcabyolimpo.presentation.screens.home.scholar.ScholarHomeScreen
 import com.app.arcabyolimpo.presentation.screens.login.LoginScreen
 import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecoveryScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
 import com.app.arcabyolimpo.presentation.screens.product.addProduct.ProductAddScreen
-import com.app.arcabyolimpo.presentation.screens.product.updateProduct.ProductUpdateScreen
 import com.app.arcabyolimpo.presentation.screens.product.list.ProductListScreen
-import com.app.arcabyolimpo.presentation.screens.product.list.ProductListUiState
-import com.app.arcabyolimpo.presentation.screens.product.list.ProductListViewModel
 import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDetailScreen
-// import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDeleteTestScreen
+import com.app.arcabyolimpo.presentation.screens.product.updateProduct.ProductUpdateScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchDetail.ProductBatchDetailScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchModify.ProductBatchModifyScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchRegister.ProductBatchRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchesList.ProductBatchesListScreen
 import com.app.arcabyolimpo.presentation.screens.qr.qr.QrScreen
+import com.app.arcabyolimpo.presentation.screens.qr.scanqr.ScanQrScreen
+import com.app.arcabyolimpo.presentation.screens.qr.scanresult.ScanResultScreen
 import com.app.arcabyolimpo.presentation.screens.qr.workshopselection.QrWorkshopsListScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyBatchList.SupplyBatchListScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
-import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
-import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
-import com.app.arcabyolimpo.presentation.screens.supply.supplybatchmodify.SupplyBatchModifyScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyUpdate.SupplyUpdateScreen
+import com.app.arcabyolimpo.presentation.screens.supply.supplybatchmodify.SupplyBatchModifyScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplybatchregister.SupplyBatchRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
-import com.app.arcabyolimpo.presentation.screens.user.UserListScreen
 import com.app.arcabyolimpo.presentation.screens.user.detail.UserDetailScreen
 import com.app.arcabyolimpo.presentation.screens.user.register.UserRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.user.updateuser.UpdateUserScreen
@@ -111,6 +109,8 @@ sealed class Screen(
 
     object CollaboratorHome : Screen("collaborator")
 
+    object ScholarHome : Screen("scholar")
+
     object SuppliesList : Screen("supply")
 
     object WorkshopsList : Screen("workshop")
@@ -121,7 +121,7 @@ sealed class Screen(
 
     object AddNewWorkshop : Screen("workshop/add")
 
-    object ModifyWorkshop : Screen("workshop/modify/{idTaller}"){
+    object ModifyWorkshop : Screen("workshop/modify/{idTaller}") {
         fun createRoute(idTaller: String) = "workshop/modify/$idTaller"
     }
 
@@ -136,6 +136,8 @@ sealed class Screen(
     }
 
     object AddNewBeneficiary : Screen("beneficiary/create")
+
+    object CapacitationScreen : Screen("/disabilities/list")
 
     object SupplyDetail : Screen("supply/{idSupply}") {
         fun createRoute(idSupply: String) = "supply/$idSupply"
@@ -171,7 +173,7 @@ sealed class Screen(
             idInsumo: String,
         ) = "supply_batch_list/dates/$date?idInsumo=$idInsumo"
     }
-    
+
     object ProductDetail : Screen("product/{productId}") {
         fun createRoute(productId: String) = "product/$productId"
     }
@@ -194,6 +196,10 @@ sealed class Screen(
             workshopName: String,
         ) = "qr/workshop_selection/show_qr/$workshopID/$workshopName"
     }
+
+    object ScanQr : Screen("qr/scan_qr")
+
+    object ValidateQr : Screen("qr/scan_qr/validate_qr")
 }
 
 /**
@@ -244,12 +250,12 @@ fun ArcaNavGraph(
                         }
 
                     UserRole.ASISTENTE ->
-                        navController.navigate(Screen.CollaboratorHome.route) {
+                        navController.navigate(Screen.CoordinatorHome.route) {
                             popUpTo(Screen.Splash.route) { inclusive = true }
                         }
 
                     UserRole.BECARIO ->
-                        navController.navigate(Screen.CollaboratorHome.route) {
+                        navController.navigate(Screen.ScholarHome.route) {
                             popUpTo(Screen.Splash.route) { inclusive = true }
                         }
 
@@ -272,12 +278,12 @@ fun ArcaNavGraph(
                             }
 
                         UserRole.ASISTENTE ->
-                            navController.navigate(Screen.CollaboratorHome.route) {
+                            navController.navigate(Screen.CoordinatorHome.route) {
                                 popUpTo(Screen.Login.route) { inclusive = true }
                             }
 
                         UserRole.BECARIO ->
-                            navController.navigate(Screen.CollaboratorHome.route) {
+                            navController.navigate(Screen.ScholarHome.route) {
                                 popUpTo(Screen.Login.route) { inclusive = true }
                             }
                     }
@@ -418,9 +424,15 @@ fun ArcaNavGraph(
 
         /** Collaborator Home Screen */
         composable(Screen.CollaboratorHome.route) {
-            CollaboratorHomeScreen()
+            CollaboratorHomeScreen(navController)
         }
 
+        /** Scholar Home Screen */
+        composable(Screen.ScholarHome.route) {
+            ScholarHomeScreen(
+                navController = navController,
+            )
+        }
 
         /** User Detail Screen */
         composable(
@@ -465,7 +477,7 @@ fun ArcaNavGraph(
                         ?.savedStateHandle
                         ?.set("refresh_detail_$userId", true)
                     navController.popBackStack()
-                }
+                },
             )
         }
 
@@ -516,11 +528,13 @@ fun ArcaNavGraph(
             arguments = listOf(navArgument("id") { type = NavType.StringType }),
         ) { backStackEntry ->
             val workshopId = backStackEntry.arguments?.getString("id") ?: ""
-            WorkshopDetailScreen(navController,
+            WorkshopDetailScreen(
+                navController,
                 workshopId,
                 onModifyClick = { workshopId ->
                     navController.navigate(Screen.ModifyWorkshop.createRoute(workshopId))
-                })
+                },
+            )
         }
 
         /**
@@ -547,17 +561,43 @@ fun ArcaNavGraph(
         composable(
             route = Screen.ModifyWorkshop.route,
             arguments = listOf(navArgument("idTaller") { type = NavType.StringType }),
-
-        ){ backStackEntry ->
+        ) { backStackEntry ->
             val workshopId = backStackEntry.arguments?.getString("idTaller") ?: ""
             modifyWorkshopScreen(
                 navController = navController,
                 viewModel = hiltViewModel(),
-                workshopId = workshopId
+                workshopId = workshopId,
             )
         }
 
         /**
+
+         * Supply List Screen.
+         *
+         * This composable represents the screen where users can view and interact with
+         * the list of available supplies.
+         *
+         * It connects to the [SupplyListScreen] composable, which displays the UI and
+         * interacts with its corresponding [SuppliesListViewModel] to handle data fetching,
+         * loading states, and errors.
+         *
+         */
+        composable(Screen.SuppliesList.route) {
+            SupplyListScreen(
+                onSupplyClick = { id ->
+                    navController.navigate("supply/$id")
+                },
+                onAddSupplyClick = {
+                    navController.navigate(Screen.SupplyAdd.route)
+                },
+                onBackClick = {
+                    navController.popBackStack()
+                },
+            )
+        }
+
+        /**
+
          * Supply Batch Register Screen.
          *
          * This composable represents the screen where users can view and interact with
@@ -577,6 +617,13 @@ fun ArcaNavGraph(
             SupplyBatchRegisterScreen(
                 supplyId = supplyId,
                 onRegisterClick = {
+                    // Pass a snackbar message to the previous back stack entry so it shows the toast after navigation
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("snackbarMessage", "Lote registrado correctamente")
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("snackbarSuccess", true)
                     navController.popBackStack()
                 },
                 onBackClick = {
@@ -593,6 +640,12 @@ fun ArcaNavGraph(
             SupplyBatchModifyScreen(
                 supplyBatchId = batchId,
                 onRegisterClick = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("snackbarMessage", "Lote modificado correctamente")
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("snackbarSuccess", true)
                     navController.popBackStack()
                 },
                 onBackClick = {
@@ -607,6 +660,7 @@ fun ArcaNavGraph(
         ) { backStackEntry ->
             val idSupply = backStackEntry.arguments?.getString("idSupply")
             SuppliesDetailScreen(
+                navController = navController,
                 idInsumo = idSupply ?: "",
                 onBackClick = { navController.popBackStack() },
                 onClickAddSupplyBatch = {
@@ -667,6 +721,23 @@ fun ArcaNavGraph(
         }
 
         /**
+         * Capacitations Screen.
+         *
+         * Shows a list of the disabilities created by the users
+         */
+
+        composable(route = Screen.CapacitationScreen.route) {
+            DisabilitiesListScreen(
+                navController = navController,
+                onDisabilityClick = { id ->
+                    // TODO: Navigate to disability detail when screen is created
+                    // navController.navigate(Screen.DisabilityDetail.createRoute(id))
+                },
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+
+        /**
          * Add New Supply Screen.
          *
          * Pantalla para registrar un nuevo insumo.
@@ -679,6 +750,7 @@ fun ArcaNavGraph(
                 onCancel = {
                     navController.popBackStack()
                 },
+                onBackClick = { navController.popBackStack() },
             )
         }
         /**
@@ -781,16 +853,15 @@ fun ArcaNavGraph(
                 onAddProductClick = {
                     navController.navigate(Screen.ProductAdd.route)
                 },
-                onBackClick ={
-                  navController.navigateUp()
+                onBackClick = {
+                    navController.navigateUp()
                 },
             )
         }
 
-
         composable(
             route = Screen.ProductDetail.route,
-            arguments = listOf(navArgument("productId") { type = NavType.StringType } ),
+            arguments = listOf(navArgument("productId") { type = NavType.StringType }),
         ) { backStackEntry ->
             val productId = backStackEntry.arguments?.getString("productId") ?: ""
             ProductDetailScreen(
@@ -805,13 +876,12 @@ fun ArcaNavGraph(
             )
         }
 
-
-
         composable(
             route = Screen.ProductUpdate.route,
-            arguments = listOf(
-                navArgument("idProduct") { type = NavType.StringType }
-            )
+            arguments =
+                listOf(
+                    navArgument("idProduct") { type = NavType.StringType },
+                ),
         ) {
             ProductUpdateScreen(
                 onModifyClick = {
@@ -841,7 +911,7 @@ fun ArcaNavGraph(
             val date = backStackEntry.arguments?.getString("date") ?: ""
             val idInsumo = backStackEntry.arguments?.getString("idInsumo") ?: ""
             android.util.Log.d("NavGraph", "SupplyBatchList args received: date=$date, idInsumo=$idInsumo")
-                SupplyBatchListScreen(
+            SupplyBatchListScreen(
                 supplyId = idInsumo,
                 supplyName = "",
                 date = date,
@@ -857,7 +927,7 @@ fun ArcaNavGraph(
 
         composable(
             route = Screen.SupplyUpdate.route,
-            arguments = listOf(navArgument("idSupply") { type = NavType.StringType })
+            arguments = listOf(navArgument("idSupply") { type = NavType.StringType }),
         ) { backStackEntry ->
 
             SupplyUpdateScreen(
@@ -870,7 +940,8 @@ fun ArcaNavGraph(
                 },
                 onCancel = {
                     navController.popBackStack()
-                }
+                },
+                onBackClick = { navController.popBackStack() },
             )
         }
 
@@ -899,6 +970,32 @@ fun ArcaNavGraph(
                 onBackClick = { navController.popBackStack() },
                 workshopId = id,
                 workshopName = name,
+            )
+        }
+
+        composable(Screen.ScanQr.route) {
+            ScanQrScreen(
+                onBackClick = { navController.popBackStack() },
+                onScanSuccess = { qrValue ->
+                    navController.currentBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("qrValue", qrValue)
+                    navController.navigate(Screen.ValidateQr.route)
+                },
+            )
+        }
+
+        composable(route = Screen.ValidateQr.route) { backStackEntry ->
+            val qrValue =
+                navController.previousBackStackEntry
+                    ?.savedStateHandle
+                    ?.get<String>("qrValue")
+
+            ScanResultScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                qrValue = qrValue,
             )
         }
     }

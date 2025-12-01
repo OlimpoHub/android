@@ -30,6 +30,31 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.WorkshopCard
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import com.app.arcabyolimpo.ui.theme.Background
 
+/**
+ * Screen that displays the list of available workshops and allows the user to select
+ * one in order to proceed with the QR-based attendance flow.
+ *
+ * This screen connects to [QrWorkshopsListViewModel] to fetch and observe workshop data,
+ * applies search-based filtering, and renders the results in a scrollable list. It includes
+ * a top bar with navigation controls and uses theming consistent with the app’s dark mode.
+ *
+ * ## Atomic Design Level
+ * **Organism** — Composed of multiple UI units:
+ * - Atoms: `ReturnIcon`, `SearchInput`, `FilterIcon`, text labels
+ * - Molecules: Search bar row, individual `WorkshopCard` items
+ * - Organism: Full workshop selection flow (search → list → action)
+ *
+ * ## Behavior
+ * - Loads the list of workshops on initialization via the ViewModel.
+ * - Allows text-based filtering through the search input.
+ * - Displays loading, empty, and error states with appropriate UI feedback.
+ * - Emits the selected workshop through [workshopClick], providing its ID and name.
+ *
+ * @param onBackClick Action executed when the back button in the top app bar is pressed.
+ * @param workshopClick Callback invoked when the user taps a workshop card (workshopId, workshopName).
+ * @param viewModel Injected [QrWorkshopsListViewModel] providing workshop data and search state.
+ */
+
 @Suppress("ktlint:standard:function-naming")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,11 +82,6 @@ fun QrWorkshopsListScreen(
                         navigationIcon = {
                             IconButton(onClick = onBackClick) {
                                 ReturnIcon()
-                            }
-                        },
-                        actions = {
-                            Box(modifier = Modifier.padding(end = 28.dp)) {
-                                NotificationIcon()
                             }
                         },
                     )

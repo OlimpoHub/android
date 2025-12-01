@@ -39,8 +39,9 @@ class AddNewBeneficiaryViewModel @Inject constructor(
     private val _formData = MutableStateFlow(BeneficiaryFormData())
     val formData: StateFlow<BeneficiaryFormData> = _formData.asStateFlow()
 
-    private val _fieldErrors = MutableStateFlow<Map<String, Boolean>>(emptyMap())
-    val fieldErrors: StateFlow<Map<String, Boolean>> = _fieldErrors.asStateFlow()
+    // CAMBIO: Ahora es Map<String, String?> para almacenar mensajes de error
+    private val _fieldErrors = MutableStateFlow<Map<String, String?>>(emptyMap())
+    val fieldErrors: StateFlow<Map<String, String?>> = _fieldErrors.asStateFlow()
 
     private val _disabilities = MutableStateFlow<List<Disability>>(emptyList())
     val disabilities: StateFlow<List<Disability>> = _disabilities.asStateFlow()
@@ -96,7 +97,7 @@ class AddNewBeneficiaryViewModel @Inject constructor(
                 details = _formData.value.descripcion,
                 entryDate = _formData.value.fechaIngreso,
                 image = _formData.value.foto,
-                disabilities = _formData.value.discapacidad,
+                disabilities = _formData.value.disabilities,
                 status = 1
             )
 
@@ -156,28 +157,65 @@ class AddNewBeneficiaryViewModel @Inject constructor(
      */
     private fun validateForm(): Boolean {
         val data = _formData.value
-        val errors = mutableMapOf<String, Boolean>()
-        val dateRegex = Regex("^\\d{4}-\\d{2}-\\d{2}$")
-        val phoneRegex = Regex("^\\d{10}$")
+        val errors = mutableMapOf<String, String?>()
+        val dateRegex = Regex("^\\d{2}/\\d{2}/\\d{4}$")
 
-        if (data.nombre.isBlank()) errors["nombre"] = true
-        if (data.apellidoPaterno.isBlank()) errors["apellidoPaterno"] = true
-        if (data.apellidoMaterno.isBlank()) errors["apellidoMaterno"] = true
-        if (data.fechaNacimiento.isBlank()) errors["fechaNacimiento"] = true
-        if (data.numeroEmergencia.isBlank()) errors["numeroEmergencia"] = true
-        if (data.nombreContactoEmergencia.isBlank()) errors["nombreContactoEmergencia"] = true
-        if (data.relacionContactoEmergencia.isBlank()) errors["relacionContactoEmergencia"] = true
-        if (data.fechaIngreso.isBlank()) errors["fechaIngreso"] = true
-        if (data.discapacidad.isBlank()) errors["discapacidad"] = true
+        // Validar nombre
+        if (data.nombre.isBlank()) {
+            errors["nombre"] = "El nombre es obligatorio"
+        }
 
-        if (data.fechaNacimiento.isNotBlank() && !dateRegex.matches(data.fechaNacimiento)) {
-            errors["fechaNacimiento"] = true
+        // Validar apellido paterno
+        if (data.apellidoPaterno.isBlank()) {
+            errors["apellidoPaterno"] = "El apellido paterno es obligatorio"
         }
-        if (data.fechaIngreso.isNotBlank() && !dateRegex.matches(data.fechaIngreso)) {
-            errors["fechaIngreso"] = true
+
+        // Validar apellido materno
+        if (data.apellidoMaterno.isBlank()) {
+            errors["apellidoMaterno"] = "El apellido materno es obligatorio"
         }
-        if (data.numeroEmergencia.isNotBlank() && !phoneRegex.matches(data.numeroEmergencia)) {
-            errors["numeroEmergencia"] = true
+
+        // Validar fecha de nacimiento
+        if (data.fechaNacimiento.isBlank()) {
+            errors["fechaNacimiento"] = "La fecha de nacimiento es obligatoria"
+        } else if (!dateRegex.matches(data.fechaNacimiento)) {
+            errors["fechaNacimiento"] = "Formato inválido. Use DD/MM/YYYY"
+        }
+
+        // Validar número de emergencia
+        if (data.numeroEmergencia.isBlank()) {
+            errors["numeroEmergencia"] = "El número de teléfono es obligatorio"
+        } else if (data.numeroEmergencia.length != 10) {
+            errors["numeroEmergencia"] = "El número debe tener 10 dígitos"
+        } else if (!data.numeroEmergencia.all { it.isDigit() }) {
+            errors["numeroEmergencia"] = "El número solo debe contener dígitos"
+        }
+
+        // Validar nombre de contacto de emergencia
+        if (data.nombreContactoEmergencia.isBlank()) {
+            errors["nombreContactoEmergencia"] = "El nombre del contacto es obligatorio"
+        }
+
+        // Validar relación del contacto de emergencia
+        if (data.relacionContactoEmergencia.isBlank()) {
+            errors["relacionContactoEmergencia"] = "La relación del tutor es obligatoria"
+        }
+
+        // Validar fecha de ingreso
+        if (data.fechaIngreso.isBlank()) {
+            errors["fechaIngreso"] = "La fecha de ingreso es obligatoria"
+        } else if (!dateRegex.matches(data.fechaIngreso)) {
+            errors["fechaIngreso"] = "Formato inválido. Use DD/MM/YYYY"
+        }
+
+        // Validar discapacidad
+        if (data.disabilities.isEmpty()) {
+            errors["discapacidad"] = "Debe seleccionar al menos una discapacidad"
+        }
+
+        // Validar descripción (opcional, depende de tus requisitos)
+        if (data.descripcion.isBlank()) {
+            errors["descripcion"] = "La descripción es obligatoria"
         }
 
         _fieldErrors.value = errors

@@ -2,6 +2,9 @@ package com.app.arcabyolimpo.di
 
 import android.content.Context
 import com.app.arcabyolimpo.data.local.auth.UserPreferences
+import com.app.arcabyolimpo.data.local.product.ProductBatchPreferences
+import com.app.arcabyolimpo.data.local.supplies.preferences.SupplyLocalDataSource
+import com.app.arcabyolimpo.data.local.supplies.preferences.SupplyPreferences
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.interceptor.AuthInterceptor
 import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
@@ -28,7 +31,7 @@ import com.app.arcabyolimpo.domain.repository.qr.QrRepository
 import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
 import com.app.arcabyolimpo.domain.repository.user.UsersRepository
 import com.app.arcabyolimpo.domain.repository.workshops.WorkshopRepository
-import com.app.arcabyolimpo.domain.usecase.productbatches.GetProductBatchesUseCase
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -66,6 +69,10 @@ object AppModule {
             .addInterceptor(AuthInterceptor(authPreferences))
             .authenticator(TokenAuthenticator(authPreferences, sessionManager, BASE_URL))
             .build()
+
+    @Provides
+    @Singleton
+    fun provideGson(): com.google.gson.Gson = com.google.gson.Gson()
 
     /**
      * Provides a singleton [Retrofit] instance configured with:
@@ -111,6 +118,18 @@ object AppModule {
     @Singleton
     fun providePasswordUserRepository(api: ArcaApi): PasswordUserRepository = PasswordUserRepositoryImpl(api)
 
+    /** Provides SupplyPreferences for caching supplies data */
+    @Provides
+    @Singleton
+    fun provideSupplyPreferences(
+        @ApplicationContext context: Context,
+    ): SupplyPreferences = SupplyPreferences(context)
+
+    /** Provides SupplyLocalDataSource for local supply operations */
+    @Provides
+    @Singleton
+    fun provideSupplyLocalDataSource(preferences: SupplyPreferences): SupplyLocalDataSource = SupplyLocalDataSource(preferences)
+
     /**
      * Provides the [SupplyRepository] implementation.
      *
@@ -126,8 +145,9 @@ object AppModule {
     @Singleton
     fun provideSupplyRepository(
         api: ArcaApi,
+        localDataSource: SupplyLocalDataSource,
         @ApplicationContext context: Context,
-    ): SupplyRepository = SupplyRepositoryImpl(api, context)
+    ): SupplyRepository = SupplyRepositoryImpl(api, localDataSource, context)
 
     /**
      * Provides the [ProductRepository] implementation.
@@ -180,10 +200,24 @@ object AppModule {
     @Singleton
     fun provideUsersRepository(api: ArcaApi): UsersRepository = UsersRepositoryImpl(api)
 
+    @Provides
+    @Singleton
+    fun provideProductBatchPreferences(
+        @ApplicationContext context: Context,
+        gson: Gson,
+    ): ProductBatchPreferences = ProductBatchPreferences(context, gson)
+
     /** Provides the [ProductBatchRepository] implementation.*/
     @Provides
     @Singleton
-    fun provideProductBatchRepository(api: ArcaApi): ProductBatchRepository = ProductBatchRepositoryImpl(api)
+    fun provideProductBatchRepository(
+        api: ArcaApi,
+        preferences: ProductBatchPreferences,
+    ): ProductBatchRepository =
+        ProductBatchRepositoryImpl(
+            api = api,
+            preferences = preferences,
+        )
 
     @Provides
     @Singleton

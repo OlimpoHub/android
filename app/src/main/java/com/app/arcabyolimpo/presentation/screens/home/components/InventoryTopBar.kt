@@ -35,11 +35,6 @@ fun InventoryTopBar() {
                 TopAppBarDefaults.topAppBarColors(
                     containerColor = Color(0xFF040610),
                 ),
-            actions = {
-                IconButton(onClick = { /* TODO: Notifications action */ }) {
-                    NotificationIcon()
-                }
-            },
         )
     }
 }

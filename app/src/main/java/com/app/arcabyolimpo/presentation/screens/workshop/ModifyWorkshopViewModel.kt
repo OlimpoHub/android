@@ -70,6 +70,15 @@ class ModifyWorkshopViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
+    private val regexValidation = Regex("^[a-zA-Z0-9 áéíóúÁÉÍÓÚñÑ]*$")
+    private val urlTypingRegex = Regex("^[a-zA-Z0-9:/.?=&_\\-]*$")
+
+    fun validateInput(text: String, regex: Regex, maxLength: Int): Boolean
+    {
+        if (text.isEmpty()) {return true}
+        return text.length <= maxLength && regex.matches(text)
+    }
+
 
     fun loadUsers() {
         viewModelScope.launch {
@@ -112,7 +121,7 @@ class ModifyWorkshopViewModel @Inject constructor(
                 val workshopData = repository.getWorkshopsById(idWorkshop)
                 _workshop.value = workshopData
 
-                Log.d("WORKSHOP_DEBUG", "Hora Inicio (Cruda): ${workshopData?.startHour}")
+                Log.d("WORKSHOP_DEBUG", "Workshop: ${workshopData}")
                 if (workshopData != null) {
                     val cleanDate = formatWorkshopDate(workshopData.date)
                     _formData.update {
@@ -128,7 +137,6 @@ class ModifyWorkshopViewModel @Inject constructor(
                         )
                     }
                     _formattedDate.value = formatWorkshopDate(workshopData.date)
-                    Log.d("WORKSHOP_DEBUG", "  startHour: ${_formData.value.startHour}")
                 } else {
                     _workLoadError.value = "No se encontró el taller"
                 }
@@ -148,12 +156,13 @@ class ModifyWorkshopViewModel @Inject constructor(
             val instant = Instant.parse(dateString)
             val zonedDateTime = instant.atZone(ZoneId.systemDefault())
 
-            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
             zonedDateTime.format(formatter)
         } catch (e: Exception) {
 
             if (dateString.matches(Regex("^\\d{4}-\\d{2}-\\d{2}"))) {
-                dateString
+                val parts = dateString.split("-")
+                "${parts[2]}/${parts[1]}/${parts[0]}"
             } else {
                 Log.e("WORKSHOP_DEBUG", "Error al formatear o validar fecha: $dateString", e)
                 ""
@@ -178,6 +187,7 @@ class ModifyWorkshopViewModel @Inject constructor(
                 image = _formData.value.image,
                 videoTraining = _formData.value.videoTraining
             )
+            Log.d("WORKSHOP_DEBUG", "Fecha: ${_formData?.value?.date}")
             postModifyWorkshop(workshopDto).collect { result ->
                 _uiState.update { state ->
                     when (result) {
@@ -207,11 +217,24 @@ class ModifyWorkshopViewModel @Inject constructor(
     private fun formatHour(hourString: String?): String {
         return hourString?.takeIf { it.length >= 5 }?.substring(0, 5) ?: ""
     }
+    /** Function that updates the form data, making sure that it follows the regex and dosen't
+     * exceed the char number */
+
     fun updateFormData(update: WorkshopFormData.() -> WorkshopFormData) {
+        val currentState = _formData.value
+        val newState = currentState.update()
+        if (currentState.name != newState.name) {
+            if (!validateInput(newState.name,regexValidation, 50)) return
+        }
+        if (currentState.description != newState.description) {
+            if (!validateInput(newState.name,regexValidation, 400)) return
+        }
+        if (currentState.videoTraining != newState.videoTraining) {
+            if (!validateInput(newState.name,urlTypingRegex, 100)) return
+        }
         _formData.update { it.update() }
         clearFieldErrors()
     }
-
     fun resetForm() {
         _formData.value = WorkshopFormData()
         _fieldErrors.value = emptyMap()
@@ -222,11 +245,22 @@ class ModifyWorkshopViewModel @Inject constructor(
         _fieldErrors.value = emptyMap()
     }
 
+    private fun isValidUrl(url: String?): Boolean {
+        if (url.isNullOrBlank()) return false
+
+        val regex = Regex(
+            pattern = "^(https?://)([\\w.-]+)\\.([a-z\\.]{2,6})([/\\w .-]*)*/?$",
+            options = setOf(RegexOption.IGNORE_CASE)
+        )
+
+        return regex.matches(url)
+    }
+
     private fun validateForm(): Boolean {
         val data = _formData.value
         val errors = mutableMapOf<String, Boolean>()
         val hourRegex = Regex("^([01]?\\d|2[0-3]):[0-5]\\d$")
-        val dateRegex = Regex("^\\d{4}-\\d{2}-\\d{2}$")
+        val dateRegex = Regex("^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/\\d{4}$")
 
         if (data.name.isBlank()) errors["name"] = true
         if (data.startHour.isBlank()) errors["startHour"] = true
@@ -234,7 +268,14 @@ class ModifyWorkshopViewModel @Inject constructor(
         if (data.date.isBlank()) errors["date"] = true
         if (data.description.isBlank()) errors["description"] = true
         if (data.idUser.isBlank()) errors["idUser"] = true
-        if (data.videoTraining.isBlank()) errors["videoTraining"] = true
+
+        if (data.videoTraining.isBlank()) {
+            errors["videoTraining"] = true
+        } else {
+            if (!isValidUrl(data.videoTraining)) {
+                errors["videoTraining"] = true
+            }
+        }
 
         if (data.startHour.isNotBlank() && !hourRegex.matches(data.startHour)) {
             errors["startHour"] = true
@@ -245,9 +286,9 @@ class ModifyWorkshopViewModel @Inject constructor(
         if (data.date.isNotBlank() && !dateRegex.matches(data.date)) {
             errors["date"] = true
         }
+
         _fieldErrors.value = errors
         return errors.isEmpty()
     }
-
 
 }
