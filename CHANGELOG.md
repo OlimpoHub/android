@@ -2,6 +2,7 @@
 
 ### Added
 - Added offline for product batch list and detail
+- Added offline for supply batches
 
 ## [0.2.0] - 29/11/2025
 
