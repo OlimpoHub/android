@@ -232,6 +232,10 @@ object AppModule {
     ): UploadRepository {
         return uploadRepositoryImpl
     }
-    fun provideAttendanceRepository(api: ArcaApi): AttendanceRepository = AttendanceRepositoryImpl(api)
+
+    @Provides
+    @Singleton
+    fun provideAttendanceRepository(api: ArcaApi): AttendanceRepository =
+        AttendanceRepositoryImpl(api)
 
 }

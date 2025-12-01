@@ -96,6 +96,7 @@ fun DisabilitiesListScreen(
         state = state,
         snackbarHostState = snackbarHostState,
         onSearchTextChange = viewModel::onSearchTextChange,
+        beneficiaryImage = state.beneficiary?.image,
         onDisabilityClick = onDisabilityClick,
         onBackClick = onBackClick,
     )
@@ -108,6 +109,7 @@ fun DisabilitiesList(
     snackbarHostState: SnackbarHostState,
     onSearchTextChange: (String) -> Unit,
     onDisabilityClick: (String) -> Unit,
+    beneficiaryImage: String?,
     onBackClick: () -> Unit,
 ) {
     ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false) {
@@ -209,6 +211,7 @@ fun DisabilitiesList(
                                 items(state.disabilities, key = { it.id }) { disability ->
                                     BeneficiaryCard(
                                         name = disability.name,
+                                        imageUrl = beneficiaryImage,
                                         onClick = { onDisabilityClick(disability.id) },
                                         cardModifier = Modifier
                                             .fillMaxWidth()

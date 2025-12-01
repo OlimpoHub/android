@@ -378,13 +378,8 @@ fun BeneficiaryDetailPreviewInactive() {
                     emergencyRelation = "Padre",
                     details = "Detalles del beneficiario",
                     entryDate = "01/01/2023",
-<<<<<<< HEAD
                     image = "https://ajemplo.com",
-                    disabilities = "Sí",
-=======
-                    image = "",
-                    disabilities = listOf("Si"),
->>>>>>> d85561512dae736dbd5d5c6e4cad4b641ed0fff3
+                    disabilities =  listOf("Visual"),
                     status = 0
                 )
             ),

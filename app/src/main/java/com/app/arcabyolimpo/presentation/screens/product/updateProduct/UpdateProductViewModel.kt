@@ -2,6 +2,7 @@ package com.app.arcabyolimpo.presentation.screens.product.updateProduct
 
 import android.content.Context
 import android.net.Uri
+import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -37,8 +38,6 @@ class UpdateProductViewModel @Inject constructor(
     val state = _uiState.asStateFlow()
 
     private val idProduct: String = savedStateHandle.get<String>("idProduct") ?: ""
-
-<<<<<<< HEAD
     fun getFileFromUri(context: Context, uri: Uri): File? {
         return try {
             val contentResolver = context.contentResolver
@@ -54,11 +53,10 @@ class UpdateProductViewModel @Inject constructor(
             null
         }
     }
-=======
+
     private val regexValidation = Regex("^[a-zA-Z0-9 áéíóúÁÉÍÓÚñÑ.,:;\\-()\\/\"'\n]*$")
     private val priceValidation = Regex("^\\d{1,4}(\\.\\d{1,2})?\$")
 
->>>>>>> d85561512dae736dbd5d5c6e4cad4b641ed0fff3
 
     init {
         loadFormsData()
@@ -279,7 +277,6 @@ class UpdateProductViewModel @Inject constructor(
             return
         }
 
-<<<<<<< HEAD
         if (
             formData.selectedIdWorkshop == null
             || formData.selectedIdCategory == null
@@ -287,79 +284,80 @@ class UpdateProductViewModel @Inject constructor(
             || formData.unitaryPrice.isNullOrBlank()
             || formData.description.isNullOrBlank()
             || formData.selectedImageUrl == null
-        ){
+        ) {
             _uiState.update { it.copy(error = "Ningún campo puede estar vacío") }
-=======
-        if (!isValidFields()) {
->>>>>>> d85561512dae736dbd5d5c6e4cad4b641ed0fff3
-            return
-        }
+            if (!isValidFields()) {
+                return
+            }
 
-        viewModelScope.launch {
-            _uiState.update { it.copy(isSaving = true, error = null) }
+            viewModelScope.launch {
+                _uiState.update { it.copy(isSaving = true, error = null) }
 
-            val imageUri = formData.selectedImageUrl
-            var finalImageUrl: Uri = imageUri
-            val isLocalUri = imageUri.scheme == "content" || imageUri.scheme == "file"
+                val imageUri = formData.selectedImageUrl
+                var finalImageUrl: Uri? = imageUri
+                val isLocalUri = imageUri?.scheme == "content" || imageUri?.scheme == "file"
 
-            if (isLocalUri) {
-                var uploadError: String? = null
-                val fileToUpload = getFileFromUri(context, imageUri)
+                if (isLocalUri) {
+                    var uploadError: String? = null
+                    val fileToUpload = getFileFromUri(context, imageUri!!)
 
-                if (fileToUpload == null) {
-                    uploadError = "Error al preparar la imagen para la subida."
-                } else {
-                    val uploadResult = postUploadImage(fileToUpload)
-                        .first { it !is Result.Loading }
+                    if (fileToUpload == null) {
+                        uploadError = "Error al preparar la imagen para la subida."
+                    } else {
+                        val uploadResult = postUploadImage(fileToUpload)
+                            .first { it !is Result.Loading }
 
-                    when (uploadResult) {
-                        is Result.Success -> {
-                            finalImageUrl = uploadResult.data.url.toUri()
-                            fileToUpload.delete()
+                        when (uploadResult) {
+                            is Result.Success -> {
+                                finalImageUrl = uploadResult.data.url.toUri()
+                                fileToUpload.delete()
+                            }
+
+                            is Result.Error -> {
+                                uploadError =
+                                    "Error al subir la imagen: ${uploadResult.exception.message}"
+                                fileToUpload.delete()
+                            }
+
+                            is Result.Loading -> {}
                         }
-                        is Result.Error -> {
-                            uploadError = "Error al subir la imagen: ${uploadResult.exception.message}"
-                            fileToUpload.delete()
-                        }
-                        is Result.Loading -> { }
+                    }
+
+                    if (uploadError != null) {
+                        _uiState.update { it.copy(isSaving = false, error = uploadError) }
+                        return@launch
                     }
                 }
 
-                if (uploadError != null) {
-                    _uiState.update { it.copy(isSaving = false, error = uploadError) }
-                    return@launch
-                }
-            }
+                val product = ProductUpdate(
+                    name = formData.name,
+                    idWorkshop = formData.selectedIdWorkshop,
+                    unitaryPrice = formData.unitaryPrice,
+                    idCategory = formData.selectedIdCategory,
+                    description = formData.description,
+                    status = formData.status.toString(),
+                    image = finalImageUrl.toString()
+                )
 
-            val product = ProductUpdate(
-                name = formData.name,
-                idWorkshop = formData.selectedIdWorkshop,
-                unitaryPrice = formData.unitaryPrice,
-                idCategory = formData.selectedIdCategory,
-                description = formData.description,
-                status = formData.status.toString(),
-                image = finalImageUrl.toString()
-            )
+                val result = updateProductUseCase(
+                    id = idProduct,
+                    productData = product
+                )
 
-            val result = updateProductUseCase(
-                id = idProduct,
-                productData = product
-            )
-
-            _uiState.update {
-                if (result.isSuccess) {
-                    it.copy(
-                        isSaving = false,
-                        success = true
-                    )
-                } else {
-                    it.copy(
-                        isSaving = false,
-                        error = result.exceptionOrNull()?.message
-                    )
+                _uiState.update {
+                    if (result.isSuccess) {
+                        it.copy(
+                            isSaving = false,
+                            success = true
+                        )
+                    } else {
+                        it.copy(
+                            isSaving = false,
+                            error = result.exceptionOrNull()?.message
+                        )
+                    }
                 }
             }
         }
     }
-
 }

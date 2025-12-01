@@ -254,69 +254,73 @@ class AddProductViewModel @Inject constructor(
             || state.selectedImage == null
         ) {
             _uiState.update { it.copy(error = "Completa todos los campos", isLoading = false) }
-        if(!isValidFields()) {
-            return
-        }
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, error = null) }
+            if (!isValidFields()) {
+                return
+            }
+            viewModelScope.launch {
+                _uiState.update { it.copy(isLoading = true, error = null) }
 
-            val imageUri = state.selectedImage
-            var remoteImageUrl: String? = null
-            var uploadError: String? = null
+                val imageUri = state.selectedImage
+                var remoteImageUrl: String? = null
+                var uploadError: String? = null
 
-            if (imageUri != null) {
-                val fileToUpload = getFileFromUri(context, imageUri)
+                if (imageUri != null) {
+                    val fileToUpload = getFileFromUri(context, imageUri)
 
-                if (fileToUpload == null) {
-                    uploadError = "Error al preparar la imagen para la subida."
-                } else {
-                     val uploadResult = postUploadImage(fileToUpload)
-                        .let { flow ->
-                            flow.first { it !is com.app.arcabyolimpo.domain.common.Result.Loading }
+                    if (fileToUpload == null) {
+                        uploadError = "Error al preparar la imagen para la subida."
+                    } else {
+                        val uploadResult = postUploadImage(fileToUpload)
+                            .let { flow ->
+                                flow.first { it !is com.app.arcabyolimpo.domain.common.Result.Loading }
+                            }
+
+                        when (uploadResult) {
+                            is com.app.arcabyolimpo.domain.common.Result.Success -> {
+                                remoteImageUrl = uploadResult.data.url
+                                fileToUpload.delete()
+                            }
+
+                            is com.app.arcabyolimpo.domain.common.Result.Error -> {
+                                uploadError =
+                                    "Error al subir la imagen: ${uploadResult.exception.message}"
+                                fileToUpload.delete()
+                            }
+
+                            is com.app.arcabyolimpo.domain.common.Result.Loading -> {}
                         }
+                    }
 
-                    when (uploadResult) {
-                        is com.app.arcabyolimpo.domain.common.Result.Success -> {
-                            remoteImageUrl = uploadResult.data.url
-                            fileToUpload.delete()
-                        }
-                        is com.app.arcabyolimpo.domain.common.Result.Error -> {
-                            uploadError = "Error al subir la imagen: ${uploadResult.exception.message}"
-                            fileToUpload.delete()
-                        }
-                        is com.app.arcabyolimpo.domain.common.Result.Loading -> { }
+                    if (uploadError != null) {
+                        _uiState.update { it.copy(isLoading = false, error = uploadError) }
+                        return@launch
                     }
                 }
 
-                if (uploadError != null) {
-                    _uiState.update { it.copy(isLoading = false, error = uploadError) }
-                    return@launch
-                }
-            }
+                val product = ProductAdd(
+                    idWorkshop = state.selectedWorkshopId,
+                    name = state.name,
+                    unitaryPrice = state.unitaryPrice,
+                    idCategory = state.selectedCategoryId,
+                    status = state.status.toString(),
+                    description = state.description,
+                    image = remoteImageUrl ?: ""
+                )
 
-            val product = ProductAdd(
-                idWorkshop = state.selectedWorkshopId,
-                name = state.name,
-                unitaryPrice = state.unitaryPrice,
-                idCategory = state.selectedCategoryId,
-                status = state.status.toString(),
-                description = state.description,
-                image = remoteImageUrl ?: ""
-            )
+                val result = addProductUseCase(product)
 
-            val result = addProductUseCase(product)
-
-            _uiState.update {
-                if (result.isSuccess) {
-                    it.copy(
-                        isLoading = false,
-                        success = true,
-                    )
-                } else {
-                    it.copy(
-                        isLoading = false,
-                        error = result.exceptionOrNull()?.message
-                    )
+                _uiState.update {
+                    if (result.isSuccess) {
+                        it.copy(
+                            isLoading = false,
+                            success = true,
+                        )
+                    } else {
+                        it.copy(
+                            isLoading = false,
+                            error = result.exceptionOrNull()?.message
+                        )
+                    }
                 }
             }
         }
