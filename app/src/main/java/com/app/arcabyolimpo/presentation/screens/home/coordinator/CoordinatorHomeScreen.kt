@@ -44,8 +44,8 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.FunctionalNavBa
 @Composable
 fun CoordinatorHomeScreen(navController: NavHostController) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
-    var homePressedTrigger by remember { mutableIntStateOf(0) }
-    var inventoryPressedTrigger by remember { mutableIntStateOf(0) }
+    var homePressedTrigger by rememberSaveable { mutableIntStateOf(0) }
+    var inventoryPressedTrigger by rememberSaveable { mutableIntStateOf(0) }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -110,13 +110,17 @@ fun CoordinatorHomeScreen(navController: NavHostController) {
         FunctionalNavBar(
             selectedIndex = selectedTab,
             onItemSelected = { index ->
-                if (index == 0) {
-                    homePressedTrigger++
+
+                if (index == selectedTab) {
+
+                    when (index) {
+                        0 -> homePressedTrigger++
+                        3 -> inventoryPressedTrigger++
+                    }
+
+                } else {
+                    selectedTab = index
                 }
-                if (index == 3) {
-                    inventoryPressedTrigger++
-                }
-                selectedTab = index
             },
         )
     }
