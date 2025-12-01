@@ -25,7 +25,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.app.arcabyolimpo.presentation.navigation.Screen
-import com.app.arcabyolimpo.presentation.screens.capacitations.DisabilitiesListScreen
 import com.app.arcabyolimpo.presentation.screens.home.components.MainMenu
 import com.app.arcabyolimpo.presentation.screens.home.components.TopBarContent
 import com.app.arcabyolimpo.presentation.screens.qr.workshopselection.QrWorkshopsListScreen
@@ -89,14 +88,43 @@ fun HomeScreen(
                                 onBack = { selectedOption = null },
                             )
                         "training" -> {
-                            DisabilitiesListScreen(
-                                navController = navController,
-                                onDisabilityClick = { id ->
-                                    // TODO: Navigate to disability detail when screen is created
-                                    // navController.navigate(Screen.DisabilityDetail.createRoute(id))
-                                },
-                                onBackClick = { selectedOption = null }
-                            )
+                            Column(modifier = Modifier.fillMaxSize()) {
+                                TopAppBar(
+                                    title = {
+                                        Text(
+                                            "Capacitaciones",
+                                            color = Color.White,
+                                            fontSize = 24.sp,
+                                            fontWeight = FontWeight.Bold,
+                                        )
+                                    },
+                                    navigationIcon = {
+                                        IconButton(onClick = { selectedOption = null }) {
+                                            Icon(
+                                                imageVector = Icons.Default.ArrowBack,
+                                                contentDescription = "Regresar",
+                                                tint = Color.White,
+                                            )
+                                        }
+                                    },
+                                    colors = TopAppBarDefaults.topAppBarColors(
+                                        containerColor = Color(0xFF040610),
+                                    ),
+                                )
+
+                                // Aquí va el mensaje En Proceso...
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "En Proceso...",
+                                        color = Color.White,
+                                        fontSize = 24.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
                         }
 
                         "analysis" -> {
