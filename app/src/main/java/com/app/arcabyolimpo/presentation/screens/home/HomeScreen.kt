@@ -106,6 +106,7 @@ fun HomeScreen(
                                     // TODO: Navigate to disability detail when screen is created
                                     // navController.navigate(Screen.DisabilityDetail.createRoute(id))
                                 },
+                                onAddClick = { navController.navigate(Screen.DisabilitiesRegisterScreen.route) },
                                 onBackClick = { selectedOption = null },
                             )
                         }

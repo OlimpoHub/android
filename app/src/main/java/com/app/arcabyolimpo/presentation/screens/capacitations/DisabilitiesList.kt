@@ -17,16 +17,16 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -40,9 +40,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
+import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SearchInput
 import com.app.arcabyolimpo.presentation.ui.components.molecules.BeneficiaryCard
-import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import com.app.arcabyolimpo.ui.theme.Background
 import kotlinx.coroutines.launch
@@ -51,6 +52,7 @@ import kotlinx.coroutines.launch
 fun DisabilitiesListScreen(
     navController: NavHostController,
     onDisabilityClick: (String) -> Unit,
+    onAddClick: () -> Unit,
     onBackClick: () -> Unit,
     viewModel: DisabilitiesListViewModel = hiltViewModel(),
 ) {
@@ -58,9 +60,10 @@ fun DisabilitiesListScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    val successMessage = navController.currentBackStackEntry
-        ?.savedStateHandle
-        ?.get<String>("success_message")
+    val successMessage =
+        navController.currentBackStackEntry
+            ?.savedStateHandle
+            ?.get<String>("success_message")
 
     LaunchedEffect(Unit) {
         viewModel.getDisabilities()
@@ -77,9 +80,10 @@ fun DisabilitiesListScreen(
         }
     }
 
-    val errorMessage = navController.currentBackStackEntry
-        ?.savedStateHandle
-        ?.get<String>("error_message")
+    val errorMessage =
+        navController.currentBackStackEntry
+            ?.savedStateHandle
+            ?.get<String>("error_message")
 
     LaunchedEffect(errorMessage) {
         errorMessage?.let { message ->
@@ -97,6 +101,7 @@ fun DisabilitiesListScreen(
         snackbarHostState = snackbarHostState,
         onSearchTextChange = viewModel::onSearchTextChange,
         onDisabilityClick = onDisabilityClick,
+        onAddClick = onAddClick,
         onBackClick = onBackClick,
     )
 }
@@ -108,12 +113,16 @@ fun DisabilitiesList(
     snackbarHostState: SnackbarHostState,
     onSearchTextChange: (String) -> Unit,
     onDisabilityClick: (String) -> Unit,
+    onAddClick: () -> Unit,
     onBackClick: () -> Unit,
 ) {
     ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false) {
         Box(modifier = Modifier.fillMaxSize()) {
             Scaffold(
                 containerColor = Background,
+                floatingActionButton = {
+                    AddButton(onClick = { onAddClick() })
+                },
                 topBar = {
                     TopAppBar(
                         title = {
@@ -129,50 +138,55 @@ fun DisabilitiesList(
                                 Icon(
                                     imageVector = Icons.Default.ArrowBack,
                                     contentDescription = "Regresar",
-                                    tint = Color.White
+                                    tint = Color.White,
                                 )
                             }
                         },
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = Background
-                        )
+                        colors =
+                            TopAppBarDefaults.topAppBarColors(
+                                containerColor = Background,
+                            ),
                     )
                 },
             ) { padding ->
                 Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(
-                            top = padding.calculateTopPadding(),
-                            bottom = padding.calculateBottomPadding(),
-                        ),
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(
+                                top = padding.calculateTopPadding(),
+                                bottom = padding.calculateBottomPadding(),
+                            ),
                 ) {
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                start = 30.dp,
-                                end = 30.dp,
-                                bottom = 12.dp,
-                            ),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    start = 30.dp,
+                                    end = 30.dp,
+                                    bottom = 12.dp,
+                                ),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         SearchInput(
                             value = state.searchText,
                             onValueChange = onSearchTextChange,
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(end = 20.dp),
+                            modifier =
+                                Modifier
+                                    .weight(1f)
+                                    .padding(end = 20.dp),
                         )
                     }
 
                     when {
                         state.isLoading -> {
                             CircularProgressIndicator(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 20.dp)
-                                    .wrapContentWidth(Alignment.CenterHorizontally),
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 20.dp)
+                                        .wrapContentWidth(Alignment.CenterHorizontally),
                             )
                         }
 
@@ -180,9 +194,10 @@ fun DisabilitiesList(
                             Text(
                                 text = state.error ?: "Error",
                                 color = Color.Red,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .wrapContentWidth(Alignment.CenterHorizontally),
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .wrapContentWidth(Alignment.CenterHorizontally),
                             )
                         }
 
@@ -190,9 +205,10 @@ fun DisabilitiesList(
                             Text(
                                 text = "No se encontraron discapacidades",
                                 color = Color.Red,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .wrapContentWidth(Alignment.CenterHorizontally),
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .wrapContentWidth(Alignment.CenterHorizontally),
                             )
                         }
 
@@ -202,22 +218,25 @@ fun DisabilitiesList(
                                 contentPadding = PaddingValues(vertical = 16.dp),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .weight(1f),
+                                modifier =
+                                    Modifier
+                                        .fillMaxSize()
+                                        .weight(1f),
                             ) {
                                 items(state.disabilities, key = { it.id }) { disability ->
                                     BeneficiaryCard(
                                         name = disability.name,
                                         onClick = { onDisabilityClick(disability.id) },
-                                        cardModifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(horizontal = 8.dp)
-                                            .height(160.dp),
-                                        contentPadding = PaddingValues(
-                                            vertical = 20.dp,
-                                            horizontal = 40.dp,
-                                        ),
+                                        cardModifier =
+                                            Modifier
+                                                .fillMaxWidth()
+                                                .padding(horizontal = 8.dp)
+                                                .height(160.dp),
+                                        contentPadding =
+                                            PaddingValues(
+                                                vertical = 20.dp,
+                                                horizontal = 40.dp,
+                                            ),
                                     )
                                 }
                             }
@@ -227,20 +246,22 @@ fun DisabilitiesList(
             }
 
             Box(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 100.dp)
-                    .fillMaxWidth()
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 100.dp)
+                        .fillMaxWidth(),
             ) {
                 SnackbarHost(
                     hostState = snackbarHostState,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
                 ) { data ->
                     Snackbarcustom(
                         title = data.visuals.message,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     )
                 }
             }
