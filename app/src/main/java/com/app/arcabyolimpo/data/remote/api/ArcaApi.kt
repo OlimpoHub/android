@@ -8,6 +8,7 @@ import com.app.arcabyolimpo.data.remote.dto.beneficiaries.BeneficiariesListDto
 import com.app.arcabyolimpo.data.remote.dto.beneficiaries.BeneficiaryDto
 import com.app.arcabyolimpo.data.remote.dto.beneficiaries.GetBeneficiariesDisabilitiesDto
 import com.app.arcabyolimpo.data.remote.dto.disabilities.DisabilityDto
+import com.app.arcabyolimpo.data.remote.dto.disabilities.DisabilityRegisterDto
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.data.remote.dto.password.RecoverPasswordDto
 import com.app.arcabyolimpo.data.remote.dto.password.RecoverPasswordResponseDto
@@ -304,6 +305,11 @@ interface ArcaApi {
 
     @GET("/disabilities/list")
     suspend fun getDisabilitiesList(): List<DisabilityDto>
+
+    @GET("/discapacity/add")
+    suspend fun registerDisability(
+        @Body requestBody: DisabilityRegisterDto,
+    )
 
     @GET("supplies/workshop/category")
     suspend fun getWorkshopCategoryList(): WorkshopCategoryListDto

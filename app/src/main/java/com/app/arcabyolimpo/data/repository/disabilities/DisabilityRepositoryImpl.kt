@@ -1,6 +1,7 @@
 package com.app.arcabyolimpo.data.repository.disabilities
 
 import android.util.Log
+import com.app.arcabyolimpo.data.mapper.disabilities.toRegisterDto
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.domain.model.disabilities.Disability
 import com.app.arcabyolimpo.domain.repository.disability.DisabilityRepository
@@ -20,32 +21,37 @@ class DisabilityRepositoryImpl
     constructor(
         private val api: ArcaApi,
     ) : DisabilityRepository {
-    /**
-     * Retrieves a list of all available disabilities from the API.
-     *
-     * Each item in the response is converted into a [Disability] domain model.
-     *
-     * @return A list of [Disabilities] objects representing the available disabilities.
-     */
+        /**
+         * Retrieves a list of all available disabilities from the API.
+         *
+         * Each item in the response is converted into a [Disability] domain model.
+         *
+         * @return A list of [Disabilities] objects representing the available disabilities.
+         */
 
-    override suspend fun getDisabilities(): List<Disability> {
-        Log.d("DisabilityRepo", "Llamando a getDisabilities...")
+        override suspend fun getDisabilities(): List<Disability> {
+            Log.d("DisabilityRepo", "Llamando a getDisabilities...")
 
-        try {
-            val response = api.getDisabilitiesList()
-            Log.d("DisabilityRepo", "Éxito: ${response.size} discapacidades recibidas")
+            try {
+                val response = api.getDisabilitiesList()
+                Log.d("DisabilityRepo", "Éxito: ${response.size} discapacidades recibidas")
 
-            return response.map { dto ->
-                Disability(
-                    id = dto.id,
-                    name = dto.name,
-                    characteristics = dto.characteristics
-                )
+                return response.map { dto ->
+                    Disability(
+                        id = dto.id,
+                        name = dto.name,
+                        characteristics = dto.characteristics,
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e("DisabilityRepo", "Error al obtener discapacidades: ${e.message}")
+                Log.e("DisabilityRepo", "Stack trace: ", e)
+                throw e
             }
-        } catch (e: Exception) {
-            Log.e("DisabilityRepo", "Error al obtener discapacidades: ${e.message}")
-            Log.e("DisabilityRepo", "Stack trace: ", e)
-            throw e
         }
-    }
+
+        override suspend fun registerDisability(disability: Disability) {
+            val dto = disability.toRegisterDto()
+            api.registerDisability(dto)
+        }
     }
