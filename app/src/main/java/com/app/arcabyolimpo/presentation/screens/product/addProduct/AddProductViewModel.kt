@@ -1,16 +1,23 @@
 package com.app.arcabyolimpo.presentation.screens.product.addProduct
 
+import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.arcabyolimpo.domain.model.product.ProductAdd
 import com.app.arcabyolimpo.domain.usecase.product.AddProductUseCase
 import com.app.arcabyolimpo.domain.usecase.supplies.GetWorkshopCategoryInfoUseCase
+import com.app.arcabyolimpo.domain.usecase.upload.PostUploadImage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
 import javax.inject.Inject
 
 /**
@@ -26,8 +33,33 @@ import javax.inject.Inject
 class AddProductViewModel @Inject constructor(
     private val getWorkshopCategoryInfoUseCase: GetWorkshopCategoryInfoUseCase,
     private val addProductUseCase: AddProductUseCase,
+    private val postUploadImage: PostUploadImage,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ProductAddUiState())
+
+    private val _selectedImageUri = MutableStateFlow<Uri?>(null)
+    val selectedImageUri: StateFlow<Uri?> = _selectedImageUri.asStateFlow()
+
+    fun setSelectedImageUri(uri: Uri?) {
+        _selectedImageUri.value = uri
+    }
+
+    fun getFileFromUri(context: Context, uri: Uri): File? {
+        return try {
+            val contentResolver = context.contentResolver
+            val tempFile = File(context.cacheDir, "upload_temp_${System.currentTimeMillis()}")
+            contentResolver.openInputStream(uri)?.use { inputStream ->
+                FileOutputStream(tempFile).use { outputStream ->
+                    inputStream.copyTo(outputStream)
+                }
+            }
+            tempFile
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
 
     /**
      * Exposes the current [ProductAddUiState] as a read-only StateFlow for the UI to observe.
@@ -100,19 +132,52 @@ class AddProductViewModel @Inject constructor(
 
         if (
             state.name.isBlank()
-            || state.unitaryPrice == null
-            || state.description == null
+            || state.unitaryPrice.isNullOrBlank()
+            || state.description.isNullOrBlank()
             || state.status == null
-            || state.selectedWorkshopId == null
-            || state.selectedCategoryId == null
+            || state.selectedWorkshopId.isNullOrBlank()
+            || state.selectedCategoryId.isNullOrBlank()
             || state.selectedImage == null
-            ) {
-            _uiState.update { it.copy(error = "Completa todos los campos") }
+        ) {
+            _uiState.update { it.copy(error = "Completa todos los campos", isLoading = false) }
             return
         }
-
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
+            _uiState.update { it.copy(isLoading = true, error = null) }
+
+            val imageUri = state.selectedImage
+            var remoteImageUrl: String? = null
+            var uploadError: String? = null
+
+            if (imageUri != null) {
+                val fileToUpload = getFileFromUri(context, imageUri)
+
+                if (fileToUpload == null) {
+                    uploadError = "Error al preparar la imagen para la subida."
+                } else {
+                     val uploadResult = postUploadImage(fileToUpload)
+                        .let { flow ->
+                            flow.first { it !is com.app.arcabyolimpo.domain.common.Result.Loading }
+                        }
+
+                    when (uploadResult) {
+                        is com.app.arcabyolimpo.domain.common.Result.Success -> {
+                            remoteImageUrl = uploadResult.data.url
+                            fileToUpload.delete()
+                        }
+                        is com.app.arcabyolimpo.domain.common.Result.Error -> {
+                            uploadError = "Error al subir la imagen: ${uploadResult.exception.message}"
+                            fileToUpload.delete()
+                        }
+                        is com.app.arcabyolimpo.domain.common.Result.Loading -> { }
+                    }
+                }
+
+                if (uploadError != null) {
+                    _uiState.update { it.copy(isLoading = false, error = uploadError) }
+                    return@launch
+                }
+            }
 
             val product = ProductAdd(
                 idWorkshop = state.selectedWorkshopId,
@@ -121,7 +186,7 @@ class AddProductViewModel @Inject constructor(
                 idCategory = state.selectedCategoryId,
                 status = state.status.toString(),
                 description = state.description,
-                image = state.selectedImage!!
+                image = remoteImageUrl ?: ""
             )
 
             val result = addProductUseCase(product)

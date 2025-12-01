@@ -2,7 +2,6 @@ package com.app.arcabyolimpo.presentation.screens.workshop
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.arcabyolimpo.data.remote.dto.user.UserDto

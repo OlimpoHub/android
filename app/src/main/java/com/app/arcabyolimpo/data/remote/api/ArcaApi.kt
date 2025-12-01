@@ -337,7 +337,7 @@ interface ArcaApi {
         @Part("idCategoria") idCategory: RequestBody,
         @Part("Descripcion") description: RequestBody,
         @Part("Disponible") status: RequestBody,
-        @Part image: MultipartBody.Part?,
+        @Part("image") image: RequestBody?,
     )
 
     @DELETE("product/{idProduct}")
@@ -409,7 +409,7 @@ interface ArcaApi {
         @Part("idCategoria") idCategory: RequestBody,
         @Part("Descripcion") description: RequestBody,
         @Part("Disponible") status: RequestBody,
-        @Part image: MultipartBody.Part?,
+        @Part("image") image: RequestBody?,
     )
 
     @POST("qr/create")

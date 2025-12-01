@@ -1,5 +1,6 @@
 package com.app.arcabyolimpo.presentation.screens.product.updateProduct
 
+import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -16,7 +17,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import androidx.core.net.toUri
 import com.app.arcabyolimpo.domain.common.Result
+import com.app.arcabyolimpo.domain.usecase.upload.PostUploadImage
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.first
+import java.io.File
+import java.io.FileOutputStream
 
 @HiltViewModel
 class UpdateProductViewModel @Inject constructor(
@@ -24,12 +30,30 @@ class UpdateProductViewModel @Inject constructor(
     private val updateProductUseCase: UpdateProductUseCase,
     private val getWorkshopCategoryInfoUseCase: GetWorkshopCategoryInfoUseCase,
     savedStateHandle: SavedStateHandle,
+    private val postUploadImage: PostUploadImage,
+    @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProductUpdateUiState())
     val state = _uiState.asStateFlow()
 
     private val idProduct: String = savedStateHandle.get<String>("idProduct") ?: ""
+
+    fun getFileFromUri(context: Context, uri: Uri): File? {
+        return try {
+            val contentResolver = context.contentResolver
+            val tempFile = File(context.cacheDir, "upload_temp_${System.currentTimeMillis()}")
+            contentResolver.openInputStream(uri)?.use { inputStream ->
+                FileOutputStream(tempFile).use { outputStream ->
+                    inputStream.copyTo(outputStream)
+                }
+            }
+            tempFile
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
 
     init {
         loadFormsData()
@@ -142,17 +166,50 @@ class UpdateProductViewModel @Inject constructor(
         if (
             formData.selectedIdWorkshop == null
             || formData.selectedIdCategory == null
-            || formData.name == null
-            || formData.unitaryPrice == null
-            || formData.description == null
+            || formData.name.isNullOrBlank()
+            || formData.unitaryPrice.isNullOrBlank()
+            || formData.description.isNullOrBlank()
             || formData.selectedImageUrl == null
-        ) {
+        ){
             _uiState.update { it.copy(error = "Ningún campo puede estar vacío") }
             return
         }
 
         viewModelScope.launch {
-            _uiState.update { it.copy(isSaving = true) }
+            _uiState.update { it.copy(isSaving = true, error = null) }
+
+            val imageUri = formData.selectedImageUrl
+            var finalImageUrl: Uri = imageUri
+            val isLocalUri = imageUri.scheme == "content" || imageUri.scheme == "file"
+
+            if (isLocalUri) {
+                var uploadError: String? = null
+                val fileToUpload = getFileFromUri(context, imageUri)
+
+                if (fileToUpload == null) {
+                    uploadError = "Error al preparar la imagen para la subida."
+                } else {
+                    val uploadResult = postUploadImage(fileToUpload)
+                        .first { it !is Result.Loading }
+
+                    when (uploadResult) {
+                        is Result.Success -> {
+                            finalImageUrl = uploadResult.data.url.toUri()
+                            fileToUpload.delete()
+                        }
+                        is Result.Error -> {
+                            uploadError = "Error al subir la imagen: ${uploadResult.exception.message}"
+                            fileToUpload.delete()
+                        }
+                        is Result.Loading -> { }
+                    }
+                }
+
+                if (uploadError != null) {
+                    _uiState.update { it.copy(isSaving = false, error = uploadError) }
+                    return@launch
+                }
+            }
 
             val product = ProductUpdate(
                 name = formData.name,
@@ -161,7 +218,7 @@ class UpdateProductViewModel @Inject constructor(
                 idCategory = formData.selectedIdCategory,
                 description = formData.description,
                 status = formData.status.toString(),
-                image = formData.selectedImageUrl
+                image = finalImageUrl.toString()
             )
 
             val result = updateProductUseCase(

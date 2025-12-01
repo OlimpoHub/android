@@ -12,5 +12,5 @@ data class ProductAdd(
     val idCategory: String,
     val description: String,
     val status: String,
-    val image: Uri,
+    val image: String,
 )

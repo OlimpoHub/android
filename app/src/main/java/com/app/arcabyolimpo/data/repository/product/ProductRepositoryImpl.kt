@@ -46,31 +46,16 @@ class ProductRepositoryImpl @Inject constructor(
      * @param product The [ProductAdd] object containing the details of the product to be added.
      * @return A [Result] indicating whether the operation was successful or if an error occurred.
      */
+
     override suspend fun addProduct(product: ProductAdd): Result<Unit> {
         return try {
-            val imagePart = product.image.let {
-                val input = context.contentResolver.openInputStream(it)
-                val bytes = input?.readBytes()
-                input?.close()
-
-                if (bytes != null) {
-                    val requestFile = bytes.toRequestBody(
-                        context.contentResolver.getType(it)?.toMediaTypeOrNull()
-                    )
-                    MultipartBody.Part.createFormData(
-                        "image",
-                        "image.jpg",
-                        requestFile
-                    )
-                } else null
-            }
-
+           val imageUrlRequestBody = product.image.toRequestBody("text/plain".toMediaTypeOrNull())
             val idWorkshop = product.idWorkshop.toRequestBody("text/plain".toMediaTypeOrNull())
             val name = product.name.toRequestBody("text/plain".toMediaTypeOrNull())
             val unitaryPrice = product.unitaryPrice.toRequestBody("text/plain".toMediaTypeOrNull())
             val idCategory = product.idCategory.toRequestBody("text/plain".toMediaTypeOrNull())
             val description = product.description.toRequestBody("text/plain".toMediaTypeOrNull())
-            val status = product.status.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+            val status = product.status.toRequestBody("text/plain".toMediaTypeOrNull())
 
             api.addProduct(
                 idWorkshop = idWorkshop,
@@ -79,14 +64,13 @@ class ProductRepositoryImpl @Inject constructor(
                 idCategory = idCategory,
                 description = description,
                 status = status,
-                image = imagePart,
+                image = imageUrlRequestBody,
             )
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
-
 
     /**
      * deleteProduct.
@@ -169,31 +153,13 @@ class ProductRepositoryImpl @Inject constructor(
         product: ProductUpdate
     ): Result<Unit> {
         return try {
-            val imagePart = product.image?.let {
-                val input = context.contentResolver.openInputStream(it)
-                val bytes = input?.readBytes()
-                input?.close()
-
-                if (bytes != null) {
-                    val requestFile = bytes.toRequestBody(
-                        context.contentResolver.getType(it)?.toMediaTypeOrNull()
-                    )
-                    MultipartBody.Part.createFormData(
-                        "image",
-                        "image.jpg",
-                        requestFile
-                    )
-                } else null
-            }
-
             val idWorkshop = product.idWorkshop.toRequestBody("text/plain".toMediaTypeOrNull())
             val name = product.name.toRequestBody("text/plain".toMediaTypeOrNull())
             val unitaryPrice = product.unitaryPrice.toRequestBody("text/plain".toMediaTypeOrNull())
             val idCategory = product.idCategory.toRequestBody("text/plain".toMediaTypeOrNull())
             val description = product.description.toRequestBody("text/plain".toMediaTypeOrNull())
-            val status = product.status.toString().toRequestBody("text/plain".toMediaTypeOrNull()) // Asumo que status es String/Int
-
-            Log.d("ProductRepositoryImpl", "idWorkshop: $product.idWorkshop")
+            val status = product.status.toRequestBody("text/plain".toMediaTypeOrNull())
+            val imagePart = product.image?.toRequestBody("text/plain".toMediaTypeOrNull())
 
             api.updateProduct(
                 idProduct = idProduct,
@@ -203,7 +169,7 @@ class ProductRepositoryImpl @Inject constructor(
                 idCategory = idCategory,
                 description = description,
                 status = status,
-                image = imagePart,
+                image = imagePart
             )
 
             Result.success(Unit)
