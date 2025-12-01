@@ -2,7 +2,7 @@ package com.app.arcabyolimpo.di
 
 import android.content.Context
 import com.app.arcabyolimpo.data.local.auth.UserPreferences
-import com.app.arcabyolimpo.data.local.product.ProductBatchPreferences
+import com.app.arcabyolimpo.data.local.product.productBatch.preferences.ProductBatchPreferences
 import com.app.arcabyolimpo.data.local.supplies.preferences.SupplyLocalDataSource
 import com.app.arcabyolimpo.data.local.supplies.preferences.SupplyPreferences
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
@@ -46,7 +46,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    private const val BASE_URL = "http://10.0.2.2:8080/"
+    private const val BASE_URL = "http://10.25.107.87:8080/"
 
     /**
      * Provides a configured [OkHttpClient] instance.
