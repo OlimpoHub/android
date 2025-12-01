@@ -415,7 +415,7 @@ fun ArcaNavGraph(
 
         /** Collaborator Home Screen */
         composable(Screen.CollaboratorHome.route) {
-            CollaboratorHomeScreen()
+            CollaboratorHomeScreen(navController)
         }
 
         /** Scholar Home Screen */
@@ -940,7 +940,7 @@ fun ArcaNavGraph(
                     navController.currentBackStackEntry
                         ?.savedStateHandle
                         ?.set("qrValue", qrValue)
-                    navController.navigate("qr/scan_qr/validate_qr")
+                    navController.navigate(Screen.ValidateQr.route)
                 },
             )
         }
@@ -953,7 +953,6 @@ fun ArcaNavGraph(
 
             ScanResultScreen(
                 onBackClick = {
-                    navController.popBackStack()
                     navController.popBackStack()
                 },
                 qrValue = qrValue,

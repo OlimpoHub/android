@@ -66,4 +66,14 @@ class ScanQrViewModel
                 postScanQrUseCase.stopScanning()
             }
         }
+
+        fun clearScanResult() {
+            _uiState.update {
+                it.copy(response = null, error = null)
+            }
+        }
+
+        fun consumeResponse() {
+            _uiState.update { it.copy(response = null) }
+        }
     }

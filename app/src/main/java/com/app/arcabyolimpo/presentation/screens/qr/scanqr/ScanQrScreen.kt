@@ -21,7 +21,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -48,6 +50,7 @@ fun ScanQrScreen(
     viewModel: ScanQrViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    var hasScanned by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val cameraPermission = Manifest.permission.CAMERA
     val previewView = remember { PreviewView(context) }
@@ -65,6 +68,7 @@ fun ScanQrScreen(
         }
 
     LaunchedEffect(Unit) {
+        viewModel.clearScanResult()
         launcher.launch(cameraPermission)
     }
 
@@ -116,7 +120,11 @@ fun ScanQrScreen(
                 uiState.response?.value != null -> {
                     val qr = uiState.response!!.value
                     LaunchedEffect(qr) {
-                        onScanSuccess(qr)
+                        if (!hasScanned) {
+                            hasScanned = true
+                            viewModel.consumeResponse()
+                            onScanSuccess(qr)
+                        }
                     }
                 }
 
