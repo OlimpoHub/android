@@ -20,6 +20,6 @@ fun DisabilityDto.toDomain(): Disability =
 // To Dto
 fun Disability.toRegisterDto(): DisabilityRegisterDto =
     DisabilityRegisterDto(
-        name = name,
+        nombre = name,
         descripcion = characteristics,
     )
