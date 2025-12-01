@@ -37,9 +37,35 @@ import com.app.arcabyolimpo.presentation.theme.Typography
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.ReturnIcon
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.ErrorRed
-import com.app.arcabyolimpo.ui.theme.SelectInputBlue
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
+
+/**
+ * Screen responsible for handling the QR scanning flow for attendance registration.
+ *
+ * This screen initializes the camera, requests the necessary permission, and renders a
+ * live preview using `PreviewView` from CameraX. When a valid QR code is detected,
+ * it triggers the provided callback via [onScanSuccess] and prevents duplicate readings.
+ *
+ * The screen also listens to UI state updates from [ScanQrViewModel], displaying
+ * context-aware errors or consuming scan results when available. Camera lifecycle
+ * is automatically bound to the current [LocalLifecycleOwner].
+ *
+ * ## Atomic Design Level
+ * **Organism** — Built from several smaller components:
+ * - Atoms: `ReturnIcon`, text labels, camera permission launcher
+ * - Molecules: QR preview container, scan feedback section
+ * - Organism: Full scanning interaction flow with status handling
+ *
+ * ## Behavior
+ * - Requests camera permission on first composition.
+ * - Starts camera stream and QR analyzer when permission is granted.
+ * - Shows a live camera preview using `AndroidView`.
+ * - Displays scan result only once and forwards it externally.
+ * - Shows error state from the ViewModel when applicable.
+ *
+ * @param onBackClick Action executed when the user taps the back button in the top bar.
+ * @param onScanSuccess Callback invoked with the decoded QR text after a successful scan.
+ * @param viewModel Injected [ScanQrViewModel] that manages camera setup and QR decoding logic.
+ */
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")

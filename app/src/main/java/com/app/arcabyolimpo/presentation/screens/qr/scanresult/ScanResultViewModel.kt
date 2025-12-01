@@ -15,6 +15,22 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel responsible for handling the logic of the QR scan result screen.
+ *
+ * This ViewModel coordinates the validation of scanned QR data by invoking
+ * domain-level use cases, manages loading and error states, and exposes
+ * observable UI state to the presentation layer.
+ *
+ * It also retrieves the current user's ID from the local preferences in order
+ * to attach it to the validation request.
+ *
+ * @property postValidateQrUseCase Use case that validates the scanned QR content.
+ * @property userPreferences Local storage handler used to obtain the authenticated user ID.
+ *
+ * @see ScanResultUiState Represents the UI state observed by the screen.
+ */
+
 @HiltViewModel
 class ScanResultViewModel
     @Inject

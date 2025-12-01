@@ -26,13 +26,28 @@ import com.app.arcabyolimpo.ui.theme.ErrorRed
 import com.app.arcabyolimpo.ui.theme.White
 
 /**
- * Composable screen displayed when the token verification process fails.
+ * Screen responsible for validating the scanned QR code and displaying the result
+ * of the attendance registration attempt.
  *
- * This screen informs the user that the provided token is invalid and suggests retrying the process.
- * It includes a top app bar with a back navigation icon and displays error feedback
- * using appropriate typography and colors.
+ * This screen sends the scanned QR value to [ScanResultViewModel] for verification and
+ * reacts to its UI state by showing loading indicators, contextual error messages, or
+ * a success confirmation when the attendance is properly registered.
  *
- * @param onBackClick Lambda function triggered when the user taps the back button.
+ * ## Atomic Design Level
+ * **Organism** — Composed of:
+ * - Atoms: `ReturnIcon`, text blocks, loading indicator
+ * - Molecules: Error and success result layouts
+ * - Organism: Full result-handling workflow (request → feedback)
+ *
+ * ## Behavior
+ * - Automatically triggers verification through `postScanResult()` when the screen loads.
+ * - Handles loading, error, and success states with clear visual feedback.
+ * - Maps backend error messages to user-friendly text variants.
+ * - Provides navigation via the top bar back button.
+ *
+ * @param onBackClick Action executed when the user taps the back button.
+ * @param qrValue The decoded QR content received from the scanner screen.
+ * @param viewModel Injected [ScanResultViewModel] managing verification logic and UI state.
  */
 
 @OptIn(ExperimentalMaterial3Api::class)

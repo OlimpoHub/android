@@ -38,6 +38,34 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/**
+ * Screen responsible for generating and displaying a time-limited QR code associated
+ * with a selected workshop. The QR is created through [QrViewModel] and rendered once
+ * the bitmap becomes available in the UI state.
+ *
+ * This screen shows loading, success, and error states, and provides contextual
+ * information such as the workshop name and the generation timestamp. It also
+ * includes a reminder about the QR’s expiration time.
+ *
+ * ## Atomic Design Level
+ * **Organism** — Built from multiple components:
+ * - Atoms: `ReturnIcon`, text labels, timestamp block
+ * - Molecules: QR card container with gradient + metadata section
+ * - Organism: Full flow for QR creation, rendering, and user guidance
+ *
+ * ## Behavior
+ * - Automatically requests QR creation via `postCreateQr()` when the screen loads.
+ * - Displays the generated QR using `Image` once the ViewModel provides the bitmap.
+ * - Shows the workshop name and formatted generation date/time.
+ * - Handles loading and error states with appropriate feedback.
+ * - Provides back navigation through the top bar.
+ *
+ * @param onBackClick Action executed when the user taps the back button.
+ * @param workshopId ID of the workshop for which the QR code will be generated.
+ * @param workshopName Name of the workshop, displayed under the QR code.
+ * @param viewModel Injected [QrViewModel] responsible for QR generation and state management.
+ */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable

@@ -16,6 +16,29 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel responsible for handling the QR scanning workflow and exposing UI state.
+ *
+ * This ViewModel coordinates interactions between the camera, the QR scanning use case,
+ * and the UI layer. It updates and exposes a [ScanQrUiState] object that reflects the
+ * current scanning status, loading state, errors, and backend responses.
+ *
+ * Responsibilities:
+ * - Start and stop the camera for scanning.
+ * - Trigger the QR scan request and emit loading, success, or error states.
+ * - Manage one-time events such as scan responses through state consumption helpers.
+ *
+ * @property postScanQrUseCase Domain use case that handles posting scanned QR data
+ * and managing camera lifecycle operations.
+ *
+ * Public functions:
+ * @see postScanQr Sends the QR scan result to the backend and updates the UI state.
+ * @see startCamera Starts camera streaming and prepares QR detection.
+ * @see stopScanning Stops camera operations and prevents further QR reads.
+ * @see clearScanResult Clears both response and error from the UI state.
+ * @see consumeResponse Clears only the consumed response to avoid repeated triggers.
+ */
+
 @HiltViewModel
 class ScanQrViewModel
     @Inject

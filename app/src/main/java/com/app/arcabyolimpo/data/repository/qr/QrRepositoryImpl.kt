@@ -29,9 +29,15 @@ import java.util.concurrent.Executor
 import javax.inject.Inject
 import kotlin.coroutines.resumeWithException
 
-// Repository implementation that interacts with the remote API to fetch user data.
-// Converts the received DTOs into domain models using the user mapper before returning them.
-
+/**
+ * Implementation of [QrRepository] responsible for handling QR code generation,
+ * scanning, and validation by integrating CameraX, ML Kit, and the remote API.
+ *
+ * This class converts callback-based camera and ML Kit operations into coroutine-friendly
+ * suspend functions, enabling seamless use from ViewModels and use cases.
+ *
+ * @property api Remote API service used for generating and validating QR codes.
+ */
 class QrRepositoryImpl
     @Inject
     constructor(

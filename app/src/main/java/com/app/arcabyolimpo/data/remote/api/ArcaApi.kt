@@ -98,21 +98,64 @@ interface ArcaApi {
         @Path("id") id: String,
     ): Map<String, Any>
 
+    /**
+     * Sends a password recovery request for a user.
+     *
+     * This endpoint receives a [RecoverPasswordDto] containing the email
+     * of the user who requested password recovery. If the email exists in
+     * the system, the backend sends a recovery link or token to the user.
+     *
+     * @param request Data transfer object containing the user’s email.
+     * @return [Response] wrapping a [RecoverPasswordResponseDto] with information
+     * about the recovery request result, including status or messages.
+     */
     @POST("user/recover-password")
     suspend fun recoverPassword(
         @Body request: RecoverPasswordDto,
     ): Response<RecoverPasswordResponseDto>
 
+    /**
+     * Verifies whether a password recovery token is valid.
+     *
+     * This endpoint receives a token through the `token` query parameter
+     * and checks whether it is active, expired, or invalid. It is commonly
+     * used before allowing the user to set a new password.
+     *
+     * @param token The recovery token sent to the user's email.
+     * @return [Response] wrapping a [VerifyTokenResponseDto] containing
+     * validation details such as expiration, associated user, or status flags.
+     */
     @GET("user/verify-token")
     suspend fun verifyToken(
         @Query("token") token: String,
     ): Response<VerifyTokenResponseDto>
 
+    /**
+     * Updates a user's password.
+     *
+     * This endpoint receives an [UpdatePasswordDto] containing the user's email
+     * and the new password. The backend validates the request and applies the
+     * password update if the data is valid.
+     *
+     * @param request Data transfer object containing the email and the new password
+     * to be assigned to the user's account.
+     * @return [Response] wrapping an [UpdatePasswordResponseDto] which includes
+     * the update result, such as status and confirmation messages.
+     */
     @POST("user/update-password")
     suspend fun updatePassword(
         @Body request: UpdatePasswordDto,
     ): Response<UpdatePasswordResponseDto>
 
+    /**
+     * Retrieves all users registered in the system.
+     *
+     * This endpoint returns a list of all user accounts without requiring
+     * additional parameters. It is commonly used for administrative views
+     * and user management dashboards.
+     *
+     * @return A list of [UserDto] representing all users in the system.
+     */
     @GET("user")
     suspend fun getAllUsers(): List<UserDto>
 
@@ -408,10 +451,35 @@ interface ArcaApi {
         @Part image: MultipartBody.Part?,
     )
 
+    /**
+     * Creates a new QR code for a specific user and workshop.
+     *
+     * This endpoint receives a [CreateQrDto] containing the necessary
+     * identifiers (userID and workshopID) required by the backend to
+     * generate a unique QR code.
+     *
+     * @param request Data transfer object that includes the user and workshop
+     * information needed to create the QR code.
+     * @return [ResponseBody] containing the generated QR code in binary format.
+     */
     @POST("qr/create")
     suspend fun postCreateQr(
         @Body request: CreateQrDto,
     ): ResponseBody
+
+    /**
+     * Validates a scanned QR code.
+     *
+     * This endpoint receives a [ValidateQrDto] with the encoded QR value,
+     * the timestamp when it was read, and the userID making the request.
+     * The backend verifies whether the QR is valid, expired, duplicated,
+     * or belongs to the corresponding workshop.
+     *
+     * @param request Data transfer object that contains the QR value and
+     * validation metadata required by the backend.
+     * @return [Response] wrapping a [ValidateQrResponseDto] with the validation
+     * result, including status, messages, and related workshop or user data.
+     */
 
     @POST("qr/validate")
     suspend fun postValidateQr(
