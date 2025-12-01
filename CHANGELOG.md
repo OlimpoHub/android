@@ -5,6 +5,10 @@
 ### Changed
 - Added a wey to prevent certain chars and emojis in workshop inputs. 
 
+### Fixed
+- Fixed attendance date/time formatting.
+- Improved "View Attendance" button alignment and styling.
+
 ## [0.2.0] - 29/11/2025
 ### Added
 - Added offline for product batch list and detail
