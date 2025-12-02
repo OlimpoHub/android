@@ -1,5 +1,6 @@
 ## [0.2.0] - 01/12/2025
 ### Added
+- Cache for product list and detail
 - Modify beneficiary
 
 ### Fixed
