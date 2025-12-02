@@ -116,7 +116,7 @@ fun SupplyDetailContent(
                     .fillMaxWidth(),
         ) {
             AsyncImage(
-                model = "http://74.208.78.8/" + supply.imageUrl,
+                model = "http://74.208.78.8:8080/" + supply.imageUrl,
                 contentDescription = "imagen de ${supply.name}",
                 modifier =
                     Modifier
