@@ -110,8 +110,10 @@ fun SupplyBatchRegisterScreen(
         topBar = {
             TopAppBar(
                 title = {
+                    // Show selected supply name in the top bar when available
+                    val supplyName = state.suppliesList.firstOrNull { it.id == state.selectedSupplyId }?.name
                     Text(
-                        text = "Registrar Lotes",
+                        text = supplyName?.let { "Registrar Lotes de $it" } ?: "Registrar Lotes",
                         color = White,
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Bold,

@@ -1,6 +1,7 @@
 package com.app.arcabyolimpo.data.repository.disabilities
 
 import android.util.Log
+import com.app.arcabyolimpo.data.mapper.disabilities.toDomain
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.domain.model.disabilities.Disability
 import com.app.arcabyolimpo.domain.repository.disability.DisabilityRepository
@@ -48,4 +49,13 @@ class DisabilityRepositoryImpl
             throw e
         }
     }
-    }
+
+    /**
+     * Retrieves the details of the selected disability from the API.
+     *
+     * The response is converted into a [Disability] domain model.
+     *
+     * @return A [Disabilities] object representing the available disabilities.
+     */
+    override suspend fun getDisability(id: String): Disability = api.getDisabilityDetail(id).toDomain()
+}

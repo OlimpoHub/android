@@ -325,6 +325,18 @@ interface ArcaApi {
     @GET("/disabilities/list")
     suspend fun getDisabilitiesList(): List<DisabilityDto>
 
+    /**
+     * Consults the selected beneficiary's detail.
+     *
+     * This endpoint receives a [DisabilityDto]
+     * with the disability's details.
+     *
+     */
+    @GET("/discapacity/{idDisability}")
+    suspend fun getDisabilityDetail(
+        @Path("idDisability") id: String,
+    ): DisabilityDto
+
     @GET("supplies/workshop/category")
     suspend fun getWorkshopCategoryList(): WorkshopCategoryListDto
 
