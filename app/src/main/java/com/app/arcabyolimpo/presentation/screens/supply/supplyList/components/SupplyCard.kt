@@ -110,7 +110,7 @@ fun SupplyCard(
                     }
                 } else {
                     AsyncImage(
-                        model = "http://74.208.78.8:8080" + supply.imageUrl,
+                        model = "http://74.208.78.8:8080/" + supply.imageUrl,
                         contentDescription = "Imagen de ${supply.name}",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
