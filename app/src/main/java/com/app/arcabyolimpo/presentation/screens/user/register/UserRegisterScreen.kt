@@ -1,6 +1,7 @@
 package com.app.arcabyolimpo.presentation.screens.user.register
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -18,6 +19,7 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SaveButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.CancelButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.ExitIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.ModalInput
+import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.ImageUploadInput
 import androidx.compose.foundation.clickable
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.CalendarIcon
 import androidx.compose.material3.SnackbarHost
@@ -40,6 +42,9 @@ fun UserRegisterScreen(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val isActiveBoolean = uiState.isActive == 1
 
+    // Image state
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+
     // Snackbar state
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -50,7 +55,6 @@ fun UserRegisterScreen(
                 snackbarHostState.showSnackbar(message)
             }
         } else if (uiState.error != null) {
-
             uiState.error?.let { errorMessage ->
                 snackbarHostState.showSnackbar(errorMessage)
             }
@@ -191,6 +195,17 @@ fun UserRegisterScreen(
                         .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
+                    // Image Upload - Added at the top of the form
+                    ImageUploadInput(
+                        label = "Foto de Perfil",
+                        value = selectedImageUri,
+                        onValueChange = { uri ->
+                            selectedImageUri = uri
+                            viewModel.updateProfileImage(uri)
+                        },
+                        height = 200.dp
+                    )
+
                     // Role Selection
                     Column(modifier = Modifier.fillMaxWidth()) {
                         Text(
