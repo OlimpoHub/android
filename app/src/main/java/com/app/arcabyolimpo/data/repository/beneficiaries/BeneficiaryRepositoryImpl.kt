@@ -167,4 +167,41 @@ class BeneficiaryRepositoryImpl
                 status = newBeneficiary.status ?: 1
             )
         }
+
+    /**
+     * Modifies/updates an existing beneficiary.
+     *
+     * This function sends the modified beneficiary information [BeneficiaryDto]
+     * to the API's [modifyBeneficiary] endpoint.
+     *
+     * @param modifiedBeneficiary The search term
+     */
+    override suspend fun modifyBeneficiary(modifiedBeneficiary: BeneficiaryDto): Beneficiary {
+        val beneficiaryId = modifiedBeneficiary.id
+        val response = api.modifyBeneficiary(
+            id = beneficiaryId!!,
+            requestBody = modifiedBeneficiary
+        )
+
+        if (!response.success) {
+            throw Exception(response.message)
+        }
+
+        return Beneficiary(
+            id = modifiedBeneficiary.id.orEmpty(),
+            name = "Nombre no disponible",
+            firstName = modifiedBeneficiary.firstName.orEmpty(),
+            paternalName = modifiedBeneficiary.paternalName.orEmpty(),
+            maternalName = modifiedBeneficiary.maternalName.orEmpty(),
+            birthdate = modifiedBeneficiary.birthdate.orEmpty(),
+            emergencyNumber = modifiedBeneficiary.emergencyNumber.orEmpty(),
+            emergencyName = modifiedBeneficiary.emergencyName.orEmpty(),
+            emergencyRelation = modifiedBeneficiary.emergencyRelation.orEmpty(),
+            details = modifiedBeneficiary.details.orEmpty(),
+            entryDate = modifiedBeneficiary.entryDate.orEmpty(),
+            image = modifiedBeneficiary.image.orEmpty(),
+            disabilities = modifiedBeneficiary.disabilities.orEmpty(),
+            status = modifiedBeneficiary.status ?: 1
+        )
     }
+}

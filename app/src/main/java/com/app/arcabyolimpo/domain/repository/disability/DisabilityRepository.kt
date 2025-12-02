@@ -6,4 +6,6 @@ interface DisabilityRepository {
     suspend fun getDisabilities(): List<Disability>
 
     suspend fun registerDisability(disability: Disability)
+    
+    suspend fun getDisability(id: String): Disability
 }

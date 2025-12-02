@@ -2,13 +2,17 @@ package com.app.arcabyolimpo.di
 
 import android.content.Context
 import com.app.arcabyolimpo.data.local.auth.UserPreferences
-import com.app.arcabyolimpo.data.local.product.ProductBatchPreferences
+import com.app.arcabyolimpo.data.local.product.detail.preferences.ProductDetailPreferences
+import com.app.arcabyolimpo.data.local.product.list.preferences.ProductPreferences
+import com.app.arcabyolimpo.data.local.product.productBatch.preferences.ProductBatchPreferences
 import com.app.arcabyolimpo.data.local.supplies.preferences.SupplyLocalDataSource
 import com.app.arcabyolimpo.data.local.supplies.preferences.SupplyPreferences
+import com.app.arcabyolimpo.data.local.supplybatches.preferences.SupplyBatchesPreferences
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.interceptor.AuthInterceptor
 import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
 import com.app.arcabyolimpo.data.remote.interceptor.TokenAuthenticator
+import com.app.arcabyolimpo.data.repository.attendance.AttendanceRepositoryImpl
 import com.app.arcabyolimpo.data.repository.auth.UserRepositoryImpl
 import com.app.arcabyolimpo.data.repository.beneficiaries.BeneficiaryRepositoryImpl
 import com.app.arcabyolimpo.data.repository.disabilities.DisabilityRepositoryImpl
@@ -19,6 +23,7 @@ import com.app.arcabyolimpo.data.repository.qr.QrRepositoryImpl
 import com.app.arcabyolimpo.data.repository.supplies.SupplyRepositoryImpl
 import com.app.arcabyolimpo.data.repository.user.UsersRepositoryImpl
 import com.app.arcabyolimpo.data.repository.workshops.WorkshopRepositoryImpl
+import com.app.arcabyolimpo.domain.repository.attendance.AttendanceRepository
 import com.app.arcabyolimpo.domain.repository.auth.UserRepository
 import com.app.arcabyolimpo.domain.repository.beneficiaries.BeneficiaryRepository
 import com.app.arcabyolimpo.domain.repository.disability.DisabilityRepository
@@ -44,7 +49,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    private const val BASE_URL = "http://10.0.2.2:8080/"
+    private const val BASE_URL = "http://192.168.100.39:8080/"
 
     /**
      * Provides a configured [OkHttpClient] instance.
@@ -128,6 +133,13 @@ object AppModule {
     @Singleton
     fun provideSupplyLocalDataSource(preferences: SupplyPreferences): SupplyLocalDataSource = SupplyLocalDataSource(preferences)
 
+    @Provides
+    @Singleton
+    fun provideSupplyBatchesPreferences(
+        @ApplicationContext context: Context,
+        gson: Gson,
+    ): SupplyBatchesPreferences = SupplyBatchesPreferences(context, gson)
+
     /**
      * Provides the [SupplyRepository] implementation.
      *
@@ -144,21 +156,50 @@ object AppModule {
     fun provideSupplyRepository(
         api: ArcaApi,
         localDataSource: SupplyLocalDataSource,
+        supplyBatchesPreferences: SupplyBatchesPreferences,
         @ApplicationContext context: Context,
-    ): SupplyRepository = SupplyRepositoryImpl(api, localDataSource, context)
+    ): SupplyRepository = SupplyRepositoryImpl(api, localDataSource, supplyBatchesPreferences, context)
+
+    /**
+     * Provides a singleton instance of [ProductPreferences], which manages the
+     * caching and persistence of product-related data in the local storage.
+     *
+     * This function uses Hilt to inject the application [Context] and a [Gson]
+     * instance required for serialization and deserialization of the cached data.
+     *
+     * @param context The application context injected by Hilt.
+     * @param gson The Gson instance used for JSON parsing.
+     * @return A singleton instance of [ProductPreferences].
+     */
+    @Provides
+    @Singleton
+    fun provideProductPreferences(
+        @ApplicationContext context: Context,
+        gson: Gson,
+    ): ProductPreferences = ProductPreferences(context, gson)
 
     /**
      * Provides the [ProductRepository] implementation.
      *
-     * @param api The [ArcaApi] instance used to perform network requests.
-     * @return A singleton instance of [ProductRepositoryImpl].
+     * @param api The API client used to perform network requests to the backend.
+     * @param preferences The local data manager used to read and write cached product data.
+     * @param context The application context required for file access operations.
+     * @return A singleton instance of [ProductRepository].
      */
     @Provides
     @Singleton
     fun provideProductRepository(
         api: ArcaApi,
+        preferences: ProductPreferences,
+        detailPreferences: ProductDetailPreferences,
         @ApplicationContext context: Context,
-    ): ProductRepository = ProductRepositoryImpl(api, context)
+    ): ProductRepository =
+        ProductRepositoryImpl(
+            api = api,
+            preferences = preferences,
+            detailPreferences = detailPreferences,
+            context = context
+        )
 
     /**
      * Provides the [WorkshopRepository] implementation.
@@ -220,4 +261,9 @@ object AppModule {
     @Provides
     @Singleton
     fun provideQrRepository(api: ArcaApi): QrRepository = QrRepositoryImpl(api)
+
+    @Provides
+    @Singleton
+    fun provideAttendanceRepository(api: ArcaApi): AttendanceRepository = AttendanceRepositoryImpl(api)
+
 }

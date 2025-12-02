@@ -1,5 +1,6 @@
 package com.app.arcabyolimpo.presentation.screens.user.register
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.arcabyolimpo.data.remote.dto.user.UserDto
@@ -196,4 +197,11 @@ class UserRegisterViewModel @Inject constructor(
     private fun isValidEmail(email: String): Boolean {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
+
+    fun updateProfileImage(uri: Uri?) {
+        _uiState.value = _uiState.value.copy(
+            photoUrl = uri?.toString()
+        )
+    }
+
 }

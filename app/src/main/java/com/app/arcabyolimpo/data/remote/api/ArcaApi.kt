@@ -1,4 +1,5 @@
 package com.app.arcabyolimpo.data.remote.api
+import com.app.arcabyolimpo.data.remote.dto.attendance.AttendanceDto
 import com.app.arcabyolimpo.data.remote.dto.auth.LoginRequestDto
 import com.app.arcabyolimpo.data.remote.dto.auth.LoginResponseDto
 import com.app.arcabyolimpo.data.remote.dto.auth.RefreshRequestDto
@@ -303,8 +304,36 @@ interface ArcaApi {
         @Body requestBody: BeneficiaryDto,
     ): AddNewBeneficiaryDto
 
+    /**
+     * Modifies the selected beneficiary.
+     *
+     * This endpoint receives a [AddNewBeneficiaryDto] (as it uses the same
+     * DTO for both add and modify operations) with all the beneficiary's
+     * information. It updates every field with the new data.
+     *
+     * @param requestBody Data transfer object that contains the beneficiary's
+     * information required by the API to perform the update operation.
+     */
+    @POST("beneficiary/update/{idBeneficiary}")
+    suspend fun modifyBeneficiary(
+        @Path("idBeneficiary") id: String,
+        @Body requestBody: BeneficiaryDto,
+    ): AddNewBeneficiaryDto
+
     @GET("/disabilities/list")
     suspend fun getDisabilitiesList(): List<DisabilityDto>
+
+    /**
+     * Consults the selected beneficiary's detail.
+     *
+     * This endpoint receives a [DisabilityDto]
+     * with the disability's details.
+     *
+     */
+    @GET("/discapacity/{idDisability}")
+    suspend fun getDisabilityDetail(
+        @Path("idDisability") id: String,
+    ): DisabilityDto
 
     @POST("discapacity/add")
     suspend fun registerDisability(
@@ -472,6 +501,15 @@ interface ArcaApi {
     suspend fun postCreateQr(
         @Body request: CreateQrDto,
     ): ResponseBody
+
+    @GET("attendance")
+    suspend fun getAttendanceByUser(
+        @Query("userId") userId: String
+    ): List<AttendanceDto>
+
+
+
+
 
     /**
      * Validates a scanned QR code.

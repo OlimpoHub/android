@@ -1,5 +1,10 @@
 package com.app.arcabyolimpo.presentation.screens.user.detail.components
 
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.PaddingValues
+import com.app.arcabyolimpo.presentation.theme.Poppins
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -36,6 +42,7 @@ fun UserDetailContent(
     collab: UserDto,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
+    onAttendanceClick: () -> Unit,
 ) {
     Column(
         modifier =
@@ -105,11 +112,41 @@ fun UserDetailContent(
 
         Spacer(modifier = Modifier.height(32.dp))
 
+        // Botón para ver asistencias
+        if (collab.idRol == "3") {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center,
+            ) {
+                Button(
+                    onClick = onAttendanceClick,
+                    modifier = Modifier
+                        .fillMaxWidth(0.76f)
+                        .height(48.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF2844AE),
+                        contentColor = Color(0xFFFFF7EB),
+                    )
+                ) {
+                    Text(
+                        text = "Ver asistencias",
+                        fontFamily = Poppins,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 14.sp,
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // 🟣 Acciones secundarias: Modificar / Eliminar
         Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Box(
@@ -125,13 +162,23 @@ fun UserDetailContent(
                 modifier = Modifier.weight(1f),
                 contentAlignment = Alignment.Center,
             ) {
-                DeleteButton(
-                    onClick = onDeleteClick,
-                )
+                val isEnabled = collab.estatus == 1
+
+                Box(
+                    modifier = if (!isEnabled) Modifier.alpha(0.4f) else Modifier
+                ) {
+                    DeleteButton(
+                        onClick = {
+                            if (isEnabled) onDeleteClick()
+                        },
+                        enabled = true,
+                    )
+                }
             }
         }
 
         Spacer(modifier = Modifier.height(24.dp))
+
     }
 }
 
