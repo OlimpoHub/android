@@ -1,3 +1,7 @@
+## [0.2.0] - 02/12/2025
+### Changed
+- Attendance screen now always displays exit time as 14:30.
+
 ## [0.2.0] - 30/11/2025
 ### Added
 - feature for scanning qr code for attendance
