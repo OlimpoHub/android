@@ -2,7 +2,8 @@ package com.app.arcabyolimpo.di
 
 import android.content.Context
 import com.app.arcabyolimpo.data.local.auth.UserPreferences
-import com.app.arcabyolimpo.data.local.product.product.preferences.ProductPreferences
+import com.app.arcabyolimpo.data.local.product.detail.preferences.ProductDetailPreferences
+import com.app.arcabyolimpo.data.local.product.list.preferences.ProductPreferences
 import com.app.arcabyolimpo.data.local.product.productBatch.preferences.ProductBatchPreferences
 import com.app.arcabyolimpo.data.local.supplies.preferences.SupplyLocalDataSource
 import com.app.arcabyolimpo.data.local.supplies.preferences.SupplyPreferences
@@ -181,11 +182,13 @@ object AppModule {
     fun provideProductRepository(
         api: ArcaApi,
         preferences: ProductPreferences,
+        detailPreferences: ProductDetailPreferences,
         @ApplicationContext context: Context,
     ): ProductRepository =
         ProductRepositoryImpl(
             api = api,
             preferences = preferences,
+            detailPreferences = detailPreferences,
             context = context
         )
 

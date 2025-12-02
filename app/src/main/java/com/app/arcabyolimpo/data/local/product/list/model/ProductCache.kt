@@ -1,4 +1,4 @@
-package com.app.arcabyolimpo.data.local.product.product.model
+package com.app.arcabyolimpo.data.local.product.list.model
 
 import com.app.arcabyolimpo.domain.model.product.Product
 

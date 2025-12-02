@@ -1,4 +1,4 @@
-package com.app.arcabyolimpo.data.local.product.product.preferences
+package com.app.arcabyolimpo.data.local.product.list.preferences
 
 /**
  * Contains constant values used for managing product-related preferences

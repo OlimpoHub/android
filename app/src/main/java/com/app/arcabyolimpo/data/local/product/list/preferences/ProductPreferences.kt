@@ -1,10 +1,10 @@
-package com.app.arcabyolimpo.data.local.product.product.preferences
+package com.app.arcabyolimpo.data.local.product.list.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.app.arcabyolimpo.domain.model.product.Product
-import com.app.arcabyolimpo.data.local.product.product.model.ProductCache
+import com.app.arcabyolimpo.data.local.product.list.model.ProductCache
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.qualifiers.ApplicationContext
