@@ -22,6 +22,7 @@ import com.app.arcabyolimpo.presentation.screens.attendance.AttendanceListScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.AddNewBeneficiaryScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
+import com.app.arcabyolimpo.presentation.screens.beneficiary.ModifyBeneficiaryScreen
 import com.app.arcabyolimpo.presentation.screens.capacitations.DisabilitiesList
 import com.app.arcabyolimpo.presentation.screens.capacitations.DisabilitiesListScreen
 import com.app.arcabyolimpo.presentation.screens.home.assistant.CollaboratorHomeScreen
@@ -136,6 +137,10 @@ sealed class Screen(
     }
 
     object AddNewBeneficiary : Screen("beneficiary/create")
+
+    object ModifyBeneficiary : Screen("beneficiary/update/{beneficiaryId}"){
+        fun createRoute(beneficiaryId: String) = "beneficiary/update/$beneficiaryId"
+    }
 
     object CapacitationScreen : Screen("/disabilities/list")
 
@@ -716,8 +721,29 @@ fun ArcaNavGraph(
         ) {
             BeneficiaryDetailScreen(
                 onBackClick = { navController.popBackStack() },
-                onModifyClick = { /* TODO: Lógica de VM */ },
+                onModifyClick = { beneficiaryId ->
+                    navController.navigate(Screen.ModifyBeneficiary.createRoute(beneficiaryId))
+                },
                 viewModel = hiltViewModel(),
+                beneficiaryId = it.arguments?.getString("beneficiaryId") ?: ""
+            )
+        }
+
+        /**
+         * Modify Beneficiary Screen.
+         *
+         * Allows the modification of an existing and active beneficiary.
+         */
+        composable(
+            route = Screen.ModifyBeneficiary.route,
+            arguments = listOf(navArgument("beneficiaryId") { type = NavType.StringType }),
+
+            ){ backStackEntry ->
+            val beneficiaryId = backStackEntry.arguments?.getString("beneficiaryId") ?: ""
+            ModifyBeneficiaryScreen(
+                navController = navController,
+                viewModel = hiltViewModel(),
+                beneficiaryId = beneficiaryId
             )
         }
 

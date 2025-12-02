@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -112,28 +113,30 @@ fun UserDetailContent(
         Spacer(modifier = Modifier.height(32.dp))
 
         // Botón para ver asistencias
-        Box(
-            modifier = Modifier
-                .fillMaxWidth(),
-            contentAlignment = Alignment.Center,
-        ) {
-            Button(
-                onClick = onAttendanceClick,
+        if (collab.idRol == "3") {
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth(0.76f)
-                    .height(48.dp),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF2844AE),
-                    contentColor = Color(0xFFFFF7EB),
-                )
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center,
             ) {
-                Text(
-                    text = "Ver asistencias",
-                    fontFamily = Poppins,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 14.sp,
-                )
+                Button(
+                    onClick = onAttendanceClick,
+                    modifier = Modifier
+                        .fillMaxWidth(0.76f)
+                        .height(48.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF2844AE),
+                        contentColor = Color(0xFFFFF7EB),
+                    )
+                ) {
+                    Text(
+                        text = "Ver asistencias",
+                        fontFamily = Poppins,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 14.sp,
+                    )
+                }
             }
         }
 
@@ -159,9 +162,18 @@ fun UserDetailContent(
                 modifier = Modifier.weight(1f),
                 contentAlignment = Alignment.Center,
             ) {
-                DeleteButton(
-                    onClick = onDeleteClick,
-                )
+                val isEnabled = collab.estatus == 1
+
+                Box(
+                    modifier = if (!isEnabled) Modifier.alpha(0.4f) else Modifier
+                ) {
+                    DeleteButton(
+                        onClick = {
+                            if (isEnabled) onDeleteClick()
+                        },
+                        enabled = true,
+                    )
+                }
             }
         }
 

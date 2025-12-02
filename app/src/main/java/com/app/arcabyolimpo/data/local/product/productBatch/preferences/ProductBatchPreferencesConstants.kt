@@ -1,4 +1,4 @@
-package com.app.arcabyolimpo.data.local.product
+package com.app.arcabyolimpo.data.local.product.productBatch.preferences
 
 object  ProductBatchPreferencesConstants {
     const val PREF_NAME = "product_batch_preferences"
