@@ -15,7 +15,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -28,6 +30,8 @@ import com.app.arcabyolimpo.presentation.navigation.Screen
 import com.app.arcabyolimpo.presentation.screens.capacitations.DisabilitiesListScreen
 import com.app.arcabyolimpo.presentation.screens.home.components.MainMenu
 import com.app.arcabyolimpo.presentation.screens.home.components.TopBarContent
+import com.app.arcabyolimpo.presentation.screens.qr.qr.QrScreen
+import com.app.arcabyolimpo.presentation.screens.qr.scanqr.ScanQrScreen
 import com.app.arcabyolimpo.presentation.screens.qr.workshopselection.QrWorkshopsListScreen
 import com.app.arcabyolimpo.presentation.screens.user.UserListScreen
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.NotificationIcon
@@ -47,9 +51,13 @@ fun HomeScreen(
     resetTrigger: Int,
 ) {
     var selectedOption by rememberSaveable { mutableStateOf<String?>(null) }
+    var prevReset by remember { mutableIntStateOf(resetTrigger) }
 
     LaunchedEffect(resetTrigger) {
-        selectedOption = null
+        if (resetTrigger != prevReset && selectedOption != null) {
+            selectedOption = null
+        }
+        prevReset = resetTrigger
     }
 
     ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false) {
@@ -77,7 +85,16 @@ fun HomeScreen(
                                     navController.navigate(Screen.CreateQr.createRoute(id, name))
                                 },
                             )
-
+                        "readQR" ->
+                            ScanQrScreen(
+                                onBackClick = { selectedOption = null },
+                                onScanSuccess = { qrValue ->
+                                    navController.currentBackStackEntry
+                                        ?.savedStateHandle
+                                        ?.set("qrValue", qrValue)
+                                    navController.navigate(Screen.ValidateQr.route)
+                                },
+                            )
                         "users" ->
                             UserListScreen(
                                 onCollabClick = { id ->
@@ -95,7 +112,7 @@ fun HomeScreen(
                                     // TODO: Navigate to disability detail when screen is created
                                     // navController.navigate(Screen.DisabilityDetail.createRoute(id))
                                 },
-                                onBackClick = { selectedOption = null }
+                                onBackClick = { selectedOption = null },
                             )
                         }
 
@@ -119,21 +136,22 @@ fun HomeScreen(
                                             )
                                         }
                                     },
-                                    colors = TopAppBarDefaults.topAppBarColors(
-                                        containerColor = Color(0xFF040610),
-                                    ),
+                                    colors =
+                                        TopAppBarDefaults.topAppBarColors(
+                                            containerColor = Color(0xFF040610),
+                                        ),
                                 )
 
                                 // Aquí va el mensaje En Proceso...
                                 Box(
                                     modifier = Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.Center
+                                    contentAlignment = Alignment.Center,
                                 ) {
                                     Text(
                                         text = "En Proceso...",
                                         color = Color.White,
                                         fontSize = 24.sp,
-                                        fontWeight = FontWeight.Bold
+                                        fontWeight = FontWeight.Bold,
                                     )
                                 }
                             }

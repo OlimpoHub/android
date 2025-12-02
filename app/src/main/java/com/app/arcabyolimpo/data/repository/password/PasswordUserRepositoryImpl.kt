@@ -12,6 +12,18 @@ import jakarta.inject.Singleton
 import org.json.JSONObject
 import retrofit2.Response
 
+/**
+ * Base repository providing common utilities for handling Retrofit responses
+ * across multiple repositories.
+ *
+ * This class centralizes error parsing and success/error validation, allowing
+ * child repositories to avoid boilerplate response handling.
+ *
+ * Functions:
+ * - [parseError] extracts a user-friendly error message from the backend.
+ * - [handleResponse] validates the HTTP response and returns its body or throws an exception.
+ */
+
 abstract class BaseRepository {
     protected fun parseError(response: Response<*>): String =
         try {
@@ -29,6 +41,21 @@ abstract class BaseRepository {
         }
     }
 }
+
+/**
+ * Repository implementation for handling user password-related operations,
+ * such as password recovery, token verification, and password updates.
+ *
+ * This class communicates with the backend via [ArcaApi] and converts
+ * API DTOs into domain models using mapper extensions.
+ *
+ * Responsibilities:
+ * - Send password recovery requests.
+ * - Validate password recovery tokens.
+ * - Update user passwords.
+ *
+ * This repository extends [BaseRepository] to reuse common response handling logic.
+ */
 
 @Singleton
 class PasswordUserRepositoryImpl

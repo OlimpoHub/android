@@ -84,12 +84,6 @@ fun MainMenu(
             image = painterResource(id = R.drawable.img_trainings),
             onClick = { onSelect("training") },
         )
-        if (role == "COORDINADOR" || role == "ASISTENTE") {
-            HomeScreenCard(
-                name = "Análisis",
-                image = painterResource(id = R.drawable.img_dashboard),
-                onClick = { onSelect("analysis") },
-            )
-        }
+
     }
 }
