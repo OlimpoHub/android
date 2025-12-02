@@ -1,10 +1,10 @@
-package com.app.arcabyolimpo.data.local.product
+package com.app.arcabyolimpo.data.local.product.productBatch.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import com.app.arcabyolimpo.data.local.product.ProductBatchPreferencesConstants.KEY_BATCH_CACHE
-import com.app.arcabyolimpo.data.local.product.ProductBatchPreferencesConstants.KEY_LAST_UPDATE
+import com.app.arcabyolimpo.data.local.product.productBatch.model.ProductBatchCache
+import com.app.arcabyolimpo.data.local.product.productBatch.preferences.ProductBatchPreferencesConstants
 import com.app.arcabyolimpo.domain.model.productbatches.ProductBatch
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -30,14 +30,14 @@ constructor(
     ) {
         prefs
             .edit {
-                putString(KEY_BATCH_CACHE, gson.toJson(productBatchList))
-                    .putLong(KEY_LAST_UPDATE, System.currentTimeMillis())
+                putString(ProductBatchPreferencesConstants.KEY_BATCH_CACHE, gson.toJson(productBatchList))
+                    .putLong(ProductBatchPreferencesConstants.KEY_LAST_UPDATE, System.currentTimeMillis())
             }
     }
 
     fun getProductBatchCache(): ProductBatchCache? {
-        val json = prefs.getString(KEY_BATCH_CACHE, null)
-        val lastUpdate = prefs.getLong(KEY_LAST_UPDATE, 0)
+        val json = prefs.getString(ProductBatchPreferencesConstants.KEY_BATCH_CACHE, null)
+        val lastUpdate = prefs.getLong(ProductBatchPreferencesConstants.KEY_LAST_UPDATE, 0)
 
         if (json.isNullOrEmpty() || lastUpdate == 0L) return null
         val type = object : TypeToken<List<ProductBatch>>() {}.type
