@@ -207,7 +207,7 @@ private fun ProductDetailContent(
                 }
             } else {
                 AsyncImage(
-                    model = product.imageUrl,
+                    model = "http://74.208.78.8:8080/" + product.imageUrl,
                     contentDescription = "Imagen de ${product.name}",
                     contentScale = ContentScale.Crop,
                     modifier =
