@@ -1,3 +1,11 @@
+## [0.2.0] - 01/12/2025
+### Added
+- Cache for product list and detail
+- Modify beneficiary
+
+### Fixed
+- Debug modify beneficiary
+
 ## [0.2.0] - 30/11/2025
 ### Added
 - feature for scanning qr code for attendance
@@ -13,6 +21,7 @@
 ### Added
 - Added offline for product batch list and detail
 - Added a Capacitations view for Disabilities List
+- Added offline for supply batches
 
 ## [0.2.0] - 29/11/2025
 

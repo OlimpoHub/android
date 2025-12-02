@@ -310,41 +310,6 @@ private fun ProductDetailContent(
             thickness = 1.dp,
         )
 
-        // Active lots section
-        Column(
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Text(
-                text = "Lotes Activos",
-                color = White,
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
-                fontFamily = Poppins,
-            )
-
-            // Placeholder para lotes
-            Card(
-                colors =
-                    CardDefaults.cardColors(
-                        containerColor = White.copy(alpha = 0.05f),
-                    ),
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    Text(
-                        text = "No hay lotes activos",
-                        color = White.copy(alpha = 0.6f),
-                        fontSize = 14.sp,
-                        fontFamily = Poppins,
-                    )
-                    // Aquí podrías agregar los lotes reales cuando existan
-                }
-            }
-        }
-
         Spacer(modifier = Modifier.height(16.dp))
 
         // Action buttons
