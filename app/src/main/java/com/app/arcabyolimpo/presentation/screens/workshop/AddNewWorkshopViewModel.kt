@@ -23,6 +23,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.util.UUID
 import javax.inject.Inject
+import android.util.Log // Importación necesaria para el logging
 
 @HiltViewModel
 class AddNewWorkshopViewModel @Inject constructor(
@@ -66,7 +67,7 @@ class AddNewWorkshopViewModel @Inject constructor(
             }
             tempFile
         } catch (e: Exception) {
-             e.printStackTrace()
+            e.printStackTrace()
             null
         }
     }
@@ -126,6 +127,13 @@ class AddNewWorkshopViewModel @Inject constructor(
                     uploadError = "Error al preparar la imagen para la subida."
                 } else {
 
+                    // --- INICIO: LOGS DE DEPURACIÓN DE LA IMAGEN ---
+                    Log.d("UploadDebug", "Preparando archivo para subida:")
+                    Log.d("UploadDebug", "  Nombre de archivo: ${fileToUpload.name}")
+                    Log.d("UploadDebug", "  Ruta temporal: ${fileToUpload.absolutePath}")
+                    Log.d("UploadDebug", "  Tamaño (bytes): ${fileToUpload.length()}")
+                    // --- FIN: LOGS DE DEPURACIÓN DE LA IMAGEN ---
+
                     val uploadResult = postUploadImage(fileToUpload)
                         .let { flow ->
                             flow.first { it !is Result.Loading }
@@ -137,6 +145,8 @@ class AddNewWorkshopViewModel @Inject constructor(
                             fileToUpload.delete()
                         }
                         is Result.Error -> {
+                            // Añadimos logging también en caso de error
+                            Log.e("UploadDebug", "Fallo al subir imagen: ${uploadResult.exception.message}")
                             uploadError = "Error al subir la imagen: ${uploadResult.exception.message}"
                             fileToUpload.delete()
                         }
@@ -264,4 +274,3 @@ class AddNewWorkshopViewModel @Inject constructor(
     }
 
 }
-

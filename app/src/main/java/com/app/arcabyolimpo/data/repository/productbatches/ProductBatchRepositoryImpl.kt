@@ -1,6 +1,6 @@
 package com.app.arcabyolimpo.data.repository.productbatches
 
-import com.app.arcabyolimpo.data.local.product.ProductBatchPreferences
+import com.app.arcabyolimpo.data.local.product.productBatch.preferences.ProductBatchPreferences
 import com.app.arcabyolimpo.data.mapper.productbatches.toDomain
 import com.app.arcabyolimpo.data.mapper.productbatches.toDto
 import com.app.arcabyolimpo.data.mapper.productbatches.toModifyDto

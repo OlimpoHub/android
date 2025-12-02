@@ -2,6 +2,8 @@ package com.app.arcabyolimpo.data.repository.product
 
 import android.content.Context
 import android.util.Log
+import com.app.arcabyolimpo.data.local.product.detail.preferences.ProductDetailPreferences
+import com.app.arcabyolimpo.data.local.product.list.preferences.ProductPreferences
 import com.app.arcabyolimpo.data.mapper.product.toDomain
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.dto.product.ProductDto
@@ -33,9 +35,10 @@ import kotlinx.coroutines.flow.flow
 @Singleton
 class ProductRepositoryImpl @Inject constructor(
     private val api: ArcaApi,
+    private val preferences: ProductPreferences,
+    private val detailPreferences: ProductDetailPreferences,
     @ApplicationContext private val context: Context
 ) : ProductRepository {
-
     /**
      * addProduct.
      * Adds a new product to the system by communicating with the API.
@@ -87,15 +90,31 @@ class ProductRepositoryImpl @Inject constructor(
     }
     /**
      * getProducts.
-     * Fetches the full list of products from the API.
+     * Retrieves the complete list of products, using a cache-first strategy to
+     * improve performance and reduce unnecessary network calls.
+     * @return A list of [Product] representing the available products.
+     * @throws Exception If the API request fails and no valid cache exists.
      */
     override suspend fun getProducts(): List<Product> {
-        val dtos = api.getProducts()
-        println("🔍 API returned ${dtos.size} products")
-        dtos.forEach { dto ->
-            println("🔍 DTO: idProducto='${dto.idProducto}', nombre='${dto.nombre}'")
+        if (preferences.isCacheValid()) {
+            val cachedData = preferences.getProductCache()
+            if (cachedData != null) {
+                return cachedData.productList
+            }
         }
-        return dtos.map { it.toDomain() }
+
+        return try{
+            val remoteList = api.getProducts().map { it.toDomain() }
+            preferences.saveProductList(remoteList)
+            remoteList
+        } catch (e: Exception) {
+            val cachedData = preferences.getProductCache()
+            if (cachedData != null) {
+                cachedData.productList
+            } else {
+                throw e
+            }
+        }
     }
 
     /**
@@ -106,26 +125,57 @@ class ProductRepositoryImpl @Inject constructor(
         return api.searchProducts(query).map { it.toDomain() }
     }
 
-    override fun getProductById(productId: String): Flow<com.app.arcabyolimpo.domain.common.Result<Product>> = flow {
+    /**
+     * getProductById.
+     * Retrieves a product by its ID, using a cache-first strategy.
+     *
+     * Flow emissions sequence:
+     * 1. Emits [Result.Loading]
+     * 2. If a valid cache exists → emits [Result.Success] with cached data
+     * 3. Attempts to fetch fresh data from the API:
+     *      - If successful → saves new data in cache and emits [Result.Success]
+     *      - If API fails:
+     *          * If cache exists → emits cached [Result.Success]
+     *          * Otherwise → emits [Result.Error]
+     */
+    override fun getProductById(
+        productId: String
+    ): Flow<com.app.arcabyolimpo.domain.common.Result<Product>> = flow {
         emit(com.app.arcabyolimpo.domain.common.Result.Loading)
+
+        if(detailPreferences.isCacheValid(productId)){
+            detailPreferences.getProductDetailCache(productId)?.let { cache ->
+                emit(com.app.arcabyolimpo.domain.common.Result.Success(cache.productDetail))
+            }
+        }
+
         try {
             val productDto = api.getProductById(productId)
-            println("🔍 getProductById API response: idProducto='${productDto?.idProducto}', nombre='${productDto?.nombre}'")
 
             if (productDto == null) {
-                emit(com.app.arcabyolimpo.domain.common.Result.Error(Exception("Producto no encontrado")))
-            } else {
-                val product = productDto.toDomain()
-                emit(com.app.arcabyolimpo.domain.common.Result.Success(product))
+                emit(com.app.arcabyolimpo.domain.common.Result.Error(
+                    Exception("Producto no encontrado")
+                ))
+                return@flow
             }
+            val productDetail = productDto.toDomain()
+
+            detailPreferences.saveProductDetail(
+                id = productId,
+                productDetail = productDetail
+            )
+
+            emit(com.app.arcabyolimpo.domain.common.Result.Success(productDetail))
+
         } catch (e: Exception) {
-            println("🔴 getProductById error: ${e.message}")
-            e.printStackTrace()
+            detailPreferences.getProductDetailCache(productId)?.let { cache ->
+                emit(com.app.arcabyolimpo.domain.common.Result.Success(cache.productDetail))
+                return@flow
+            }
+
             emit(com.app.arcabyolimpo.domain.common.Result.Error(e))
         }
     }
-
-
 
     /**
      * Retrieves a detailed product from the remote API by its unique identifier.
