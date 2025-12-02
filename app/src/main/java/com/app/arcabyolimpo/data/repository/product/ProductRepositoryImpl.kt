@@ -2,6 +2,7 @@ package com.app.arcabyolimpo.data.repository.product
 
 import android.content.Context
 import android.util.Log
+import com.app.arcabyolimpo.data.local.product.product.preferences.ProductPreferences
 import com.app.arcabyolimpo.data.mapper.product.toDomain
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.dto.product.ProductDto
@@ -33,9 +34,9 @@ import kotlinx.coroutines.flow.flow
 @Singleton
 class ProductRepositoryImpl @Inject constructor(
     private val api: ArcaApi,
+    private val preferences: ProductPreferences,
     @ApplicationContext private val context: Context
 ) : ProductRepository {
-
     /**
      * addProduct.
      * Adds a new product to the system by communicating with the API.
@@ -103,15 +104,31 @@ class ProductRepositoryImpl @Inject constructor(
     }
     /**
      * getProducts.
-     * Fetches the full list of products from the API.
+     * Retrieves the complete list of products, using a cache-first strategy to
+     * improve performance and reduce unnecessary network calls.
+     * @return A list of [Product] representing the available products.
+     * @throws Exception If the API request fails and no valid cache exists.
      */
     override suspend fun getProducts(): List<Product> {
-        val dtos = api.getProducts()
-        println("🔍 API returned ${dtos.size} products")
-        dtos.forEach { dto ->
-            println("🔍 DTO: idProducto='${dto.idProducto}', nombre='${dto.nombre}'")
+        if (preferences.isCacheValid()) {
+            val cachedData = preferences.getProductCache()
+            if (cachedData != null) {
+                return cachedData.productList
+            }
         }
-        return dtos.map { it.toDomain() }
+
+        return try{
+            val remoteList = api.getProducts().map { it.toDomain() }
+            preferences.saveProductList(remoteList)
+            remoteList
+        } catch (e: Exception) {
+            val cachedData = preferences.getProductCache()
+            if (cachedData != null) {
+                cachedData.productList
+            } else {
+                throw e
+            }
+        }
     }
 
     /**
