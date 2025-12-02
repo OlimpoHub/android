@@ -10,9 +10,7 @@ object SupplyConstants {
 
     const val KEY_SUPPLY_DETAIL_PREFIX = "supply_detail_"
     const val KEY_SUPPLY_DETAIL_TIME_PREFIX = "supply_detail_time_"
-
-    // Cache validity duration: 1 hour (in milliseconds)
-    const val CACHE_VALIDITY_DURATION = 60 * 60 * 1 // 1 hour
+    const val CACHE_VALIDITY_DURATION = 5 * 60 * 1000
 
 
 }
