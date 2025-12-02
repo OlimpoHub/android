@@ -39,6 +39,9 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import coil.compose.AsyncImage
 
 /**
  * A composable that displays a visual card representing a [Supply] item.
@@ -95,11 +98,26 @@ fun SupplyCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(74.dp)
-                        .background(color = ButtonBlue.copy(alpha = 0.1f), shape = CircleShape)
-                )
+                if (supply.imageUrl.isNullOrBlank()) {
+                    Box(
+                        modifier = Modifier
+                            .size(74.dp)
+                            .background(color = ButtonBlue.copy(alpha = 0.1f), shape = CircleShape)
+                            .clip(CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("Img", color = White.copy(alpha = 0.6f), fontSize = 14.sp)
+                    }
+                } else {
+                    AsyncImage(
+                        model = "http://74.208.78.8:8080" + supply.imageUrl,
+                        contentDescription = "Imagen de ${supply.name}",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(74.dp)
+                            .clip(CircleShape),
+                    )
+                }
 
                 Text(
                     text = supply.name,
