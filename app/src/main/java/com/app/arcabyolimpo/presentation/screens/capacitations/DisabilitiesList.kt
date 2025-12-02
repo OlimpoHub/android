@@ -40,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.app.arcabyolimpo.presentation.navigation.Screen
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SearchInput
 import com.app.arcabyolimpo.presentation.ui.components.molecules.BeneficiaryCard
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
@@ -98,6 +99,7 @@ fun DisabilitiesListScreen(
         onSearchTextChange = viewModel::onSearchTextChange,
         onDisabilityClick = onDisabilityClick,
         onBackClick = onBackClick,
+        navController = navController
     )
 }
 
@@ -109,6 +111,7 @@ fun DisabilitiesList(
     onSearchTextChange: (String) -> Unit,
     onDisabilityClick: (String) -> Unit,
     onBackClick: () -> Unit,
+    navController: NavHostController
 ) {
     ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -209,7 +212,8 @@ fun DisabilitiesList(
                                 items(state.disabilities, key = { it.id }) { disability ->
                                     BeneficiaryCard(
                                         name = disability.name,
-                                        onClick = { onDisabilityClick(disability.id) },
+                                        onClick = {
+                                            navController.navigate(Screen.DisabilityDetail.createRoute(disability.id))},
                                         cardModifier = Modifier
                                             .fillMaxWidth()
                                             .padding(horizontal = 8.dp)

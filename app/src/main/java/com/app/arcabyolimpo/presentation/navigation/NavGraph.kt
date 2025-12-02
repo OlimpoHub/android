@@ -1,5 +1,6 @@
 package com.app.arcabyolimpo.presentation.navigation
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,8 +24,8 @@ import com.app.arcabyolimpo.presentation.screens.beneficiary.AddNewBeneficiarySc
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.ModifyBeneficiaryScreen
-import com.app.arcabyolimpo.presentation.screens.capacitations.DisabilitiesList
 import com.app.arcabyolimpo.presentation.screens.capacitations.DisabilitiesListScreen
+import com.app.arcabyolimpo.presentation.screens.capacitations.DisabilityDetailScreen
 import com.app.arcabyolimpo.presentation.screens.home.assistant.CollaboratorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.home.coordinator.CoordinatorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.home.scholar.ScholarHomeScreen
@@ -143,6 +144,10 @@ sealed class Screen(
     }
 
     object CapacitationScreen : Screen("/disabilities/list")
+
+    object DisabilityDetail : Screen("discapacity/{disabilityId}") {
+        fun createRoute(disabilityId: String) = "discapacity/$disabilityId"
+    }
 
     object SupplyDetail : Screen("supply/{idSupply}") {
         fun createRoute(idSupply: String) = "supply/$idSupply"
@@ -756,10 +761,28 @@ fun ArcaNavGraph(
             DisabilitiesListScreen(
                 navController = navController,
                 onDisabilityClick = { id ->
+                    Log.d("Click", "Click")
                     // TODO: Navigate to disability detail when screen is created
-                    // navController.navigate(Screen.DisabilityDetail.createRoute(id))
+                    navController.navigate(Screen.DisabilityDetail.createRoute(id))
                 },
-                onBackClick = { navController.popBackStack() }
+                onBackClick = {
+                    println("Back")
+                    navController.popBackStack() }
+            )
+        }
+
+        /**
+         * Disability Detail Screen.
+         *
+         * Shows the details of a disability.
+         */
+        composable(
+            route = Screen.DisabilityDetail.route
+        ) {
+            DisabilityDetailScreen(
+                onBackClick = { navController.popBackStack() },
+                viewModel = hiltViewModel(),
+
             )
         }
 

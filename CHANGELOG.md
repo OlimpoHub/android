@@ -1,3 +1,7 @@
+## [0.2.0] - 02/12/2025
+### Added
+- Consult disability details
+  
 ## [0.2.0] - 01/12/2025
 ### Changed
  - Modify topbar for scaffold
