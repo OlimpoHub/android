@@ -204,7 +204,7 @@ fun ProductAddScreen(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically,
 
-            ) {
+                ) {
                 if (uiState.isLoading) {
                     CircularProgressIndicator()
                 } else {

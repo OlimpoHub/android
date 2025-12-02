@@ -49,16 +49,31 @@ class ProductRepositoryImpl @Inject constructor(
      * @param product The [ProductAdd] object containing the details of the product to be added.
      * @return A [Result] indicating whether the operation was successful or if an error occurred.
      */
-
     override suspend fun addProduct(product: ProductAdd): Result<Unit> {
         return try {
-           val imageUrlRequestBody = product.image.toRequestBody("text/plain".toMediaTypeOrNull())
+            val imagePart = product.image.let {
+                val input = context.contentResolver.openInputStream(it)
+                val bytes = input?.readBytes()
+                input?.close()
+
+                if (bytes != null) {
+                    val requestFile = bytes.toRequestBody(
+                        context.contentResolver.getType(it)?.toMediaTypeOrNull()
+                    )
+                    MultipartBody.Part.createFormData(
+                        "image",
+                        "image.jpg",
+                        requestFile
+                    )
+                } else null
+            }
+
             val idWorkshop = product.idWorkshop.toRequestBody("text/plain".toMediaTypeOrNull())
             val name = product.name.toRequestBody("text/plain".toMediaTypeOrNull())
             val unitaryPrice = product.unitaryPrice.toRequestBody("text/plain".toMediaTypeOrNull())
             val idCategory = product.idCategory.toRequestBody("text/plain".toMediaTypeOrNull())
             val description = product.description.toRequestBody("text/plain".toMediaTypeOrNull())
-            val status = product.status.toRequestBody("text/plain".toMediaTypeOrNull())
+            val status = product.status.toString().toRequestBody("text/plain".toMediaTypeOrNull())
 
             api.addProduct(
                 idWorkshop = idWorkshop,
@@ -67,13 +82,14 @@ class ProductRepositoryImpl @Inject constructor(
                 idCategory = idCategory,
                 description = description,
                 status = status,
-                image = imageUrlRequestBody,
+                image = imagePart,
             )
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
+
 
     /**
      * deleteProduct.
@@ -198,36 +214,50 @@ class ProductRepositoryImpl @Inject constructor(
         }
     }
 
-    // package com.app.arcabyolimpo.data.repository.product
-// ...
-
     override suspend fun updateProduct(
         idProduct: String,
         product: ProductUpdate
     ): Result<Unit> {
         return try {
-            val idWorkshopPart = product.idWorkshop!!.toRequestBody("text/plain".toMediaTypeOrNull())
-            val namePart = product.name.toRequestBody("text/plain".toMediaTypeOrNull())
-            val unitaryPricePart = product.unitaryPrice.toRequestBody("text/plain".toMediaTypeOrNull())
-            val idCategoryPart = product.idCategory!!.toRequestBody("text/plain".toMediaTypeOrNull())
-            val descriptionPart = product.description.toRequestBody("text/plain".toMediaTypeOrNull())
-            val statusPart = product.status.toRequestBody("text/plain".toMediaTypeOrNull())
-            val imagePart = product.image!!.toRequestBody("text/plain".toMediaTypeOrNull())
+            val imagePart = product.image?.let {
+                val input = context.contentResolver.openInputStream(it)
+                val bytes = input?.readBytes()
+                input?.close()
+
+                if (bytes != null) {
+                    val requestFile = bytes.toRequestBody(
+                        context.contentResolver.getType(it)?.toMediaTypeOrNull()
+                    )
+                    MultipartBody.Part.createFormData(
+                        "image",
+                        "image.jpg",
+                        requestFile
+                    )
+                } else null
+            }
+
+            val idWorkshop = product.idWorkshop?.toRequestBody("text/plain".toMediaTypeOrNull())
+            val name = product.name.toRequestBody("text/plain".toMediaTypeOrNull())
+            val unitaryPrice = product.unitaryPrice.toRequestBody("text/plain".toMediaTypeOrNull())
+            val idCategory = product.idCategory?.toRequestBody("text/plain".toMediaTypeOrNull())
+            val description = product.description.toRequestBody("text/plain".toMediaTypeOrNull())
+            val status = product.status.toString().toRequestBody("text/plain".toMediaTypeOrNull()) // Asumo que status es String/Int
+
+            Log.d("ProductRepositoryImpl", "idWorkshop: $product.idWorkshop")
 
             api.updateProduct(
                 idProduct = idProduct,
-                idWorkshop = idWorkshopPart,
-                name = namePart,
-                unitaryPrice = unitaryPricePart,
-                idCategory = idCategoryPart,
-                description = descriptionPart,
-                status = statusPart,
-                image = imagePart
+                idWorkshop = idWorkshop,
+                name = name,
+                unitaryPrice = unitaryPrice,
+                idCategory = idCategory,
+                description = description,
+                status = status,
+                image = imagePart,
             )
 
             Result.success(Unit)
         } catch (e: Exception) {
-            Log.e("ProductRepositoryImpl", "Error al actualizar producto: ${e.message}", e)
             Result.failure(e)
         }
     }
