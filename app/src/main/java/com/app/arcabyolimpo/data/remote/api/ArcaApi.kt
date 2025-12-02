@@ -471,11 +471,12 @@ interface ArcaApi {
         @Body request: CreateQrDto,
     ): ResponseBody
 
-    @Multipart
     @POST("upload")
+    @Multipart
     suspend fun uploadWorkshopImage(
         @Part image: MultipartBody.Part
     ): UploadResponse
+
     @GET("attendance")
     suspend fun getAttendanceByUser(
         @Query("userId") userId: String
