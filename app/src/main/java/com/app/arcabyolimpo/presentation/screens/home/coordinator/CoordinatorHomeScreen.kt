@@ -44,8 +44,8 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.FunctionalNavBa
 @Composable
 fun CoordinatorHomeScreen(navController: NavHostController) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
-    var homePressedTrigger by remember { mutableIntStateOf(0) }
-    var inventoryPressedTrigger by remember { mutableIntStateOf(0) }
+    var homePressedTrigger by rememberSaveable { mutableIntStateOf(0) }
+    var inventoryPressedTrigger by rememberSaveable { mutableIntStateOf(0) }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -65,39 +65,9 @@ fun CoordinatorHomeScreen(navController: NavHostController) {
                     }
                 )
 
-                2 -> {
-                    Column(modifier = Modifier.fillMaxSize()) {
-                        TopAppBar(
-                            title = {
-                                Text(
-                                    "Pedidos",
-                                    color = Color.White,
-                                    fontSize = 24.sp,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                            },
-                            colors = TopAppBarDefaults.topAppBarColors(
-                                containerColor = Color(0xFF040610),
-                            )
-                        )
+                2 -> InventoryScreen(navController, inventoryPressedTrigger)
 
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "En Proceso...",
-                                color = Color.White,
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
-                }
-
-                3 -> InventoryScreen(navController, inventoryPressedTrigger)
-
-                4 -> BeneficiaryListScreen(
+                3 -> BeneficiaryListScreen(
                     navController = navController,
                     onBeneficiaryClick = { beneficiaryId ->
                         navController.navigate(Screen.BeneficiaryDetail.createRoute(beneficiaryId))
@@ -110,13 +80,17 @@ fun CoordinatorHomeScreen(navController: NavHostController) {
         FunctionalNavBar(
             selectedIndex = selectedTab,
             onItemSelected = { index ->
-                if (index == 0) {
-                    homePressedTrigger++
+
+                if (index == selectedTab) {
+
+                    when (index) {
+                        0 -> homePressedTrigger++
+                        2 -> inventoryPressedTrigger++
+                    }
+
+                } else {
+                    selectedTab = index
                 }
-                if (index == 3) {
-                    inventoryPressedTrigger++
-                }
-                selectedTab = index
             },
         )
     }
