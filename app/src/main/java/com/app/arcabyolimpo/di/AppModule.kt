@@ -5,6 +5,7 @@ import com.app.arcabyolimpo.data.local.auth.UserPreferences
 import com.app.arcabyolimpo.data.local.product.ProductBatchPreferences
 import com.app.arcabyolimpo.data.local.supplies.preferences.SupplyLocalDataSource
 import com.app.arcabyolimpo.data.local.supplies.preferences.SupplyPreferences
+import com.app.arcabyolimpo.data.local.supplybatches.preferences.SupplyBatchesPreferences
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.interceptor.AuthInterceptor
 import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
@@ -130,6 +131,13 @@ object AppModule {
     @Singleton
     fun provideSupplyLocalDataSource(preferences: SupplyPreferences): SupplyLocalDataSource = SupplyLocalDataSource(preferences)
 
+    @Provides
+    @Singleton
+    fun provideSupplyBatchesPreferences(
+        @ApplicationContext context: Context,
+        gson: Gson,
+    ): SupplyBatchesPreferences = SupplyBatchesPreferences(context, gson)
+
     /**
      * Provides the [SupplyRepository] implementation.
      *
@@ -146,8 +154,9 @@ object AppModule {
     fun provideSupplyRepository(
         api: ArcaApi,
         localDataSource: SupplyLocalDataSource,
+        supplyBatchesPreferences: SupplyBatchesPreferences,
         @ApplicationContext context: Context,
-    ): SupplyRepository = SupplyRepositoryImpl(api, localDataSource, context)
+    ): SupplyRepository = SupplyRepositoryImpl(api, localDataSource, supplyBatchesPreferences, context)
 
     /**
      * Provides the [ProductRepository] implementation.
