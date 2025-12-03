@@ -151,7 +151,10 @@ fun ProductBatchDetailScreen(
                                     .clip(RoundedCornerShape(16.dp))
                                     .background(MaterialTheme.colorScheme.surface),
                         ) {
-                            AsyncImage(model = batch?.imagen, contentDescription = null)
+                            AsyncImage(
+                                model = "http://74.208.78.8:8080/" + batch?.imagen,
+                                contentDescription = null
+                            )
                         }
 
                         Spacer(modifier = Modifier.height(16.dp))

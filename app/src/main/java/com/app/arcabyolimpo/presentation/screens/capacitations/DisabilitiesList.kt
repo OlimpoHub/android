@@ -44,6 +44,7 @@ import com.app.arcabyolimpo.presentation.navigation.Screen
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.SearchInput
 import com.app.arcabyolimpo.presentation.ui.components.molecules.BeneficiaryCard
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
+import com.app.arcabyolimpo.presentation.ui.components.molecules.DisabilityCard
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import com.app.arcabyolimpo.ui.theme.Background
 import kotlinx.coroutines.launch
@@ -97,6 +98,7 @@ fun DisabilitiesListScreen(
         state = state,
         snackbarHostState = snackbarHostState,
         onSearchTextChange = viewModel::onSearchTextChange,
+        beneficiaryImage = state.beneficiary?.image,
         onDisabilityClick = onDisabilityClick,
         onBackClick = onBackClick,
         navController = navController
@@ -110,6 +112,7 @@ fun DisabilitiesList(
     snackbarHostState: SnackbarHostState,
     onSearchTextChange: (String) -> Unit,
     onDisabilityClick: (String) -> Unit,
+    beneficiaryImage: String?,
     onBackClick: () -> Unit,
     navController: NavHostController
 ) {
@@ -202,7 +205,10 @@ fun DisabilitiesList(
                         else -> {
                             LazyVerticalGrid(
                                 columns = GridCells.Fixed(2),
-                                contentPadding = PaddingValues(vertical = 16.dp),
+                                contentPadding = PaddingValues(
+                                    horizontal = 16.dp,
+                                    vertical = 16.dp
+                                ),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 verticalArrangement = Arrangement.spacedBy(8.dp),
                                 modifier = Modifier
@@ -210,13 +216,13 @@ fun DisabilitiesList(
                                     .weight(1f),
                             ) {
                                 items(state.disabilities, key = { it.id }) { disability ->
-                                    BeneficiaryCard(
+                                    DisabilityCard(
                                         name = disability.name,
                                         onClick = {
-                                            navController.navigate(Screen.DisabilityDetail.createRoute(disability.id))},
+                                            navController.navigate(Screen.DisabilityDetail.createRoute(disability.id))
+                                        },
                                         cardModifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(horizontal = 8.dp)
                                             .height(160.dp),
                                         contentPadding = PaddingValues(
                                             vertical = 20.dp,

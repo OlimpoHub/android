@@ -1,5 +1,7 @@
 package com.app.arcabyolimpo.presentation.screens.beneficiary
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,12 +13,17 @@ import com.app.arcabyolimpo.domain.model.disabilities.Disability
 import com.app.arcabyolimpo.domain.repository.beneficiaries.BeneficiaryRepository
 import com.app.arcabyolimpo.domain.usecase.beneficiaries.PostModifyBeneficiary
 import com.app.arcabyolimpo.domain.usecase.disabilities.GetDisabilitiesUseCase
+import com.app.arcabyolimpo.domain.usecase.upload.PostUploadImage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -37,6 +44,8 @@ class ModifyBeneficiaryViewModel @Inject constructor(
     private val postModifyBeneficiary: PostModifyBeneficiary,
     private val getDisabilitiesUseCase: GetDisabilitiesUseCase,
     private val repository: BeneficiaryRepository,
+    private val postUploadImage: PostUploadImage,
+    @ApplicationContext private val context: Context
 ) : ViewModel(){
 
     private val _uiState = MutableStateFlow(ModifyBeneficiaryUiState())
@@ -60,6 +69,28 @@ class ModifyBeneficiaryViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
+    private val _selectedImageUri = MutableStateFlow<Uri?>(null)
+    val selectedImageUri: StateFlow<Uri?> = _selectedImageUri.asStateFlow()
+
+    fun setSelectedImageUri(uri: Uri?) {
+        _selectedImageUri.value = uri
+    }
+
+    fun getFileFromUri(context: Context, uri: Uri): File? {
+        return try {
+            val contentResolver = context.contentResolver
+            val tempFile = File(context.cacheDir, "upload_temp_${System.currentTimeMillis()}")
+            contentResolver.openInputStream(uri)?.use { inputStream ->
+                FileOutputStream(tempFile).use { outputStream ->
+                    inputStream.copyTo(outputStream)
+                }
+            }
+            tempFile
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
 
     fun loadDisabilities() {
         viewModelScope.launch {
@@ -90,12 +121,14 @@ class ModifyBeneficiaryViewModel @Inject constructor(
     }
     fun loadBeneficiary(idBeneficiary: String) {
         if (idBeneficiary.isBlank()) {
-            _workLoadError.value = "ID del taller no válido:" + idBeneficiary
+            _workLoadError.value = "ID del beneficiario no válido:" + idBeneficiary
             _isLoading.value = false
             return
         }
 
         viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, error = null, isSuccess = false) }
+
             _isLoading.value = true
             try {
                 val beneficiaryData = repository.getBeneficiaryById(idBeneficiary)
@@ -113,15 +146,15 @@ class ModifyBeneficiaryViewModel @Inject constructor(
                             nombreContactoEmergencia = beneficiaryData.emergencyName,
                             relacionContactoEmergencia = beneficiaryData.emergencyRelation,
                             descripcion = beneficiaryData.details,
-                            foto = beneficiaryData.image,
+                            foto = beneficiaryData.image ?: "", // Carga la URL de la foto existente
                             disabilities = beneficiaryData.disabilities,
                         )
                     }
                 } else {
-                    _workLoadError.value = "No se encontró el taller"
+                    _workLoadError.value = "No se encontró el beneficiario"
                 }
             } catch (e: Exception) {
-                _workLoadError.value = "Error al cargar el taller: ${e.message}"
+                _workLoadError.value = "Error al cargar el beneficiario: ${e.message}"
             } finally {
                 _isLoading.value = false
             }
@@ -155,6 +188,46 @@ class ModifyBeneficiaryViewModel @Inject constructor(
         if (!validateForm()) return
         Log.d("DEBUG_SAVE", "Intentando guardar -> Nombre: ${_formData.value.nombre}")
         viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, error = null, isSuccess = false) }
+
+            val imageUri = _selectedImageUri.value
+            var remoteImageUrl: String? = _formData.value.foto
+            var uploadError: String? = null
+
+            val isNewLocalImage = imageUri != null && (imageUri.scheme == "content" || imageUri.scheme == "file")
+
+            if (isNewLocalImage) {
+                val fileToUpload = getFileFromUri(context, imageUri!!)
+
+                if (fileToUpload == null) {
+                    uploadError = "Error al preparar la imagen para la subida."
+                } else {
+                    val uploadResult = postUploadImage(fileToUpload)
+                        .let { flow ->
+                            flow.first { it !is Result.Loading }
+                        }
+
+                    when (uploadResult) {
+                        is Result.Success -> {
+                            remoteImageUrl = uploadResult.data.url
+                            fileToUpload.delete()
+                        }
+                        is Result.Error -> {
+                            uploadError = "Error al subir la imagen: ${uploadResult.exception.message}"
+                            fileToUpload.delete()
+                        }
+                        is Result.Loading -> { }
+                    }
+                }
+
+                if (uploadError != null) {
+                    _uiState.update { it.copy(isLoading = false, error = uploadError) }
+                    return@launch
+                }
+                _formData.update { it.copy(foto = remoteImageUrl ?: "") }
+            } else if (imageUri == null) {
+                 }
+
             val fechaNacimiento = LocalDate.parse(_formData.value.fechaNacimiento, DateTimeFormatter.ofPattern("dd/MM/yyyy"))
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
             val fechaIngreso = LocalDate.parse(_formData.value.fechaIngreso, DateTimeFormatter.ofPattern("dd/MM/yyyy"))
