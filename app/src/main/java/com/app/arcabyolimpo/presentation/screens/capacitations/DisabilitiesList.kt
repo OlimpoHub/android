@@ -97,6 +97,7 @@ fun DisabilitiesListScreen(
         state = state,
         snackbarHostState = snackbarHostState,
         onSearchTextChange = viewModel::onSearchTextChange,
+        beneficiaryImage = state.beneficiary?.image,
         onDisabilityClick = onDisabilityClick,
         onBackClick = onBackClick,
         navController = navController
@@ -110,6 +111,7 @@ fun DisabilitiesList(
     snackbarHostState: SnackbarHostState,
     onSearchTextChange: (String) -> Unit,
     onDisabilityClick: (String) -> Unit,
+    beneficiaryImage: String?,
     onBackClick: () -> Unit,
     navController: NavHostController
 ) {
@@ -212,6 +214,7 @@ fun DisabilitiesList(
                                 items(state.disabilities, key = { it.id }) { disability ->
                                     BeneficiaryCard(
                                         name = disability.name,
+                                        imageUrl = "",
                                         onClick = {
                                             navController.navigate(Screen.DisabilityDetail.createRoute(disability.id))},
                                         cardModifier = Modifier

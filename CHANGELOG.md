@@ -10,6 +10,7 @@
 ### Added
 - Cache for product list and detail
 - Modify beneficiary
+- Add functionality to add, view, and modify images in Beneficiary, Workshop, Supply, Product and User
 
 ### Fixed
 - Debug modify beneficiary

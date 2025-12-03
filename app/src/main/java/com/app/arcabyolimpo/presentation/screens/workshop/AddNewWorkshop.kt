@@ -3,6 +3,8 @@
 package com.app.arcabyolimpo.presentation.screens.workshop
 
 import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -79,6 +81,15 @@ fun AddNewWorkshopScreen(
                 }
             }
         }
+
+        val imagePickerLauncher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.GetContent(),
+            onResult = { uri: Uri? ->
+                if (uri != null) {
+                    viewModel.setSelectedImageUri(uri)
+                }
+            }
+        )
 
         Scaffold(
             containerColor = Background,
@@ -234,8 +245,8 @@ fun AddNewWorkshopScreen(
                     value = selectedImageUri,
                     onValueChange = { uri ->
                         selectedImageUri = uri
-                        viewModel.updateFormData { copy(image = uri?.toString().orEmpty()) }
-                    },
+                        viewModel.setSelectedImageUri(uri)
+                                    },
                     errorMessage = if (fieldErrors["image"] == true) "Imagen requerida" else "",
                     isError = fieldErrors["image"] == true,
                 )
