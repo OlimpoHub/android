@@ -1,5 +1,7 @@
 ## [0.2.0] - 03/12/2025
 ### Fixed
+- Disability's details' routes
+- Modify beneficiary (Active/inactive beneficiary)
 - Fix Decision Dialog on Delete and applied to Modify
 - Fix Color background on Product Batches
 

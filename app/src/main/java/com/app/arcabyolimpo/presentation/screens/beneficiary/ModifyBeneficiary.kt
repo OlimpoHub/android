@@ -18,6 +18,7 @@ package com.app.arcabyolimpo.presentation.screens.beneficiary
 
 import android.net.Uri
 import android.util.Log
+import android.util.MutableBoolean
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -28,6 +29,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -78,6 +80,19 @@ fun ModifyBeneficiaryScreen(
                     selectedImageUri = Uri.parse(formData.foto)
                 } catch (e: Exception) {
                     Log.e("ModifyBeneficiary", "Error parsing image URI: ${e.message}")
+                }
+            }
+        }
+
+        if (disabilities.isNotEmpty()) {
+            val currentDisabilities = formData.disabilities
+            val convertedIds = currentDisabilities.mapNotNull { nameOrId ->
+                disabilities.find { it.name == nameOrId }?.id
+            }
+
+            if (convertedIds.isNotEmpty() && convertedIds != currentDisabilities) {
+                viewModel.updateFormData {
+                    copy(disabilities = convertedIds)
                 }
             }
         }
@@ -264,6 +279,53 @@ fun ModifyBeneficiaryScreen(
                         isError = fieldErrors["foto"] == true,
                         errorMessage = if (fieldErrors["foto"] == true) "Foto requerida" else "",
                     )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        // Active Button
+                        OutlinedButton(
+                            onClick = { viewModel.updateFormData { copy(estatus = 1) } },
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                containerColor = if (formData.estatus == 1) Color(0xFF3B82F6) else Color.Transparent,
+                                contentColor = if (formData.estatus == 1) Color.White else Color(
+                                    0xFF3B82F6
+                                )
+                            ),
+                            border = androidx.compose.foundation.BorderStroke(
+                                1.dp,
+                                if (formData.estatus == 1) Color(0xFF3B82F6) else Color(0xFF3B82F6).copy(
+                                    alpha = 0.5f
+                                )
+                            )
+                        ) {
+                            Text("Activo")
+                        }
+
+                        // Inactive Button
+                        OutlinedButton(
+                            onClick = { viewModel.updateFormData { copy(estatus = 0) } },
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                containerColor = if (formData.estatus == 0) Color(0xFF3B82F6) else Color.Transparent,
+                                contentColor = if (formData.estatus == 0) Color.White else Color(
+                                    0xFF3B82F6
+                                )
+                            ),
+                            border = androidx.compose.foundation.BorderStroke(
+                                1.dp,
+                                if (formData.estatus == 0) Color(0xFF3B82F6) else Color(0xFF3B82F6).copy(
+                                    alpha = 0.5f
+                                )
+                            )
+                        ) {
+                            Text("Inactivo")
+                        }
+                    }
 
                     Spacer(modifier = Modifier.height(24.dp))
 
