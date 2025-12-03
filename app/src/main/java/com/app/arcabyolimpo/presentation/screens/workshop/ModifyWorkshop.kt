@@ -245,30 +245,17 @@ fun modifyWorkshopScreen(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    /** Video Training */
-                    StandardInput(
-                        label = "Video de Capacitación",
-                        placeholder = "https://videocapacitacion.com",
-                        value = formData.videoTraining,
-                        onValueChange = { viewModel.updateFormData { copy(videoTraining = it) } },
-                        isError = fieldErrors["videoTraining"] == true,
-                        errorMessage = if (fieldErrors["videoTraining"] == true) "URL inválida, debe ser https://" else "",
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
                     /** Upload image */
                     ImageUploadInput(
                         label = "Imagen del taller",
                         value = selectedImageUri,
                         onValueChange = { uri ->
                             selectedImageUri = uri
-                            viewModel.updateFormData { copy(image = uri?.toString().orEmpty()) }
+                            viewModel.setSelectedImageUri(uri)
                         },
                         isError = fieldErrors["image"] == true,
                         errorMessage = if (fieldErrors["image"] == true) "Imagen requerida" else "",
                     )
-
                     Spacer(modifier = Modifier.height(24.dp))
 
                     Row(

@@ -5,41 +5,34 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.app.arcabyolimpo.R
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.layout.ContentScale
-import coil.compose.AsyncImage
+
 
 @Composable
-fun BeneficiaryCard(
+fun DisabilityCard(
     name: String,
-    imageUrl: String?,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     cardModifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(20.dp),
-    cardHeight: Int? = null
+    cardHeight: Int? = 120
 ) {
     val color1 = Color(0xFF3655C7)
     val color2 = Color(0xFF011560)
@@ -69,58 +62,28 @@ fun BeneficiaryCard(
             modifier = Modifier
                 .background(gradientBrush)
                 .padding(contentPadding)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .height(120.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            if (!imageUrl.isNullOrEmpty()) {
-                AsyncImage(
-                    model = imageUrl,
-                    contentDescription = "Foto de perfil de $name",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clip(CircleShape)
-                        .background(Color.Gray)
-                )
-            } else {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_beneficiary_icon),
-                    contentDescription = "Beneficiario",
-                    tint = Color.White,
-                    modifier = Modifier.size(48.dp),
-                )
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.weight(1f))
 
             Text(
                 text = name,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = Color.White,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
             )
+
+            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }
 
-
-
 @Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
-fun BeneficiaryCardPreview() {
-    Column {
-        Text("Con Imagen (Ejemplo)", color = Color.White)
-        BeneficiaryCard(
-            name = "John Smith",
-            imageUrl = "https://via.placeholder.com/150",
-            onClick = {}
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        Text("Sin Imagen (Default)", color = Color.White)
-        BeneficiaryCard(
-            name = "Jane Doe",
-            imageUrl = null,
-            onClick = {}
-        )
-    }
+fun DisabilityCardPreview() {
+    DisabilityCard(name = "Discapacidad Visual", onClick = {})
 }

@@ -21,6 +21,7 @@ import com.app.arcabyolimpo.data.repository.product.ProductRepositoryImpl
 import com.app.arcabyolimpo.data.repository.productbatches.ProductBatchRepositoryImpl
 import com.app.arcabyolimpo.data.repository.qr.QrRepositoryImpl
 import com.app.arcabyolimpo.data.repository.supplies.SupplyRepositoryImpl
+import com.app.arcabyolimpo.data.repository.upload.UploadRepositoryImpl
 import com.app.arcabyolimpo.data.repository.user.UsersRepositoryImpl
 import com.app.arcabyolimpo.data.repository.workshops.WorkshopRepositoryImpl
 import com.app.arcabyolimpo.domain.repository.attendance.AttendanceRepository
@@ -32,6 +33,7 @@ import com.app.arcabyolimpo.domain.repository.product.ProductRepository
 import com.app.arcabyolimpo.domain.repository.productbatches.ProductBatchRepository
 import com.app.arcabyolimpo.domain.repository.qr.QrRepository
 import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
+import com.app.arcabyolimpo.domain.repository.upload.UploadRepository
 import com.app.arcabyolimpo.domain.repository.user.UsersRepository
 import com.app.arcabyolimpo.domain.repository.workshops.WorkshopRepository
 import com.google.gson.Gson
@@ -49,7 +51,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    private const val BASE_URL = "http://192.168.100.39:8080/"
+    private const val BASE_URL = "http://74.208.78.8:8080/"
 
     /**
      * Provides a configured [OkHttpClient] instance.
@@ -264,6 +266,15 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAttendanceRepository(api: ArcaApi): AttendanceRepository = AttendanceRepositoryImpl(api)
+    fun provideUploadRepository(
+        uploadRepositoryImpl: UploadRepositoryImpl
+    ): UploadRepository {
+        return uploadRepositoryImpl
+    }
+
+    @Provides
+    @Singleton
+    fun provideAttendanceRepository(api: ArcaApi): AttendanceRepository =
+        AttendanceRepositoryImpl(api)
 
 }
