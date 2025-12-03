@@ -158,7 +158,7 @@ private fun AttendanceItem(attendance: AttendanceDto) {
                     )
 
                     Text(
-                        text = "Hora de salida: ${attendance.fechaFin?.let { formatTime(it) } ?: "--:--"}",
+                        text = "Hora de salida: 14:30",
                         style = MaterialTheme.typography.bodyMedium.copy(color = Color(0xFF9CA3AF))
                     )
                 }
