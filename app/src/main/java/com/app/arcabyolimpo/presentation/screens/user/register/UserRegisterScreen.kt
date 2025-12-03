@@ -39,11 +39,11 @@ fun UserRegisterScreen(
     onSuccess: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    // COLLECTED STATE FROM VIEWMODEL (for image preview)
+    val selectedImageUri by viewModel.selectedImageUri.collectAsState()
+
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val isActiveBoolean = uiState.isActive == 1
-
-    // Image state
-    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
     // Snackbar state
     val snackbarHostState = remember { SnackbarHostState() }
@@ -56,7 +56,14 @@ fun UserRegisterScreen(
             }
         } else if (uiState.error != null) {
             uiState.error?.let { errorMessage ->
-                snackbarHostState.showSnackbar(errorMessage)
+                // Usamos el mensaje de error directamente
+                scope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = errorMessage,
+                        withDismissAction = true,
+                        duration = SnackbarDuration.Long
+                    )
+                }
             }
         }
     }
@@ -195,13 +202,12 @@ fun UserRegisterScreen(
                         .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    // Image Upload - Added at the top of the form
+                    // Image Upload
                     ImageUploadInput(
                         label = "Foto de Perfil",
                         value = selectedImageUri,
                         onValueChange = { uri ->
-                            selectedImageUri = uri
-                            viewModel.updateProfileImage(uri)
+                            viewModel.setSelectedImageUri(uri)
                         },
                         height = 200.dp
                     )

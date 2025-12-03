@@ -92,12 +92,12 @@ fun ProductListContent(
                         ProductCard(
                             product = product,
                             onClick = {
-                                println("🔵 ProductCard clicked! Product ID: '${product.id}'")
+                                println("ProductCard clicked! Product ID: '${product.id}'")
                                 if (product.id.isNotEmpty()) {
-                                    println("🟢 Calling onProductClick with ID: '${product.id}'")
+                                    println("Calling onProductClick with ID: '${product.id}'")
                                     onProductClick(product.id)
                                 } else {
-                                    println("🔴 Product ID is EMPTY!")
+                                    println("Product ID is EMPTY!")
                                 }
                             }
                         )

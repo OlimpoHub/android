@@ -67,7 +67,8 @@ fun UserDto.toRegisterDto(): RegisterUserDto {
         status = estatus ?: 1,
         internalRegulation = reglamentoInterno,
         idCopy = copiaINE,
-        confidentialityNotice = avisoConfidencialidad
+        confidentialityNotice = avisoConfidencialidad,
+        foto = foto
     )
 }
 
@@ -85,7 +86,8 @@ fun UserDto.toUpdateDto(): UpdateUserDto {
         status = estatus ?: 1,
         internalRegulation = reglamentoInterno,
         idCopy = copiaINE,
-        confidentialityNotice = avisoConfidencialidad
+        confidentialityNotice = avisoConfidencialidad,
+        foto = foto
     )
 }
 
