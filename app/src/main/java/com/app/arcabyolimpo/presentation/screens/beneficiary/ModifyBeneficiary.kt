@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.app.arcabyolimpo.presentation.screens.session.SessionViewModel
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.CancelButton
@@ -55,7 +56,10 @@ fun ModifyBeneficiaryScreen(
     navController: NavHostController,
     viewModel: ModifyBeneficiaryViewModel = hiltViewModel(),
     beneficiaryId: String,
+    sessionViewModel: SessionViewModel = hiltViewModel(),
 ){
+    val role by sessionViewModel.role.collectAsState()
+
     ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false) {
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
         val isLoading by viewModel.isLoading.collectAsState()
@@ -282,52 +286,58 @@ fun ModifyBeneficiaryScreen(
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        // Active Button
-                        OutlinedButton(
-                            onClick = { viewModel.updateFormData { copy(estatus = 1) } },
-                            modifier = Modifier.weight(1f),
-                            colors = ButtonDefaults.outlinedButtonColors(
-                                containerColor = if (formData.estatus == 1) Color(0xFF3B82F6) else Color.Transparent,
-                                contentColor = if (formData.estatus == 1) Color.White else Color(
-                                    0xFF3B82F6
-                                )
-                            ),
-                            border = androidx.compose.foundation.BorderStroke(
-                                1.dp,
-                                if (formData.estatus == 1) Color(0xFF3B82F6) else Color(0xFF3B82F6).copy(
-                                    alpha = 0.5f
-                                )
-                            )
+                    if (role == "COORDINADOR") {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                            Text("Activo")
+                            // Active Button
+                            OutlinedButton(
+                                onClick = { viewModel.updateFormData { copy(estatus = 1) } },
+                                modifier = Modifier.weight(1f),
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    containerColor = if (formData.estatus == 1) Color(0xFF3B82F6) else Color.Transparent,
+                                    contentColor = if (formData.estatus == 1) Color.White else Color(
+                                        0xFF3B82F6
+                                    )
+                                ),
+                                border = androidx.compose.foundation.BorderStroke(
+                                    1.dp,
+                                    if (formData.estatus == 1) Color(0xFF3B82F6) else Color(
+                                        0xFF3B82F6
+                                    ).copy(
+                                        alpha = 0.5f
+                                    )
+                                )
+                            ) {
+                                Text("Activo")
+                            }
+
+                            // Inactive Button
+                            OutlinedButton(
+                                onClick = { viewModel.updateFormData { copy(estatus = 0) } },
+                                modifier = Modifier.weight(1f),
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    containerColor = if (formData.estatus == 0) Color(0xFF3B82F6) else Color.Transparent,
+                                    contentColor = if (formData.estatus == 0) Color.White else Color(
+                                        0xFF3B82F6
+                                    )
+                                ),
+                                border = androidx.compose.foundation.BorderStroke(
+                                    1.dp,
+                                    if (formData.estatus == 0) Color(0xFF3B82F6) else Color(
+                                        0xFF3B82F6
+                                    ).copy(
+                                        alpha = 0.5f
+                                    )
+                                )
+                            ) {
+                                Text("Inactivo")
+                            }
                         }
 
-                        // Inactive Button
-                        OutlinedButton(
-                            onClick = { viewModel.updateFormData { copy(estatus = 0) } },
-                            modifier = Modifier.weight(1f),
-                            colors = ButtonDefaults.outlinedButtonColors(
-                                containerColor = if (formData.estatus == 0) Color(0xFF3B82F6) else Color.Transparent,
-                                contentColor = if (formData.estatus == 0) Color.White else Color(
-                                    0xFF3B82F6
-                                )
-                            ),
-                            border = androidx.compose.foundation.BorderStroke(
-                                1.dp,
-                                if (formData.estatus == 0) Color(0xFF3B82F6) else Color(0xFF3B82F6).copy(
-                                    alpha = 0.5f
-                                )
-                            )
-                        ) {
-                            Text("Inactivo")
-                        }
+                        Spacer(modifier = Modifier.height(24.dp))
                     }
-
-                    Spacer(modifier = Modifier.height(24.dp))
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
