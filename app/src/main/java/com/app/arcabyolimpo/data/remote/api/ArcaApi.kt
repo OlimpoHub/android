@@ -333,7 +333,7 @@ interface ArcaApi {
      * with the disability's details.
      *
      */
-    @GET("/discapacity/{idDisability}")
+    @GET("/disabilities/{idDisability}")
     suspend fun getDisabilityDetail(
         @Path("idDisability") id: String,
     ): DisabilityDto

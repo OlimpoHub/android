@@ -29,6 +29,8 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
+import kotlin.collections.find
+import kotlin.io.println
 
 /**
  * ViewModel responsible for managing the UI state of the Modify Beneficiary screen.
@@ -148,6 +150,7 @@ class ModifyBeneficiaryViewModel @Inject constructor(
                             descripcion = beneficiaryData.details,
                             foto = beneficiaryData.image ?: "", // Carga la URL de la foto existente
                             disabilities = beneficiaryData.disabilities,
+                            estatus = beneficiaryData.status
                         )
                     }
                 } else {
@@ -246,7 +249,7 @@ class ModifyBeneficiaryViewModel @Inject constructor(
                 entryDate = fechaIngreso,
                 image = _formData.value.foto,
                 disabilities = _formData.value.disabilities,
-                status = 1
+                status = _formData.value.estatus
             )
             postModifyBeneficiary(beneficiaryDto).collect { result ->
                 _uiState.update { state ->
