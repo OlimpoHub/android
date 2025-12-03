@@ -147,9 +147,9 @@ sealed class Screen(
     object CapacitationScreen : Screen("/disabilities/list")
 
     object DisabilitiesRegisterScreen : Screen("/disabilities/register")
-    
-    object DisabilityDetail : Screen("discapacity/{disabilityId}") {
-        fun createRoute(disabilityId: String) = "discapacity/$disabilityId"
+
+    object DisabilityDetail : Screen("disability/{disabilityId}") {
+        fun createRoute(disabilityId: String) = "disability/$disabilityId"
     }
 
     object SupplyDetail : Screen("supply/{idSupply}") {
