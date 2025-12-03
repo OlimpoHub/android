@@ -1,3 +1,8 @@
+## [0.2.0] - 03/12/2025
+### Fixed
+- Disability's details' routes
+- Modify beneficiary (Active/inactive beneficiary)
+
 ## [0.2.0] - 02/12/2025
 ### Added
 - Confirm dialog option added to supply and product batches form to add
