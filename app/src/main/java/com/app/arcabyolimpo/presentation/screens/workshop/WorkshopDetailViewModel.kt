@@ -24,7 +24,6 @@ import javax.inject.Inject
 class WorkshopDetailViewModel @Inject constructor(
     private val repository: WorkshopRepository,
     savedStateHandle: SavedStateHandle,
-    //Yessica
     private val deleteWorkshopsUseCase: DeleteWorkshopUseCase,
 ) : ViewModel() {
 

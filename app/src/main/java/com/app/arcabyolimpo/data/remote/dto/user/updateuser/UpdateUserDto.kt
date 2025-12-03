@@ -40,5 +40,8 @@ data class UpdateUserDto(
     val idCopy: Int? = null,
 
     @SerializedName("externalCollab_confidentialityNotice")
-    val confidentialityNotice: Int? = null
+    val confidentialityNotice: Int? = null,
+
+    @SerializedName("externalCollab_photo")
+    val foto: String?
 )

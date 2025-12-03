@@ -98,6 +98,7 @@ fun DisabilitiesListScreen(
         state = state,
         snackbarHostState = snackbarHostState,
         onSearchTextChange = viewModel::onSearchTextChange,
+        beneficiaryImage = state.beneficiary?.image,
         onDisabilityClick = onDisabilityClick,
         onBackClick = onBackClick,
         navController = navController
@@ -111,6 +112,7 @@ fun DisabilitiesList(
     snackbarHostState: SnackbarHostState,
     onSearchTextChange: (String) -> Unit,
     onDisabilityClick: (String) -> Unit,
+    beneficiaryImage: String?,
     onBackClick: () -> Unit,
     navController: NavHostController
 ) {

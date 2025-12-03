@@ -221,6 +221,7 @@ sealed class Screen(
  * @param navController The controller managing app navigation.
  * @param sessionManager Observes session state to handle automatic logout or token expiration.
  */
+ 
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun ArcaNavGraph(

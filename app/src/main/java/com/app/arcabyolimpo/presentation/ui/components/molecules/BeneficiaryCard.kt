@@ -24,12 +24,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.arcabyolimpo.R
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.layout.ContentScale
+import coil.compose.AsyncImage
 
 @Composable
 fun BeneficiaryCard(
     name: String,
+    imageUrl: String?,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     cardModifier: Modifier = Modifier,
@@ -67,12 +72,24 @@ fun BeneficiaryCard(
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_beneficiary_icon),
-                contentDescription = "Beneficiario",
-                tint = Color.White,
-                modifier = Modifier.size(48.dp),
-            )
+            if (!imageUrl.isNullOrEmpty()) {
+                AsyncImage(
+                    model = imageUrl,
+                    contentDescription = "Foto de perfil de $name",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .background(Color.Gray)
+                )
+            } else {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_beneficiary_icon),
+                    contentDescription = "Beneficiario",
+                    tint = Color.White,
+                    modifier = Modifier.size(48.dp),
+                )
+            }
 
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -91,5 +108,19 @@ fun BeneficiaryCard(
 @Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
 fun BeneficiaryCardPreview() {
-    BeneficiaryCard(name = "John Smith", onClick = {})
+    Column {
+        Text("Con Imagen (Ejemplo)", color = Color.White)
+        BeneficiaryCard(
+            name = "John Smith",
+            imageUrl = "https://via.placeholder.com/150",
+            onClick = {}
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+        Text("Sin Imagen (Default)", color = Color.White)
+        BeneficiaryCard(
+            name = "Jane Doe",
+            imageUrl = null,
+            onClick = {}
+        )
+    }
 }

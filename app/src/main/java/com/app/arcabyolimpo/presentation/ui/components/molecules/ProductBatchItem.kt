@@ -67,7 +67,7 @@ fun ProductBatchItem(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 AsyncImage(
-                    model = batch.imagen,
+                    model = "http://74.208.78.8:8080/" + batch.imagen,
                     contentDescription = batch.nombre,
                     modifier =
                         Modifier
