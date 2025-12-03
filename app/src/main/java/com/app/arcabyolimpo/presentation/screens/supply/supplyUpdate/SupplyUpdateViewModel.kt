@@ -16,7 +16,16 @@ import javax.inject.Inject
 import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.model.supplies.SupplyAdd
 import kotlinx.coroutines.async
-
+/** ---------------------------------------------------------------------------------------------- *
+ * SuppliesUpdateViewModel -> Collects the information for the workshops and categories, renders the
+ * previous supply information and waits for the new user information then collects it to create a
+ * new Supply
+ *
+ * @param getWorkshopCategoryInfoUseCase -> fetch all categories and workshops
+ * @param getSupplyBatchListUseCase -> gathers the supply information
+ * @param updateOneSupplyUseCase -> sends the updated information of the supply
+ * @return ViewModel
+ * ---------------------------------------------------------------------------------------------- */
 @HiltViewModel
 class SupplyUpdateViewModel @Inject constructor(
     private val getWorkshopCategoryInfoUseCase: GetWorkshopCategoryInfoUseCase,
