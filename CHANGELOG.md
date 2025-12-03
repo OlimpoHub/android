@@ -4,16 +4,25 @@
 
 ### Fixed
 - Fix workshop video training, taking it out
+
+### Updated
+- Path prefix for updating password
   
 ## [0.2.0] - 01/12/2025
 ### Changed
  - Modify topbar for scaffold
 
+### Changed
+- Attendance screen now always displays exit time as 14:30.
+  
 ## [0.2.0] - 01/12/2025
 ### Added
 - Cache for product list and detail
 - Modify beneficiary
 - Add functionality to add, view, and modify images in Beneficiary, Workshop, Supply, Product and User
+
+### Changed
+ - Modify topbar for scaffold
 
 ### Fixed
 - Debug modify beneficiary

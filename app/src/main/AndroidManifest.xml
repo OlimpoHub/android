@@ -42,7 +42,7 @@
                 <data
                     android:scheme="arcabyolimpo"
                     android:host="user"
-                    android:pathPrefix="/verify-token" />
+                    android:pathPrefix="/update-password" />
             </intent-filter>
         </activity>
     </application>
