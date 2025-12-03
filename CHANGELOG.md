@@ -5,6 +5,7 @@
 
 ### Fixed
 - Fix workshop video training, taking it out
+- Fix upload image in modify beneficiary
 
 ### Updated
 - Path prefix for updating password
