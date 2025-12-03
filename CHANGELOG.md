@@ -1,6 +1,7 @@
 ## [0.2.0] - 03/12/2025
 ### Fixed
 - Fix Decision Dialog on Delete and applied to Modify
+- Fix Color background on Product Batches
 
 ## [0.2.0] - 02/12/2025
 ### Added
