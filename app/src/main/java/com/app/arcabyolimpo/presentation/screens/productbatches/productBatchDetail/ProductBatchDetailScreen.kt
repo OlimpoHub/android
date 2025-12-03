@@ -24,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -31,10 +32,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,6 +59,7 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.InfoRow
 import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
+import kotlinx.coroutines.launch
 import org.jetbrains.annotations.Async
 
 /** ProductBatchDetailScreen: Composable screen displaying detailed information about a product batch.
@@ -76,6 +83,10 @@ fun ProductBatchDetailScreen(
     LaunchedEffect(batchId) {
         viewModel.loadBatch(batchId)
     }
+
+    var showConfirmDialog by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         containerColor = Background,
@@ -153,7 +164,13 @@ fun ProductBatchDetailScreen(
                         ) {
                             AsyncImage(
                                 model = "http://74.208.78.8:8080/" + batch?.imagen,
-                                contentDescription = null
+                                contentDescription = "imagen de ${batch?.nombre}",
+                                contentScale = ContentScale.Fit,
+                                alignment = Alignment.Center,
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .background(Color(0xFF2A2A2A)),
                             )
                         }
 
@@ -198,13 +215,30 @@ fun ProductBatchDetailScreen(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
                         DeleteButton(
-                            onClick = {
-                                viewModel.toggledecisionDialog(
-                                    showdecisionDialog = true,
-                                )
-                            },
+                            onClick = { showConfirmDialog = true },
                             modifier = Modifier.weight(1f),
                         )
+
+                        if (showConfirmDialog) {
+                            DecisionDialog(
+                                onDismissRequest = {
+                                    showConfirmDialog = false
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar("Lote no eliminado")
+                                    }
+                                },
+                                onConfirmation = {
+                                    showConfirmDialog = false
+                                    viewModel.deleteBatch(batchId)
+                                    onBackClick()
+                                },
+                                dialogTitle = "Confirmar eliminación",
+                                dialogText = "¿Deseas eliminar este lote de producto?",
+                                confirmText = "Confirmar",
+                                dismissText = "Cancelar",
+                            )
+                        }
+
                         ModifyButton(
                             onClick = {
                                 onModifyClick(batch?.idInventario ?: "")
@@ -214,22 +248,6 @@ fun ProductBatchDetailScreen(
                     }
                 }
             }
-        }
-        if (state.decisionDialogVisible) {
-            DecisionDialog(
-                onDismissRequest = {
-                    viewModel.toggledecisionDialog(false)
-                },
-                onConfirmation = {
-                    viewModel.deleteBatch(batchId)
-                    viewModel.toggledecisionDialog(false)
-                    onBackClick()
-                },
-                dialogTitle = "¿Estás seguro de eliminar este Lote?",
-                dialogText = "Esta accion no podrá revertirse",
-                confirmText = "Confirmar",
-                dismissText = "Cancelar",
-            )
         }
     }
 }

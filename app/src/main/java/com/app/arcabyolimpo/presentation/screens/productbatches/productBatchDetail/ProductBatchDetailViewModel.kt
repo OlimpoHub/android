@@ -41,16 +41,6 @@ class ProductBatchDetailViewModel
             }
         }
 
-        fun toggledecisionDialog(showdecisionDialog: Boolean) {
-            viewModelScope.launch {
-                _uiState.update { state ->
-                    state.copy(
-                        decisionDialogVisible = showdecisionDialog,
-                    )
-                }
-            }
-        }
-
         fun deleteBatch(id: String) {
             viewModelScope.launch {
                 try {

@@ -1,3 +1,7 @@
+## [0.2.0] - 03/12/2025
+### Fixed
+- Fix Decision Dialog on Delete and applied to Modify
+
 ## [0.2.0] - 02/12/2025
 ### Added
 - Confirm dialog option added to supply and product batches form to add
@@ -8,6 +12,7 @@
 - When added a supply it appears inmediatly in the supply list screen
 - Fix workshop video training, taking it out
 - Fix upload image in modify beneficiary
+- Fix image containers for product batches
 
 ### Updated
 - Path prefix for updating password

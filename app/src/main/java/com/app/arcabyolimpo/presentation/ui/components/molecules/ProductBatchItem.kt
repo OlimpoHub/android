@@ -26,6 +26,7 @@ import coil.compose.AsyncImage
 import com.app.arcabyolimpo.presentation.screens.productbatches.model.ProductBatchUiModel
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ViewButton
 import com.app.arcabyolimpo.ui.theme.Background
+import com.app.arcabyolimpo.ui.theme.ButtonBlue
 import com.app.arcabyolimpo.ui.theme.DangerGray
 import com.app.arcabyolimpo.ui.theme.White
 
@@ -72,7 +73,7 @@ fun ProductBatchItem(
                     modifier =
                         Modifier
                             .size(60.dp)
-                            .background(DangerGray, CircleShape)
+                            .background(color = ButtonBlue.copy(alpha = 0.1f), shape = CircleShape)
                             .clip(CircleShape),
                     contentScale = ContentScale.Crop,
                 )
