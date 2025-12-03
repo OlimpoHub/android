@@ -1,26 +1,58 @@
 package com.app.arcabyolimpo.presentation.screens.user.register
 
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.arcabyolimpo.data.remote.dto.user.UserDto
 import com.app.arcabyolimpo.domain.common.Result
+import com.app.arcabyolimpo.domain.usecase.upload.PostUploadImage
 import com.app.arcabyolimpo.domain.usecase.user.GetUsersUseCase
 import com.app.arcabyolimpo.domain.usecase.user.register.RegisterUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
 import javax.inject.Inject
 
 @HiltViewModel
 class UserRegisterViewModel @Inject constructor(
     private val registerUserUseCase: RegisterUserUseCase,
-    private val getUsersUseCase: GetUsersUseCase
+    private val getUsersUseCase: GetUsersUseCase,
+    private val postUploadImage: PostUploadImage,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UserRegisterUiState())
     val uiState: StateFlow<UserRegisterUiState> = _uiState.asStateFlow()
+
+    private val _selectedImageUri = MutableStateFlow<Uri?>(null)
+    val selectedImageUri: StateFlow<Uri?> = _selectedImageUri.asStateFlow()
+
+    fun setSelectedImageUri(uri: Uri?) {
+        _selectedImageUri.value = uri
+    }
+
+    fun getFileFromUri(context: Context, uri: Uri): File? {
+        return try {
+            val contentResolver = context.contentResolver
+            val tempFile = File(context.cacheDir, "upload_temp_${System.currentTimeMillis()}")
+            contentResolver.openInputStream(uri)?.use { inputStream ->
+                FileOutputStream(tempFile).use { outputStream ->
+                    inputStream.copyTo(outputStream)
+                }
+            }
+            tempFile
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
 
     fun updateRoleId(value: String) {
         _uiState.value = _uiState.value.copy(roleId = value)
@@ -88,11 +120,9 @@ class UserRegisterViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
 
-            // Check for duplicates first using Flow
             getUsersUseCase().collect { result ->
                 when (result) {
                     is Result.Loading -> {
-                        // Keep loading state
                     }
                     is Result.Success -> {
                         val existingUsers = result.data
@@ -109,17 +139,55 @@ class UserRegisterViewModel @Inject constructor(
                                 error = "Este usuario ya está registrado"
                             )
                         } else {
-                            // If no duplicate, proceed with registration
-                            proceedWithRegistration()
+                            uploadImageAndRegister()
                         }
                     }
                     is Result.Error -> {
-                        // If we can't check, proceed anyway
-                        proceedWithRegistration()
+                        uploadImageAndRegister()
                     }
                 }
             }
         }
+    }
+
+    private suspend fun uploadImageAndRegister() {
+        val imageUri = _selectedImageUri.value
+        var remoteImageUrl: String? = null
+        var uploadError: String? = null
+
+        if (imageUri != null) {
+            val fileToUpload = getFileFromUri(context, imageUri)
+
+            if (fileToUpload == null) {
+                uploadError = "Error al preparar la imagen para la subida."
+            } else {
+                val uploadResult = postUploadImage(fileToUpload)
+                    .let { flow ->
+                        flow.first { it !is Result.Loading }
+                    }
+
+                when (uploadResult) {
+                    is Result.Success -> {
+                        remoteImageUrl = uploadResult.data.url
+                        fileToUpload.delete()
+                    }
+                    is Result.Error -> {
+                        uploadError = "Error al subir la imagen: ${uploadResult.exception.message}"
+                        fileToUpload.delete()
+                    }
+                    is Result.Loading -> {  }
+                }
+            }
+
+            if (uploadError != null) {
+                _uiState.value = _uiState.value.copy(isLoading = false, error = uploadError)
+                return
+            }
+        }
+
+         _uiState.value = _uiState.value.copy(photoUrl = remoteImageUrl)
+
+        proceedWithRegistration()
     }
 
     private suspend fun proceedWithRegistration() {
@@ -145,7 +213,6 @@ class UserRegisterViewModel @Inject constructor(
         registerUserUseCase(user).collect { result ->
             when (result) {
                 is Result.Loading -> {
-                    // Keep loading state
                 }
                 is Result.Success -> {
                     android.util.Log.d("RegisterCollab", "SUCCESS!")
@@ -170,6 +237,7 @@ class UserRegisterViewModel @Inject constructor(
 
     fun resetState() {
         _uiState.value = UserRegisterUiState()
+        _selectedImageUri.value = null
     }
 
     fun validateForm(): Boolean {
@@ -196,4 +264,5 @@ class UserRegisterViewModel @Inject constructor(
     private fun isValidEmail(email: String): Boolean {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
+
 }

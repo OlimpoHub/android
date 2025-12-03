@@ -46,7 +46,6 @@ fun FunctionalNavBar(
         listOf(
             NavItem("Inicio", { tint, size -> HomeIcon(tint = tint, size = size) }),
             NavItem("Talleres", { tint, size -> WorkshopIcon(tint = tint, size = size) }),
-            NavItem("Pedidos", { tint, size -> OrderIcon(tint = tint, size = size) }),
             NavItem("Inventario", { tint, size -> InventoryIcon(tint = tint, size = size) }),
             NavItem("Beneficiarios", { tint, size -> BeneficiaryIcon(tint = tint, size = size) }),
         )

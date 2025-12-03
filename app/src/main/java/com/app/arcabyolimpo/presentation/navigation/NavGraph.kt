@@ -1,5 +1,6 @@
 package com.app.arcabyolimpo.presentation.navigation
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,8 +23,9 @@ import com.app.arcabyolimpo.presentation.screens.attendance.AttendanceListScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.AddNewBeneficiaryScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
-import com.app.arcabyolimpo.presentation.screens.capacitations.DisabilitiesList
+import com.app.arcabyolimpo.presentation.screens.beneficiary.ModifyBeneficiaryScreen
 import com.app.arcabyolimpo.presentation.screens.capacitations.DisabilitiesListScreen
+import com.app.arcabyolimpo.presentation.screens.capacitations.DisabilityDetailScreen
 import com.app.arcabyolimpo.presentation.screens.home.assistant.CollaboratorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.home.coordinator.CoordinatorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.home.scholar.ScholarHomeScreen
@@ -137,7 +139,15 @@ sealed class Screen(
 
     object AddNewBeneficiary : Screen("beneficiary/create")
 
+    object ModifyBeneficiary : Screen("beneficiary/update/{beneficiaryId}"){
+        fun createRoute(beneficiaryId: String) = "beneficiary/update/$beneficiaryId"
+    }
+
     object CapacitationScreen : Screen("/disabilities/list")
+
+    object DisabilityDetail : Screen("discapacity/{disabilityId}") {
+        fun createRoute(disabilityId: String) = "discapacity/$disabilityId"
+    }
 
     object SupplyDetail : Screen("supply/{idSupply}") {
         fun createRoute(idSupply: String) = "supply/$idSupply"
@@ -211,6 +221,7 @@ sealed class Screen(
  * @param navController The controller managing app navigation.
  * @param sessionManager Observes session state to handle automatic logout or token expiration.
  */
+ 
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun ArcaNavGraph(
@@ -715,8 +726,29 @@ fun ArcaNavGraph(
         ) {
             BeneficiaryDetailScreen(
                 onBackClick = { navController.popBackStack() },
-                onModifyClick = { /* TODO: Lógica de VM */ },
+                onModifyClick = { beneficiaryId ->
+                    navController.navigate(Screen.ModifyBeneficiary.createRoute(beneficiaryId))
+                },
                 viewModel = hiltViewModel(),
+                beneficiaryId = it.arguments?.getString("beneficiaryId") ?: ""
+            )
+        }
+
+        /**
+         * Modify Beneficiary Screen.
+         *
+         * Allows the modification of an existing and active beneficiary.
+         */
+        composable(
+            route = Screen.ModifyBeneficiary.route,
+            arguments = listOf(navArgument("beneficiaryId") { type = NavType.StringType }),
+
+            ){ backStackEntry ->
+            val beneficiaryId = backStackEntry.arguments?.getString("beneficiaryId") ?: ""
+            ModifyBeneficiaryScreen(
+                navController = navController,
+                viewModel = hiltViewModel(),
+                beneficiaryId = beneficiaryId
             )
         }
 
@@ -730,10 +762,28 @@ fun ArcaNavGraph(
             DisabilitiesListScreen(
                 navController = navController,
                 onDisabilityClick = { id ->
+                    Log.d("Click", "Click")
                     // TODO: Navigate to disability detail when screen is created
-                    // navController.navigate(Screen.DisabilityDetail.createRoute(id))
+                    navController.navigate(Screen.DisabilityDetail.createRoute(id))
                 },
-                onBackClick = { navController.popBackStack() }
+                onBackClick = {
+                    println("Back")
+                    navController.popBackStack() }
+            )
+        }
+
+        /**
+         * Disability Detail Screen.
+         *
+         * Shows the details of a disability.
+         */
+        composable(
+            route = Screen.DisabilityDetail.route
+        ) {
+            DisabilityDetailScreen(
+                onBackClick = { navController.popBackStack() },
+                viewModel = hiltViewModel(),
+
             )
         }
 

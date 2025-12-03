@@ -93,8 +93,9 @@ fun SupplyBatchModifyScreen(
         topBar = {
             TopAppBar(
                 title = {
+                    val supplyName = state.suppliesList.firstOrNull { it.id == state.selectedSupplyId }?.name
                     Text(
-                        text = "Modificar Lotes",
+                        text = supplyName?.let { "Modificar Lotes de $it" } ?: "Modificar Lotes",
                         color = White,
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Bold,

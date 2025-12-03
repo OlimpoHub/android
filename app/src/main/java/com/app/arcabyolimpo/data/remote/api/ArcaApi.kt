@@ -48,6 +48,9 @@ import com.app.arcabyolimpo.data.remote.dto.workshops.DeleteResponseWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.DeleteWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopResponseDto
+import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
+import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
+import com.app.arcabyolimpo.domain.usecase.upload.UploadResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -303,8 +306,36 @@ interface ArcaApi {
         @Body requestBody: BeneficiaryDto,
     ): AddNewBeneficiaryDto
 
+    /**
+     * Modifies the selected beneficiary.
+     *
+     * This endpoint receives a [AddNewBeneficiaryDto] (as it uses the same
+     * DTO for both add and modify operations) with all the beneficiary's
+     * information. It updates every field with the new data.
+     *
+     * @param requestBody Data transfer object that contains the beneficiary's
+     * information required by the API to perform the update operation.
+     */
+    @POST("beneficiary/update/{idBeneficiary}")
+    suspend fun modifyBeneficiary(
+        @Path("idBeneficiary") id: String,
+        @Body requestBody: BeneficiaryDto,
+    ): AddNewBeneficiaryDto
+
     @GET("/disabilities/list")
     suspend fun getDisabilitiesList(): List<DisabilityDto>
+
+    /**
+     * Consults the selected beneficiary's detail.
+     *
+     * This endpoint receives a [DisabilityDto]
+     * with the disability's details.
+     *
+     */
+    @GET("/discapacity/{idDisability}")
+    suspend fun getDisabilityDetail(
+        @Path("idDisability") id: String,
+    ): DisabilityDto
 
     @GET("supplies/workshop/category")
     suspend fun getWorkshopCategoryList(): WorkshopCategoryListDto
@@ -468,14 +499,16 @@ interface ArcaApi {
         @Body request: CreateQrDto,
     ): ResponseBody
 
+    @POST("upload")
+    @Multipart
+    suspend fun uploadWorkshopImage(
+        @Part image: MultipartBody.Part
+    ): UploadResponse
+
     @GET("attendance")
     suspend fun getAttendanceByUser(
         @Query("userId") userId: String
     ): List<AttendanceDto>
-
-
-
-
 
     /**
      * Validates a scanned QR code.

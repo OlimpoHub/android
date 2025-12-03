@@ -38,10 +38,9 @@ class UserDetailViewModel @Inject constructor(
             getUserByIdUseCase(userId).collect { result ->
                 when (result) {
                     is Result.Loading -> {
-                        // Keep loading state
                     }
                     is Result.Success -> {
-                        _uiState.value = _uiState.value.copy(
+                       _uiState.value = _uiState.value.copy(
                             collab = result.data,
                             isLoading = false
                         )
@@ -64,7 +63,6 @@ class UserDetailViewModel @Inject constructor(
             deleteUserUseCase(idString).collect { result ->
                 when (result) {
                     is Result.Loading -> {
-                        // Keep loading state
                     }
                     is Result.Success -> {
                         _uiState.value = _uiState.value.copy(

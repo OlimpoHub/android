@@ -154,7 +154,6 @@ fun ProductListScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false) {
-                    // Search input with trailing search icon
                     StandardIconInput(
                         label = "",
                         placeholder = "Buscar",

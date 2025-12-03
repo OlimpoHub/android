@@ -1,5 +1,7 @@
 package com.app.arcabyolimpo.presentation.screens.beneficiary
 
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.arcabyolimpo.data.remote.dto.beneficiaries.BeneficiaryDto
@@ -8,12 +10,17 @@ import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.model.disabilities.Disability
 import com.app.arcabyolimpo.domain.usecase.beneficiaries.PostAddNewBeneficiary
 import com.app.arcabyolimpo.domain.usecase.disabilities.GetDisabilitiesUseCase
+import com.app.arcabyolimpo.domain.usecase.upload.PostUploadImage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
 import java.util.UUID
 import javax.inject.Inject
 
@@ -29,7 +36,9 @@ import javax.inject.Inject
 @HiltViewModel
 class AddNewBeneficiaryViewModel @Inject constructor(
     private val postAddNewBeneficiary: PostAddNewBeneficiary,
-    private val getDisabilitiesUseCase: GetDisabilitiesUseCase
+    private val getDisabilitiesUseCase: GetDisabilitiesUseCase,
+    private val postUploadImage: PostUploadImage,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     /** Backing property for the beneficiary UI state. */
@@ -38,14 +47,34 @@ class AddNewBeneficiaryViewModel @Inject constructor(
 
     private val _formData = MutableStateFlow(BeneficiaryFormData())
     val formData: StateFlow<BeneficiaryFormData> = _formData.asStateFlow()
-
-    // CAMBIO: Ahora es Map<String, String?> para almacenar mensajes de error
     private val _fieldErrors = MutableStateFlow<Map<String, String?>>(emptyMap())
     val fieldErrors: StateFlow<Map<String, String?>> = _fieldErrors.asStateFlow()
 
     private val _disabilities = MutableStateFlow<List<Disability>>(emptyList())
     val disabilities: StateFlow<List<Disability>> = _disabilities.asStateFlow()
 
+    private val _selectedImageUri = MutableStateFlow<Uri?>(null)
+    val selectedImageUri: StateFlow<Uri?> = _selectedImageUri.asStateFlow()
+
+    fun setSelectedImageUri(uri: Uri?) {
+        _selectedImageUri.value = uri
+    }
+
+    fun getFileFromUri(context: Context, uri: Uri): File? {
+        return try {
+            val contentResolver = context.contentResolver
+            val tempFile = File(context.cacheDir, "upload_temp_${System.currentTimeMillis()}")
+            contentResolver.openInputStream(uri)?.use { inputStream ->
+                FileOutputStream(tempFile).use { outputStream ->
+                    inputStream.copyTo(outputStream)
+                }
+            }
+            tempFile
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
 
     /**
      * Loads the list of disabilities from the repository.
@@ -83,8 +112,43 @@ class AddNewBeneficiaryViewModel @Inject constructor(
      */
     fun addNewBeneficiary() {
         if (!validateForm()) return
-
         viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, error = null, isSuccess = false) }
+
+            val imageUri = _selectedImageUri.value
+            var remoteImageUrl: String? = null
+            var uploadError: String? = null
+
+            if (imageUri != null) {
+                val fileToUpload = getFileFromUri(context, imageUri)
+
+                if (fileToUpload == null) {
+                    uploadError = "Error al preparar la imagen para la subida."
+                } else {
+                    val uploadResult = postUploadImage(fileToUpload)
+                        .let { flow ->
+                            flow.first { it !is Result.Loading }
+                        }
+
+                    when (uploadResult) {
+                        is Result.Success -> {
+                            remoteImageUrl = uploadResult.data.url
+                            fileToUpload.delete()
+                        }
+                        is Result.Error -> {
+                            uploadError = "Error al subir la imagen: ${uploadResult.exception.message}"
+                            fileToUpload.delete()
+                        }
+                        is Result.Loading -> { }
+                    }
+                }
+
+                if (uploadError != null) {
+                    _uiState.update { it.copy(isLoading = false, error = uploadError) }
+                    return@launch
+                }
+            }
+
             val beneficiaryDto = BeneficiaryDto(
                 id = UUID.randomUUID().toString(),
                 firstName = _formData.value.nombre,
@@ -96,7 +160,7 @@ class AddNewBeneficiaryViewModel @Inject constructor(
                 emergencyRelation = _formData.value.relacionContactoEmergencia,
                 details = _formData.value.descripcion,
                 entryDate = _formData.value.fechaIngreso,
-                image = _formData.value.foto,
+                image = remoteImageUrl,
                 disabilities = _formData.value.disabilities,
                 status = 1
             )
@@ -128,6 +192,8 @@ class AddNewBeneficiaryViewModel @Inject constructor(
         }
     }
 
+// ... (resto del ViewModel sin cambios)
+
     /**
      * Updates the form data with a lambda function.
      */
@@ -142,6 +208,7 @@ class AddNewBeneficiaryViewModel @Inject constructor(
     fun resetForm() {
         _formData.value = BeneficiaryFormData()
         _fieldErrors.value = emptyMap()
+        _selectedImageUri.value = null
         _uiState.update { it.copy(isSuccess = false, error = null) }
     }
 

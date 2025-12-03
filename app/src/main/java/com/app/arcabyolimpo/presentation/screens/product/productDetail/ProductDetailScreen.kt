@@ -11,11 +11,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.app.arcabyolimpo.domain.model.product.Product
 import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.presentation.theme.Typography
@@ -184,21 +187,35 @@ private fun ProductDetailContent(
                 .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(28.dp),
     ) {
-        // Top section: Image + Product Info
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(20.dp),
         ) {
-            // Product image placeholder (bigger)
-            Box(
-                modifier =
-                    Modifier
-                        .size(150.dp)
-                        .background(
-                            color = ButtonBlue.copy(alpha = 0.1f),
-                            shape = CircleShape,
-                        ),
-            )
+            if (product.imageUrl.isNullOrBlank()) {
+                Box(
+                    modifier =
+                        Modifier
+                            .size(150.dp)
+                            .background(
+                                color = DangerGray,
+                                shape = CircleShape,
+                            )
+                            .clip(CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("No Image", color = White.copy(alpha = 0.8f), fontSize = 16.sp)
+                }
+            } else {
+                AsyncImage(
+                    model = "http://74.208.78.8:8080/" + product.imageUrl,
+                    contentDescription = "Imagen de ${product.name}",
+                    contentScale = ContentScale.Crop,
+                    modifier =
+                        Modifier
+                            .size(150.dp)
+                            .clip(CircleShape),
+                )
+            }
 
             // Product information
             Column(
@@ -309,41 +326,6 @@ private fun ProductDetailContent(
             color = DangerGray.copy(alpha = 0.3f),
             thickness = 1.dp,
         )
-
-        // Active lots section
-        Column(
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Text(
-                text = "Lotes Activos",
-                color = White,
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
-                fontFamily = Poppins,
-            )
-
-            // Placeholder para lotes
-            Card(
-                colors =
-                    CardDefaults.cardColors(
-                        containerColor = White.copy(alpha = 0.05f),
-                    ),
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    Text(
-                        text = "No hay lotes activos",
-                        color = White.copy(alpha = 0.6f),
-                        fontSize = 14.sp,
-                        fontFamily = Poppins,
-                    )
-                    // Aquí podrías agregar los lotes reales cuando existan
-                }
-            }
-        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
