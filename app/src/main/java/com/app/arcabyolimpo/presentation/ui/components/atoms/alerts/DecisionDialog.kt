@@ -97,7 +97,7 @@ fun DecisionDialog(
                 Text(text = confirmText,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier
-                        .padding(end = 10.dp)
+                        .padding(end = 50.dp)
                         .clip(RoundedCornerShape(10.dp))
                         .background(ButtonBlue)
                         .padding(horizontal = 14.dp, vertical = 6.dp)
@@ -115,7 +115,7 @@ fun DecisionDialog(
                 Text(text = dismissText,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier
-                        .padding(end = 30.dp)
+                        .padding(end = 50.dp)
                         .clip(RoundedCornerShape(10.dp))
                         .background(DangerGray)
                         .padding(horizontal = 14.dp, vertical = 6.dp)
