@@ -35,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -154,8 +155,11 @@ fun ProductBatchDetailScreen(
                             AsyncImage(
                                 model = "http://74.208.78.8:8080/" + batch?.imagen,
                                 contentDescription = "imagen de ${batch?.nombre}",
+                                contentScale = ContentScale.Fit,
+                                alignment = Alignment.Center,
                                 modifier =
                                     Modifier
+                                        .fillMaxWidth()
                                         .background(Color(0xFF2A2A2A)),
                             )
                         }
