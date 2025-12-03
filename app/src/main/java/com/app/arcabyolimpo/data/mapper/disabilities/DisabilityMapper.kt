@@ -1,6 +1,7 @@
 package com.app.arcabyolimpo.data.mapper.disabilities
 
 import com.app.arcabyolimpo.data.remote.dto.disabilities.DisabilityDto
+import com.app.arcabyolimpo.data.remote.dto.disabilities.DisabilityRegisterDto
 import com.app.arcabyolimpo.domain.model.disabilities.Disability
 
 /**
@@ -9,10 +10,16 @@ import com.app.arcabyolimpo.domain.model.disabilities.Disability
  *  independent from data transfer object (DTO) structures.
  */
 
-fun DisabilityDto.toDomain(): Disability {
-    return Disability (
+fun DisabilityDto.toDomain(): Disability =
+    Disability(
         id = id,
         name = name,
-        characteristics = characteristics
+        characteristics = characteristics,
     )
-}
+
+// To Dto
+fun Disability.toRegisterDto(): DisabilityRegisterDto =
+    DisabilityRegisterDto(
+        nombre = name,
+        descripcion = characteristics,
+    )

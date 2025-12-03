@@ -21,6 +21,7 @@
 ### Added
 - Cache for product list and detail
 - Modify beneficiary
+- Register Disability Functionalities
 - Add functionality to add, view, and modify images in Beneficiary, Workshop, Supply, Product and User
 
 ### Changed
