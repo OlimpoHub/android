@@ -1,15 +1,19 @@
 ## [0.2.0] - 02/12/2025
 ### Added
+- Confirm dialog option added to supply and product batches form to add
 - Consult disability details
 - Disability Card
 
 ### Fixed
+- When added a supply it appears inmediatly in the supply list screen
 - Fix workshop video training, taking it out
 - Fix upload image in modify beneficiary
 - Fix image containers for product batches
 
 ### Updated
 - Path prefix for updating password
+- Filter for Qr workshop selection
+- Title of the Qr workshop selection view
   
 ## [0.2.0] - 01/12/2025
 ### Changed
@@ -22,6 +26,7 @@
 ### Added
 - Cache for product list and detail
 - Modify beneficiary
+- Register Disability Functionalities
 - Add functionality to add, view, and modify images in Beneficiary, Workshop, Supply, Product and User
 
 ### Changed

@@ -25,6 +25,7 @@ import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailSc
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.ModifyBeneficiaryScreen
 import com.app.arcabyolimpo.presentation.screens.capacitations.DisabilitiesListScreen
+import com.app.arcabyolimpo.presentation.screens.capacitations.disabilitiesRegister.DisabilitiesRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.capacitations.DisabilityDetailScreen
 import com.app.arcabyolimpo.presentation.screens.home.assistant.CollaboratorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.home.coordinator.CoordinatorHomeScreen
@@ -145,6 +146,8 @@ sealed class Screen(
 
     object CapacitationScreen : Screen("/disabilities/list")
 
+    object DisabilitiesRegisterScreen : Screen("/disabilities/register")
+    
     object DisabilityDetail : Screen("discapacity/{disabilityId}") {
         fun createRoute(disabilityId: String) = "discapacity/$disabilityId"
     }
@@ -766,9 +769,15 @@ fun ArcaNavGraph(
                     // TODO: Navigate to disability detail when screen is created
                     navController.navigate(Screen.DisabilityDetail.createRoute(id))
                 },
-                onBackClick = {
-                    println("Back")
-                    navController.popBackStack() }
+                onAddClick = { navController.navigate(Screen.DisabilitiesRegisterScreen.route) },
+                onBackClick = { navController.popBackStack() },
+            )
+        }
+
+        composable(Screen.DisabilitiesRegisterScreen.route) {
+            DisabilitiesRegisterScreen(
+                onCreated = { navController.popBackStack() },
+                onBackClick = { navController.popBackStack() },
             )
         }
 
@@ -783,7 +792,6 @@ fun ArcaNavGraph(
             DisabilityDetailScreen(
                 onBackClick = { navController.popBackStack() },
                 viewModel = hiltViewModel(),
-
             )
         }
 
