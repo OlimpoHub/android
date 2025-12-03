@@ -3,6 +3,7 @@
 - Disability's details' routes
 - Modify beneficiary (Active/inactive beneficiary)
 - Fix Decision Dialog on Delete and applied to Modify
+- Fix Workshop cards size
 - Fix Color background on Product Batches
 
 ## [0.2.0] - 02/12/2025

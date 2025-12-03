@@ -35,21 +35,19 @@ fun WorkshopCard(
     )
 
     Card(
-        modifier =
-            Modifier
-                .width(345.dp)
-                .height(110.dp)
-                .clickable(onClick = onClick),
-
-        ){
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp)
+            .height(110.dp)
+            .clickable(onClick = onClick),
+    ) {
         Row(
-            modifier =
-                Modifier
-                    .background(gradientBrush)
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp),
+            modifier = Modifier
+                .background(gradientBrush)
+                .fillMaxSize()
+                .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
-        ){
+        ) {
             Text(
                 text = name,
                 style = MaterialTheme.typography.bodyLarge,
@@ -70,22 +68,18 @@ fun WorkshopCard(
                 if (!imageUrl.isNullOrEmpty()) {
                     AsyncImage(
                         model = imageUrl,
-                        contentDescription = "Imagen del Taller $name",
+                        contentDescription = null,
                         contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.Gray)
-                            .clip(RoundedCornerShape(12.dp))
+                        modifier = Modifier.fillMaxSize()
                     )
                 } else {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(Color.Gray)
-                            .clip(RoundedCornerShape(12.dp)),
+                            .background(Color.Gray),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("No Image", color = Color.White, style = MaterialTheme.typography.bodySmall)
+                        Text("No Image", color = Color.White)
                     }
                 }
             }
