@@ -18,13 +18,10 @@ interface ProductRepository {
      * @param product The [ProductAdd] object containing the necessary details of the new product.
      * @return A [Result] indicating success or failure.
      */
-    suspend fun addProduct(
-        product: ProductAdd
-    ): Result<Unit>
+    suspend fun addProduct(product: ProductAdd): Result<Unit>
+    suspend fun getProducts(): List<Product>
 
     suspend fun deleteProduct(id: String)
-
-    suspend fun getProducts(): List<Product>
 
     fun getProductById(productId: String): Flow<com.app.arcabyolimpo.domain.common.Result<Product>>
 
