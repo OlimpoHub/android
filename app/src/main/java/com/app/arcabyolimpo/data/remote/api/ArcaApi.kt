@@ -432,9 +432,9 @@ interface ArcaApi {
     @GET("product/add")
     suspend fun getProductFilters(): ProductRegisterInfoDto
 
-    @GET("product/disponible")
-    suspend fun getProductsByAvailability(
-        @Query("disponible") disponible: Int,
+    @GET("product/filter/status")
+    suspend fun getProductsByStatus(
+        @Query("status") status: Int,
     ): List<ProductDto>
 
     @GET("product/workshop")
