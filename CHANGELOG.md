@@ -1,6 +1,7 @@
 ## [0.2.0] - 02/12/2025
 ### Added
 - Consult disability details
+- Disability Card
 
 ### Updated
 - Path prefix for updating password
