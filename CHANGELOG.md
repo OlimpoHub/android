@@ -3,6 +3,9 @@
 - Consult disability details
 - Disability Card
 
+### Fixed
+- Fix workshop video training, taking it out
+
 ### Updated
 - Path prefix for updating password
   

@@ -46,8 +46,7 @@ class WorkshopRepositoryImpl
                 description = dto.description ?: "",
                 startHour = dto.startHour ?: "",
                 finishHour = dto.finishHour ?: "",
-                date = dto.date ?: "",
-                videoTraining = dto.videoTraining ?: ""
+                date = dto.date ?: ""
             )
         }
 
@@ -88,8 +87,7 @@ class WorkshopRepositoryImpl
             description = newWorkshop.description,
             startHour = newWorkshop.startHour,
             finishHour = newWorkshop.finishHour,
-            date = newWorkshop.date,
-            videoTraining = newWorkshop.videoTraining
+            date = newWorkshop.date
         )
     }
 
@@ -118,11 +116,7 @@ class WorkshopRepositoryImpl
      *         returns an error.
      */
     override suspend fun deleteWorkshops(id: String) {
-        // Build the request body with the supply ID expected by the API
         val body = DeleteWorkshopDto(id)
-        // If you want to check the status of an error
-        // val body = DeleteWorkshopDto("i33")
-        // Call the remote API to perform the soft delete operation
         val result = api.deleteWorkshops(body)
         Log.d("Validacion", "Si llego ")
     }
@@ -152,8 +146,7 @@ class WorkshopRepositoryImpl
             description = modifiedWorkshop.description,
             startHour = modifiedWorkshop.startHour,
             finishHour = modifiedWorkshop.finishHour,
-            date = modifiedWorkshop.date,
-            videoTraining = modifiedWorkshop.videoTraining
+            date = modifiedWorkshop.date
         )
     }
 

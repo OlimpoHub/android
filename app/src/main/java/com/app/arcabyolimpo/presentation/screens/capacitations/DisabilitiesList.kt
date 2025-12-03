@@ -218,6 +218,7 @@ fun DisabilitiesList(
                                 items(state.disabilities, key = { it.id }) { disability ->
                                     DisabilityCard(
                                         name = disability.name,
+                                        imageUrl = "",
                                         onClick = {
                                             navController.navigate(Screen.DisabilityDetail.createRoute(disability.id))
                                         },

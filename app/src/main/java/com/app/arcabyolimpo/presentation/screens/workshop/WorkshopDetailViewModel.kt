@@ -177,8 +177,4 @@ class WorkshopDetailViewModel @Inject constructor(
         }
     }
 
-
-    //--------------
-
-
 }

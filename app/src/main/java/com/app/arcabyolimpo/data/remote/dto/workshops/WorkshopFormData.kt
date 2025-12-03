@@ -23,6 +23,5 @@ data class WorkshopFormData (
     val idUser: String = "",
     val description: String = "",
     val date: String = "",
-    val image: String = "",
-    val videoTraining: String = ""
+    val image: String = ""
 )
