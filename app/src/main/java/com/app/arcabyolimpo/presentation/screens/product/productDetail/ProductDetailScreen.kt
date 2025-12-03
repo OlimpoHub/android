@@ -154,6 +154,7 @@ fun ProductDetailScreen(
                 uiState.product != null -> {
                     ProductDetailContent(
                         product = uiState.product!!,
+                        isDeleted = uiState.deleted,
                         onEditClick = { onEditClick(productId) },
                         onDeleteClick = { viewModel.toggleDecisionDialog(true) },
                         modifier = Modifier.fillMaxSize(),
@@ -176,6 +177,7 @@ fun ProductDetailScreen(
 @Composable
 private fun ProductDetailContent(
     product: Product,
+    isDeleted: Boolean = false,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -337,10 +339,12 @@ private fun ProductDetailContent(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                DeleteButton(
-                    modifier = Modifier.size(width = 140.dp, height = 40.dp),
-                    onClick = onDeleteClick,
-                )
+                if (!isDeleted) {
+                    DeleteButton(
+                        modifier = Modifier.size(width = 140.dp, height = 40.dp),
+                        onClick = onDeleteClick,
+                    )
+                }
                 ModifyButton(
                     onClick = onEditClick,
                     modifier = Modifier.size(width = 140.dp, height = 40.dp),
