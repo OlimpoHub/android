@@ -2,6 +2,7 @@ package com.app.arcabyolimpo.presentation.screens.qr.workshopselection
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.model.workshops.Workshop
 import com.app.arcabyolimpo.domain.usecase.workshops.GetWorkshopsListUseCase
@@ -11,9 +12,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.collections.component1
+import kotlin.collections.component2
 
 /**
  * ViewModel responsible for managing the UI state of the workshops list screen.
@@ -40,11 +45,11 @@ class QrWorkshopsListViewModel
 
         init {
             loadWorkshopsList()
+            setupSearchDebounce()
         }
 
         fun onSearchQueryChange(text: String) {
             _searchQuery.value = text
-
             if (text.isBlank()) {
                 _uiState.update { state ->
                     state.copy(
@@ -53,8 +58,6 @@ class QrWorkshopsListViewModel
                         error = null,
                     )
                 }
-            } else {
-                searchWorkshops(text)
             }
         }
 
@@ -68,10 +71,22 @@ class QrWorkshopsListViewModel
 
                             is Result.Success -> {
                                 originalWorkshopsList = result.data
+
+                                val uniqueDates =
+                                    result.data
+                                        .mapNotNull { it.date?.take(10) }
+                                        .distinct()
+                                        .sorted()
+
                                 state.copy(
                                     workshopsList = result.data,
                                     isLoading = false,
                                     error = null,
+                                    filterData =
+                                        state.filterData.copy(
+                                            sections =
+                                                state.filterData.sections + ("Fecha" to uniqueDates),
+                                        ),
                                 )
                             }
 
@@ -86,7 +101,20 @@ class QrWorkshopsListViewModel
             }
         }
 
-        fun searchWorkshops(name: String) {
+        private fun setupSearchDebounce() {
+            viewModelScope.launch {
+                _searchQuery
+                    .debounce(400)
+                    .distinctUntilChanged()
+                    .collect { query ->
+                        if (query.isNotBlank()) {
+                            performSearch(query)
+                        }
+                    }
+            }
+        }
+
+        private fun performSearch(name: String) {
             viewModelScope.launch {
                 _uiState.update { it.copy(isLoading = true) }
 
@@ -114,5 +142,92 @@ class QrWorkshopsListViewModel
                     }
                 }
             }
+        }
+
+        fun clearFilters() {
+            _uiState.update { current ->
+                current.copy(
+                    selectedFilters = FilterDto(emptyMap(), order = "ASC"),
+                    workshopsList = originalWorkshopsList,
+                )
+            }
+        }
+
+        fun applyFilters(filterDto: FilterDto) {
+            _uiState.update { current ->
+                val dateFilter = getFilterValues(filterDto, "Fecha")
+                val hourFilter = getFilterValues(filterDto, "Hora de Entrada")
+                val statusFilter = getFilterValues(filterDto, "Estado")
+
+                val filteredWorkshops =
+                    originalWorkshopsList.filter { workshop ->
+
+                        // ----- Fecha -----
+                        val normalizedDate = (workshop.date ?: "").take(10)
+                        val matchesDate =
+                            when {
+                                dateFilter.isNullOrEmpty() -> true
+                                else ->
+                                    dateFilter.any { selected ->
+                                        normalizedDate == selected.take(10)
+                                    }
+                            }
+
+                        // ----- Hora de entrada -----
+                        val matchesHour =
+                            when {
+                                hourFilter.isNullOrEmpty() -> true
+                                workshop.startHour.isNullOrBlank() -> false
+                                else -> {
+                                    val workshopHour = workshop.startHour.take(5)
+                                    hourFilter.any { selected ->
+                                        val selectedNorm = selected.take(5)
+                                        workshopHour == selectedNorm
+                                    }
+                                }
+                            }
+
+                        // ----- Estatus -----
+                        val matchesStatus =
+                            when {
+                                statusFilter.isNullOrEmpty() -> true
+                                else -> {
+                                    statusFilter.any { selected ->
+                                        val mapped = if (selected == "Activo") 1 else 0
+                                        workshop.status == mapped
+                                    }
+                                }
+                            }
+
+                        matchesDate && matchesHour && matchesStatus
+                    }
+
+                val filteredWorkshopsFinal =
+                    if (filterDto.order == "ASC") {
+                        filteredWorkshops.sortedBy { it.nameWorkshop }
+                    } else {
+                        filteredWorkshops.sortedByDescending { it.nameWorkshop }
+                    }
+
+                current.copy(
+                    selectedFilters = filterDto,
+                    workshopsList = filteredWorkshopsFinal,
+                )
+            }
+        }
+
+        private fun getFilterValues(
+            filterDto: FilterDto,
+            key: String,
+        ): List<String>? {
+            if (filterDto.filters.isEmpty()) return null
+
+            val target = key.lowercase().trim()
+
+            return filterDto.filters.entries
+                .firstOrNull { (k, _) ->
+                    val normalizedKey = k.lowercase().trim()
+                    normalizedKey == target || normalizedKey.contains(target)
+                }?.value
         }
     }

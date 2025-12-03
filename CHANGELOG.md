@@ -11,6 +11,8 @@
 
 ### Updated
 - Path prefix for updating password
+- Filter for Qr workshop selection
+- Title of the Qr workshop selection view
   
 ## [0.2.0] - 01/12/2025
 ### Changed
