@@ -70,7 +70,7 @@ class WorkshopsListViewModel @Inject constructor(
 
                             val uniqueDates =
                                 result.data
-                                    .mapNotNull { it.date?.take(10) } // "2025-11-03T06:00:00.000Z" -> "2025-11-03"
+                                    .mapNotNull { it.date?.take(10) }
                                     .distinct()
                                     .sorted()
 
@@ -151,9 +151,9 @@ class WorkshopsListViewModel @Inject constructor(
 
     fun applyFilters(filterDto: FilterDto) {
         _uiState.update { current ->
-            val dateFilter = filterDto.filters["Fecha"]
-            val hourFilter = filterDto.filters["Hora de Entrada"]
-            val statusFilter = filterDto.filters["Estado"]
+            val dateFilter = getFilterValues(filterDto, "Fecha")
+            val hourFilter = getFilterValues(filterDto, "Hora de Entrada")
+            val statusFilter = getFilterValues(filterDto, "Estado")
 
             val filteredWorkshops =
                 originalWorkshopsList.filter { workshop ->
@@ -163,7 +163,9 @@ class WorkshopsListViewModel @Inject constructor(
                     val matchesDate =
                         when {
                             dateFilter.isNullOrEmpty() -> true
-                            else -> normalizedDate in dateFilter
+                            else -> dateFilter.any { selected ->
+                                normalizedDate == selected.take(10)
+                            }
                         }
 
                     // ----- Hora de entrada -----
@@ -172,9 +174,9 @@ class WorkshopsListViewModel @Inject constructor(
                             hourFilter.isNullOrEmpty() -> true
                             workshop.startHour.isNullOrBlank() -> false
                             else -> {
-                                val workshopHour = workshop.startHour.take(5)   // "07:00:00" -> "07:00"
+                                val workshopHour = workshop.startHour.take(5)
                                 hourFilter.any { selected ->
-                                    val selectedNorm = selected.take(5)         // por si acaso
+                                    val selectedNorm = selected.take(5)
                                     workshopHour == selectedNorm
                                 }
                             }
@@ -192,7 +194,6 @@ class WorkshopsListViewModel @Inject constructor(
                             }
                         }
 
-
                     matchesDate && matchesHour && matchesStatus
                 }
 
@@ -209,4 +210,16 @@ class WorkshopsListViewModel @Inject constructor(
             )
         }
     }
+
+    private fun getFilterValues(filterDto: FilterDto, key: String): List<String>? {
+        if (filterDto.filters.isEmpty()) return null
+
+        val target = key.lowercase().trim()
+
+        return filterDto.filters.entries.firstOrNull { (k, _) ->
+            val normalizedKey = k.lowercase().trim()
+            normalizedKey == target || normalizedKey.contains(target)
+        }?.value
+    }
+
 }
