@@ -122,7 +122,7 @@ fun SupplyDetailContent(
                     Modifier
                         .size(160.dp)
                         .background(
-                            Color(0xFF2A2A2A),
+                            Color(0xFF040610),
                             shape = RoundedCornerShape(20.dp),
                         ),
             )
