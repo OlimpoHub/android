@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -73,7 +74,7 @@ fun ProductBatchItem(
                     modifier =
                         Modifier
                             .size(60.dp)
-                            .background(color = ButtonBlue.copy(alpha = 0.1f), shape = CircleShape)
+                            .background(color = Color(0xFF040710), shape = CircleShape)
                             .clip(CircleShape),
                     contentScale = ContentScale.Crop,
                 )
