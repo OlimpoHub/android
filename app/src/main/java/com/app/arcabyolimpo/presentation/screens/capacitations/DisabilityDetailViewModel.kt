@@ -9,8 +9,8 @@ package com.app.arcabyolimpo.presentation.screens.capacitations
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.arcabyolimpo.domain.usecase.beneficiaries.PostModifyBeneficiary
-import com.app.arcabyolimpo.domain.usecase.disabilities.GetDisabilitiesUseCase
+import com.app.arcabyolimpo.domain.common.Result
+import com.app.arcabyolimpo.domain.usecase.disabilities.DeleteDisabilityUseCase
 import com.app.arcabyolimpo.domain.usecase.disabilities.GetDisabilityUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,6 +26,7 @@ class DisabilityDetailViewModel
 constructor(
     private val getDisabilityUseCase: GetDisabilityUseCase,
     private val savedStateHandle: SavedStateHandle,
+    private val deleteDisabilityUseCase: DeleteDisabilityUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(DisabilityDetailUiState())
     val uiState: StateFlow<DisabilityDetailUiState> = _uiState.asStateFlow()
@@ -58,6 +59,32 @@ constructor(
                             state.copy(
                                 isScreenLoading = false,
                                 screenError = result.exception.message,
+                            )
+                    }
+                }
+            }
+        }
+    }
+
+    fun onDeleteClicked() {
+        if (disabilityId == null) return
+
+        viewModelScope.launch {
+            deleteDisabilityUseCase(disabilityId!!).collect { result ->
+                _uiState.update { state ->
+                    when (result) {
+                        is com.app.arcabyolimpo.domain.common.Result.Loading ->
+                            state.copy(isDeleting = true)
+                        is com.app.arcabyolimpo.domain.common.Result.Success ->
+                            state.copy(
+                                isDeleting = false,
+                                deleteSuccess = true,
+                                deleteError = null,
+                            )
+                        is Result.Error ->
+                            state.copy(
+                                isDeleting = false,
+                                deleteError = result.exception.message,
                             )
                     }
                 }

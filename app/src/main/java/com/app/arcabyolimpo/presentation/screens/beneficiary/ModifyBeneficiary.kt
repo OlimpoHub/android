@@ -279,7 +279,7 @@ fun ModifyBeneficiaryScreen(
                         onValueChange = { uri ->
                             selectedImageUri = uri
                             viewModel.setSelectedImageUri(uri)
-                                        },
+                        },
                         isError = fieldErrors["foto"] == true,
                         errorMessage = if (fieldErrors["foto"] == true) "Foto requerida" else "",
                     )

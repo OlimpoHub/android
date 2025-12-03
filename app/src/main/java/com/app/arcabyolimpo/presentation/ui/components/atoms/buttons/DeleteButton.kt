@@ -1,5 +1,6 @@
 package com.app.arcabyolimpo.presentation.ui.components.atoms.buttons
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -41,7 +42,11 @@ fun DeleteButton(
                 contentColor = blueColor,
             ),
         shape = RoundedCornerShape(cornerRadius),
-        enabled = enabled
+        enabled = enabled,
+        contentPadding = PaddingValues(
+            horizontal = 8.dp,
+            vertical = 8.dp
+        ),
     ) {
         Text(
             text = "Eliminar",
