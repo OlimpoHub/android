@@ -2,6 +2,13 @@
 ### Added
 - Consult disability details
 
+### Updated
+- Path prefix for updating password
+  
+## [0.2.0] - 01/12/2025
+### Changed
+ - Modify topbar for scaffold
+
 ### Changed
 - Attendance screen now always displays exit time as 14:30.
   
