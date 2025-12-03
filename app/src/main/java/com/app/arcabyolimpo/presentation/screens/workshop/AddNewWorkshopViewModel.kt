@@ -93,8 +93,7 @@ class AddNewWorkshopViewModel @Inject constructor(
                 idUser = _formData.value.idUser,
                 description = _formData.value.description,
                 date = _formData.value.date,
-                image = _formData.value.image,
-                videoTraining = _formData.value.videoTraining
+                image = _formData.value.image
             )
 
             postAddNewWorkshop(workshopDto).collect { result ->
@@ -136,9 +135,6 @@ class AddNewWorkshopViewModel @Inject constructor(
         if (currentState.description != newState.description) {
             if (!validateInput(newState.description, regexValidation, maxLength = 400)) return
         }
-        if (currentState.videoTraining != newState.videoTraining) {
-            if (!validateInput(newState.name,urlTypingRegex, 100)) return
-        }
         _formData.update { it.update() }
         clearFieldErrors()
     }
@@ -176,13 +172,6 @@ class AddNewWorkshopViewModel @Inject constructor(
         if (data.date.isBlank()) errors["date"] = true
         if (data.description.isBlank()) errors["description"] = true
         if (data.idUser.isBlank()) errors["idUser"] = true
-        if (data.videoTraining.isBlank()) {
-            errors["videoTraining"] = true
-        } else {
-            if (!isValidUrl(data.videoTraining)) {
-                errors["videoTraining"] = true
-            }
-        }
 
         if (data.startHour.isNotBlank() && !hourRegex.matches(data.startHour)) {
             errors["startHour"] = true
