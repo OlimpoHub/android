@@ -20,6 +20,7 @@ import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
 import com.app.arcabyolimpo.domain.model.supplies.SuccessMessage
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.domain.model.supplies.SupplyAdd
+import com.app.arcabyolimpo.domain.model.supplies.SupplyBatch
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchExt
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchList
 import com.app.arcabyolimpo.domain.model.supplies.WorkshopCategoryList
@@ -74,7 +75,9 @@ class SupplyRepositoryImpl
             }
         }
 
-        /**
+    override suspend fun getSupplyById(id: String): Supply = api.getSupply(id).toDomain()
+
+    /**
          * Helper function to fetch supplies from API and cache them.
          */
         private suspend fun fetchAndCacheSupplies(): List<Supply> {
@@ -112,7 +115,6 @@ class SupplyRepositoryImpl
             localDataSource.clearCache()
         }
 
-        override suspend fun getSupplyById(id: String): Supply = api.getSupply(id).toDomain()
 
         override suspend fun filterSupply(filters: FilterDto): List<Supply> {
             val response = api.filterSupplies(filters)
@@ -129,7 +131,6 @@ class SupplyRepositoryImpl
 
         override suspend fun getFilterData(): FilterData = api.getFilterSupplies().toDomain()
 
-        override suspend fun getSupplyBatchById(id: String): SupplyBatchExt = api.getSupplyBatchById(id).toDomain()
 
         override suspend fun getSupplyBatchOne(id: String): RegisterSupplyBatch {
             val dto = api.getSupplyBatchOne(id)
@@ -384,4 +385,43 @@ class SupplyRepositoryImpl
                 throw e
             }
         }
+
+    override suspend fun getSupplyBatchById(id: String): SupplyBatchExt {
+        Log.d("SupplyRepository", "getSupplyBatchById called for ID: $id")
+
+        // Check if we have valid cached supply detail
+        if (localDataSource.isSupplyDetailCacheValid(id)) {
+            Log.d("SupplyRepository", "Returning valid cached supply batch detail for ID: $id")
+            val cachedDetail = localDataSource.getCachedSupplyDetail(id)
+            if (cachedDetail != null) {
+                return cachedDetail
+            }
+        }
+
+        // Try to fetch fresh data from API
+        return try {
+            Log.d("SupplyRepository", "Fetching supply batch detail from API for ID: $id")
+            val supplyBatchExt = api.getSupplyBatchById(id).toDomain()
+
+            // Cache the fresh data
+            localDataSource.cacheSupplyDetail(supplyBatchExt)
+            Log.d("SupplyRepository", "Cached supply batch detail for ID: $id")
+
+            supplyBatchExt
+        } catch (e: Exception) {
+            Log.e("SupplyRepository", "API call failed for supply batch ID $id: ${e.message}")
+
+            // If we have stale cache, return it as fallback
+            if (localDataSource.hasSupplyDetailCache(id)) {
+                Log.d("SupplyRepository", "Returning stale cached supply batch detail as fallback for ID: $id")
+                val cachedDetail = localDataSource.getCachedSupplyDetail(id)
+                if (cachedDetail != null) {
+                    return cachedDetail
+                }
+            }
+
+            // No cache available, propagate the error
+            throw e
+        }
+    }
     }
