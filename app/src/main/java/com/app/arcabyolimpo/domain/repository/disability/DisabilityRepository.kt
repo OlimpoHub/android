@@ -8,4 +8,6 @@ interface DisabilityRepository {
     suspend fun registerDisability(disability: Disability)
     
     suspend fun getDisability(id: String): Disability
+
+    suspend fun deleteDisability(id: String)
 }

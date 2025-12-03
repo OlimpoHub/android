@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.app.arcabyolimpo.presentation.screens.session.SessionViewModel
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.CancelButton
@@ -55,6 +56,7 @@ fun ModifyBeneficiaryScreen(
     navController: NavHostController,
     viewModel: ModifyBeneficiaryViewModel = hiltViewModel(),
     beneficiaryId: String,
+    sessionViewModel: SessionViewModel = hiltViewModel(),
 ){
     ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false) {
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -62,6 +64,7 @@ fun ModifyBeneficiaryScreen(
         val formData by viewModel.formData.collectAsState()
         val disabilities by viewModel.disabilities.collectAsStateWithLifecycle()
         val fieldErrors by viewModel.fieldErrors.collectAsStateWithLifecycle()
+        val role by sessionViewModel.role.collectAsState()
 
         var showConfirmDialog by remember { mutableStateOf(false) }
         var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
@@ -275,7 +278,7 @@ fun ModifyBeneficiaryScreen(
                         onValueChange = { uri ->
                             selectedImageUri = uri
                             viewModel.setSelectedImageUri(uri)
-                                        },
+                        },
                         isError = fieldErrors["foto"] == true,
                         errorMessage = if (fieldErrors["foto"] == true) "Foto requerida" else "",
                     )
@@ -306,26 +309,28 @@ fun ModifyBeneficiaryScreen(
                             Text("Activo")
                         }
 
+                        if (role == "COORDINADOR") {
                         // Inactive Button
-                        OutlinedButton(
-                            onClick = { viewModel.updateFormData { copy(estatus = 0) } },
-                            modifier = Modifier.weight(1f),
-                            colors = ButtonDefaults.outlinedButtonColors(
-                                containerColor = if (formData.estatus == 0) Color(0xFF3B82F6) else Color.Transparent,
-                                contentColor = if (formData.estatus == 0) Color.White else Color(
-                                    0xFF3B82F6
+                            OutlinedButton(
+                                onClick = { viewModel.updateFormData { copy(estatus = 0) } },
+                                modifier = Modifier.weight(1f),
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    containerColor = if (formData.estatus == 0) Color(0xFF3B82F6) else Color.Transparent,
+                                    contentColor = if (formData.estatus == 0) Color.White else Color(
+                                        0xFF3B82F6
+                                    )
+                                ),
+                                border = androidx.compose.foundation.BorderStroke(
+                                    1.dp,
+                                    if (formData.estatus == 0) Color(0xFF3B82F6) else Color(0xFF3B82F6).copy(
+                                        alpha = 0.5f
+                                    )
                                 )
-                            ),
-                            border = androidx.compose.foundation.BorderStroke(
-                                1.dp,
-                                if (formData.estatus == 0) Color(0xFF3B82F6) else Color(0xFF3B82F6).copy(
-                                    alpha = 0.5f
-                                )
-                            )
-                        ) {
-                            Text("Inactivo")
+                            ) {
+                                Text("Inactivo")
                         }
                     }
+                }
 
                     Spacer(modifier = Modifier.height(24.dp))
 

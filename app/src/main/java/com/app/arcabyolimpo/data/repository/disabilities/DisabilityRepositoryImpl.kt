@@ -6,6 +6,8 @@ import com.app.arcabyolimpo.data.mapper.disabilities.toDomain
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.domain.model.disabilities.Disability
 import com.app.arcabyolimpo.domain.repository.disability.DisabilityRepository
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 import kotlin.collections.map
 
@@ -64,5 +66,18 @@ class DisabilityRepositoryImpl
          * @return A [Disabilities] object representing the available disabilities.
          */
         override suspend fun getDisability(id: String): Disability = api.getDisabilityDetail(id).toDomain()
+
+        override suspend fun deleteDisability(id: String) {
+            try {
+                val response = api.deleteDisability(id)
+                if (!response.isSuccessful) {
+                    throw HttpException(response)
+                }
+            } catch (e: HttpException) {
+                throw e
+            } catch (e: IOException) {
+                throw e
+            }
+        }
     }
     
