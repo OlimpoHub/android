@@ -48,6 +48,9 @@ import com.app.arcabyolimpo.data.remote.dto.workshops.DeleteResponseWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.DeleteWorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopResponseDto
+import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
+import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
+import com.app.arcabyolimpo.domain.usecase.upload.UploadResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -496,14 +499,16 @@ interface ArcaApi {
         @Body request: CreateQrDto,
     ): ResponseBody
 
+    @POST("upload")
+    @Multipart
+    suspend fun uploadWorkshopImage(
+        @Part image: MultipartBody.Part
+    ): UploadResponse
+
     @GET("attendance")
     suspend fun getAttendanceByUser(
         @Query("userId") userId: String
     ): List<AttendanceDto>
-
-
-
-
 
     /**
      * Validates a scanned QR code.

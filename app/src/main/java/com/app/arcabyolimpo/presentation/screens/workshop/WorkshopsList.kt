@@ -176,6 +176,7 @@ fun WorkshopsListScreen(
                             items(uiState.workshopsList) { workshop ->
                                 WorkshopCard(
                                     name = workshop.nameWorkshop.toString(),
+                                    imageUrl = workshop.url?.toString(),
                                     onClick = { workshopClick(workshop.id.toString()) }
                                 )
                             }
