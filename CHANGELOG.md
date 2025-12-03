@@ -1,3 +1,7 @@
+## [0.2.0] - 03/12/2025
+### Fixed
+- Fix Decision Dialog on Delete and applied to Modify
+
 ## [0.2.0] - 02/12/2025
 ### Added
 - Confirm dialog option added to supply and product batches form to add
