@@ -6,6 +6,7 @@
 ### Fixed
 - Fix workshop video training, taking it out
 - Fix upload image in modify beneficiary
+- Fix image containers for product batches
 
 ### Updated
 - Path prefix for updating password
