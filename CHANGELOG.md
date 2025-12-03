@@ -1,6 +1,7 @@
 ## [0.2.0] - 02/12/2025
 ### Added
 - Consult disability details
+- Disability Card
 
 ### Changed
 - Attendance screen now always displays exit time as 14:30.
