@@ -4,6 +4,7 @@ import android.util.Log
 import com.app.arcabyolimpo.data.mapper.disabilities.toRegisterDto
 import com.app.arcabyolimpo.data.mapper.disabilities.toDomain
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
+import com.app.arcabyolimpo.data.remote.dto.workshops.DeleteWorkshopDto
 import com.app.arcabyolimpo.domain.model.disabilities.Disability
 import com.app.arcabyolimpo.domain.repository.disability.DisabilityRepository
 import retrofit2.HttpException
@@ -67,6 +68,13 @@ class DisabilityRepositoryImpl
          */
         override suspend fun getDisability(id: String): Disability = api.getDisabilityDetail(id).toDomain()
 
+        /**
+         * Performs a hard delete of a disability identified by its [id].
+         *
+         * @param id Unique identifier of the disability to be hard-deleted.
+         * @throws Exception If the network request fails or the server
+         *         returns an error.
+         */
         override suspend fun deleteDisability(id: String) {
             try {
                 val response = api.deleteDisability(id)

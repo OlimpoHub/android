@@ -343,6 +343,7 @@ interface ArcaApi {
         @Body requestBody: DisabilityRegisterDto,
     )
 
+    // Deletes selected disability.
     @PUT("discapacity/delete/{id}")
     suspend fun deleteDisability(
         @Path("id") id: String,
