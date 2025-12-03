@@ -170,7 +170,7 @@ fun ProductBatchDetailScreen(
                                 modifier =
                                     Modifier
                                         .fillMaxWidth()
-                                        .background(Color(0xFF2A2A2A)),
+                                        .background(Color(0xFF040710)),
                             )
                         }
 
