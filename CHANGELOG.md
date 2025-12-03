@@ -1,6 +1,9 @@
 ## [0.2.0] - 02/12/2025
 ### Added
 - Consult disability details
+
+### Fixed
+- Fix workshop video training, taking it out
   
 ## [0.2.0] - 01/12/2025
 ### Changed
