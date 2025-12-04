@@ -15,6 +15,18 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel for the supply list screen.
+ *
+ * This ViewModel is responsible for managing the UI state of the supply list screen.
+ * It interacts with the domain layer to fetch and filter the list of supplies.
+ *
+ * @param getSuppliesListUseCase Use case to fetch the list of supplies.
+ * @param filterSuppliesUseCase Use case to filter the list of supplies.
+ * @param getFiltersDataUseCase Use case to fetch the filter data.
+ * @property _uiState Backing property for the supplies list UI state.
+ * @property uiState Publicly exposed immutable state observed by the UI.
+ */
 @HiltViewModel
 class SuppliesListViewModel
     @Inject

@@ -32,6 +32,16 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.SupplyBatchList
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
 
+/**
+ * Formats a date string for display.
+ *
+ * Accepts input in ISO `yyyy-MM-dd` or `dd/MM/yyyy` and returns a
+ * `dd/MM/yyyy` formatted string when possible. If the input is blank or
+ * unrecognized, it is returned as-is.
+ *
+ * This helper is intentionally defensive because backend responses may use
+ * different date formats; the UI prefers the `dd/MM/yyyy` display format.
+ */
 private fun formatDisplayDate(dateStr: String): String {
     if (dateStr.isBlank()) return ""
     return try {
@@ -64,6 +74,21 @@ fun SupplyBatchListContent(
     onBackClick: () -> Unit,
     onModifyClick: (String) -> Unit,
 ) {
+    /**
+     * Renders a list of supply batches for the currently selected date.
+     *
+     * The composable displays a friendly fallback when there are no batches
+     * and uses `SupplyBatchListItem` for each row. The `date` parameter is
+     * shown in the header and is formatted via `formatDisplayDate`.
+     *
+     * @param uiState Screen state containing the fetched batch list and
+     *  related metadata.
+     * @param date The currently selected date filter (displayed in header).
+     * @param onBackClick Not used in current layout but kept for parity with
+     *  other screen components (left here to preserve the signature).
+     * @param onModifyClick Called with a `batchId` when the user taps the
+     *  modify action for a batch.
+     */
     val list = uiState.supplyBatchList?.batch ?: emptyList()
     Log.d("SupplyBatchListContent", "date=$date, batchesSize=${list.size}")
 
