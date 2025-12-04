@@ -135,13 +135,19 @@ fun SupplyUpdateScreen(
                     errorMessage = uiState.nameError,
                 )
 
-                val imageUri = uiState.selectedImageUrl ?: uiState.currentImageUrl
-                    ?.takeIf { it.isNotBlank() }
-                    ?.let{ Uri.parse(it)}
+                val displayImage = if (uiState.selectedImageUrl != null) {
+                    // Case A: User just picked a new photo from gallery
+                    uiState.selectedImageUrl
+                } else {
+                    // Case B: User hasn't touched the image, show the existing one from server
+                    uiState.currentImageUrl
+                        ?.takeIf { it.isNotBlank() }
+                        ?.let { Uri.parse("http://74.208.78.8:8080/$it") }
+                }
 
                 ImageUploadInput(
                     label = "Imagen del insumo",
-                    value = imageUri,
+                    value = displayImage,
                     onValueChange = viewModel::onImageSelected,
                 )
 

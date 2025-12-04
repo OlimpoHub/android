@@ -26,12 +26,15 @@ import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchList
 import com.app.arcabyolimpo.domain.model.supplies.WorkshopCategoryList
 import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import retrofit2.HttpException
 import java.io.IOException
+import java.net.URL
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -356,30 +359,41 @@ class SupplyRepositoryImpl
     override suspend fun updateSupply(
         idSupply: String,
         supply: SupplyAdd,
-        image: Uri?,
+        image: Uri?
     ): Result<Unit> =
         try {
-            val imagePart =
-                image?.let {
-                    val input = context.contentResolver.openInputStream(it)
-                    val bytes = input?.readBytes()
-                    input?.close()
-                    if (bytes != null) {
-                        val requestFile =
-                            bytes.toRequestBody(
-                                context.contentResolver
-                                    .getType(it)
-                                    ?.toMediaTypeOrNull(),
-                            )
-                        MultipartBody.Part.createFormData(
-                            "imagenInsumo",
-                            "image.jpg",
-                            requestFile,
-                        )
-                    } else {
-                        null
+            val imagePart = image?.let { uri ->
+                val bytes = if (uri.toString().startsWith("http")) {
+                    withContext(Dispatchers.IO) {
+                        try {
+                            URL(uri.toString()).openStream().use { it.readBytes() }
+                        } catch (e: Exception) {
+                            Log.e("SupplyRepo", "Error downloading existing image: ${e.message}")
+                            null
+                        }
                     }
+                } else {
+                    context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
                 }
+
+                if (bytes != null) {
+                    val mediaType = if (uri.toString().startsWith("http")) {
+                        "image/jpeg".toMediaTypeOrNull() // Default to jpeg for downloaded images
+                    } else {
+                        context.contentResolver.getType(uri)?.toMediaTypeOrNull()
+                    }
+
+                    val requestFile = bytes.toRequestBody(mediaType)
+
+                    MultipartBody.Part.createFormData(
+                        "imagenInsumo",
+                        "image.jpg",
+                        requestFile,
+                    )
+                } else {
+                    null
+                }
+            }
 
             val idWorkshop = supply.idWorkshop.toRequestBody("text/plain".toMediaTypeOrNull())
             val name = supply.name.toRequestBody("text/plain".toMediaTypeOrNull())
@@ -398,16 +412,15 @@ class SupplyRepositoryImpl
             )
 
             localDataSource.clearCache()
-
             Result.success(Unit)
+
         } catch (e: HttpException) {
             val error = e.response()?.errorBody()?.string()
-            val message =
-                try {
-                    JSONObject(error ?: "").getString("message")
-                } catch (jsonException: Exception) {
-                    "Error al modificar insumo: ${e.message()}"
-                }
+            val message = try {
+                JSONObject(error ?: "").getString("message")
+            } catch (jsonException: Exception) {
+                "Error al modificar insumo: ${e.message()}"
+            }
             Result.failure(Exception(message))
         } catch (e: IOException) {
             Result.failure(Exception("No hay conexión a internet"))
