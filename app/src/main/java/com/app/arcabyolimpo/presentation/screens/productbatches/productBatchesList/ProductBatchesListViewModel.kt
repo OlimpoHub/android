@@ -99,7 +99,6 @@ class ProductBatchesListViewModel
         fun searchProductBatch(term: String) {
             viewModelScope.launch {
                 if (term.isBlank()) {
-                    // Si está vacío, carga todos los lotes
                     loadData()
                 } else {
                     searchProductBatchesUseCase(term).collect { result ->

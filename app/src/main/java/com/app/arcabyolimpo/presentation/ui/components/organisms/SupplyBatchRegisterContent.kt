@@ -34,6 +34,33 @@ import com.app.arcabyolimpo.ui.theme.PrimaryBlue
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
+/**
+ * Composable content for the supply batch registration and modification form.
+ *
+ * This organism renders the input fields used by both the register and modify
+ * screens: quantity, acquisition type selector, purchase date and expiration
+ * date, and the increment/decrement controls. The composable reads per-field
+ * error messages from the provided `uiState` (which can be either register
+ * or modify concrete states) and passes `isError`/`errorMessage` to the
+ * individual input atoms so inline validation messages are shown.
+ *
+ * Note: supply selection was intentionally removed from this content and the
+ * currently selected supply name is shown in the screen's TopAppBar.
+ *
+ * @param uiState The shared UI state providing current input values, lists
+ *  for selectors, loading and error flags, and per-field error messages.
+ * @param onSelectSupply Callback when a supply is selected (left for
+ *  backwards compatibility; supply selection UI was moved to the parent).
+ * @param onQuantityChanged Callback when the quantity text changes.
+ * @param onExpirationDateChanged Callback when the expiration date changes
+ *  (display format is `dd/MM/yyyy`).
+ * @param onBoughtDateChanged Callback when the bought/purchase date changes
+ *  (display format is `dd/MM/yyyy`).
+ * @param onIncrementQuantity Increment quantity by one.
+ * @param onDecrementQuantity Decrement quantity by one.
+ * @param onAcquisitionTypeSelected Called with the acquisition type id when
+ *  the user selects an option from the acquisition selector.
+ */
 fun SupplyBatchRegisterContent(
     uiState: SupplyBatchUiStateBase,
     onSelectSupply: (String) -> Unit,

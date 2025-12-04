@@ -1,5 +1,9 @@
 ## [0.2.0] - 03/12/2025
 ### Added
+ - Code comments
+
+## [0.2.0] - 03/12/2025
+### Added
 - Delete disability
 - Icon
 
@@ -9,6 +13,7 @@
 - Fix Decision Dialog on Delete and applied to Modify
 - Fix Workshop cards size
 - Fix Color background on Product Batches
+- Comments' languague fixing on Product Batches, Supply Batches Offline and Register Disability
 
 ## [0.2.0] - 02/12/2025
 ### Added

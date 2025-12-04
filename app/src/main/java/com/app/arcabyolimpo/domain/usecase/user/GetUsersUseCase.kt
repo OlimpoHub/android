@@ -26,6 +26,11 @@ class GetUsersUseCase
     constructor(
         private val repository: UsersRepository,
     ) {
+        /**
+         * Executes the request to fetch all users.
+         *
+         * @return A [Flow] emitting the current state of the operation wrapped in [Result].
+         */
         operator fun invoke(): Flow<Result<List<UserDto>>> =
             flow {
                 try {

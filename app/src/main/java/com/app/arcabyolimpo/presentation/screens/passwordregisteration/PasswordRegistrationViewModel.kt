@@ -33,6 +33,17 @@ class PasswordRegistrationViewModel
         private val _uiState = MutableStateFlow(PasswordRegistrationUiState())
         val uiState: StateFlow<PasswordRegistrationUiState> = _uiState.asStateFlow()
 
+        /**
+         * Executes the password registration request using the provided email and password.
+         *
+         * This function:
+         * 1. Calls the [PostPasswordRegistrationUseCase] inside a coroutine.
+         * 2. Collects its emitted [Result] states (Loading, Success, Error).
+         * 3. Updates [_uiState] accordingly, allowing the UI to react in real time.
+         *
+         * @param email The email of the user registering a new password.
+         * @param password The password the user wants to register.
+         */
         fun postPasswordRegistration(
             email: String,
             password: String,

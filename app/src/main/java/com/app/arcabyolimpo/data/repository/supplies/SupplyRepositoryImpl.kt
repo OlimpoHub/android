@@ -52,26 +52,23 @@ class SupplyRepositoryImpl
          * 4. If no cache and API fails -> throw exception
          */
         override suspend fun getSuppliesList(): List<Supply> {
-            // Check if we have valid cached data
-            if (localDataSource.isCacheValid()) {
-                Log.d("SupplyRepository", "Returning valid cached supplies")
-                return localDataSource.getCachedSuppliesList() ?: fetchAndCacheSupplies()
-            }
-
-            // Try to fetch fresh data from API
             return try {
-                fetchAndCacheSupplies()
-            } catch (e: Exception) {
-                Log.e("SupplyRepository", "API call failed: ${e.message}")
-
-                // If we have stale cache, return it as fallback
-                if (localDataSource.hasCachedData()) {
-                    Log.d("SupplyRepository", "Returning stale cached supplies as fallback")
-                    localDataSource.getCachedSuppliesList() ?: throw e
-                } else {
-                    // No cache available, propagate the error
-                    throw e
+                val response = api.getSuppliesList()
+                val supplies = response.map { dto ->
+                    Supply(
+                        id = dto.id,
+                        name = dto.name,
+                        imageUrl = dto.image ?: "",
+                        unitMeasure = "",
+                        batch = emptyList(),
+                    )
                 }
+
+                localDataSource.cacheSuppliesList(supplies)
+                supplies
+
+            } catch (e: Exception) {
+                localDataSource.getCachedSuppliesList() ?: throw e
             }
         }
 
@@ -106,14 +103,6 @@ class SupplyRepositoryImpl
          * Useful for pull-to-refresh functionality.
          */
         suspend fun refreshSuppliesList(): List<Supply> = fetchAndCacheSupplies()
-
-        /**
-         * Clears the local cache.
-         * Useful for debugging or when data becomes corrupted.
-         */
-        fun clearCache() {
-            localDataSource.clearCache()
-        }
 
 
         override suspend fun filterSupply(filters: FilterDto): List<Supply> {
@@ -165,6 +154,9 @@ class SupplyRepositoryImpl
                 )
 
             val responseDto = api.registerSupplyBatch(dto)
+
+            localDataSource.clearCache()
+
             return responseDto.toDomain()
         }
 
@@ -190,13 +182,14 @@ class SupplyRepositoryImpl
                 }
 
             val body = DeleteSupplyBatchDto(idSupply, formattedDate)
+            localDataSource.clearCache()
             val result = api.deleteSupplyBatch(body)
         }
 
         override suspend fun deleteOneSupply(id: String) {
             val body = DeleteDto(id)
+            localDataSource.clearCache()
             val result = api.deleteOneSupply(body)
-            Log.d("Validacion", "Si llego ")
         }
 
         override suspend fun getWorkshopCategoryList(): Result<WorkshopCategoryList> =
@@ -247,6 +240,9 @@ class SupplyRepositoryImpl
                     status = status,
                     imagenInsumo = imagePart,
                 )
+
+                localDataSource.clearCache()
+
                 Result.success(Unit)
             } catch (e: HttpException) {
                 val error = e.response()?.errorBody()?.string()
@@ -306,6 +302,9 @@ class SupplyRepositoryImpl
                     status = status,
                     imagenInsumo = imagePart,
                 )
+
+                localDataSource.clearCache()
+
                 Result.success(Unit)
             } catch (e: HttpException) {
                 val error = e.response()?.errorBody()?.string()
@@ -335,6 +334,9 @@ class SupplyRepositoryImpl
                     boughtDate = batch.boughtDate,
                 )
             val responseDto = api.modifySupplyBatch(id, dto)
+
+            localDataSource.clearCache()
+
             return responseDto.toDomain()
         }
 
@@ -342,12 +344,6 @@ class SupplyRepositoryImpl
             expirationDate: String,
             idSupply: String,
         ): SupplyBatchList {
-            batchesPreferences.getSupplyBatchCache(expirationDate, idSupply)?.let { cache ->
-                if (batchesPreferences.isCacheValid(expirationDate, idSupply)) {
-                    Log.d("SupplyRepo", "Using VALID cache for expirationDate=$expirationDate, idSupply=$idSupply")
-                    return SupplyBatchList(batch = cache.supplyBatchesList)
-                }
-            }
 
             try {
                 Log.d("SupplyRepo", "supplyBatchList request expirationDate=$expirationDate idSupply=$idSupply")
@@ -387,16 +383,6 @@ class SupplyRepositoryImpl
         }
 
     override suspend fun getSupplyBatchById(id: String): SupplyBatchExt {
-        Log.d("SupplyRepository", "getSupplyBatchById called for ID: $id")
-
-        // Check if we have valid cached supply detail
-        if (localDataSource.isSupplyDetailCacheValid(id)) {
-            Log.d("SupplyRepository", "Returning valid cached supply batch detail for ID: $id")
-            val cachedDetail = localDataSource.getCachedSupplyDetail(id)
-            if (cachedDetail != null) {
-                return cachedDetail
-            }
-        }
 
         // Try to fetch fresh data from API
         return try {

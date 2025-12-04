@@ -1,6 +1,5 @@
 package com.app.arcabyolimpo.presentation.screens.supply.supplyBatchList
 
-// removed horizontalScroll to avoid horizontal stretching in landscape
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -42,6 +41,17 @@ import com.app.arcabyolimpo.presentation.ui.components.organisms.SupplyBatchList
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
 
+/**
+ * SupplyBatchListScreen -> view where all the inputs, buttons and selects are shown with the
+ * information collected by the view model, handles different states
+ * @param supplyId: String -> id of the supply to show the batches for
+ * @param supplyName: String -> name of the supply to show the batches for
+ * @param date: String -> date to show the batches for
+ * @param onModifyClick: (String) -> Unit -> function when the user clicks on a batch to modify
+ * @param onBackClick: () -> Unit -> function when the user cancels the operation
+ * @param viewModel: SupplyBatchListViewModel -> vm for the view in charge of placing the data
+ * @return Unit
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SupplyBatchListScreen(

@@ -2,6 +2,7 @@ package com.app.arcabyolimpo.data.local.product.list.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.core.content.edit
 import com.app.arcabyolimpo.domain.model.product.Product
 import com.app.arcabyolimpo.data.local.product.list.model.ProductCache
@@ -108,6 +109,16 @@ class ProductPreferences @Inject constructor(
 
         return System.currentTimeMillis() - lastUpdate <
                 ProductPreferencesConstants.CACHE_DURATION
+    }
+
+    /**
+     * Clears all cached product data and metadata.
+     *
+     * This completely resets the cache, removing the stored product list and
+     * last update timestamp.
+     */
+    fun clearCache() {
+        prefs.edit().clear().apply()
     }
 
 }
