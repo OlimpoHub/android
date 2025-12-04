@@ -25,6 +25,12 @@ import retrofit2.Response
  */
 
 abstract class BaseRepository {
+    /**
+     * Extracts a meaningful message from an error response returned by Retrofit.
+     *
+     * @param response Retrofit HTTP response containing an error body.
+     * @return A user-friendly error message, or a fallback message if parsing fails.
+     */
     protected fun parseError(response: Response<*>): String =
         try {
             val errorBody = response.errorBody()?.string()
@@ -33,6 +39,13 @@ abstract class BaseRepository {
             "Unknown error"
         }
 
+    /**
+     * Validates a Retrofit response and returns its body.
+     *
+     * @param response Response returned by a Retrofit API call.
+     * @return The response body if the call was successful.
+     * @throws Exception containing the backend error message if the response is not successful.
+     */
     protected fun <T> handleResponse(response: Response<T>): T {
         if (response.isSuccessful) {
             return response.body() ?: throw Exception("Empty response")
@@ -64,18 +77,40 @@ class PasswordUserRepositoryImpl
         private val api: ArcaApi,
     ) : BaseRepository(),
         PasswordUserRepository {
+        /**
+         * Sends a password recovery request for the specified email.
+         *
+         * @param email Email associated with the user account.
+         * @return A backend-generated success message.
+         * @throws Exception if the backend returns an error.
+         */
         override suspend fun postRecoverPassword(email: String): String {
             val response = api.recoverPassword(RecoverPasswordDto(email))
             val body = handleResponse(response)
             return body.message
         }
 
+        /**
+         * Validates a password reset token by sending it to the backend.
+         *
+         * @param token Unique password reset token sent to the user's email.
+         * @return A [VerifyToken] domain model indicating token validity.
+         * @throws Exception if the token is invalid or the API call fails.
+         */
         override suspend fun getVerifyToken(token: String): VerifyToken {
             val response = api.verifyToken(token)
             val body = handleResponse(response)
             return body.toDomain()
         }
 
+        /**
+         * Updates a user's password using their email and the new password.
+         *
+         * @param email Email of the user whose password will be updated.
+         * @param password New password provided by the user.
+         * @return An [UpdatePassword] domain model containing the API confirmation message.
+         * @throws Exception if the update fails or the backend rejects the request.
+         */
         override suspend fun postUpdatePassword(
             email: String,
             password: String,

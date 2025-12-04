@@ -47,6 +47,20 @@ class QrViewModel
         private val _uiState = MutableStateFlow(QrUiState())
         val uiState: StateFlow<QrUiState> = _uiState.asStateFlow()
 
+        /**
+         * Sends a QR creation request based on the given workshop ID, associating it
+         * with the currently authenticated user.
+         *
+         * ### Steps performed:
+         * 1. Retrieves the user ID from [UserPreferences].
+         * 2. Calls the [PostCreateQrUseCase] with the user ID and workshop ID.
+         * 3. Collects the emitted [Result] states:
+         *    - **Loading:** Flags the UI to show a progress indicator.
+         *    - **Success:** Decodes the byte array into a Bitmap and updates UI state.
+         *    - **Error:** Stores the error message and stops loading.
+         *
+         * @param workShopId ID of the workshop for which the QR code is requested.
+         */
         fun postCreateQr(workShopId: String) {
             viewModelScope.launch {
                 postCreateQrUseCase(userPreferences.getUserId().first()!!, workShopId).collect { result ->

@@ -48,6 +48,11 @@ class QrWorkshopsListViewModel
             setupSearchDebounce()
         }
 
+        /**
+         * Updates the search query and restores the full list if the query is cleared.
+         *
+         * @param text The new text entered by the user in the search field.
+         */
         fun onSearchQueryChange(text: String) {
             _searchQuery.value = text
             if (text.isBlank()) {
@@ -61,6 +66,13 @@ class QrWorkshopsListViewModel
             }
         }
 
+        /**
+         * Loads the full list of workshops from the backend.
+         *
+         * - Emits Loading → Success → Error states.
+         * - Stores the original list to allow resets.
+         * - Extracts and populates unique date filters into the UI.
+         */
         fun loadWorkshopsList() {
             viewModelScope.launch {
                 getWorkshopsListUseCase().collect { result ->
@@ -101,6 +113,11 @@ class QrWorkshopsListViewModel
             }
         }
 
+        /**
+         * Configures debounce for search input to reduce API calls.
+         *
+         * Executes a search after 400 ms of no typing and only if the query changes.
+         */
         private fun setupSearchDebounce() {
             viewModelScope.launch {
                 _searchQuery
@@ -114,6 +131,15 @@ class QrWorkshopsListViewModel
             }
         }
 
+        /**
+         * Executes a search request to filter workshops by name.
+         *
+         * - Emits loading state.
+         * - Replaces the current list with matches.
+         * - If search fails, restores the original list.
+         *
+         * @param name The text entered by the user.
+         */
         private fun performSearch(name: String) {
             viewModelScope.launch {
                 _uiState.update { it.copy(isLoading = true) }
@@ -144,6 +170,9 @@ class QrWorkshopsListViewModel
             }
         }
 
+        /**
+         * Resets all filters and restores the unmodified workshop list.
+         */
         fun clearFilters() {
             _uiState.update { current ->
                 current.copy(
@@ -153,6 +182,18 @@ class QrWorkshopsListViewModel
             }
         }
 
+        /**
+         * Applies selected filters (date, hour, status) and sorts the result.
+         *
+         * Filtering steps:
+         * - Match by date (day).
+         * - Match by start hour (HH:mm).
+         * - Match by status (Activo/Inactivo → 1/0).
+         *
+         * Resulting list is sorted alphabetically depending on the sort order.
+         *
+         * @param filterDto Object containing the selected filters and sort order.
+         */
         fun applyFilters(filterDto: FilterDto) {
             _uiState.update { current ->
                 val dateFilter = getFilterValues(filterDto, "Fecha")
@@ -216,6 +257,15 @@ class QrWorkshopsListViewModel
             }
         }
 
+        /**
+         * Retrieves the filter values for a given key.
+         *
+         * Keys are normalized (lowercase + trimmed) to improve matching.
+         *
+         * @param filterDto The applied filters.
+         * @param key The human-readable filter section name (e.g., "Fecha").
+         * @return A list of filter values or null if the filter is not present.
+         */
         private fun getFilterValues(
             filterDto: FilterDto,
             key: String,
