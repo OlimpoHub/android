@@ -37,6 +37,29 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ModifyButto
 import com.app.arcabyolimpo.presentation.ui.components.atoms.status.ActiveStatus
 import com.app.arcabyolimpo.presentation.ui.components.atoms.status.InactiveStatus
 
+/**
+ * Displays comprehensive user details in a scrollable column layout with action buttons.
+ *
+ * This composable presents a user's profile information including their photo, personal details,
+ * role, and status. It provides administrative actions for editing, deleting, and viewing
+ * attendance records for volunteers. The layout features a profile photo at the top (or an
+ * initials-based placeholder if no photo exists), followed by the user's full name, status badge,
+ * and organized information cards for key details like email, phone, career, birth date, and role.
+ *
+ *
+ * @param collab The UserDto object containing all user information to display. Expected fields include
+ *               foto (profile photo URL), nombre (first name), apellidoPaterno (paternal last name),
+ *               apellidoMaterno (maternal last name), estatus (status: 1 for active, 0 for inactive),
+ *               correoElectronico (email), telefono (phone), carrera (career/degree), fechaNacimiento
+ *               (birth date), and idRol (role ID).
+ * @param onEditClick Callback invoked when the user clicks the modify/edit button. Typically used to
+ *                    open an edit modal or navigate to an edit screen.
+ * @param onDeleteClick Callback invoked when the user clicks the delete button and the user status is
+ *                      active. Should typically show a confirmation dialog before proceeding with deletion.
+ * @param onAttendanceClick Callback invoked when the "Ver asistencias" button is clicked. Only available
+ *                          and displayed for users with role ID "3" (Becario/Volunteer). Used to navigate
+ *                          to the attendance records screen for that user.
+ */
 @Composable
 fun UserDetailContent(
     collab: UserDto,

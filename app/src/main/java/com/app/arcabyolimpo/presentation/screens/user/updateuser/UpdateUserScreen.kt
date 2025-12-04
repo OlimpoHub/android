@@ -30,6 +30,37 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.SnackbarArca
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.SnackbarVisualsWithError
 import kotlinx.coroutines.launch
 
+/**
+ * A modal bottom sheet screen for updating existing user information in the system.
+ *
+ * This composable provides a comprehensive form for editing user details displayed as a Material 3
+ * modal bottom sheet. It automatically loads the existing user data based on the userId parameter
+ * passed through navigation arguments, populating all form fields with current values. The form
+ * supports updating profile images, personal information, and user status, with real-time validation
+ * and inline error messages for required fields.
+ *
+ * The screen includes a Material 3 date picker for birth date selection, a confirmation dialog that
+ * appears before submitting changes, and Snackbar notifications for both success and error states
+ * positioned at the top of the modal. Unlike the registration screen, this update screen does not
+ * include role selection (role cannot be changed after creation) or document tracking checkboxes.
+ *
+ * The profile image is loaded from the existing photoUrl when the screen opens, and users can replace
+ * it by selecting a new image. The form validates required fields (name, paternal last name, email,
+ * and phone) before allowing submission. On successful update, the screen triggers the onSuccess
+ * callback and dismisses itself, allowing the parent screen to refresh and display updated information.
+ *
+ * State management, data loading, validation logic, and API calls are all handled by the
+ * UpdateUserViewModel, keeping this composable focused on UI rendering and user interactions.
+ *
+ * @param viewModel The HiltViewModel managing the update state, data loading, form validation, and API
+ *                  interactions. Retrieves the userId from SavedStateHandle to load the correct user data.
+ *                  Defaults to a Hilt-injected instance if not provided.
+ * @param onDismiss Callback invoked when the user dismisses the modal bottom sheet by clicking the exit
+ *                  icon, the cancel button, or by swiping down. Triggers state reset to clear the form.
+ * @param onSuccess Callback invoked when the user update is completed successfully. Called before the
+ *                  automatic dismissal to allow the parent screen to refresh data and reflect changes.
+ */
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -30,6 +30,34 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.SnackbarVisu
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
 import kotlinx.coroutines.launch
 
+/**
+ * A modal bottom sheet screen for registering new users in the system.
+ *
+ * This composable provides a comprehensive user registration form displayed as a Material 3 modal
+ * bottom sheet. It supports profile image selection, personal information input, role selection
+ * between Assistant and Volunteer, document tracking via checkboxes, and status management. The
+ * form includes real-time validation with error messages displayed inline, a Material 3 date picker
+ * for birth date selection, and a confirmation dialog that appears before final submission to prevent
+ * accidental registrations.
+ *
+ * The screen manages its own state through the provided ViewModel and displays feedback to users via
+ * a custom Snackbar component positioned at the bottom of the sheet. On successful registration, the
+ * screen automatically dismisses after a 3-second delay. The form supports image preview for the
+ * selected profile photo and includes a calendar icon button to trigger the date picker.
+ *
+ * All state management, validation logic, and API calls are delegated to the UserRegisterViewModel,
+ * keeping this composable focused on UI rendering and user interactions. The screen properly cleans
+ * up its state when dismissed or disposed using DisposableEffect.
+ *
+ * @param viewModel The HiltViewModel managing the registration state, form validation, and API interactions.
+ *                  Defaults to a Hilt-injected instance if not provided.
+ * @param onDismiss Callback invoked when the user dismisses the modal bottom sheet either by clicking
+ *                  the exit icon, the cancel button, or by swiping down. Also called automatically on
+ *                  successful registration after the success message is displayed.
+ * @param onSuccess Callback invoked when the user registration is completed successfully. Called before
+ *                  the automatic dismissal to allow the parent screen to refresh data or update its state.
+ */
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
