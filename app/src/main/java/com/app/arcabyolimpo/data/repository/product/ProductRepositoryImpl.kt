@@ -32,6 +32,16 @@ class ProductRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : ProductRepository {
 
+    /**
+     * addProduct.
+     * Adds a new product to the system by communicating with the API.
+     *
+     * It builds a [MultipartBody] request body to send the product information,
+     * including the image, to the server.
+     *
+     * @param product The [ProductAdd] object containing the details of the product to be added.
+     * @return A [Result] indicating whether the operation was successful or if an error occurred.
+     */
     override suspend fun addProduct(product: ProductAdd): Result<Unit> {
         return try {
             val imagePart = product.image.let {
@@ -68,12 +78,23 @@ class ProductRepositoryImpl @Inject constructor(
                 image = imagePart,
             )
 
+            preferences.clearCache()
+            detailPreferences.clearCache()
+
+
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
+    /**
+     * deleteProduct.
+     * Deletes a product by its id by calling the API.
+     *
+     * @param id The id of the product to delete.
+     * @throws HttpException if the response is not successful.
+     */
     override suspend fun deleteProduct(id: String) {
         val response = api.deleteProduct(id)
         if (!response.isSuccessful) {
@@ -81,34 +102,60 @@ class ProductRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * getProducts.
+     * Retrieves the complete list of products, using a cache-first strategy to
+     * improve performance and reduce unnecessary network calls.
+     * @return A list of [Product] representing the available products.
+     * @throws Exception If the API request fails and no valid cache exists.
+     */
     override suspend fun getProducts(): List<Product> {
-        return api.getProducts().map { it.toDomain() }
+        return try {
+            val remoteList = api.getProducts().map { it.toDomain() }
+            preferences.saveProductList(remoteList)
+            remoteList
+        } catch(e: Exception) {
+            val cached = preferences.getProductCache()
+            cached?.productList ?: throw e
+        }
+
     }
 
+    /**
+     * searchProducts.
+     * Searches products in the API using GET /product/search?q=...
+     */
     override suspend fun searchProducts(query: String): List<Product> {
         return api.searchProducts(query).map { it.toDomain() }
     }
 
+    /**
+     * getProductById.
+     * Retrieves a product by its ID, using a cache-first strategy.
+     *
+     * Flow emissions sequence:
+     * 1. Emits [Result.Loading]
+     * 2. If a valid cache exists → emits [Result.Success] with cached data
+     * 3. Attempts to fetch fresh data from the API:
+     *      - If successful → saves new data in cache and emits [Result.Success]
+     *      - If API fails:
+     *          * If cache exists → emits cached [Result.Success]
+     *          * Otherwise → emits [Result.Error]
+     */
     override fun getProductById(
         productId: String
     ): Flow<com.app.arcabyolimpo.domain.common.Result<Product>> = flow {
         emit(com.app.arcabyolimpo.domain.common.Result.Loading)
 
-        if(detailPreferences.isCacheValid(productId)){
-            detailPreferences.getProductDetailCache(productId)?.let { cache ->
-                emit(com.app.arcabyolimpo.domain.common.Result.Success(cache.productDetail))
-            }
+        val cached = detailPreferences.getProductDetailCache(productId)
+        if (cached != null) {
+            emit(com.app.arcabyolimpo.domain.common.Result.Success(cached.productDetail))
         }
 
         try {
             val productDto = api.getProductById(productId)
+                ?: throw Exception("Producto no encontrado")
 
-            if (productDto == null) {
-                emit(com.app.arcabyolimpo.domain.common.Result.Error(
-                    Exception("Producto no encontrado")
-                ))
-                return@flow
-            }
             val productDetail = productDto.toDomain()
 
             detailPreferences.saveProductDetail(
@@ -119,15 +166,23 @@ class ProductRepositoryImpl @Inject constructor(
             emit(com.app.arcabyolimpo.domain.common.Result.Success(productDetail))
 
         } catch (e: Exception) {
-            detailPreferences.getProductDetailCache(productId)?.let { cache ->
-                emit(com.app.arcabyolimpo.domain.common.Result.Success(cache.productDetail))
-                return@flow
+            if (cached != null) {
+                emit(com.app.arcabyolimpo.domain.common.Result.Success(cached.productDetail))
+            } else {
+                emit(com.app.arcabyolimpo.domain.common.Result.Error(e))
             }
-
-            emit(com.app.arcabyolimpo.domain.common.Result.Error(e))
         }
     }
 
+    /**
+     * Retrieves a detailed product from the remote API by its unique identifier.
+     *
+     * This function calls [ArcaApi.getProduct], handles network errors, and maps
+     * the resulting [ProductDto] to the [Product] domain model.
+     *
+     * @param id The unique identifier of the product to retrieve.
+     * @return A [Result] wrapping the [Product] domain model upon success.
+     */
     override suspend fun getProduct(id: String): Result<ProductDetail> {
         return try {
             val productDetailDto: ProductDetailDto = api.getProduct(idProduct = id)
@@ -138,6 +193,15 @@ class ProductRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * Updates a product by sending its updated data to the API.
+     *
+     * The function prepares all product fields as multipart data. If the product
+     * includes an image URI, the image is read and sent as a multipart file.
+     *
+     * @param idProduct ID del producto a actualizar.
+     * @param product Datos actualizados del producto.
+     */
     override suspend fun updateProduct(
         idProduct: String,
         product: ProductUpdate
@@ -179,6 +243,9 @@ class ProductRepositoryImpl @Inject constructor(
                 status = status,
                 image = imagePart,
             )
+
+            preferences.clearCache()
+            detailPreferences.clearCache()
 
             Result.success(Unit)
         } catch (e: Exception) {
