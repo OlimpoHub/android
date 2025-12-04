@@ -17,7 +17,14 @@ fun DisabilityDto.toDomain(): Disability =
         characteristics = characteristics,
     )
 
-// To Dto
+/**
+ * Converts a [Disability] (domain layer) to a [DisabilityRegisterDto] (data layer).
+ *
+ * This mapping is used specifically for the creation of a new disability, preparing
+ * the data to be sent to the remote API.
+ *
+ * @return A [DisabilityRegisterDto] ready for network serialization.
+ */
 fun Disability.toRegisterDto(): DisabilityRegisterDto =
     DisabilityRegisterDto(
         nombre = name,

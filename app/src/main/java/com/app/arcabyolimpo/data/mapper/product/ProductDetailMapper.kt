@@ -19,8 +19,8 @@ import com.app.arcabyolimpo.domain.model.product.ProductDetail
  * @receiver The [ProductDetailDto] instance received from the API with complete product information.
  * @return A [ProductDetail] domain model containing the mapped product information ready for business logic processing.
  */
-fun ProductDetailDto.toDetailDomain(): ProductDetail {
-    return ProductDetail(
+fun ProductDetailDto.toDetailDomain(): ProductDetail =
+    ProductDetail(
         idProduct = idProduct,
         name = this.name,
         unitaryPrice = this.unitaryPrice,
@@ -30,4 +30,3 @@ fun ProductDetailDto.toDetailDomain(): ProductDetail {
         categoryDescription = this.categoryDescription,
         image = this.image,
     )
-}

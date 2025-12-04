@@ -3,10 +3,13 @@ package com.app.arcabyolimpo.data.local.supplybatches.model
 import com.app.arcabyolimpo.domain.model.supplies.SupplyBatchItem
 
 /**
- * Cached version of Supply batch for offline storage.
+ * Represents the cached data structure for a list of supply batches.
  *
- * @param supplyBatchesList The list of cached supply batches.
- * @param lastUpdate The timestamp when the cache was last updated.
+ * This data class is used to bundle the retrieved list of [SupplyBatchItem]
+ * with the timestamp of when it was last updated in the cache.
+ *
+ * @property supplyBatchesList The list of supply batch items retrieved from the cache.
+ * @property lastUpdate The timestamp (in milliseconds) of when the data was last saved.
  */
 data class CachedSupplyBatch(
     val supplyBatchesList: List<SupplyBatchItem>,

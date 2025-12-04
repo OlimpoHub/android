@@ -49,6 +49,18 @@ import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
 import kotlinx.coroutines.launch
 
+/**
+ * A Composable function that defines the user interface for the Product Batch Modification screen.
+ * This screen allows a user to edit the details of an existing product batch.
+ *
+ * @param onBackClick A callback function to handle navigation when the back button is pressed.
+ * @param onModified A callback function that is triggered after the batch has been successfully modified,
+ *                   typically used to navigate away from the screen.
+ * @param batchId The unique identifier of the product batch that is being modified.
+ * @param viewModel The ViewModel associated with this screen, provided by Hilt, which manages the
+ *                  screen's state and business logic.
+ */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable

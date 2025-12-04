@@ -135,6 +135,17 @@ object AppModule {
     @Singleton
     fun provideSupplyLocalDataSource(preferences: SupplyPreferences): SupplyLocalDataSource = SupplyLocalDataSource(preferences)
 
+    /**
+     * Provides a singleton instance of [SupplyBatchesPreferences].
+     *
+     * This class manages the local caching of supply batch lists in SharedPreferences,
+     * using Gson for serialization and deserialization. It supports storing multiple,
+     * distinct batch lists keyed by expiration date and supply ID.
+     *
+     * @param context The application context injected by Hilt.
+     * @param gson The Gson instance used for JSON conversion.
+     * @return A singleton instance of [SupplyBatchesPreferences].
+     */
     @Provides
     @Singleton
     fun provideSupplyBatchesPreferences(
@@ -233,6 +244,16 @@ object AppModule {
     @Singleton
     fun provideBeneficiaryRepository(api: ArcaApi): BeneficiaryRepository = BeneficiaryRepositoryImpl(api)
 
+    /**
+     * Provides the [DisabilityRepository] implementation.
+     *
+     * This repository handles all disability-related data operations,
+     * such as fetching the list of disabilities and registering new ones.
+     * It uses [ArcaApi] as the remote data source.
+     *
+     * @param api The [ArcaApi] instance used to perform network requests.
+     * @return A singleton instance of [DisabilityRepositoryImpl].
+     */
     @Provides
     @Singleton
     fun provDisabilityRepository(api: ArcaApi): DisabilityRepository = DisabilityRepositoryImpl(api)
@@ -266,7 +287,17 @@ object AppModule {
         gson: Gson,
     ): ProductBatchPreferences = ProductBatchPreferences(context, gson)
 
-    /** Provides the [ProductBatchRepository] implementation.*/
+    /**
+     * Provides the [ProductBatchRepository] implementation.
+     *
+     * This repository handles all data operations for product batches, including
+     * fetching, creating, and modifying them. It utilizes [ArcaApi] for remote
+     * operations and [ProductBatchPreferences] for local caching.
+     *
+     * @param api The API client for network requests.
+     * @param preferences The local data manager for caching product batch data.
+     * @return A singleton instance of [ProductBatchRepository].
+     */
     @Provides
     @Singleton
     fun provideProductBatchRepository(

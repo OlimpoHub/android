@@ -21,8 +21,10 @@ import java.io.IOException
 import javax.inject.Inject
 
 /** ViewModel for ProductBatchesListScreen.
- * @param getProductBatchesUseCase GetProductBatchesUseCase -> use case to fetch product batches
-*/
+ * @param searchProductBatchesUseCase Use case to search for product batches based on a search term.
+ * @param filterProductBatchesUseCase Use case to filter product batches based on a set of criteria.
+ * @param getProductBatchesUseCase Use case to fetch the initial, unfiltered list of all product batches.
+ */
 @HiltViewModel
 class ProductBatchesListViewModel
     @Inject
@@ -38,6 +40,12 @@ class ProductBatchesListViewModel
             loadData()
         }
 
+        /**
+         * Loads the initial data for the screen.
+         * This function fetches all product batches, extracts distinct values for filter options
+         * (like names, prices, quantities), and updates the UI state with the results or
+         * any errors that occur.
+         */
         fun loadData() {
             viewModelScope.launch {
                 _uiState.value = ProductBatchesUiState(isLoading = true)
