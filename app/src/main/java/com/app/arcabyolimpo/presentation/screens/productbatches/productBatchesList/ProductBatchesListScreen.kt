@@ -220,7 +220,6 @@ fun ProductBatchesListScreen(
         }
     }
 
-    // Filtro modal
     if (showFilter && state.filterData != null) {
         Filter(
             data = state.filterData!!,
