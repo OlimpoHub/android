@@ -13,6 +13,8 @@ import com.app.arcabyolimpo.domain.model.workshops.Workshop
  * @property workshopList The list of [Workshop] items currently displayed on screen.
  * @property isLoading Indicates whether the workshop list is being loaded.
  * @property error An optional error message shown when data loading fails.
+ * @property filterData The available filtering options displayed in the filter modal.
+ * @property selectedFilters The active filters and ordering applied to the workshops list.
  */
 data class WorkshopsListUiState (
     val workshopsList: List<Workshop> = emptyList(),
