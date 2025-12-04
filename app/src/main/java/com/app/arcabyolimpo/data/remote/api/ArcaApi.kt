@@ -173,11 +173,29 @@ interface ArcaApi {
         @Path("id") id: String,
     ): SupplyDto
 
+    /**
+     * Applies filters to retrieve a list of supplies.
+     *
+     * This endpoint receives a [FilterDto] containing the selected filters
+     * (such as category, status, workshop, etc.) and returns a list of supplies
+     * that match those criteria.
+     *
+     * @param params Data transfer object containing the filter values.
+     * @return A list of [SuppliesListDto] objects representing the filtered supplies.
+     */
     @POST("/supplies/filter")
     suspend fun filterSupplies(
         @Body params: FilterDto,
     ): List<SuppliesListDto>
 
+    /**
+     * Retrieves the available filter options for supplies.
+     *
+     * This endpoint returns all the necessary data to build the filters UI,
+     * such as categories, workshops, statuses, and other filter metadata.
+     *
+     * @return [GetFiltersDto] containing the available filter options.
+     */
     @GET("supplies/filter/data")
     suspend fun getFilterSupplies(): GetFiltersDto
 
@@ -289,9 +307,27 @@ interface ArcaApi {
         @Path("id") id: String,
     ): Response<Unit>
 
+    /**
+     * Retrieves the list of available disability categories for beneficiaries.
+     *
+     * This endpoint returns all disability types that can be assigned to a beneficiary.
+     * It is commonly used to populate dropdowns or filter options in the UI.
+     *
+     * @return [GetBeneficiariesDisabilitiesDto] containing the list of disability categories.
+     */
     @GET("beneficiary/categories")
     suspend fun getDisabilities(): GetBeneficiariesDisabilitiesDto
 
+    /**
+     * Applies filters to retrieve a list of beneficiaries.
+     *
+     * This endpoint receives a [FilterDto] with the selected filtering criteria
+     * (such as name, workshop, disability, status, or other parameters).
+     * It returns a list of beneficiaries that match the filter conditions.
+     *
+     * @param params Data transfer object containing the filter values.
+     * @return A list of [BeneficiaryDto] objects representing the filtered beneficiaries.
+     */
     @POST("beneficiary/filter")
     suspend fun filterBeneficiaries(
         @Body params: FilterDto,
@@ -514,12 +550,12 @@ interface ArcaApi {
     @POST("upload")
     @Multipart
     suspend fun uploadWorkshopImage(
-        @Part image: MultipartBody.Part
+        @Part image: MultipartBody.Part,
     ): UploadResponse
 
     @GET("attendance")
     suspend fun getAttendanceByUser(
-        @Query("userId") userId: String
+        @Query("userId") userId: String,
     ): List<AttendanceDto>
 
     /**

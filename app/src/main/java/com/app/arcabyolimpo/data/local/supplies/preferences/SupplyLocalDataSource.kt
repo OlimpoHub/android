@@ -9,6 +9,9 @@ import com.app.arcabyolimpo.domain.model.supplies.Batch
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * Local data source for caching supplies.
+ */
 @Singleton
 class SupplyLocalDataSource @Inject constructor(
     private val preferences: SupplyPreferences
