@@ -48,6 +48,19 @@ class ScanQrViewModel
         private val _uiState = MutableStateFlow(ScanQrUiState())
         val uiState: StateFlow<ScanQrUiState> = _uiState.asStateFlow()
 
+        /**
+         * Sends the scanned QR data to the backend through [PostScanQrUseCase].
+         *
+         * ### Behavior:
+         * - Emits **Result.Loading** → shows loading indicator.
+         * - Emits **Result.Success** → stores backend message in UI state.
+         * - Emits **Result.Error** → stores error message and stops loading.
+         *
+         * This function is typically triggered immediately after decoding
+         * a valid QR code.
+         *
+         * @param context Android context required for decoding and permissions.
+         */
         fun postScanQr(context: Context) {
             viewModelScope.launch {
                 postScanQrUseCase(context).collect { result ->
@@ -75,6 +88,18 @@ class ScanQrViewModel
             }
         }
 
+        /**
+         * Starts the camera preview and prepares the system for QR detection.
+         *
+         * Delegates to the use case which configures CameraX with the provided:
+         * - [PreviewView] for rendering the camera feed,
+         * - [LifecycleOwner] to handle binding/unbinding.
+         *
+         * Called when the user navigates to the scanning screen.
+         *
+         * @param previewView Camera feed preview container.
+         * @param lifecycleOwner Owner controlling the camera lifecycle.
+         */
         fun startCamera(
             previewView: PreviewView,
             lifecycleOwner: LifecycleOwner,
@@ -84,18 +109,42 @@ class ScanQrViewModel
             }
         }
 
+        /**
+         * Stops camera operations and prevents additional QR reads.
+         *
+         * Useful when:
+         * - leaving the screen,
+         * - a scan has been successfully processed,
+         * - preventing duplicate scans.
+         */
         fun stopScanning() {
             viewModelScope.launch {
                 postScanQrUseCase.stopScanning()
             }
         }
 
+        /**
+         * Clears both the `response` and `error` from UI state.
+         *
+         * Used when the screen is reset, dismissed, or when the
+         * UI should return to a neutral state.
+         */
         fun clearScanResult() {
             _uiState.update {
                 it.copy(response = null, error = null)
             }
         }
 
+        /**
+         * Consumes only the stored `response` to prevent showing it again.
+         *
+         * Ideal for one-time events such as:
+         * - dialog messages,
+         * - toast notifications,
+         * - navigation triggers.
+         *
+         * The error remains intact unless explicitly cleared.
+         */
         fun consumeResponse() {
             _uiState.update { it.copy(response = null) }
         }

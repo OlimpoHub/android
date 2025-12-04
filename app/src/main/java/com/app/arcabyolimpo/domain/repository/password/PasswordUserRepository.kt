@@ -16,10 +16,29 @@ import com.app.arcabyolimpo.domain.model.password.VerifyToken
  */
 
 interface PasswordUserRepository {
+    /**
+     * Sends a password recovery request for the specified email.
+     *
+     * @param email The email associated with the user requesting password recovery.
+     * @return A success message returned by the backend (e.g., confirmation that an email was sent).
+     */
     suspend fun postRecoverPassword(email: String): String
 
+    /**
+     * Validates a password reset token by sending it to the backend.
+     *
+     * @param token The unique reset token received by the user.
+     * @return A [VerifyToken] model containing validation details (validity, user info, etc.).
+     */
     suspend fun getVerifyToken(token: String): VerifyToken
 
+    /**
+     * Submits a request to update the user's password.
+     *
+     * @param email The email of the user whose password is being updated.
+     * @param password The new password to set for the user.
+     * @return An [UpdatePassword] model containing the backend response message.
+     */
     suspend fun postUpdatePassword(
         email: String,
         password: String,
