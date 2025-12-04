@@ -200,7 +200,7 @@ object AppModule {
             api = api,
             preferences = preferences,
             detailPreferences = detailPreferences,
-            context = context
+            context = context,
         )
 
     /**
@@ -284,15 +284,9 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideUploadRepository(
-        uploadRepositoryImpl: UploadRepositoryImpl
-    ): UploadRepository {
-        return uploadRepositoryImpl
-    }
+    fun provideUploadRepository(uploadRepositoryImpl: UploadRepositoryImpl): UploadRepository = uploadRepositoryImpl
 
     @Provides
     @Singleton
-    fun provideAttendanceRepository(api: ArcaApi): AttendanceRepository =
-        AttendanceRepositoryImpl(api)
-
+    fun provideAttendanceRepository(api: ArcaApi): AttendanceRepository = AttendanceRepositoryImpl(api)
 }

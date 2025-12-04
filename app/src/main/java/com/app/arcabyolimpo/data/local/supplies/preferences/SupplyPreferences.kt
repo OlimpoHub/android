@@ -10,6 +10,10 @@ import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import javax.inject.Inject
 
+/**
+ * Preferences for caching supplies.
+ * Controlls the way the data is stored wether online or local
+ */
 class SupplyPreferences @Inject constructor(context: Context) {
     private val prefs: SharedPreferences = context.getSharedPreferences(
         SupplyConstants.PREFS_NAME,
@@ -21,7 +25,9 @@ class SupplyPreferences @Inject constructor(context: Context) {
         private const val TAG = "SupplyPreferences"
     }
 
-    // Existing methods for supplies list...
+    /**
+     * Saves a list of supplies to cache.
+     */
     fun saveSuppliesList(supplies: List<CachedSupply>) {
         try {
             val json = gson.toJson(supplies)
@@ -39,6 +45,11 @@ class SupplyPreferences @Inject constructor(context: Context) {
         }
     }
 
+    /**
+     * Retrieves a list of cached supplies.
+     *
+     * @return List of cached supplies or null if not found
+     */
     fun getSuppliesList(): List<CachedSupply>? {
         val json = prefs.getString(SupplyConstants.KEY_SUPPLIES_LIST, null)
 
@@ -66,6 +77,8 @@ class SupplyPreferences @Inject constructor(context: Context) {
 
     /**
      * Saves a single supply detail to cache.
+     *
+     * @param supplyDetail The supply detail to save
      */
     fun saveSupplyDetail(supplyDetail: CachedSupplyDetail) {
         try {
@@ -88,6 +101,9 @@ class SupplyPreferences @Inject constructor(context: Context) {
 
     /**
      * Retrieves a single supply detail from cache.
+     *
+     * @param supplyId The ID of the supply to retrieve
+     * @return The cached supply detail or null if not found
      */
     fun getSupplyDetail(supplyId: String): CachedSupplyDetail? {
         val key = SupplyConstants.KEY_SUPPLY_DETAIL_PREFIX + supplyId
@@ -114,6 +130,9 @@ class SupplyPreferences @Inject constructor(context: Context) {
 
     /**
      * Checks if a specific supply detail cache is valid.
+     *
+     * @param supplyId The ID of the supply to check
+     * @return true if the cache is valid, false otherwise
      */
     fun isSupplyDetailCacheValid(supplyId: String): Boolean {
         val timeKey = SupplyConstants.KEY_SUPPLY_DETAIL_TIME_PREFIX + supplyId
@@ -134,6 +153,9 @@ class SupplyPreferences @Inject constructor(context: Context) {
 
     /**
      * Checks if a specific supply detail is cached.
+     *
+     * @param supplyId The ID of the supply to check
+     * @return true if the supply detail is cached, false otherwise
      */
     fun hasSupplyDetailCache(supplyId: String): Boolean {
         val key = SupplyConstants.KEY_SUPPLY_DETAIL_PREFIX + supplyId
@@ -143,6 +165,8 @@ class SupplyPreferences @Inject constructor(context: Context) {
 
     /**
      * Clears a specific supply detail from cache.
+     *
+     * @param supplyId The ID of the supply to clear
      */
     fun clearSupplyDetail(supplyId: String) {
         val key = SupplyConstants.KEY_SUPPLY_DETAIL_PREFIX + supplyId
@@ -155,11 +179,20 @@ class SupplyPreferences @Inject constructor(context: Context) {
         Log.d(TAG, "Cleared cache for supply ID: $supplyId")
     }
 
-    // Existing methods...
+    /**
+     * Saves the timestamp when the cache was last updated.
+     *
+     * @param timestamp The timestamp to save
+     */
     fun getLastCacheTime(): Long {
         return prefs.getLong(SupplyConstants.KEY_LAST_CACHE_TIME, 0L)
     }
 
+    /**
+     * Checks if the cache is still valid.
+     *
+     * @return true if the cache is valid, false otherwise
+     */
     fun isCacheValid(): Boolean {
         val lastCacheTime = getLastCacheTime()
         if (lastCacheTime == 0L) {
@@ -175,6 +208,11 @@ class SupplyPreferences @Inject constructor(context: Context) {
         return isValid
     }
 
+    /**
+     * Checks if the cache contains data.
+     *
+     * @return true if the cache contains data, false otherwise
+     */
     fun hasCachedData(): Boolean {
         val hasTimestamp = getLastCacheTime() > 0L
         val hasList = getSuppliesList() != null
@@ -184,11 +222,19 @@ class SupplyPreferences @Inject constructor(context: Context) {
         return hasData
     }
 
+    /**
+     * Deletes the cache.
+     */
     fun clearCache() {
         prefs.edit().clear().apply()
         Log.d(TAG, "Cache cleared")
     }
 
+    /**
+     * Returns the cache duration
+     *
+     * @return time of the cache
+     */
     fun getCacheAge(): Long {
         val lastCacheTime = getLastCacheTime()
         if (lastCacheTime == 0L) return -1L

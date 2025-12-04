@@ -60,20 +60,25 @@ interface SupplyRepository {
     suspend fun getSupplyBatchOne(id: String): RegisterSupplyBatch
 
     /**
-     * Retrieves a list of supplies filtered according to the provided parameters.
+     * Filters supplies based on the provided criteria.
      *
-     * @param params The filter configuration, including selected filter values and sort order.
-     * @return A list of [Supply] objects that match the filtering criteria.
+     * This function takes a [FilterDto] containing the selected filter parameters
+     * (such as category, workshop, status, or search text) and returns a list
+     * of domain model [Supply] objects that match those conditions.
+     *
+     * @param params Object containing the filter values.
+     * @return A list of filtered [Supply] items.
      */
     suspend fun filterSupply(params: FilterDto): List<Supply>
 
     /**
-     * Fetches all available filter metadata for supplies.
+     * Retrieves all metadata required to build the supply filter UI.
      *
-     * This includes the possible values that can be used to build
-     * the filter UI (e.g., acquisition types, expiration options, etc.).
+     * This function fetches the available filter options (such as categories,
+     * workshops, statuses, or other related data) and maps them into the
+     * domain model [FilterData].
      *
-     * @return A [FilterData] object containing the available filter options.
+     * @return [FilterData] containing all available filter configuration values.
      */
     suspend fun getFilterData(): FilterData
 
