@@ -1,6 +1,7 @@
 ## [0.2.0] - 03/12/2025
 ### Added
 - Delete disability
+- Icon
 
 ### Fixed
 - Disability's details' routes
