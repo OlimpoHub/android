@@ -36,8 +36,27 @@ interface SupplyRepository {
      */
     suspend fun getSupplyBatchOne(id: String): RegisterSupplyBatch
 
+    /**
+     * Filters supplies based on the provided criteria.
+     *
+     * This function takes a [FilterDto] containing the selected filter parameters
+     * (such as category, workshop, status, or search text) and returns a list
+     * of domain model [Supply] objects that match those conditions.
+     *
+     * @param params Object containing the filter values.
+     * @return A list of filtered [Supply] items.
+     */
     suspend fun filterSupply(params: FilterDto): List<Supply>
 
+    /**
+     * Retrieves all metadata required to build the supply filter UI.
+     *
+     * This function fetches the available filter options (such as categories,
+     * workshops, statuses, or other related data) and maps them into the
+     * domain model [FilterData].
+     *
+     * @return [FilterData] containing all available filter configuration values.
+     */
     suspend fun getFilterData(): FilterData
 
     suspend fun getAcquisitionTypes(): List<Acquisition>
@@ -49,7 +68,10 @@ interface SupplyRepository {
      * @param expirationDate The expiration date of the batch to delete. This value uniquely identifies the batch.
      *
      */
-    suspend fun deleteSupplyBatch(idSupply: String, expirationDate: String)
+    suspend fun deleteSupplyBatch(
+        idSupply: String,
+        expirationDate: String,
+    )
 
     /**
      * Retrieves a list of supply batches filtered according to the provided parameters.
@@ -58,7 +80,10 @@ interface SupplyRepository {
      * @param params The filter configuration, including selected filter values and sort order.
      * @return A list of batches that match the filtering criteria.
      */
-    suspend fun filterSupplyBatch(supplyId: String, params: FilterDto): List<Batch>
+    suspend fun filterSupplyBatch(
+        supplyId: String,
+        params: FilterDto,
+    ): List<Batch>
 
     /**
      * Fetches all available filter metadata for supply batches.
@@ -96,10 +121,10 @@ interface SupplyRepository {
         expirationDate: String,
         idSupply: String,
     ): SupplyBatchList
-    
+
     suspend fun updateSupply(
         id: String,
         supply: SupplyAdd,
-        image: Uri?
+        image: Uri?,
     ): Result<Unit>
 }
