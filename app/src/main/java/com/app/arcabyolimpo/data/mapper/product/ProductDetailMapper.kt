@@ -7,8 +7,8 @@ import com.app.arcabyolimpo.domain.model.product.ProductDetail
  * Extension function to map a ProductDto (Data Layer) into a Product (Domain Layer).
  * * Note: Assumes ProductDto includes all necessary fields (e.g., idProduct) from the API response.
  */
-fun ProductDetailDto.toDetailDomain(): ProductDetail {
-    return ProductDetail(
+fun ProductDetailDto.toDetailDomain(): ProductDetail =
+    ProductDetail(
         idProduct = idProduct,
         name = this.name,
         unitaryPrice = this.unitaryPrice,
@@ -18,4 +18,3 @@ fun ProductDetailDto.toDetailDomain(): ProductDetail {
         categoryDescription = this.categoryDescription,
         image = this.image,
     )
-}

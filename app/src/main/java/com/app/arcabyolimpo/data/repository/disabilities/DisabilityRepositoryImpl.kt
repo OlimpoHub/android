@@ -1,8 +1,8 @@
 package com.app.arcabyolimpo.data.repository.disabilities
 
 import android.util.Log
-import com.app.arcabyolimpo.data.mapper.disabilities.toRegisterDto
 import com.app.arcabyolimpo.data.mapper.disabilities.toDomain
+import com.app.arcabyolimpo.data.mapper.disabilities.toRegisterDto
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.dto.workshops.DeleteWorkshopDto
 import com.app.arcabyolimpo.domain.model.disabilities.Disability
@@ -54,6 +54,14 @@ class DisabilityRepositoryImpl
             }
         }
 
+        /**
+         * Creates a new disability entry via the API.
+         *
+         * It converts the domain model into a Data Transfer Object (DTO) suitable for
+         * the network request.
+         *
+         * @param disability The [Disability] domain model to be registered.
+         */
         override suspend fun registerDisability(disability: Disability) {
             val dto = disability.toRegisterDto()
             api.registerDisability(dto)
@@ -88,4 +96,3 @@ class DisabilityRepositoryImpl
             }
         }
     }
-    

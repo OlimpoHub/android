@@ -25,8 +25,8 @@ import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailSc
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.ModifyBeneficiaryScreen
 import com.app.arcabyolimpo.presentation.screens.capacitations.DisabilitiesListScreen
-import com.app.arcabyolimpo.presentation.screens.capacitations.disabilitiesRegister.DisabilitiesRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.capacitations.DisabilityDetailScreen
+import com.app.arcabyolimpo.presentation.screens.capacitations.disabilitiesRegister.DisabilitiesRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.home.assistant.CollaboratorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.home.coordinator.CoordinatorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.home.scholar.ScholarHomeScreen
@@ -140,7 +140,7 @@ sealed class Screen(
 
     object AddNewBeneficiary : Screen("beneficiary/create")
 
-    object ModifyBeneficiary : Screen("beneficiary/update/{beneficiaryId}"){
+    object ModifyBeneficiary : Screen("beneficiary/update/{beneficiaryId}") {
         fun createRoute(beneficiaryId: String) = "beneficiary/update/$beneficiaryId"
     }
 
@@ -224,7 +224,7 @@ sealed class Screen(
  * @param navController The controller managing app navigation.
  * @param sessionManager Observes session state to handle automatic logout or token expiration.
  */
- 
+
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun ArcaNavGraph(
@@ -505,7 +505,6 @@ fun ArcaNavGraph(
             )
         }
 
-
         /**
          * Workshops List Screen.
          *
@@ -733,7 +732,7 @@ fun ArcaNavGraph(
                     navController.navigate(Screen.ModifyBeneficiary.createRoute(beneficiaryId))
                 },
                 viewModel = hiltViewModel(),
-                beneficiaryId = it.arguments?.getString("beneficiaryId") ?: ""
+                beneficiaryId = it.arguments?.getString("beneficiaryId") ?: "",
             )
         }
 
@@ -745,13 +744,12 @@ fun ArcaNavGraph(
         composable(
             route = Screen.ModifyBeneficiary.route,
             arguments = listOf(navArgument("beneficiaryId") { type = NavType.StringType }),
-
-            ){ backStackEntry ->
+        ) { backStackEntry ->
             val beneficiaryId = backStackEntry.arguments?.getString("beneficiaryId") ?: ""
             ModifyBeneficiaryScreen(
                 navController = navController,
                 viewModel = hiltViewModel(),
-                beneficiaryId = beneficiaryId
+                beneficiaryId = beneficiaryId,
             )
         }
 
@@ -774,6 +772,10 @@ fun ArcaNavGraph(
             )
         }
 
+        /*** The screen for registering a new disability.
+         * Navigates back to the previous screen on back click, and to the disabilities list
+         * screen upon successful creation.
+         */
         composable(Screen.DisabilitiesRegisterScreen.route) {
             DisabilitiesRegisterScreen(
                 onCreated = { navController.popBackStack() },
@@ -787,7 +789,7 @@ fun ArcaNavGraph(
          * Shows the details of a disability.
          */
         composable(
-            route = Screen.DisabilityDetail.route
+            route = Screen.DisabilityDetail.route,
         ) {
             DisabilityDetailScreen(
                 onBackClick = { navController.popBackStack() },

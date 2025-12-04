@@ -338,6 +338,14 @@ interface ArcaApi {
         @Path("idDisability") id: String,
     ): DisabilityDto
 
+    /**
+     * Creates a new disability entry in the system.
+     *
+     * This endpoint receives a [DisabilityRegisterDto] containing the name and
+     * description of the new disability to be added.
+     *
+     * @param requestBody The data transfer object with the disability's information.
+     */
     @POST("discapacity/add")
     suspend fun registerDisability(
         @Body requestBody: DisabilityRegisterDto,
@@ -376,35 +384,73 @@ interface ArcaApi {
         @Part imagenInsumo: MultipartBody.Part?,
     )
 
+    /**     * Retrieves a list of all product batches.
+     *
+     * @return A list of [ProductBatchDto] objects representing all available product batches.
+     */
     @GET("productBatch/")
     suspend fun getProductBatches(): List<ProductBatchDto>
 
+    /**
+     * Retrieves a single product batch by its unique identifier.
+     *
+     * @param id The unique ID of the product batch to fetch.
+     * @return The corresponding [ProductBatchDto].
+     */
     @GET("productBatch/{id}")
     suspend fun getProductBatch(
         @Path("id") id: String,
     ): ProductBatchDto
 
+    /**
+     * Creates a new product batch entry.
+     *
+     * @param batch A [ProductBatchRegisterDto] containing the data for the new batch.
+     */
     @POST("productBatch/")
     suspend fun addProductBatch(
         @Body batch: ProductBatchRegisterDto,
     )
 
+    /**
+     * Modifies an existing product batch.
+     *
+     * @param id The unique ID of the product batch to modify.
+     * @param batch A [ProductBatchModifyDto] containing the updated batch information.
+     */
     @PUT("productBatch/{id}")
     suspend fun modifyProductBatch(
         @Path("id") id: String,
         @Body batch: ProductBatchModifyDto,
     )
 
+    /**
+     * Searches for product batches that match a given search term.
+     *
+     * @param term The string to search for within product batch data.
+     * @return A list of matching [ProductBatchDto] objects.
+     */
     @GET("productBatch/search")
     suspend fun searchProductBatch(
         @Query("q") term: String,
     ): List<ProductBatchDto>
 
+    /**
+     * Filters the list of product batches based on a set of criteria.
+     *
+     * @param filters A [FilterDto] object containing the selected filter options.
+     * @return A filtered list of [ProductBatchDto] objects.
+     */
     @POST("productBatch/filter")
     suspend fun filterProductBatch(
         @Body filters: FilterDto,
     ): List<ProductBatchDto>
 
+    /**
+     * Deletes a product batch by its unique identifier.
+     *
+     * @param id The unique ID of the product batch to delete.
+     */
     @DELETE("productBatch/{id}")
     suspend fun deleteProductBatch(
         @Path("id") id: String,
@@ -514,12 +560,12 @@ interface ArcaApi {
     @POST("upload")
     @Multipart
     suspend fun uploadWorkshopImage(
-        @Part image: MultipartBody.Part
+        @Part image: MultipartBody.Part,
     ): UploadResponse
 
     @GET("attendance")
     suspend fun getAttendanceByUser(
-        @Query("userId") userId: String
+        @Query("userId") userId: String,
     ): List<AttendanceDto>
 
     /**

@@ -35,6 +35,20 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardInpu
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
 
+/**
+ * A Composable screen for registering a new disability.
+ *
+ * This screen provides a form with fields for the disability's name and its
+ * characteristics. It includes input validation and communicates with a ViewModel
+ * to handle the business logic of saving the data.
+ *
+ * @param onBackClick A callback function to be invoked when the user taps the back button,
+ *                    typically used for navigation.
+ * @param onCreated A callback function to be invoked upon the successful creation of a new
+ *                  disability, often used to navigate away from the screen.
+ * @param viewModel The ViewModel instance for this screen, provided by Hilt, which manages
+ *                  the UI state and registration logic.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable
