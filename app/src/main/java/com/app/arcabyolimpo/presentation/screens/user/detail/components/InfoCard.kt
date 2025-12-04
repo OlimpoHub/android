@@ -15,6 +15,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+/**
+ * Displays a labeled information card showing a single user attribute.
+ *
+ * This composable renders a card component designed to present user information
+ * in a clean, consistent format throughout the user detail screen. Each card
+ * displays a label (such as "Email" or "Phone") and its corresponding value,
+ * with appropriate typography hierarchy and spacing.
+ *
+ * The card uses a dark background matching the application's theme and includes
+ * subtle elevation for visual depth. It handles null values gracefully by only
+ * rendering the value text when data is available, preventing empty or "null"
+ * text from appearing in the UI.
+ *
+ * This component follows Material Design 3 principles and is reusable across
+ * different detail screens where similar information display patterns are needed.
+ *
+ * @param label The descriptive label for the information being displayed (e.g., "Email",
+ *              "Phone", "Career"). Should be concise and clearly indicate the type of
+ *              information shown in the value field.
+ * @param value The actual user information to display, or null if the information is
+ *              not available. When null, only the label is displayed, allowing the
+ *              UI to indicate missing data gracefully.
+ */
+
 @Composable
 fun InfoCard(label: String, value: String?) {
     Card(
