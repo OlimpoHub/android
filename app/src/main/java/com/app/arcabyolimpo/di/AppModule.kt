@@ -119,6 +119,24 @@ object AppModule {
         authPreferences: UserPreferences,
     ): UserRepository = UserRepositoryImpl(api, authPreferences)
 
+    /**
+     * Provides a singleton instance of [PasswordUserRepository] for dependency injection.
+     *
+     * This function initializes and returns the repository implementation responsible for
+     * all password-related operations, such as password recovery, token verification, and
+     * password registration or updates. Declaring it as a singleton ensures that a single,
+     * consistent instance of [PasswordUserRepositoryImpl] is shared across the entire
+     * application, reducing overhead and maintaining stable state throughout user flows.
+     *
+     * By exposing only the [PasswordUserRepository] interface, this provider function supports
+     * clean architectural boundaries and enables easier testing through mock or fake
+     * implementations. It also ensures flexibility—allowing the underlying implementation to
+     * be replaced without requiring changes to dependent components.
+     *
+     * @param api The [ArcaApi] instance used by the repository to perform secure network
+     *            operations related to authentication and password management.
+     * @return A singleton [PasswordUserRepository] instance using the provided API client.
+     */
     @Provides
     @Singleton
     fun providePasswordUserRepository(api: ArcaApi): PasswordUserRepository = PasswordUserRepositoryImpl(api)
@@ -309,6 +327,25 @@ object AppModule {
             preferences = preferences,
         )
 
+    /**
+     * Provides a singleton instance of [QrRepository] for dependency injection.
+     *
+     * This provider function constructs the repository implementation responsible
+     * for all QR-related operations, such as scanning, validating, and generating
+     * QR codes. By marking this provider as a singleton, the application ensures
+     * that a single shared instance of [QrRepositoryImpl] is used throughout the
+     * entire app lifecycle, promoting consistency and resource efficiency.
+     *
+     * The abstraction via the [QrRepository] interface allows for clean separation
+     * between the domain layer and the concrete implementation. This design supports
+     * improved testability (e.g., providing mock implementations during testing) and
+     * facilitates the ability to change or update the underlying implementation
+     * without impacting dependent components.
+     *
+     * @param api The [ArcaApi] instance used internally by the QR repository to execute
+     *            network requests required for scanning and validation workflows.
+     * @return A singleton [QrRepository] instance initialized with the provided API.
+     */
     @Provides
     @Singleton
     fun provideQrRepository(api: ArcaApi): QrRepository = QrRepositoryImpl(api)
