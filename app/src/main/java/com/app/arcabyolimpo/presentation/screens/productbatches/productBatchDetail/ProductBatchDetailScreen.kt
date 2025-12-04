@@ -253,7 +253,7 @@ fun ProductBatchDetailScreen(
 }
 
 /**
- * Helper Composable para el "badge" de estatus (ej. "Caducado")
+ * Helper Composable
  */
 @Suppress("ktlint:standard:function-naming")
 @Composable
