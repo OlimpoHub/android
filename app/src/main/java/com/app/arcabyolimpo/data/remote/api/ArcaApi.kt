@@ -73,31 +73,94 @@ import retrofit2.http.Query
  * network communication with the backend API service.
  */
 interface ArcaApi {
+    /**
+     * Authenticates a user using their email and password credentials.
+     *
+     * This endpoint receives a [LoginRequestDto] containing user authentication
+     * data. The backend verifies the credentials and, if valid, returns an access
+     * token, refresh token, and user details wrapped in a [LoginResponseDto].
+     *
+     * @param request Data transfer object containing the email and password
+     * required for authentication.
+     * @return [LoginResponseDto] containing authentication tokens and user information.
+     */
     @POST("user/login")
     suspend fun login(
         @Body request: LoginRequestDto,
     ): LoginResponseDto
 
+    /**
+     * Refreshes an expired or soon-to-expire access token.
+     *
+     * This endpoint accepts a [RefreshRequestDto] containing a valid refresh token.
+     * If the refresh token is still valid, the server issues a new access token
+     * and refresh token inside a [RefreshResponseDto].
+     *
+     * @param request Data transfer object containing the refresh token issued
+     * during the initial login process.
+     * @return [RefreshResponseDto] containing the newly generated tokens.
+     */
     @POST("user/refresh")
     suspend fun refresh(
         @Body request: RefreshRequestDto,
     ): RefreshResponseDto
 
+    /**
+     * Retrieves detailed information for a specific user.
+     *
+     * This endpoint receives the user ID as a path parameter and returns a list
+     * of [UserDto] objects associated with that ID. Although typically a single user
+     * is returned, the backend is designed to respond with a list.
+     *
+     * @param id Unique identifier of the user being requested.
+     * @return A list of [UserDto] objects containing user information.
+     */
     @GET("user/{id}")
     suspend fun getUserById(
         @Path("id") id: String,
     ): List<UserDto>
 
+    /**
+     * Registers a new user in the system.
+     *
+     * This endpoint receives a [RegisterUserDto] object containing the personal
+     * and account details of the new user. The backend processes and stores the
+     * information, returning a [UserDto] representing the newly created user.
+     *
+     * @param user Data transfer object containing the new user's registration details.
+     * @return [UserDto] containing the stored user information after registration.
+     */
     @POST("user/register")
     suspend fun registerUser(
         @Body user: RegisterUserDto,
     ): UserDto
 
+    /**
+     * Updates the information of an existing user.
+     *
+     * The endpoint receives an [UpdateUserDto] with fields that should be updated
+     * for the specified user. The backend applies the changes and returns the
+     * updated user information as a [UserDto].
+     *
+     * @param user Data transfer object containing updated user fields.
+     * @return [UserDto] representing the user after the update operation.
+     */
     @POST("user/update")
     suspend fun updateUser(
         @Body user: UpdateUserDto,
     ): UserDto
 
+    /**
+     * Deletes a user identified by the provided ID.
+     *
+     * This endpoint receives the user ID as a path parameter and removes the
+     * corresponding record from the backend database. The server responds with
+     * a generic key-value [Map] describing the operation status, which may include
+     * fields such as `"success"`, `"message"`, or `"deletedId"`.
+     *
+     * @param id Unique identifier of the user to be deleted.
+     * @return A generic [Map] containing metadata about the deletion result.
+     */
     @POST("user/delete/{id}")
     suspend fun deleteUser(
         @Path("id") id: String,
