@@ -43,6 +43,29 @@ import com.app.arcabyolimpo.ui.theme.DangerGray
 import com.app.arcabyolimpo.ui.theme.ErrorRed
 import com.app.arcabyolimpo.ui.theme.White
 
+/**
+ * Displays a product card with image, details, and an action button in a Material Design layout.
+ *
+ * This composable renders a comprehensive product card that includes a circular product image (or
+ * placeholder), product name, workshop association, pricing information, availability status, and
+ * a view button for navigation. The card features a press animation that scales down slightly when
+ * touched, providing visual feedback to users.
+ *
+ * The layout is organized horizontally with the product image on the left, product details in the
+ * center taking up available space, and a view button aligned to the right. A divider line appears
+ * at the bottom of the card to visually separate it from other items in a list.
+ *
+ * @param product The Product domain model containing all information to display, including name,
+ *                imageUrl (optional), unitaryPrice, workshopName (optional), and available status.
+ * @param onClick Callback function invoked when the view button is clicked. Typically used to
+ *                navigate to the product detail screen or trigger a product-related action.
+ * @param modifier Optional Modifier for customizing the card's layout, padding, or other visual
+ *                 properties. Applied to the root Card composable. Defaults to Modifier if not provided.
+ *
+ * @see Product The domain model representing product data
+ * @see ViewButton The action button component used for navigation
+ *
+ */
 @Composable
 fun ProductCard(
     product: Product,
