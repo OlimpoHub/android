@@ -182,7 +182,22 @@ fun UserDetailContent(
     }
 }
 
-// Helper function to format date
+/**
+ * Formats an ISO 8601 date string to a human-readable DD/MM/YYYY format.
+ *
+ * This helper function transforms date strings from the backend's ISO format
+ * (YYYY-MM-DDTHH:mm:ss or YYYY-MM-DD) into a more user-friendly format suitable
+ * for display in the UI. It handles the common ISO timestamp format by extracting
+ * only the date portion before the 'T' separator.
+ *
+ * The function includes error handling to gracefully manage malformed date strings
+ * by returning the original input, ensuring the UI doesn't break due to unexpected
+ * date formats.
+ *
+ * @param dateString The ISO 8601 formatted date string to format, or null if no date is available.
+ * @return A formatted date string in DD/MM/YYYY format, the original string if formatting
+ *         fails, or null if the input was null.
+ */
 fun formatDate(dateString: String?): String? =
     try {
         val parts = dateString?.split("T")[0]?.split("-")
@@ -191,7 +206,22 @@ fun formatDate(dateString: String?): String? =
         dateString
     }
 
-// Helper function to get role name from ID
+/**
+ * Converts a role ID to its corresponding human-readable Spanish name.
+ *
+ * This helper function maps the numeric role identifiers used in the backend
+ * to user-friendly role names displayed throughout the UI. It provides a centralized
+ * location for role name mapping, ensuring consistency across the application.
+ *
+ * The function supports the three main role types in the system:
+ * - Role ID "1": Coordinador (Coordinator) - Administrative oversight role
+ * - Role ID "2": Asistente (Assistant) - Support staff role
+ * - Role ID "3": Becario (Volunteer/Intern) - Volunteer or intern role with attendance tracking
+ *
+ * @param roleId The role identifier string from the backend, or null if unavailable.
+ * @return The Spanish name of the role, or "Desconocido" (Unknown) if the role ID
+ *         doesn't match any known roles or is null.
+ */
 fun getRoleName(roleId: String?): String =
     when (roleId) {
         "1" -> "Coordinador"
