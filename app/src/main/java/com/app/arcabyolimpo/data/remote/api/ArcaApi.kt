@@ -173,11 +173,29 @@ interface ArcaApi {
         @Path("id") id: String,
     ): SupplyDto
 
+    /**
+     * Applies filters to retrieve a list of supplies.
+     *
+     * This endpoint receives a [FilterDto] containing the selected filters
+     * (such as category, status, workshop, etc.) and returns a list of supplies
+     * that match those criteria.
+     *
+     * @param params Data transfer object containing the filter values.
+     * @return A list of [SuppliesListDto] objects representing the filtered supplies.
+     */
     @POST("/supplies/filter")
     suspend fun filterSupplies(
         @Body params: FilterDto,
     ): List<SuppliesListDto>
 
+    /**
+     * Retrieves the available filter options for supplies.
+     *
+     * This endpoint returns all the necessary data to build the filters UI,
+     * such as categories, workshops, statuses, and other filter metadata.
+     *
+     * @return [GetFiltersDto] containing the available filter options.
+     */
     @GET("supplies/filter/data")
     suspend fun getFilterSupplies(): GetFiltersDto
 
@@ -289,9 +307,27 @@ interface ArcaApi {
         @Path("id") id: String,
     ): Response<Unit>
 
+    /**
+     * Retrieves the list of available disability categories for beneficiaries.
+     *
+     * This endpoint returns all disability types that can be assigned to a beneficiary.
+     * It is commonly used to populate dropdowns or filter options in the UI.
+     *
+     * @return [GetBeneficiariesDisabilitiesDto] containing the list of disability categories.
+     */
     @GET("beneficiary/categories")
     suspend fun getDisabilities(): GetBeneficiariesDisabilitiesDto
 
+    /**
+     * Applies filters to retrieve a list of beneficiaries.
+     *
+     * This endpoint receives a [FilterDto] with the selected filtering criteria
+     * (such as name, workshop, disability, status, or other parameters).
+     * It returns a list of beneficiaries that match the filter conditions.
+     *
+     * @param params Data transfer object containing the filter values.
+     * @return A list of [BeneficiaryDto] objects representing the filtered beneficiaries.
+     */
     @POST("beneficiary/filter")
     suspend fun filterBeneficiaries(
         @Body params: FilterDto,
@@ -474,6 +510,22 @@ interface ArcaApi {
         @Path("idProduct") idProduct: String,
     ): Response<Unit>
 
+    /**
+     * Retrieves all products from the API.
+     *
+     * This endpoint fetches the complete list of products available in the system,
+     * returning them as data transfer objects that will be mapped to domain models
+     * by the repository layer. The method performs a GET request to the "product/"
+     * endpoint and suspends execution until the network response is received.
+     *
+     * The returned list contains basic product information suitable for product
+     * listings and overview screens. Each [ProductDto] includes essential fields
+     * such as name, price, availability, and associated workshop information.
+     *
+     * @return A [List] of [ProductDto] objects representing all products returned by the API.
+     * @throws HttpException if the API returns an error response (4xx or 5xx status codes).
+     * @throws IOException if a network error occurs during the request.
+     */
     @GET("product/")
     suspend fun getProducts(): List<ProductDto>
 
@@ -482,6 +534,26 @@ interface ArcaApi {
         @Query("q") query: String,
     ): List<ProductDto>
 
+    /**
+     * Retrieves a specific product by its unique identifier from the API.
+     *
+     * This endpoint fetches detailed information for a single product by querying
+     * the "product/{id}" endpoint with the provided product ID. The method performs
+     * a GET request and suspends execution until the network response is received.
+     *
+     * The method returns null if no product is found with the specified ID, allowing
+     * the calling code to handle the "not found" scenario gracefully without throwing
+     * an exception. This design pattern enables more flexible error handling in the
+     * repository layer.
+     *
+     * @param productId The unique identifier of the product to retrieve, injected into
+     *                  the URL path as the "id" parameter.
+     * @return A [ProductDto] object containing the product's information if found,
+     *         or null if no product exists with the specified ID.
+     * @throws HttpException if the API returns an error response other than 404
+     *         (e.g., 401 Unauthorized, 500 Internal Server Error).
+     * @throws IOException if a network error occurs during the request.
+     */
     @GET("product/{id}")
     suspend fun getProductById(
         @Path("id") productId: String,

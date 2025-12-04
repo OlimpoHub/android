@@ -4,8 +4,20 @@ import com.app.arcabyolimpo.data.remote.dto.product.ProductDetailDto
 import com.app.arcabyolimpo.domain.model.product.ProductDetail
 
 /**
- * Extension function to map a ProductDto (Data Layer) into a Product (Domain Layer).
- * * Note: Assumes ProductDto includes all necessary fields (e.g., idProduct) from the API response.
+ * Maps a [ProductDetailDto] from the data layer to a [ProductDetail] domain model.
+ *
+ * This mapper transforms detailed product information received from the API into
+ * the domain representation used throughout the application's business logic layer.
+ * It includes enriched information such as workshop and category names that are
+ * typically returned by joined queries or expanded API responses.
+ *
+ * The mapper assumes that the [ProductDetailDto] contains all necessary fields
+ * from the API response, including the product identifier and related entity names.
+ * This is typically used when fetching a single product with full details rather
+ * than a list of products with minimal information.
+ *
+ * @receiver The [ProductDetailDto] instance received from the API with complete product information.
+ * @return A [ProductDetail] domain model containing the mapped product information ready for business logic processing.
  */
 fun ProductDetailDto.toDetailDomain(): ProductDetail =
     ProductDetail(

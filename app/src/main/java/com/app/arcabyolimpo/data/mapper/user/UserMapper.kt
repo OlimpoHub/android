@@ -33,7 +33,18 @@ fun UserDto.toDomain(): UserDto =
         foto = foto,
     )
 
-// Domain DTO → Update DTO (for sending to API)
+/**
+ * Maps a domain [UserDto] to a data transfer [UserDto] suitable for API communication.
+ *
+ * This mapper prepares user data for transmission to the backend by applying
+ * necessary transformations such as default values for optional fields, date
+ * formatting for backend compatibility, and handling blank strings. It ensures
+ * that null or blank values are properly converted to default values expected
+ * by the API.
+ *
+ * @receiver The domain [UserDto] instance to be transformed.
+ * @return A [UserDto] formatted for API communication with applied defaults and formatting.
+ */
 fun UserDto.toDto(): UserDto {
     return UserDto(
         idUsuario = idUsuario ?: "0",
@@ -53,7 +64,18 @@ fun UserDto.toDto(): UserDto {
     )
 }
 
-// Domain DTO → Register DTO (for registration)
+/**
+ * Maps a domain [UserDto] to a [RegisterUserDto] for user registration requests.
+ *
+ * This mapper transforms the general-purpose user domain model into the specific
+ * structure required by the registration endpoint. It handles field name mappings
+ * between domain and API conventions (e.g., "nombre" to "name"), applies default
+ * values for required fields, and ensures date formatting meets backend requirements.
+ * Blank optional fields are converted to empty strings as expected by the registration API.
+ *
+ * @receiver The domain [UserDto] instance containing the user information to register.
+ * @return A [RegisterUserDto] properly formatted for the registration API endpoint.
+ */
 fun UserDto.toRegisterDto(): RegisterUserDto {
     return RegisterUserDto(
         roleId = idRol ?: "",
@@ -72,6 +94,18 @@ fun UserDto.toRegisterDto(): RegisterUserDto {
     )
 }
 
+/**
+ * Maps a domain [UserDto] to an [UpdateUserDto] for user update requests.
+ *
+ * This mapper transforms the general-purpose user domain model into the specific
+ * structure required by the update endpoint. It includes the user ID as a required
+ * field and handles all field mappings between domain and API conventions. Similar
+ * to the registration mapper, it applies default values, date formatting, and
+ * converts blank optional fields appropriately for the update API contract.
+ *
+ * @receiver The domain [UserDto] instance containing the updated user information.
+ * @return An [UpdateUserDto] properly formatted for the update API endpoint.
+ */
 fun UserDto.toUpdateDto(): UpdateUserDto {
     return UpdateUserDto(
         id = this.idUsuario ?: "",
@@ -92,7 +126,22 @@ fun UserDto.toUpdateDto(): UpdateUserDto {
 }
 
 
-// Helper function for date formatting
+/**
+ * Formats a date string to ensure backend compatibility.
+ *
+ * This helper function standardizes date formatting by handling multiple input
+ * formats and converting them to the YYYY-MM-DD format expected by the backend.
+ * It handles three scenarios:
+ * 1. Dates already in YYYY-MM-DD format (returned as-is)
+ * 2. ISO 8601 timestamps with time component (extracts date portion before 'T')
+ * 3. Other formats (returned as-is, relying on backend validation)
+ *
+ * If the input is null, blank, or parsing fails, an empty string is returned
+ * to allow the backend to handle the missing date according to its validation rules.
+ *
+ * @param dateString The date string to format, potentially in various formats.
+ * @return A formatted date string in YYYY-MM-DD format, or an empty string if formatting fails.
+ */
 private fun formatDateForBackend(dateString: String?): String {
     if (dateString.isNullOrBlank()) return ""
 

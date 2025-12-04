@@ -258,6 +258,24 @@ object AppModule {
     @Singleton
     fun provDisabilityRepository(api: ArcaApi): DisabilityRepository = DisabilityRepositoryImpl(api)
 
+    /**
+     * Provides a singleton instance of [UsersRepository] for dependency injection.
+     *
+     * This provider function creates and configures the repository implementation
+     * that handles all user-related data operations. By declaring it as a singleton,
+     * the same repository instance is shared across the entire application lifecycle,
+     * ensuring consistent state management and efficient resource usage.
+     *
+     * The function abstracts the concrete implementation ([UsersRepositoryImpl]) behind
+     * the repository interface, allowing the application to depend on the abstraction
+     * rather than the implementation. This approach facilitates easier testing through
+     * mock implementations and provides flexibility to change the underlying implementation
+     * without affecting dependent code.
+     *
+     * @param api The [ArcaApi] instance used by the repository to perform network requests.
+     *            This dependency is automatically provided by the dependency injection framework.
+     * @return A singleton [UsersRepository] instance configured with the provided API client.
+     */
     @Provides
     @Singleton
     fun provideUsersRepository(api: ArcaApi): UsersRepository = UsersRepositoryImpl(api)
