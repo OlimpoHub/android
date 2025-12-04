@@ -15,12 +15,16 @@ import com.app.arcabyolimpo.domain.model.product.ProductDetail
 import com.app.arcabyolimpo.domain.model.product.ProductUpdate
 import com.app.arcabyolimpo.domain.repository.product.ProductRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.HttpException
+import java.io.IOException
+import java.net.URL
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -216,26 +220,38 @@ class ProductRepositoryImpl
             product: ProductUpdate,
         ): Result<Unit> =
             try {
-                val imagePart =
-                    product.image?.let {
-                        val input = context.contentResolver.openInputStream(it)
-                        val bytes = input?.readBytes()
-                        input?.close()
-
-                        if (bytes != null) {
-                            val requestFile =
-                                bytes.toRequestBody(
-                                    context.contentResolver.getType(it)?.toMediaTypeOrNull(),
-                                )
-                            MultipartBody.Part.createFormData(
-                                "image",
-                                "image.jpg",
-                                requestFile,
-                            )
-                        } else {
-                            null
+                val imagePart = product.image?.let { uri ->
+                    val bytes = if (uri.toString().startsWith("http")) {
+                        withContext(Dispatchers.IO) {
+                            try {
+                                URL(uri.toString()).openStream().use { it.readBytes() }
+                            } catch (e: Exception) {
+                                Log.e("ProductRepo", "Error descargando imagen antigua: ${e.message}")
+                                null
+                            }
                         }
+                    } else {
+                        context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
                     }
+
+                    if (bytes != null) {
+                        val mimeType = if (uri.toString().startsWith("http")) {
+                            "image/jpeg".toMediaTypeOrNull()
+                        } else {
+                            context.contentResolver.getType(uri)?.toMediaTypeOrNull()
+                        }
+
+                        val requestFile = bytes.toRequestBody(mimeType)
+
+                        MultipartBody.Part.createFormData(
+                            "image",
+                            "image.jpg",
+                            requestFile,
+                        )
+                    } else {
+                        null
+                    }
+                }
 
                 val idWorkshop = product.idWorkshop?.toRequestBody("text/plain".toMediaTypeOrNull())
                 val name = product.name.toRequestBody("text/plain".toMediaTypeOrNull())
@@ -243,8 +259,6 @@ class ProductRepositoryImpl
                 val idCategory = product.idCategory?.toRequestBody("text/plain".toMediaTypeOrNull())
                 val description = product.description.toRequestBody("text/plain".toMediaTypeOrNull())
                 val status = product.status.toString().toRequestBody("text/plain".toMediaTypeOrNull())
-
-                Log.d("ProductRepositoryImpl", "idWorkshop: ${product.idWorkshop}")
 
                 api.updateProduct(
                     idProduct = idProduct,
@@ -261,6 +275,16 @@ class ProductRepositoryImpl
                 detailPreferences.clearCache()
 
                 Result.success(Unit)
+            } catch (e: HttpException) {
+                val error = e.response()?.errorBody()?.string()
+                val message = try {
+                    "Error en servidor: ${e.code()}"
+                } catch (ex: Exception) {
+                    "Error al actualizar"
+                }
+                Result.failure(Exception(message))
+            } catch (e: IOException) {
+                Result.failure(Exception("No hay conexión a internet o error de red"))
             } catch (e: Exception) {
                 Result.failure(e)
             }

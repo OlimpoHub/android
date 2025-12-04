@@ -1,5 +1,6 @@
 package com.app.arcabyolimpo.presentation.screens.product.updateProduct
 
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -137,9 +138,19 @@ fun ProductUpdateScreen(
                 errorMessage = uiState.nameErrorMessage,
             )
 
+            val displayImage = if (uiState.selectedImageUrl != null) {
+            // Case A: User just picked a new photo from gallery
+            uiState.selectedImageUrl
+        } else {
+            // Case B: User hasn't touched the image, show the existing one from server
+            uiState.currentImageUrl
+                ?.takeIf { it.isNotBlank() }
+                ?.let { Uri.parse("http://74.208.78.8:8080/$it") }
+        }
+
             ImageUploadInput(
                 label = "Imagen del producto",
-                value = uiState.selectedImageUrl,
+                value = displayImage,
                 onValueChange = viewModel::onImageSelected,
                 isError = uiState.isImageError,
                 errorMessage = uiState.imageErrorMessage,
