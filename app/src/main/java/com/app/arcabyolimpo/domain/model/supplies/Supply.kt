@@ -66,6 +66,16 @@ data class SuccessMessage(
     val message: String,
 )
 
+/**
+ * Data class representing a supply batch item.
+ *
+ * @property id The unique identifier of the supply batch.
+ * @property quantity The quantity of the supply batch.
+ * @property expirationDate The expiration date of the supply batch.
+ * @property adquisitionType The type of acquisition for the supply batch.
+ * @property boughtDate The date when the supply batch was bought.
+ * @property measure The unit of measurement for the supply batch.
+ */
 data class SupplyBatchItem(
     val id: String,
     val quantity: Int,
@@ -75,6 +85,11 @@ data class SupplyBatchItem(
     val measure: String,
 )
 
+/**
+ * Data class representing a list of supply batches.
+ *
+ * @property batch A list of [SupplyBatchItem] objects representing different batches of the supply.
+ */
 data class SupplyBatchList(
     val batch: List<SupplyBatchItem>,
 )

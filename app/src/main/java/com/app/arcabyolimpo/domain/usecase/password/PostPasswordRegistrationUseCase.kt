@@ -27,6 +27,14 @@ class PostPasswordRegistrationUseCase
     constructor(
         private val repository: PasswordUserRepository,
     ) {
+        /**
+         * Sends a request to register or update the user's password.
+         *
+         * @param email The email address associated with the user.
+         * @param password The new password to be registered or updated.
+         *
+         * @return A [Flow] emitting the operation result as a [Result].
+         */
         operator fun invoke(
             email: String,
             password: String,

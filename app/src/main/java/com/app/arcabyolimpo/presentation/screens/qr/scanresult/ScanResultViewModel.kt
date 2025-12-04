@@ -41,6 +41,20 @@ class ScanResultViewModel
         private val _uiState = MutableStateFlow(ScanResultUiState())
         val uiState: StateFlow<ScanResultUiState> = _uiState.asStateFlow()
 
+        /**
+         * Sends the scanned QR content and metadata to the backend for validation.
+         *
+         * ## Behavior:
+         * - Emits **Result.Loading**: triggers loading indicator.
+         * - Emits **Result.Success**: stores backend validation response.
+         * - Emits **Result.Error**: stores the error message and stops loading.
+         *
+         * The function retrieves the current user's ID from local preferences
+         * and attaches it to the validation request.
+         *
+         * @param qrValue The string content extracted from the scanned QR.
+         * @param readTime The timestamp (in ms) when the QR was scanned.
+         */
         fun postScanResult(
             qrValue: String?,
             readTime: Long,

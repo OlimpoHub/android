@@ -48,6 +48,14 @@ class QrRepositoryImpl
         private var executor: Executor? = null
         private var appContext: Context? = null
 
+        /**
+         * Sends a request to generate a QR code for a specific user and workshop.
+         *
+         * @param userID ID of the user requesting the QR code.
+         * @param workshopID ID of the workshop for which the QR is generated.
+         * @return The QR code image as a ByteArray (PNG format).
+         * @throws Exception if the API request fails.
+         */
         override suspend fun postCreateQr(
             userID: String,
             workshopID: String,
@@ -61,6 +69,16 @@ class QrRepositoryImpl
             }
         }
 
+        /**
+         * Starts scanning a QR code using CameraX + ML Kit.
+         * Converts callback-based camera/ML Kit logic into a suspend function using suspendCancellableCoroutine.
+         *
+         * The function returns as soon as a QR code is detected OR throws an exception on failure.
+         *
+         * @param context Context used for setting the analyzer executor.
+         * @return QrResult containing the QR code string.
+         * @throws Exception if ML Kit fails to read the QR or the analyzer errors.
+         */
         @OptIn(ExperimentalGetImage::class, ExperimentalCoroutinesApi::class)
         override suspend fun postScanQr(context: Context): QrResult =
             // It lets you take callback-based code (camera + MLKit are callbacks)
@@ -117,6 +135,12 @@ class QrRepositoryImpl
                 analysis?.setAnalyzer(exec, analyzer)
             }
 
+        /**
+         * Initializes and starts the CameraX preview + image analyzer needed for QR scanning.
+         *
+         * @param previewView View where the camera preview will be displayed.
+         * @param lifecycleOwner Owner that controls the camera lifecycle.
+         */
         override suspend fun startCamera(
             previewView: PreviewView,
             lifecycleOwner: LifecycleOwner,
@@ -148,6 +172,10 @@ class QrRepositoryImpl
             )
         }
 
+        /**
+         * Stops the active camera session and analyzer used for QR scanning.
+         * Safely releases CameraX resources to prevent memory leaks.
+         */
         override suspend fun stopScanning() {
             val context = appContext ?: return
 
@@ -166,6 +194,19 @@ class QrRepositoryImpl
             }
         }
 
+        /**
+         * Validates a scanned QR code by sending it to the backend.
+         *
+         * The backend returns:
+         * - 201 → success (QR validated)
+         * - 406 → failure (invalid QR, used QR, expired QR, etc.)
+         *
+         * @param qrValue The text content of the scanned QR code.
+         * @param readTime Timestamp when the QR was scanned.
+         * @param userID ID of the user scanning the QR.
+         * @return QrResult containing the backend message.
+         * @throws Exception with the backend error message if validation fails.
+         */
         override suspend fun postValidateQr(
             qrValue: String,
             readTime: Long,

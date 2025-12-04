@@ -99,4 +99,14 @@ class ProductDetailPreferences @Inject constructor(
         return System.currentTimeMillis() - lastUpdate <
                 ProductDetailPreferencesConstants.CACHE_DURATION
     }
+
+    /**
+     * Clears all cached product data and metadata.
+     *
+     * This completely resets the cache, removing the stored product list and
+     * last update timestamp.
+     */
+    fun clearCache() {
+        prefs.edit().clear().apply()
+    }
 }

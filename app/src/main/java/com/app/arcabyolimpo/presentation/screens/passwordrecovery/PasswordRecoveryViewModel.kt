@@ -33,6 +33,18 @@ class PasswordRecoveryViewModel
         private val _uiState = MutableStateFlow(PasswordRecoveryUiState())
         val uiState: StateFlow<PasswordRecoveryUiState> = _uiState.asStateFlow()
 
+        /**
+         * Sends a password recovery request using the provided email.
+         *
+         * The flow emitted by [postPasswordRecoveryUseCase] is collected to update
+         * the UI state based on the type of result:
+         *
+         * - **Loading:** shows progress indicator
+         * - **Success:** updates message and stops loading
+         * - **Error:** displays error message and stops loading
+         *
+         * @param email The email address to which the recovery instructions will be sent.
+         */
         fun postPasswordRecovery(email: String) {
             viewModelScope.launch {
                 postPasswordRecoveryUseCase(email).collect { result ->

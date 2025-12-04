@@ -22,12 +22,35 @@ import com.app.arcabyolimpo.domain.model.supplies.WorkshopCategoryList
  * @throws Exception If the supply cannot be found or fetched.
  */
 interface SupplyRepository {
+    /**
+     * Retrieves a list of all supplies.
+     *
+     * @return A list of [Supply] objects.
+     */
     suspend fun getSuppliesList(): List<Supply>
 
+    /**
+     * Retrieves a single supply by its [id].
+     *
+     * @param id The unique identifier of the supply.
+     * @return A [Supply] object containing the requested supply details.
+     */
     suspend fun getSupplyById(id: String): Supply
 
+    /**
+     * Registers a new supply batch.
+     *
+     * @param batch The [RegisterSupplyBatch] object containing the details of the new batch.
+     * @return A [SuccessMessage] indicating the success of the operation.
+     */
     suspend fun registerSupplyBatch(batch: RegisterSupplyBatch): SuccessMessage
 
+    /**
+     * Fetches a single supply batch by its ID.
+     *
+     * @param id The unique identifier of the supply batch.
+     * @return A [SupplyBatch] object containing the requested batch details.
+     */
     suspend fun getSupplyBatchById(id: String): SupplyBatchExt
 
     /**
@@ -59,6 +82,11 @@ interface SupplyRepository {
      */
     suspend fun getFilterData(): FilterData
 
+    /**
+     * Retrieves a list of acquisition types available for supplies.
+     *
+     * @return A list of [Acquisition] objects representing the available acquisition types.
+     */
     suspend fun getAcquisitionTypes(): List<Acquisition>
 
     /**
@@ -105,23 +133,57 @@ interface SupplyRepository {
      */
     suspend fun deleteOneSupply(id: String)
 
+    /**
+     * Retrieves a list of all workshops and categories.
+     *
+     * @return A [WorkshopCategoryList] object containing the list of workshops and categories.
+     */
     suspend fun getWorkshopCategoryList(): Result<WorkshopCategoryList>
 
+    /**
+     * Adds a new supply.
+     *
+     * @param supply The [SupplyAdd] object containing the details of the new supply.
+     * @param image The URI of the image associated with the supply (optional).
+     * @return A [Result] indicating the success or failure of the operation.
+     */
     suspend fun addSupply(
         supply: SupplyAdd,
         image: Uri?,
     ): Result<Unit>
 
+    /**
+     * Modifies an existing supply batch.
+     *
+     * @param id The unique identifier of the supply batch to modify.
+     * @param batch The [RegisterSupplyBatch] object containing the updated batch details.
+     * @return
+     */
     suspend fun modifySupplyBatch(
         id: String,
         batch: RegisterSupplyBatch,
     ): SuccessMessage
 
+    /**
+     * Retrieves a list of supply batches for a specific date and supply ID.
+     *
+     * @param expirationDate The date for which to retrieve the supply batches.
+     * @param idSupply The ID of the supply for which to retrieve the batches.
+     * @return A [SupplyBatchList] object containing the list of batches.
+     */
     suspend fun supplyBatchList(
         expirationDate: String,
         idSupply: String,
     ): SupplyBatchList
 
+    /**
+     * Updates an existing supply.
+     *
+     * @param id The unique identifier of the supply to update.
+     * @param supply The [SupplyAdd] object containing the updated supply details.
+     * @param image The URI of the image associated with the supply (optional).
+     * @return A [Result] indicating the success or failure of the operation.
+     */
     suspend fun updateSupply(
         id: String,
         supply: SupplyAdd,

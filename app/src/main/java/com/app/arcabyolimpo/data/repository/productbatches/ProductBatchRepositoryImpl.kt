@@ -21,26 +21,16 @@ class ProductBatchRepositoryImpl(
     private val preferences: ProductBatchPreferences,
 ) : ProductBatchRepository {
     override suspend fun getProductBatches(): List<ProductBatch> {
-        if (preferences.isCacheValid()) {
-            val cachedData = preferences.getProductBatchCache()
-            if (cachedData != null) {
-                return cachedData.productBatchList
-            }
-        }
-
         return try {
             val remoteList = api.getProductBatches().map { it.toDomain() }
             preferences.saveProductBatchList(remoteList)
             remoteList
         } catch (e: IOException) {
             val cachedData = preferences.getProductBatchCache()
-            if (cachedData != null) {
-                cachedData.productBatchList
-            } else {
-                throw e
-            }
+            cachedData?.productBatchList ?: throw e
         }
     }
+
     override suspend fun getProductBatch(id: String): ProductBatch {
         return try {
             api.getProductBatch(id).toDomain()
