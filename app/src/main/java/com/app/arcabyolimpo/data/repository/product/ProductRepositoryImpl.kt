@@ -81,7 +81,6 @@ class ProductRepositoryImpl @Inject constructor(
             preferences.clearCache()
             detailPreferences.clearCache()
 
-
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
