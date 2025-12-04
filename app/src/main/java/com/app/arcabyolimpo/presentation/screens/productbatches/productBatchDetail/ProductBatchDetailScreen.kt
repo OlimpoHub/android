@@ -198,7 +198,7 @@ fun ProductBatchDetailScreen(
                             }
 
                             InfoRow(label = "Cantidad Producida:", value = "${batch?.cantidadProducida ?: "0000"}")
-                            InfoRow(label = "Precio de Venta:", value = batch?.precioUnitario ?: "$00 MXN")
+                            InfoRow(label = "Precio Unitario:", value = batch?.precioUnitario ?: "$00 MXN")
                             InfoRow(label = "Descripción:", value = batch?.descripcion ?: "Lote de ${batch?.nombre ?: "Producto"}")
                             InfoRow(label = "Fecha de Caducidad:", value = batch?.fechaCaducidadFormatted ?: "00/00/00")
                             InfoRow(label = "Fecha de Elaboración:", value = batch?.fechaRealizacionFormatted ?: "00/00/00")
