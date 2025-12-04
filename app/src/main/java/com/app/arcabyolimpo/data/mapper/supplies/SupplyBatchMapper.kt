@@ -11,11 +11,11 @@ import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchOneDto
 import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
 import kotlin.math.exp
 
-/** ---------------------------------------------------------------------------------------------- *
+/**
  * Helper function that maps the Dto of supplyBatch to return it into a kotlin object
  *
  * @return SupplyBatchExt
- * ---------------------------------------------------------------------------------------------- */
+ */
 fun SupplyBatchDto.toDomain(): SupplyBatchExt =
     SupplyBatchExt(
         id = idSupply.toString(),
@@ -36,7 +36,11 @@ fun SupplyBatchDto.toDomain(): SupplyBatchExt =
                 )
             } ?: emptyList(),
     )
-
+/**
+ * Helper function that maps the Dto of supplyBatch to return it into a kotlin object
+ *
+ * @return SupplyBatchExt
+ * */
 fun SupplyBatchOneDto.toRegister(): RegisterSupplyBatch =
                     RegisterSupplyBatch(
                         supplyId = this.idInsumo.orEmpty(),
