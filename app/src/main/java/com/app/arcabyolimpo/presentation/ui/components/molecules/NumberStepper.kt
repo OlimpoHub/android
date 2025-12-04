@@ -12,6 +12,19 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SquareAddBu
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SquareMinusButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.StandardInput
 
+/**
+ * A Composable function that creates a number stepper UI component.
+ * It consists of a text input field flanked by increment and decrement buttons.
+ *
+ * @param label The text to be displayed as the label for the input field.
+ * @param placeholder The placeholder text to be shown when the input field is empty. Defaults to "000".
+ * @param value The current value to be displayed in the input field.
+ * @param isError A boolean flag to indicate if the current value is in an error state. Defaults to false.
+ * @param errorMessage The error message to display when isError is true. Defaults to an empty string.
+ * @param onValueChange A callback function that is invoked when the value of the input field changes.
+ * @param onIncrement A callback function that is invoked when the increment button is clicked.
+ * @param onDecrement A callback function that is invoked when the decrement button is clicked.
+ */
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun NumberStepper(

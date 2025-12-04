@@ -62,11 +62,19 @@ import com.app.arcabyolimpo.ui.theme.White
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.Async
 
-/** ProductBatchDetailScreen: Composable screen displaying detailed information about a product batch.
+/**
+ * A Composable screen that displays detailed information about a single product batch.
  *
- * @param batchId String -> ID of the product batch to display
- * @param onBackClick () -> Unit -> callback for back navigation
- * @param viewModel ProductBatchDetailViewModel = hiltViewModel() -> ViewModel for managing UI state
+ * This screen fetches and shows data like the product image, price, status, and dates.
+ * It provides options to navigate back, delete the batch (with confirmation), or navigate
+ * to a modification screen. It also handles loading and error states.
+ *
+ * @param batchId The unique identifier of the product batch to be displayed.
+ * @param onBackClick A callback function to be invoked when the user taps the back button.
+ * @param onModifyClick A callback function that triggers navigation to the modification screen,
+ * passing the batch ID.
+ * @param viewModel The ViewModel instance for this screen, provided by Hilt, which manages
+ * state and business logic.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
@@ -253,7 +261,12 @@ fun ProductBatchDetailScreen(
 }
 
 /**
- * Helper Composable para el "badge" de estatus (ej. "Caducado")
+ * A private helper Composable that displays a status badge.
+ *
+ * This function determines which visual style to use for the badge based on the status text.
+ * For example, it will show an "ExpiredStatus" badge if the status is "Caducado".
+ *
+ * @param status The text string representing the batch's status (e.g., "Disponible", "Caducado").
  */
 @Suppress("ktlint:standard:function-naming")
 @Composable

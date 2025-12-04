@@ -16,6 +16,15 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import javax.inject.Inject
 
+/**
+ * ViewModel for the ProductBatchModifyScreen.
+ * This class manages the state and business logic for modifying an existing product batch.
+ * It fetches the batch details, handles user input, validates the data, and communicates
+ * with the corresponding use cases to persist the changes.
+ *
+ * @param modifyProductBatchModifyUseCase The use case responsible for updating the batch data.
+ * @param getProductBatchUseCase The use case for fetching a single product batch by its ID.
+ */
 @HiltViewModel
 class ProductBatchModifyViewModel
     @Inject
@@ -26,6 +35,11 @@ class ProductBatchModifyViewModel
         var uiState by mutableStateOf(ProductBatchModifyUiState())
             private set
 
+        /**
+         * Loads the details of a specific product batch to populate the modification form.
+         *
+         * @param id The unique identifier of the product batch to load.
+         */
         fun loadBatch(id: String) {
             viewModelScope.launch {
                 try {
@@ -51,6 +65,12 @@ class ProductBatchModifyViewModel
             }
         }
 
+        /**
+         * Handles changes to the input fields in the UI.
+         *
+         * @param field A string identifier for the field that was changed (e.g., "precioVenta").
+         * @param value The new value entered by the user.
+         */
         fun onFieldChange(
             field: String,
             value: String,
@@ -83,6 +103,13 @@ class ProductBatchModifyViewModel
             }
         }
 
+        /**
+         * Validates the current form data and, if successful, triggers the modification process.
+         *
+         * @param id The ID of the batch being modified.
+         * @param onSuccess A callback function to be executed upon successful modification,
+         *                  typically used for navigation.
+         */
         fun validateAndModify(
             id: String,
             onSuccess: () -> Unit,
@@ -125,6 +152,13 @@ class ProductBatchModifyViewModel
             }
         }
 
+        /**
+         * Formats an ISO 8601 date string into a "dd/MM/yyyy" format.
+         *
+         * @param isoDate The date string in "yyyy-MM-dd'T'HH:mm:ss" format.
+         * @return The formatted date string, or an empty string if parsing fails.
+         */
+
         private fun formatDate(isoDate: String): String =
             try {
                 val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
@@ -135,6 +169,14 @@ class ProductBatchModifyViewModel
             } catch (e: Exception) {
                 ""
             }
+
+        /**
+         * Checks if one date string occurs before another.
+         *
+         * @param finalDate The date to check.
+         * @param referenceDate The date to compare against.
+         * @return True if finalDate is before referenceDate or if parsing fails; otherwise, false.
+         */
 
         private fun isDateBefore(
             finalDate: String,
@@ -154,6 +196,13 @@ class ProductBatchModifyViewModel
             } catch (e: Exception) {
                 true
             }
+
+        /**
+         * Executes the actual modification by calling the appropriate use case.
+         *
+         * @param id The ID of the batch to modify.
+         * @param onSuccess The callback function to run after a successful update.
+         */
 
         private fun modify(
             id: String,

@@ -3,6 +3,8 @@ package com.app.arcabyolimpo.presentation.screens.productbatches.productBatchesL
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
+import com.app.arcabyolimpo.domain.common.Result
+import com.app.arcabyolimpo.domain.model.filter.FilterData
 import com.app.arcabyolimpo.domain.usecase.productbatches.FilterProductBatchesUseCase
 import com.app.arcabyolimpo.domain.usecase.productbatches.GetProductBatchesUseCase
 import com.app.arcabyolimpo.domain.usecase.productbatches.SearchProductBatchesUseCase
@@ -17,13 +19,12 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
-import com.app.arcabyolimpo.domain.common.Result
-import com.app.arcabyolimpo.domain.model.filter.FilterData
-
 
 /** ViewModel for ProductBatchesListScreen.
- * @param getProductBatchesUseCase GetProductBatchesUseCase -> use case to fetch product batches
-*/
+ * @param searchProductBatchesUseCase Use case to search for product batches based on a search term.
+ * @param filterProductBatchesUseCase Use case to filter product batches based on a set of criteria.
+ * @param getProductBatchesUseCase Use case to fetch the initial, unfiltered list of all product batches.
+ */
 @HiltViewModel
 class ProductBatchesListViewModel
     @Inject
@@ -39,6 +40,12 @@ class ProductBatchesListViewModel
             loadData()
         }
 
+        /**
+         * Loads the initial data for the screen.
+         * This function fetches all product batches, extracts distinct values for filter options
+         * (like names, prices, quantities), and updates the UI state with the results or
+         * any errors that occur.
+         */
         fun loadData() {
             viewModelScope.launch {
                 _uiState.value = ProductBatchesUiState(isLoading = true)
@@ -51,14 +58,16 @@ class ProductBatchesListViewModel
                     val cantidades = uiList.map { it.cantidadProducida.toString() }.distinct()
                     val fechasRealizacion = uiList.mapNotNull { it.fechaRealizacion }.distinct()
 
-                    val filterData = FilterData(
-                        sections = mapOf(
-                            "nombre" to nombres,
-                            "precioVenta" to precios,
-                            "cantidadProducida" to cantidades,
-                            "fechaRealizacion" to fechasRealizacion
+                    val filterData =
+                        FilterData(
+                            sections =
+                                mapOf(
+                                    "nombre" to nombres,
+                                    "precioVenta" to precios,
+                                    "cantidadProducida" to cantidades,
+                                    "fechaRealizacion" to fechasRealizacion,
+                                ),
                         )
-                    )
 
                     _uiState.value =
                         if (uiList.isEmpty()) {
@@ -67,7 +76,7 @@ class ProductBatchesListViewModel
                             ProductBatchesUiState(
                                 isLoading = false,
                                 batches = uiList,
-                                filterData = filterData
+                                filterData = filterData,
                             )
                         }
                 } catch (e: Exception) {
@@ -96,12 +105,14 @@ class ProductBatchesListViewModel
                     searchProductBatchesUseCase(term).collect { result ->
                         when (result) {
                             is Result.Loading -> _uiState.update { it.copy(isLoading = true) }
-                            is Result.Success -> _uiState.update {
-                                it.copy(batches = result.data.map { it.toUiModel() }, isLoading = false, error = null)
-                            }
-                            is Result.Error -> _uiState.update {
-                                it.copy(isLoading = false, error = result.exception.message)
-                            }
+                            is Result.Success ->
+                                _uiState.update {
+                                    it.copy(batches = result.data.map { it.toUiModel() }, isLoading = false, error = null)
+                                }
+                            is Result.Error ->
+                                _uiState.update {
+                                    it.copy(isLoading = false, error = result.exception.message)
+                                }
                         }
                     }
                 }
@@ -109,24 +120,26 @@ class ProductBatchesListViewModel
         }
 
         fun filterProductBatch(filters: FilterDto) {
-                _uiState.update { it.copy(filters = filters) }
+            _uiState.update { it.copy(filters = filters) }
 
-                viewModelScope.launch {
-                    filterProductBatchesUseCase(filters).collect { result ->
-                        when (result) {
-                            is Result.Loading -> _uiState.update { it.copy(isLoading = true) }
-                            is Result.Success -> _uiState.update {
+            viewModelScope.launch {
+                filterProductBatchesUseCase(filters).collect { result ->
+                    when (result) {
+                        is Result.Loading -> _uiState.update { it.copy(isLoading = true) }
+                        is Result.Success ->
+                            _uiState.update {
                                 it.copy(batches = result.data.map { it.toUiModel() }, isLoading = false, error = null)
                             }
-                            is Result.Error -> _uiState.update {
+                        is Result.Error ->
+                            _uiState.update {
                                 it.copy(isLoading = false, error = result.exception.message)
                             }
-                        }
                     }
                 }
             }
+        }
 
-            fun clearFilters() {
-                _uiState.update { it.copy(filters = FilterDto()) }
+        fun clearFilters() {
+            _uiState.update { it.copy(filters = FilterDto()) }
         }
     }
