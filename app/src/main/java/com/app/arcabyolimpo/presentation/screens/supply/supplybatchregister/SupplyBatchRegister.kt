@@ -72,6 +72,25 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable
+/**
+ * Screen to register new supply batches for a selected supply.
+ *
+ * This composable hosts the registration form (provided by
+ * `SupplyBatchRegisterContent`) and a bottom bar with actions. It observes
+ * `state.registerSuccess` and triggers `onRegisterClick` when registration
+ * completes successfully. Navigation and snackbar handling are performed by
+ * the caller; this screen focuses on collecting input and invoking the
+ * ViewModel.
+ *
+ * Parameters:
+ * @param supplyId The id of the supply to preselect (can be empty).
+ * @param onRegisterClick Called by the parent when registration completes
+ *  and the app should navigate back (caller may set a snackbar message on
+ *  the previous back stack entry before popping).
+ * @param onBackClick Called when the user presses the back button.
+ * @param viewModel The ViewModel that exposes UI state and handles
+ *  registration/update logic.
+ */
 fun SupplyBatchRegisterScreen(
     supplyId: String,
     onRegisterClick: () -> Unit,
@@ -178,6 +197,17 @@ fun SupplyBatchRegisterScreen(
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
+/**
+ * Bottom bar for the register screen.
+ *
+ * The bar exposes Cancel and Save actions. Save triggers the registration
+ * flow via `onRegisterClick` but does not perform navigation directly; the
+ * parent observes registration success and navigates accordingly.
+ *
+ * @param uiState Current UI state to reflect loading/error states.
+ * @param onRegisterClick Triggers the ViewModel registration action.
+ * @param onBackClick Handles cancel/back action.
+ */
 fun SupplyBatchRegisterBottomBar(
     uiState: SupplyBatchRegisterUiState,
     onRegisterClick: () -> Unit,
@@ -210,6 +240,11 @@ fun SupplyBatchRegisterBottomBar(
 @Preview(showBackground = true)
 @Suppress("ktlint:standard:function-naming")
 @Composable
+/**
+ * Preview of the register screen using a sample state. This preview helps
+ * developers and designers inspect layout and spacing in Android Studio
+ * without running the full app.
+ */
 fun SupplyBatchRegisterPreview() {
     val sampleSupplies =
         listOf(

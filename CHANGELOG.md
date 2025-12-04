@@ -1,5 +1,9 @@
 ## [0.2.0] - 03/12/2025
 ### Added
+ - Code comments
+
+## [0.2.0] - 03/12/2025
+### Added
 - Delete disability
 - Icon
 
