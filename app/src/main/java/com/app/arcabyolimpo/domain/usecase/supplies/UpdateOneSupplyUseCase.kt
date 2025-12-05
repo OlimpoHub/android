@@ -5,12 +5,12 @@ import com.app.arcabyolimpo.domain.model.supplies.SupplyAdd
 import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
 import java.lang.Exception
 import javax.inject.Inject
-/** ---------------------------------------------------------------------------------------------- *
+/**
  * AUpdateOneSupplyUseCase -> Use case that receives the Supply and its image, previously updated
  * and send it to the db
  *
  * @param repository: SupplyRepository -> repository where the api calls is found
- * ---------------------------------------------------------------------------------------------- */
+ */
 class UpdateOneSupplyUseCase @Inject constructor(
     private val repository: SupplyRepository
 ) {

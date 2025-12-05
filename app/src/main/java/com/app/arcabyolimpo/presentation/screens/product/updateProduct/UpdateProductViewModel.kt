@@ -185,6 +185,9 @@ class UpdateProductViewModel @Inject constructor(
         val state = _uiState.value
         var isValid = true
 
+        val hasExistingImage = !state.currentImageUrl.isNullOrBlank()
+        val hasNewImage = state.selectedImageUrl != null
+
         // 1. Validación de Nombre
         if (state.name.isBlank()) {
             _uiState.update { it.copy(isNameError = true, nameErrorMessage = "El nombre no puede estar vacío.") }
@@ -200,6 +203,11 @@ class UpdateProductViewModel @Inject constructor(
         // 2. Validación de Imagen
         if(state.selectedImageUrl == null) {
             _uiState.update { it.copy(isImageError = true, imageErrorMessage = "Debes seleccionar una imagen.") }
+            isValid = false
+        }
+
+        if (!hasNewImage && !hasExistingImage) {
+            _uiState.update { it.copy(isImageError = true, imageErrorMessage = "El producto debe tener una imagen.") }
             isValid = false
         }
 
@@ -260,6 +268,14 @@ class UpdateProductViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isSaving = true) }
 
+            val image = if (formData.selectedImageUrl != null) {
+                formData.selectedImageUrl
+            } else {
+                formData.currentImageUrl?.takeIf { it.isNotBlank() }?.let {
+                    Uri.parse("http://74.208.78.8:8080/$it")
+                }
+            }
+
             val product = ProductUpdate(
                 name = formData.name,
                 idWorkshop = formData.selectedIdWorkshop,
@@ -267,7 +283,7 @@ class UpdateProductViewModel @Inject constructor(
                 idCategory = formData.selectedIdCategory,
                 description = formData.description,
                 status = formData.status.toString(),
-                image = formData.selectedImageUrl
+                image = image
             )
 
             val result = updateProductUseCase(
