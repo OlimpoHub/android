@@ -34,6 +34,12 @@ interface ProductRepository {
      */
     suspend fun getProducts(): List<Product>
 
+    /**
+     * Deletes an existing product by its unique identifier.
+     *
+     * @param id The unique identifier of the product to delete.
+     * @return [Unit] implicitly if the operation is successful.
+     */
     suspend fun deleteProduct(id: String)
 
     /**
@@ -53,6 +59,12 @@ interface ProductRepository {
      */
     fun getProductById(productId: String): Flow<com.app.arcabyolimpo.domain.common.Result<Product>>
 
+    /**
+     * Searches for products whose details match a given query string.
+     *
+     * @param query The text string used for the search.
+     * @return A [List] of [Product] objects that match the query.
+     */
     suspend fun searchProducts(query: String): List<Product>
 
     /**

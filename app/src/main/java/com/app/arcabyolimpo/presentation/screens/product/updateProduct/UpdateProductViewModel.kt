@@ -51,7 +51,7 @@ class UpdateProductViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                error = productResult.exception?.message ?: "Error al cargar producto"
+                                error = productResult.exception?.message ?: "Error loading product"
                             )
                         }
                     }
@@ -89,7 +89,7 @@ class UpdateProductViewModel @Inject constructor(
                                 _uiState.update {
                                     it.copy(
                                         isLoading = false,
-                                        error = "Error al cargar los datos"
+                                        error = "Error loading data"
                                     )
                                 }
                             }
@@ -100,7 +100,7 @@ class UpdateProductViewModel @Inject constructor(
                                     error =
                                         categoriesWorkshops
                                             .exceptionOrNull()?.message
-                                            ?: "Error al cargar las categorias y talleres"
+                                            ?: "Error loading categories and workshops"
                                 )
                             }
                         }
@@ -185,10 +185,7 @@ class UpdateProductViewModel @Inject constructor(
         val state = _uiState.value
         var isValid = true
 
-        val hasExistingImage = !state.currentImageUrl.isNullOrBlank()
-        val hasNewImage = state.selectedImageUrl != null
-
-        // 1. Validación de Nombre
+        // 1. Validacion for Name
         if (state.name.isBlank()) {
             _uiState.update { it.copy(isNameError = true, nameErrorMessage = "El nombre no puede estar vacío.") }
             isValid = false
@@ -200,18 +197,13 @@ class UpdateProductViewModel @Inject constructor(
             isValid = false
         }
 
-        // 2. Validación de Imagen
-        if(state.selectedImageUrl == null) {
+        // 2. Validacion for image
+        if(state.selectedImage == null) {
             _uiState.update { it.copy(isImageError = true, imageErrorMessage = "Debes seleccionar una imagen.") }
             isValid = false
         }
 
-        if (!hasNewImage && !hasExistingImage) {
-            _uiState.update { it.copy(isImageError = true, imageErrorMessage = "El producto debe tener una imagen.") }
-            isValid = false
-        }
-
-        // 3. Validación de Precio Unitario
+        // 3. Validación for unitary price
         if(state.unitaryPrice.isBlank()) {
             _uiState.update { it.copy(isUnitaryPriceError = true, unitaryPriceErrorMessage = "El precio unitario no puede estar vacío.") }
             isValid = false
@@ -220,25 +212,25 @@ class UpdateProductViewModel @Inject constructor(
             isValid = false
         }
 
-        // 4. Validación de Taller
-        if(state.selectedIdWorkshop.isNullOrBlank()) {
+        // 4. Validacion for workshop
+        if(state.selectedWorkshopId.isBlank()) {
             _uiState.update { it.copy(isWorkshopError = true, workshopErrorMessage = "Debes seleccionar un taller.") }
             isValid = false
         }
 
-        // 5. Validación de Categoría
-        if(state.selectedIdCategory.isNullOrBlank()) {
+        // 5. Validación for category
+        if(state.selectedCategoryId.isBlank()) {
             _uiState.update { it.copy(isCategoryError = true, categoryErrorMessage = "Debes seleccionar una categoría.") }
             isValid = false
         }
 
-        // 6. Validación de Estatus
+        // 6. Validación for status
         if(state.status == 0) {
             _uiState.update { it.copy(isStatusError = true, statusErrorMessage = "El estatus seleccionado es inválido (no puede ser 0).") }
             isValid = false
         }
 
-        // 7. Validación de Descripción
+        // 7. Validación for description
         if(state.description.isBlank()) {
             _uiState.update { it.copy(isDescriptionError = true, descriptionErrorMessage = "La descripción no puede estar vacía.") }
             isValid = false
@@ -257,7 +249,7 @@ class UpdateProductViewModel @Inject constructor(
         val formData = _uiState.value
 
         if (!formData.hadChanged) {
-            _uiState.update { it.copy(error = "No se realizó ningun cambio") }
+            _uiState.update { it.copy(error = "None changes added") }
             return
         }
 
