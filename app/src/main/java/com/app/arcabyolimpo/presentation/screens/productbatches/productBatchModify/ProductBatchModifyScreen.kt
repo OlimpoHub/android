@@ -19,10 +19,16 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -30,6 +36,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.app.arcabyolimpo.presentation.theme.Poppins
+import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.CancelButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ModifyButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SaveButton
@@ -40,6 +47,19 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
 import com.app.arcabyolimpo.presentation.ui.components.molecules.NumberStepper
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
+import kotlinx.coroutines.launch
+
+/**
+ * A Composable function that defines the user interface for the Product Batch Modification screen.
+ * This screen allows a user to edit the details of an existing product batch.
+ *
+ * @param onBackClick A callback function to handle navigation when the back button is pressed.
+ * @param onModified A callback function that is triggered after the batch has been successfully modified,
+ *                   typically used to navigate away from the screen.
+ * @param batchId The unique identifier of the product batch that is being modified.
+ * @param viewModel The ViewModel associated with this screen, provided by Hilt, which manages the
+ *                  screen's state and business logic.
+ */
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
@@ -55,6 +75,10 @@ fun ProductBatchModifyScreen(
     LaunchedEffect(batchId) {
         viewModel.loadBatch(batchId)
     }
+
+    var showConfirmDialog by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         containerColor = Background,
@@ -182,13 +206,30 @@ fun ProductBatchModifyScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     ModifyButton(
-                        onClick = {
-                            viewModel.validateAndModify(
-                                id = batchId,
-                                onSuccess = onModified,
-                            )
-                        },
+                        onClick = { showConfirmDialog = true },
                     )
+
+                    if (showConfirmDialog) {
+                        DecisionDialog(
+                            onDismissRequest = {
+                                showConfirmDialog = false
+                                scope.launch {
+                                    snackbarHostState.showSnackbar("Cambio cancelado")
+                                }
+                            },
+                            onConfirmation = {
+                                showConfirmDialog = false
+                                viewModel.validateAndModify(
+                                    id = batchId,
+                                    onSuccess = onModified,
+                                )
+                            },
+                            dialogTitle = "Confirmar cambios",
+                            dialogText = "¿Deseas modificar este lote de producto? Asegúrate de que todos los datos sean correctos.",
+                            confirmText = "Confirmar",
+                            dismissText = "Cancelar",
+                        )
+                    }
                 }
             }
         }

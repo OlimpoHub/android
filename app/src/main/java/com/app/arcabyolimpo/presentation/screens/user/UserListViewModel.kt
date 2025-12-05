@@ -34,6 +34,14 @@ class UserListViewModel
         private val _uiState = MutableStateFlow(UserListUiState())
         val uiState: StateFlow<UserListUiState> = _uiState.asStateFlow()
 
+        /**
+         * Fetches the complete list of users from the domain layer.
+         *
+         * This function updates UI state with loading, success, or error status.
+         * On success:
+         * - Saves the user list in three internal lists: users, allUsers, searchedUsers.
+         * - Resets error flags.
+         */
         fun getUsers() {
             viewModelScope.launch {
                 getUsersUseCase().collect { result ->
@@ -62,6 +70,14 @@ class UserListViewModel
             }
         }
 
+        /**
+         * Clears all active filters and restores the original list of users.
+         *
+         * This resets:
+         * - The selected filters object
+         * - The visible user list
+         * - The search results list
+         */
         fun clearFilters() {
             _uiState.update { current ->
                 current.copy(
@@ -72,6 +88,16 @@ class UserListViewModel
             }
         }
 
+        /**
+         * Applies filtering logic according to the provided [FilterDto].
+         *
+         * Supports:
+         * - Filtering by "Estatus" (Activo / Inactivo)
+         * - Filtering by document submission (Reglamento, INE, Aviso de confidencialidad)
+         * - Sorting based on the "order" parameter
+         *
+         * Updates the UI state with the filtered and sorted list.
+         */
         fun applyFilters(filterDto: FilterDto) {
             _uiState.update { current ->
                 val filteredUsers =
@@ -116,6 +142,15 @@ class UserListViewModel
             }
         }
 
+        /**
+         * Searches users by full name based on the given [searchInput].
+         *
+         * The search operates ONLY on the currently filtered list (`users`),
+         * not on the full list (`allUsers`), ensuring that searching and filtering
+         * work together.
+         *
+         * Updates the `searchedUsers` list with matching results.
+         */
         fun searchUsers(searchInput: String) {
             _uiState.update { current ->
                 val filteredUsers =

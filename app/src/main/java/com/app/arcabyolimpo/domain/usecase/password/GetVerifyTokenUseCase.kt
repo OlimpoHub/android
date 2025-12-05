@@ -24,6 +24,13 @@ class GetVerifyTokenUseCase
     constructor(
         private val repository: PasswordUserRepository,
     ) {
+        /**
+         * Executes the token verification request.
+         *
+         * @param token Token string that needs to be validated.
+         *
+         * @return A [Flow] emitting the verification result wrapped in [Result].
+         */
         operator fun invoke(token: String): Flow<Result<VerifyToken>> =
             flow {
                 try {

@@ -7,7 +7,24 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class SearchWorkshopsUseCase @Inject constructor(
+/**
+ * Use case responsible for searching workshops by name.
+ *
+ * This class attempts to retrieve workshops that match the search query,
+ * first using the backend and falling back to a local search if needed.
+ * It exposes state changes using a [Result] flow to allow the UI to react
+ * to loading, success, or error events.
+ *
+ * [Result.Loading] while the search is in progress.
+ * [Result.Success] when results (remote or local) are found.
+ * [Result.Error] if an exception occurs during both remote and fallback search.
+ *
+ * @param name Name or partial name to search for.
+ * @return A [Flow] emitting the list of matching [Workshop] objects.
+ */
+class SearchWorkshopsUseCase
+@Inject
+constructor(
     private val repository: WorkshopRepository
 ) {
     operator fun invoke(name: String): Flow<Result<List<Workshop>>> = flow {
@@ -49,6 +66,7 @@ class SearchWorkshopsUseCase @Inject constructor(
         }
     }
 }
+
 private fun String.normalizeText(): String {
     return this.lowercase()
         .replace("á", "a")

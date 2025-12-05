@@ -20,8 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.app.arcabyolimpo.presentation.screens.supply.commonSupplyBatch.SupplyBatchUiStateBase
-import com.app.arcabyolimpo.presentation.screens.supply.supplybatchregister.SupplyBatchRegisterUiState
 import com.app.arcabyolimpo.presentation.screens.supply.supplybatchmodify.SupplyBatchModifyUiState
+import com.app.arcabyolimpo.presentation.screens.supply.supplybatchregister.SupplyBatchRegisterUiState
 import com.app.arcabyolimpo.presentation.theme.Typography
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SquareAddButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SquareMinusButton
@@ -34,6 +34,33 @@ import com.app.arcabyolimpo.ui.theme.PrimaryBlue
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
+/**
+ * Composable content for the supply batch registration and modification form.
+ *
+ * This organism renders the input fields used by both the register and modify
+ * screens: quantity, acquisition type selector, purchase date and expiration
+ * date, and the increment/decrement controls. The composable reads per-field
+ * error messages from the provided `uiState` (which can be either register
+ * or modify concrete states) and passes `isError`/`errorMessage` to the
+ * individual input atoms so inline validation messages are shown.
+ *
+ * Note: supply selection was intentionally removed from this content and the
+ * currently selected supply name is shown in the screen's TopAppBar.
+ *
+ * @param uiState The shared UI state providing current input values, lists
+ *  for selectors, loading and error flags, and per-field error messages.
+ * @param onSelectSupply Callback when a supply is selected (left for
+ *  backwards compatibility; supply selection UI was moved to the parent).
+ * @param onQuantityChanged Callback when the quantity text changes.
+ * @param onExpirationDateChanged Callback when the expiration date changes
+ *  (display format is `dd/MM/yyyy`).
+ * @param onBoughtDateChanged Callback when the bought/purchase date changes
+ *  (display format is `dd/MM/yyyy`).
+ * @param onIncrementQuantity Increment quantity by one.
+ * @param onDecrementQuantity Decrement quantity by one.
+ * @param onAcquisitionTypeSelected Called with the acquisition type id when
+ *  the user selects an option from the acquisition selector.
+ */
 fun SupplyBatchRegisterContent(
     uiState: SupplyBatchUiStateBase,
     onSelectSupply: (String) -> Unit,
@@ -55,53 +82,42 @@ fun SupplyBatchRegisterContent(
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             // Resolve per-field error messages from concrete UI state types
-            val supplyErrorMsg = when (uiState) {
-                is SupplyBatchRegisterUiState -> uiState.supplyError
-                is SupplyBatchModifyUiState -> uiState.supplyError
-                else -> null
-            }
+            val supplyErrorMsg =
+                when (uiState) {
+                    is SupplyBatchRegisterUiState -> uiState.supplyError
+                    is SupplyBatchModifyUiState -> uiState.supplyError
+                    else -> null
+                }
 
-            val quantityErrorMsg = when (uiState) {
-                is SupplyBatchRegisterUiState -> uiState.quantityError
-                is SupplyBatchModifyUiState -> uiState.quantityError
-                else -> null
-            }
+            val quantityErrorMsg =
+                when (uiState) {
+                    is SupplyBatchRegisterUiState -> uiState.quantityError
+                    is SupplyBatchModifyUiState -> uiState.quantityError
+                    else -> null
+                }
 
-            val acquisitionErrorMsg = when (uiState) {
-                is SupplyBatchRegisterUiState -> uiState.acquisitionError
-                is SupplyBatchModifyUiState -> uiState.acquisitionError
-                else -> null
-            }
+            val acquisitionErrorMsg =
+                when (uiState) {
+                    is SupplyBatchRegisterUiState -> uiState.acquisitionError
+                    is SupplyBatchModifyUiState -> uiState.acquisitionError
+                    else -> null
+                }
 
-            val boughtDateErrorMsg = when (uiState) {
-                is SupplyBatchRegisterUiState -> uiState.boughtDateError
-                is SupplyBatchModifyUiState -> uiState.boughtDateError
-                else -> null
-            }
+            val boughtDateErrorMsg =
+                when (uiState) {
+                    is SupplyBatchRegisterUiState -> uiState.boughtDateError
+                    is SupplyBatchModifyUiState -> uiState.boughtDateError
+                    else -> null
+                }
 
-            val expirationDateErrorMsg = when (uiState) {
-                is SupplyBatchRegisterUiState -> uiState.expirationDateError
-                is SupplyBatchModifyUiState -> uiState.expirationDateError
-                else -> null
-            }
+            val expirationDateErrorMsg =
+                when (uiState) {
+                    is SupplyBatchRegisterUiState -> uiState.expirationDateError
+                    is SupplyBatchModifyUiState -> uiState.expirationDateError
+                    else -> null
+                }
 
-            // Supply selection using the shared SelectInput atom
-            val supplies = uiState.suppliesList
-            val selectedSupplyName = supplies.firstOrNull { it.id == uiState.selectedSupplyId }?.name ?: ""
-
-            CompositionLocalProvider(LocalTextStyle provides Typography.bodyMedium) {
-                SelectInput(
-                    label = "Selecciona el insumo",
-                    selectedOption = selectedSupplyName,
-                    options = supplies.map { it.name },
-                    onOptionSelected = { name ->
-                        val supply = supplies.firstOrNull { it.name == name }
-                        if (supply != null) onSelectSupply(supply.id)
-                    },
-                    isError = !supplyErrorMsg.isNullOrEmpty(),
-                    errorMessage = supplyErrorMsg,
-                )
-            }
+            // Supply selection removed from content; the screen top bar shows the selected supply name.
 
             Row(
                 modifier = Modifier.padding(0.dp),

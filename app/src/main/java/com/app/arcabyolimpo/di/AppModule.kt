@@ -2,10 +2,17 @@ package com.app.arcabyolimpo.di
 
 import android.content.Context
 import com.app.arcabyolimpo.data.local.auth.UserPreferences
+import com.app.arcabyolimpo.data.local.product.detail.preferences.ProductDetailPreferences
+import com.app.arcabyolimpo.data.local.product.list.preferences.ProductPreferences
+import com.app.arcabyolimpo.data.local.product.productBatch.preferences.ProductBatchPreferences
+import com.app.arcabyolimpo.data.local.supplies.preferences.SupplyLocalDataSource
+import com.app.arcabyolimpo.data.local.supplies.preferences.SupplyPreferences
+import com.app.arcabyolimpo.data.local.supplybatches.preferences.SupplyBatchesPreferences
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
 import com.app.arcabyolimpo.data.remote.interceptor.AuthInterceptor
 import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
 import com.app.arcabyolimpo.data.remote.interceptor.TokenAuthenticator
+import com.app.arcabyolimpo.data.repository.attendance.AttendanceRepositoryImpl
 import com.app.arcabyolimpo.data.repository.auth.UserRepositoryImpl
 import com.app.arcabyolimpo.data.repository.beneficiaries.BeneficiaryRepositoryImpl
 import com.app.arcabyolimpo.data.repository.disabilities.DisabilityRepositoryImpl
@@ -14,8 +21,10 @@ import com.app.arcabyolimpo.data.repository.product.ProductRepositoryImpl
 import com.app.arcabyolimpo.data.repository.productbatches.ProductBatchRepositoryImpl
 import com.app.arcabyolimpo.data.repository.qr.QrRepositoryImpl
 import com.app.arcabyolimpo.data.repository.supplies.SupplyRepositoryImpl
+import com.app.arcabyolimpo.data.repository.upload.UploadRepositoryImpl
 import com.app.arcabyolimpo.data.repository.user.UsersRepositoryImpl
 import com.app.arcabyolimpo.data.repository.workshops.WorkshopRepositoryImpl
+import com.app.arcabyolimpo.domain.repository.attendance.AttendanceRepository
 import com.app.arcabyolimpo.domain.repository.auth.UserRepository
 import com.app.arcabyolimpo.domain.repository.beneficiaries.BeneficiaryRepository
 import com.app.arcabyolimpo.domain.repository.disability.DisabilityRepository
@@ -24,9 +33,10 @@ import com.app.arcabyolimpo.domain.repository.product.ProductRepository
 import com.app.arcabyolimpo.domain.repository.productbatches.ProductBatchRepository
 import com.app.arcabyolimpo.domain.repository.qr.QrRepository
 import com.app.arcabyolimpo.domain.repository.supplies.SupplyRepository
+import com.app.arcabyolimpo.domain.repository.upload.UploadRepository
 import com.app.arcabyolimpo.domain.repository.user.UsersRepository
 import com.app.arcabyolimpo.domain.repository.workshops.WorkshopRepository
-import com.app.arcabyolimpo.domain.usecase.productbatches.GetProductBatchesUseCase
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -41,7 +51,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    private const val BASE_URL = "http://10.0.2.2:8080/"
+    private const val BASE_URL = "http://74.208.78.8:8080/"
 
     /**
      * Provides a configured [OkHttpClient] instance.
@@ -64,6 +74,10 @@ object AppModule {
             .addInterceptor(AuthInterceptor(authPreferences))
             .authenticator(TokenAuthenticator(authPreferences, sessionManager, BASE_URL))
             .build()
+
+    @Provides
+    @Singleton
+    fun provideGson(): com.google.gson.Gson = com.google.gson.Gson()
 
     /**
      * Provides a singleton [Retrofit] instance configured with:
@@ -105,9 +119,57 @@ object AppModule {
         authPreferences: UserPreferences,
     ): UserRepository = UserRepositoryImpl(api, authPreferences)
 
+    /**
+     * Provides a singleton instance of [PasswordUserRepository] for dependency injection.
+     *
+     * This function initializes and returns the repository implementation responsible for
+     * all password-related operations, such as password recovery, token verification, and
+     * password registration or updates. Declaring it as a singleton ensures that a single,
+     * consistent instance of [PasswordUserRepositoryImpl] is shared across the entire
+     * application, reducing overhead and maintaining stable state throughout user flows.
+     *
+     * By exposing only the [PasswordUserRepository] interface, this provider function supports
+     * clean architectural boundaries and enables easier testing through mock or fake
+     * implementations. It also ensures flexibility—allowing the underlying implementation to
+     * be replaced without requiring changes to dependent components.
+     *
+     * @param api The [ArcaApi] instance used by the repository to perform secure network
+     *            operations related to authentication and password management.
+     * @return A singleton [PasswordUserRepository] instance using the provided API client.
+     */
     @Provides
     @Singleton
     fun providePasswordUserRepository(api: ArcaApi): PasswordUserRepository = PasswordUserRepositoryImpl(api)
+
+    /** Provides SupplyPreferences for caching supplies data */
+    @Provides
+    @Singleton
+    fun provideSupplyPreferences(
+        @ApplicationContext context: Context,
+    ): SupplyPreferences = SupplyPreferences(context)
+
+    /** Provides SupplyLocalDataSource for local supply operations */
+    @Provides
+    @Singleton
+    fun provideSupplyLocalDataSource(preferences: SupplyPreferences): SupplyLocalDataSource = SupplyLocalDataSource(preferences)
+
+    /**
+     * Provides a singleton instance of [SupplyBatchesPreferences].
+     *
+     * This class manages the local caching of supply batch lists in SharedPreferences,
+     * using Gson for serialization and deserialization. It supports storing multiple,
+     * distinct batch lists keyed by expiration date and supply ID.
+     *
+     * @param context The application context injected by Hilt.
+     * @param gson The Gson instance used for JSON conversion.
+     * @return A singleton instance of [SupplyBatchesPreferences].
+     */
+    @Provides
+    @Singleton
+    fun provideSupplyBatchesPreferences(
+        @ApplicationContext context: Context,
+        gson: Gson,
+    ): SupplyBatchesPreferences = SupplyBatchesPreferences(context, gson)
 
     /**
      * Provides the [SupplyRepository] implementation.
@@ -124,21 +186,51 @@ object AppModule {
     @Singleton
     fun provideSupplyRepository(
         api: ArcaApi,
+        localDataSource: SupplyLocalDataSource,
+        supplyBatchesPreferences: SupplyBatchesPreferences,
         @ApplicationContext context: Context,
-    ): SupplyRepository = SupplyRepositoryImpl(api, context)
+    ): SupplyRepository = SupplyRepositoryImpl(api, localDataSource, supplyBatchesPreferences, context)
+
+    /**
+     * Provides a singleton instance of [ProductPreferences], which manages the
+     * caching and persistence of product-related data in the local storage.
+     *
+     * This function uses Hilt to inject the application [Context] and a [Gson]
+     * instance required for serialization and deserialization of the cached data.
+     *
+     * @param context The application context injected by Hilt.
+     * @param gson The Gson instance used for JSON parsing.
+     * @return A singleton instance of [ProductPreferences].
+     */
+    @Provides
+    @Singleton
+    fun provideProductPreferences(
+        @ApplicationContext context: Context,
+        gson: Gson,
+    ): ProductPreferences = ProductPreferences(context, gson)
 
     /**
      * Provides the [ProductRepository] implementation.
      *
-     * @param api The [ArcaApi] instance used to perform network requests.
-     * @return A singleton instance of [ProductRepositoryImpl].
+     * @param api The API client used to perform network requests to the backend.
+     * @param preferences The local data manager used to read and write cached product data.
+     * @param context The application context required for file access operations.
+     * @return A singleton instance of [ProductRepository].
      */
     @Provides
     @Singleton
     fun provideProductRepository(
         api: ArcaApi,
+        preferences: ProductPreferences,
+        detailPreferences: ProductDetailPreferences,
         @ApplicationContext context: Context,
-    ): ProductRepository = ProductRepositoryImpl(api, context)
+    ): ProductRepository =
+        ProductRepositoryImpl(
+            api = api,
+            preferences = preferences,
+            detailPreferences = detailPreferences,
+            context = context,
+        )
 
     /**
      * Provides the [WorkshopRepository] implementation.
@@ -170,20 +262,112 @@ object AppModule {
     @Singleton
     fun provideBeneficiaryRepository(api: ArcaApi): BeneficiaryRepository = BeneficiaryRepositoryImpl(api)
 
+    /**
+     * Provides the [DisabilityRepository] implementation.
+     *
+     * This repository handles all disability-related data operations,
+     * such as fetching the list of disabilities and registering new ones.
+     * It uses [ArcaApi] as the remote data source.
+     *
+     * @param api The [ArcaApi] instance used to perform network requests.
+     * @return A singleton instance of [DisabilityRepositoryImpl].
+     */
     @Provides
     @Singleton
     fun provDisabilityRepository(api: ArcaApi): DisabilityRepository = DisabilityRepositoryImpl(api)
 
+    /**
+     * Provides a singleton instance of [UsersRepository] for dependency injection.
+     *
+     * This provider function creates and configures the repository implementation
+     * that handles all user-related data operations. By declaring it as a singleton,
+     * the same repository instance is shared across the entire application lifecycle,
+     * ensuring consistent state management and efficient resource usage.
+     *
+     * The function abstracts the concrete implementation ([UsersRepositoryImpl]) behind
+     * the repository interface, allowing the application to depend on the abstraction
+     * rather than the implementation. This approach facilitates easier testing through
+     * mock implementations and provides flexibility to change the underlying implementation
+     * without affecting dependent code.
+     *
+     * @param api The [ArcaApi] instance used by the repository to perform network requests.
+     *            This dependency is automatically provided by the dependency injection framework.
+     * @return A singleton [UsersRepository] instance configured with the provided API client.
+     */
     @Provides
     @Singleton
     fun provideUsersRepository(api: ArcaApi): UsersRepository = UsersRepositoryImpl(api)
 
-    /** Provides the [ProductBatchRepository] implementation.*/
     @Provides
     @Singleton
-    fun provideProductBatchRepository(api: ArcaApi): ProductBatchRepository = ProductBatchRepositoryImpl(api)
+    fun provideProductBatchPreferences(
+        @ApplicationContext context: Context,
+        gson: Gson,
+    ): ProductBatchPreferences = ProductBatchPreferences(context, gson)
 
+    /**
+     * Provides the [ProductBatchRepository] implementation.
+     *
+     * This repository handles all data operations for product batches, including
+     * fetching, creating, and modifying them. It utilizes [ArcaApi] for remote
+     * operations and [ProductBatchPreferences] for local caching.
+     *
+     * @param api The API client for network requests.
+     * @param preferences The local data manager for caching product batch data.
+     * @return A singleton instance of [ProductBatchRepository].
+     */
+    @Provides
+    @Singleton
+    fun provideProductBatchRepository(
+        api: ArcaApi,
+        preferences: ProductBatchPreferences,
+    ): ProductBatchRepository =
+        ProductBatchRepositoryImpl(
+            api = api,
+            preferences = preferences,
+        )
+
+    /**
+     * Provides a singleton instance of [QrRepository] for dependency injection.
+     *
+     * This provider function constructs the repository implementation responsible
+     * for all QR-related operations, such as scanning, validating, and generating
+     * QR codes. By marking this provider as a singleton, the application ensures
+     * that a single shared instance of [QrRepositoryImpl] is used throughout the
+     * entire app lifecycle, promoting consistency and resource efficiency.
+     *
+     * The abstraction via the [QrRepository] interface allows for clean separation
+     * between the domain layer and the concrete implementation. This design supports
+     * improved testability (e.g., providing mock implementations during testing) and
+     * facilitates the ability to change or update the underlying implementation
+     * without impacting dependent components.
+     *
+     * @param api The [ArcaApi] instance used internally by the QR repository to execute
+     *            network requests required for scanning and validation workflows.
+     * @return A singleton [QrRepository] instance initialized with the provided API.
+     */
     @Provides
     @Singleton
     fun provideQrRepository(api: ArcaApi): QrRepository = QrRepositoryImpl(api)
+
+    /**
+     * Provides the [UploadRepository] implementation.
+     *
+     * This repository manages all upload-related operations,
+     * including sending images or files to the backend and
+     * returning the result of the upload process. It relies
+     * on [UploadRepositoryImpl] as the concrete implementation
+     * responsible for handling the API interaction.
+     *
+     * @param uploadRepositoryImpl The implementation of [UploadRepository]
+     * injected by Hilt to manage upload operations.
+     * @return A singleton instance of [UploadRepository] used across the app.
+     */
+    @Provides
+    @Singleton
+    fun provideUploadRepository(uploadRepositoryImpl: UploadRepositoryImpl): UploadRepository = uploadRepositoryImpl
+
+    @Provides
+    @Singleton
+    fun provideAttendanceRepository(api: ArcaApi): AttendanceRepository = AttendanceRepositoryImpl(api)
 }

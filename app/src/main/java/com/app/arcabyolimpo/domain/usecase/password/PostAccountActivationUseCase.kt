@@ -25,6 +25,14 @@ class PostAccountActivationUseCase
     constructor(
         private val repository: PasswordUserRepository,
     ) {
+        /**
+         * Executes the request to send an account activation or password recovery email.
+         *
+         * @param email The user's email address to which the activation/recovery link
+         *              should be sent.
+         *
+         * @return A [Flow] emitting the backend response message wrapped inside [Result].
+         */
         operator fun invoke(email: String): Flow<Result<String>> =
             flow {
                 try {

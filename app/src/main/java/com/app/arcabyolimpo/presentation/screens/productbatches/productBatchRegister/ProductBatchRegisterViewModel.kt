@@ -22,9 +22,14 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import javax.inject.Inject
 
-/** ViewModel for ProductBatchRegisterScreen.
- * @param registerProductBatchUseCase RegisterProductBatchUseCase -> use case to register a new product batch
-*/
+/**
+ * ViewModel for the ProductBatchRegisterScreen.
+ * Handles the business logic for registering a new product batch, including data loading,
+ * input validation, and communication with use cases.
+ *
+ * @param registerProductBatchUseCase Use case to register a new product batch.
+ * @param getProductsListUseCase Use case to fetch the list of available products.
+ */
 @HiltViewModel
 class ProductBatchRegisterViewModel
     @Inject
@@ -35,6 +40,9 @@ class ProductBatchRegisterViewModel
         var uiState by mutableStateOf(ProductBatchRegisterUiState())
             private set
 
+        /**
+         * Loads the initial data required for the screen, specifically the list of products.
+         */
         fun loadData() {
             viewModelScope.launch {
                 getProductsListUseCase().collect { result ->
@@ -67,6 +75,12 @@ class ProductBatchRegisterViewModel
             }
         }
 
+        /**
+         * Updates the UI state when a form field's value changes.
+         *
+         * @param field The identifier of the field being changed.
+         * @param value The new value for the field.
+         */
         fun onFieldChange(
             field: String,
             value: String,
@@ -105,6 +119,11 @@ class ProductBatchRegisterViewModel
             }
         }
 
+        /**
+         * Validates all form fields and, if valid, proceeds with the registration.
+         *
+         * @param onSuccess A callback function to be executed upon successful registration.
+         */
         fun validateAndRegister(onSuccess: () -> Unit) {
             val idProductoInvalid = uiState.idProducto.isBlank()
             val precioVentaInvalid = uiState.precioVenta.isBlank()
@@ -144,6 +163,13 @@ class ProductBatchRegisterViewModel
             }
         }
 
+        /**
+         * Checks if a given date string is before a reference date string.
+         *
+         * @param finalDate The date to check.
+         * @param referenceDate The date to compare against.
+         * @return True if finalDate is before referenceDate, otherwise false. Returns true on parsing error.
+         */
         private fun isDateBefore(
             finalDate: String,
             referenceDate: String,
@@ -163,6 +189,11 @@ class ProductBatchRegisterViewModel
                 true
             }
 
+        /**
+         * Calls the use case to register the new product batch in the repository.
+         *
+         * @param onSuccess A callback function to be executed upon successful registration.
+         */
         private fun register(onSuccess: () -> Unit) {
             viewModelScope.launch {
                 try {

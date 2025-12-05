@@ -18,9 +18,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.app.arcabyolimpo.presentation.theme.Poppins
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ViewButton
 import com.app.arcabyolimpo.ui.theme.Background
@@ -30,10 +32,11 @@ import com.app.arcabyolimpo.ui.theme.White
 /**
  * ProductItem: Item from the product list.
  *
-@param name Product name.
-@param unitaryPrice Unit price (already formatted as text).
-@param workshopName Workshop name (can be null).
-@param onClick Action taken when the "View" button is pressed.
+ * @param name Product name.
+ * @param unitaryPrice Unit price (already formatted as text).
+ * @param workshopName Workshop name (can be null).
+ * @param imageUrl URL of the product image (can be null).
+ * @param onClick Action taken when the "View" button is pressed.
  */
 @Suppress("ktlint:standard:function-naming")
 @Composable
@@ -41,6 +44,7 @@ fun ProductItem(
     name: String,
     unitaryPrice: String,
     workshopName: String?,
+    imageUrl: String?,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
@@ -68,13 +72,28 @@ fun ProductItem(
                         .padding(horizontal = 16.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                androidx.compose.foundation.layout.Box(
-                    modifier =
-                        Modifier
-                            .size(60.dp)
-                            .background(DangerGray, CircleShape)
-                            .clip(CircleShape),
-                )
+                if (imageUrl.isNullOrBlank()) {
+                    androidx.compose.foundation.layout.Box(
+                        modifier =
+                            Modifier
+                                .size(60.dp)
+                                .background(DangerGray, CircleShape)
+                                .clip(CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("Img", color = White.copy(alpha = 0.6f), fontSize = 12.sp)
+                    }
+                } else {
+                    AsyncImage(
+                        model = imageUrl,
+                        contentDescription = "Imagen de $name",
+                        contentScale = ContentScale.Crop,
+                        modifier =
+                            Modifier
+                                .size(60.dp)
+                                .clip(CircleShape),
+                    )
+                }
 
                 Column(
                     modifier =

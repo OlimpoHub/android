@@ -1,7 +1,7 @@
 package com.app.arcabyolimpo.presentation.screens.user.updateuser
 
-
 import android.annotation.SuppressLint
+import android.net.Uri
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -19,6 +19,7 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SaveButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.CancelButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.ExitIcon
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.ModalInput
+import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.ImageUploadInput
 import androidx.compose.foundation.clickable
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.CalendarIcon
 import androidx.compose.material3.SnackbarHost
@@ -28,6 +29,37 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDial
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.SnackbarArca
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.SnackbarVisualsWithError
 import kotlinx.coroutines.launch
+
+/**
+ * A modal bottom sheet screen for updating existing user information in the system.
+ *
+ * This composable provides a comprehensive form for editing user details displayed as a Material 3
+ * modal bottom sheet. It automatically loads the existing user data based on the userId parameter
+ * passed through navigation arguments, populating all form fields with current values. The form
+ * supports updating profile images, personal information, and user status, with real-time validation
+ * and inline error messages for required fields.
+ *
+ * The screen includes a Material 3 date picker for birth date selection, a confirmation dialog that
+ * appears before submitting changes, and Snackbar notifications for both success and error states
+ * positioned at the top of the modal. Unlike the registration screen, this update screen does not
+ * include role selection (role cannot be changed after creation) or document tracking checkboxes.
+ *
+ * The profile image is loaded from the existing photoUrl when the screen opens, and users can replace
+ * it by selecting a new image. The form validates required fields (name, paternal last name, email,
+ * and phone) before allowing submission. On successful update, the screen triggers the onSuccess
+ * callback and dismisses itself, allowing the parent screen to refresh and display updated information.
+ *
+ * State management, data loading, validation logic, and API calls are all handled by the
+ * UpdateUserViewModel, keeping this composable focused on UI rendering and user interactions.
+ *
+ * @param viewModel The HiltViewModel managing the update state, data loading, form validation, and API
+ *                  interactions. Retrieves the userId from SavedStateHandle to load the correct user data.
+ *                  Defaults to a Hilt-injected instance if not provided.
+ * @param onDismiss Callback invoked when the user dismisses the modal bottom sheet by clicking the exit
+ *                  icon, the cancel button, or by swiping down. Triggers state reset to clear the form.
+ * @param onSuccess Callback invoked when the user update is completed successfully. Called before the
+ *                  automatic dismissal to allow the parent screen to refresh data and reflect changes.
+ */
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,6 +71,9 @@ fun UpdateUserScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    // Image state
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
     // Snackbar state
     val snackbarHostState = remember { SnackbarHostState() }
@@ -53,6 +88,13 @@ fun UpdateUserScreen(
                     isError = isError
                 )
             )
+        }
+    }
+
+    // Add this after your other LaunchedEffects in UpdateUserScreen
+    LaunchedEffect(uiState.photoUrl) {
+        if (!uiState.photoUrl.isNullOrEmpty() && selectedImageUri == null) {
+            selectedImageUri = Uri.parse(uiState.photoUrl)
         }
     }
 
@@ -84,7 +126,6 @@ fun UpdateUserScreen(
             viewModel.resetState()
         }
     }
-
 
     DisposableEffect(Unit) {
         onDispose {
@@ -204,6 +245,17 @@ fun UpdateUserScreen(
                         .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
+                    // Image Upload - Added at the top of the form
+                    ImageUploadInput(
+                        label = "Foto de Perfil",
+                        value = selectedImageUri,
+                        onValueChange = { uri ->
+                            selectedImageUri = uri
+                            viewModel.updateProfileImage(uri)
+                        },
+                        height = 200.dp
+                    )
+
                     ModalInput(
                         label = "Nombre *",
                         value = uiState.firstName,

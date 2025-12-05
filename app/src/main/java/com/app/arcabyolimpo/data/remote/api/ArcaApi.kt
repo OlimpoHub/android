@@ -1,4 +1,5 @@
 package com.app.arcabyolimpo.data.remote.api
+import com.app.arcabyolimpo.data.remote.dto.attendance.AttendanceDto
 import com.app.arcabyolimpo.data.remote.dto.auth.LoginRequestDto
 import com.app.arcabyolimpo.data.remote.dto.auth.LoginResponseDto
 import com.app.arcabyolimpo.data.remote.dto.auth.RefreshRequestDto
@@ -8,6 +9,7 @@ import com.app.arcabyolimpo.data.remote.dto.beneficiaries.BeneficiariesListDto
 import com.app.arcabyolimpo.data.remote.dto.beneficiaries.BeneficiaryDto
 import com.app.arcabyolimpo.data.remote.dto.beneficiaries.GetBeneficiariesDisabilitiesDto
 import com.app.arcabyolimpo.data.remote.dto.disabilities.DisabilityDto
+import com.app.arcabyolimpo.data.remote.dto.disabilities.DisabilityRegisterDto
 import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.data.remote.dto.password.RecoverPasswordDto
 import com.app.arcabyolimpo.data.remote.dto.password.RecoverPasswordResponseDto
@@ -21,6 +23,8 @@ import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchModifyDto
 import com.app.arcabyolimpo.data.remote.dto.productbatches.ProductBatchRegisterDto
 import com.app.arcabyolimpo.data.remote.dto.qr.CreateQrDto
+import com.app.arcabyolimpo.data.remote.dto.qr.ValidateQrDto
+import com.app.arcabyolimpo.data.remote.dto.qr.ValidateQrResponseDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.AcquisitionDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.DeleteResponseDto
@@ -34,7 +38,6 @@ import com.app.arcabyolimpo.data.remote.dto.supplies.SuccessMessageDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SuppliesListDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchItemDto
-import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchListDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyBatchOneDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.SupplyDto
 import com.app.arcabyolimpo.data.remote.dto.supplies.WorkshopCategoryListDto
@@ -48,6 +51,7 @@ import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopResponseDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopsListDto
 import com.app.arcabyolimpo.domain.model.supplies.RegisterSupplyBatch
+import com.app.arcabyolimpo.domain.usecase.upload.UploadResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -69,51 +73,157 @@ import retrofit2.http.Query
  * network communication with the backend API service.
  */
 interface ArcaApi {
+    /**
+     * Authenticates a user using their email and password credentials.
+     *
+     * This endpoint receives a [LoginRequestDto] containing user authentication
+     * data. The backend verifies the credentials and, if valid, returns an access
+     * token, refresh token, and user details wrapped in a [LoginResponseDto].
+     *
+     * @param request Data transfer object containing the email and password
+     * required for authentication.
+     * @return [LoginResponseDto] containing authentication tokens and user information.
+     */
     @POST("user/login")
     suspend fun login(
         @Body request: LoginRequestDto,
     ): LoginResponseDto
 
+    /**
+     * Refreshes an expired or soon-to-expire access token.
+     *
+     * This endpoint accepts a [RefreshRequestDto] containing a valid refresh token.
+     * If the refresh token is still valid, the server issues a new access token
+     * and refresh token inside a [RefreshResponseDto].
+     *
+     * @param request Data transfer object containing the refresh token issued
+     * during the initial login process.
+     * @return [RefreshResponseDto] containing the newly generated tokens.
+     */
     @POST("user/refresh")
     suspend fun refresh(
         @Body request: RefreshRequestDto,
     ): RefreshResponseDto
 
+    /**
+     * Retrieves detailed information for a specific user.
+     *
+     * This endpoint receives the user ID as a path parameter and returns a list
+     * of [UserDto] objects associated with that ID. Although typically a single user
+     * is returned, the backend is designed to respond with a list.
+     *
+     * @param id Unique identifier of the user being requested.
+     * @return A list of [UserDto] objects containing user information.
+     */
     @GET("user/{id}")
     suspend fun getUserById(
         @Path("id") id: String,
     ): List<UserDto>
 
+    /**
+     * Registers a new user in the system.
+     *
+     * This endpoint receives a [RegisterUserDto] object containing the personal
+     * and account details of the new user. The backend processes and stores the
+     * information, returning a [UserDto] representing the newly created user.
+     *
+     * @param user Data transfer object containing the new user's registration details.
+     * @return [UserDto] containing the stored user information after registration.
+     */
     @POST("user/register")
     suspend fun registerUser(
         @Body user: RegisterUserDto,
     ): UserDto
 
+    /**
+     * Updates the information of an existing user.
+     *
+     * The endpoint receives an [UpdateUserDto] with fields that should be updated
+     * for the specified user. The backend applies the changes and returns the
+     * updated user information as a [UserDto].
+     *
+     * @param user Data transfer object containing updated user fields.
+     * @return [UserDto] representing the user after the update operation.
+     */
     @POST("user/update")
     suspend fun updateUser(
         @Body user: UpdateUserDto,
     ): UserDto
 
+    /**
+     * Deletes a user identified by the provided ID.
+     *
+     * This endpoint receives the user ID as a path parameter and removes the
+     * corresponding record from the backend database. The server responds with
+     * a generic key-value [Map] describing the operation status, which may include
+     * fields such as `"success"`, `"message"`, or `"deletedId"`.
+     *
+     * @param id Unique identifier of the user to be deleted.
+     * @return A generic [Map] containing metadata about the deletion result.
+     */
     @POST("user/delete/{id}")
     suspend fun deleteUser(
         @Path("id") id: String,
     ): Map<String, Any>
 
+    /**
+     * Sends a password recovery request for a user.
+     *
+     * This endpoint receives a [RecoverPasswordDto] containing the email
+     * of the user who requested password recovery. If the email exists in
+     * the system, the backend sends a recovery link or token to the user.
+     *
+     * @param request Data transfer object containing the user’s email.
+     * @return [Response] wrapping a [RecoverPasswordResponseDto] with information
+     * about the recovery request result, including status or messages.
+     */
     @POST("user/recover-password")
     suspend fun recoverPassword(
         @Body request: RecoverPasswordDto,
     ): Response<RecoverPasswordResponseDto>
 
+    /**
+     * Verifies whether a password recovery token is valid.
+     *
+     * This endpoint receives a token through the `token` query parameter
+     * and checks whether it is active, expired, or invalid. It is commonly
+     * used before allowing the user to set a new password.
+     *
+     * @param token The recovery token sent to the user's email.
+     * @return [Response] wrapping a [VerifyTokenResponseDto] containing
+     * validation details such as expiration, associated user, or status flags.
+     */
     @GET("user/verify-token")
     suspend fun verifyToken(
         @Query("token") token: String,
     ): Response<VerifyTokenResponseDto>
 
+    /**
+     * Updates a user's password.
+     *
+     * This endpoint receives an [UpdatePasswordDto] containing the user's email
+     * and the new password. The backend validates the request and applies the
+     * password update if the data is valid.
+     *
+     * @param request Data transfer object containing the email and the new password
+     * to be assigned to the user's account.
+     * @return [Response] wrapping an [UpdatePasswordResponseDto] which includes
+     * the update result, such as status and confirmation messages.
+     */
     @POST("user/update-password")
     suspend fun updatePassword(
         @Body request: UpdatePasswordDto,
     ): Response<UpdatePasswordResponseDto>
 
+    /**
+     * Retrieves all users registered in the system.
+     *
+     * This endpoint returns a list of all user accounts without requiring
+     * additional parameters. It is commonly used for administrative views
+     * and user management dashboards.
+     *
+     * @return A list of [UserDto] representing all users in the system.
+     */
     @GET("user")
     suspend fun getAllUsers(): List<UserDto>
 
@@ -126,11 +236,29 @@ interface ArcaApi {
         @Path("id") id: String,
     ): SupplyDto
 
+    /**
+     * Applies filters to retrieve a list of supplies.
+     *
+     * This endpoint receives a [FilterDto] containing the selected filters
+     * (such as category, status, workshop, etc.) and returns a list of supplies
+     * that match those criteria.
+     *
+     * @param params Data transfer object containing the filter values.
+     * @return A list of [SuppliesListDto] objects representing the filtered supplies.
+     */
     @POST("/supplies/filter")
     suspend fun filterSupplies(
         @Body params: FilterDto,
     ): List<SuppliesListDto>
 
+    /**
+     * Retrieves the available filter options for supplies.
+     *
+     * This endpoint returns all the necessary data to build the filters UI,
+     * such as categories, workshops, statuses, and other filter metadata.
+     *
+     * @return [GetFiltersDto] containing the available filter options.
+     */
     @GET("supplies/filter/data")
     suspend fun getFilterSupplies(): GetFiltersDto
 
@@ -183,48 +311,74 @@ interface ArcaApi {
     ): DeleteResponseDto
 
     // Workshop ---------------------------
-
+    /**
+     * Retrieves the complete list of workshops from the backend.
+     *
+     * @return A list of [WorkshopDto] representing all workshops stored in the system.
+     */
     @GET("workshop")
     suspend fun getWorkshops(): List<WorkshopDto>
 
+    /**
+     * Searches workshops by name.
+     *
+     * @param name Name or partial name of the workshop to search for.
+     * @return A list of [WorkshopDto] matching the search criteria.
+     */
     @GET("workshop/search")
     suspend fun searchWorkshops(
         @Query("nameWorkshop") name: String,
     ): List<WorkshopDto>
 
+    /**
+     * Retrieves detailed information for a single workshop.
+     *
+     * @param id Unique identifier of the workshop to retrieve.
+     * @return A [WorkshopResponseDto] containing full workshop information.
+     */
     @GET("workshop/{id}")
     suspend fun getWorkshop(
         @Path("id") id: String,
     ): WorkshopResponseDto
 
+    /**
+     * Registers a new workshop in the backend.
+     *
+     * @param requestBody Data transfer object containing the required workshop fields.
+     * @return [AddNewWorkshopDto] containing confirmation details of the creation.
+     */
     @POST("workshop/add")
     suspend fun addWorkshop(
         @Body requestBody: WorkshopDto,
     ): AddNewWorkshopDto
 
+    /**
+     * Updates an existing workshop in the backend.
+     *
+     * @param id Unique identifier of the workshop to update.
+     * @param requestBody Data transfer object containing the updated workshop fields.
+     * @return [AddNewWorkshopDto] containing confirmation details of the update.
+     */
     @POST("workshop/modify/{idTaller}")
     suspend fun modifyWorkshop(
         @Path("idTaller") id: String,
         @Body requestBody: WorkshopDto,
     ): AddNewWorkshopDto
 
-
-
     /**
-     * Deletes a single Workshop from the backend.
+     * Deletes a single workshop from the backend.
      *
      * This endpoint receives a [DeleteWorkshopDto] with the information needed
-     * to identify which supply should be removed ( its ID).
+     * to identify which workshop should be removed.
      *
-     * @param requestBody Data transfer object that contains the supply
-     * information required by the API to perform the delete operation.
-     * @return [DeleteResponseWorkshopDto] containing the result of the delete
-     * operation, such as a success flag and/or a confirmation message.
+     * @param requestBody Data transfer object containing the workshop ID
+     * required by the API to perform the delete operation.
+     * @return [DeleteResponseWorkshopDto] with the result of the delete operation,
+     * including a success flag and/or confirmation message.
      */
     @POST("workshop/delete")
     suspend fun deleteWorkshops(
         @Body requestBody: DeleteWorkshopDto,
-        // DeleteResponseDto is for the response, for the snackbar
     ): DeleteResponseWorkshopDto
 
     // Beneficiary -------------
@@ -244,9 +398,27 @@ interface ArcaApi {
         @Path("id") id: String,
     ): Response<Unit>
 
+    /**
+     * Retrieves the list of available disability categories for beneficiaries.
+     *
+     * This endpoint returns all disability types that can be assigned to a beneficiary.
+     * It is commonly used to populate dropdowns or filter options in the UI.
+     *
+     * @return [GetBeneficiariesDisabilitiesDto] containing the list of disability categories.
+     */
     @GET("beneficiary/categories")
     suspend fun getDisabilities(): GetBeneficiariesDisabilitiesDto
 
+    /**
+     * Applies filters to retrieve a list of beneficiaries.
+     *
+     * This endpoint receives a [FilterDto] with the selected filtering criteria
+     * (such as name, workshop, disability, status, or other parameters).
+     * It returns a list of beneficiaries that match the filter conditions.
+     *
+     * @param params Data transfer object containing the filter values.
+     * @return A list of [BeneficiaryDto] objects representing the filtered beneficiaries.
+     */
     @POST("beneficiary/filter")
     suspend fun filterBeneficiaries(
         @Body params: FilterDto,
@@ -262,8 +434,55 @@ interface ArcaApi {
         @Body requestBody: BeneficiaryDto,
     ): AddNewBeneficiaryDto
 
+    /**
+     * Modifies the selected beneficiary.
+     *
+     * This endpoint receives a [AddNewBeneficiaryDto] (as it uses the same
+     * DTO for both add and modify operations) with all the beneficiary's
+     * information. It updates every field with the new data.
+     *
+     * @param requestBody Data transfer object that contains the beneficiary's
+     * information required by the API to perform the update operation.
+     */
+    @POST("beneficiary/update/{idBeneficiary}")
+    suspend fun modifyBeneficiary(
+        @Path("idBeneficiary") id: String,
+        @Body requestBody: BeneficiaryDto,
+    ): AddNewBeneficiaryDto
+
     @GET("/disabilities/list")
     suspend fun getDisabilitiesList(): List<DisabilityDto>
+
+    /**
+     * Consults the selected beneficiary's detail.
+     *
+     * This endpoint receives a [DisabilityDto]
+     * with the disability's details.
+     *
+     */
+    @GET("/disabilities/{idDisability}")
+    suspend fun getDisabilityDetail(
+        @Path("idDisability") id: String,
+    ): DisabilityDto
+
+    /**
+     * Creates a new disability entry in the system.
+     *
+     * This endpoint receives a [DisabilityRegisterDto] containing the name and
+     * description of the new disability to be added.
+     *
+     * @param requestBody The data transfer object with the disability's information.
+     */
+    @POST("discapacity/add")
+    suspend fun registerDisability(
+        @Body requestBody: DisabilityRegisterDto,
+    )
+
+    // Deletes selected disability.
+    @PUT("discapacity/delete/{id}")
+    suspend fun deleteDisability(
+        @Path("id") id: String,
+    ): Response<Unit>
 
     @GET("supplies/workshop/category")
     suspend fun getWorkshopCategoryList(): WorkshopCategoryListDto
@@ -292,35 +511,73 @@ interface ArcaApi {
         @Part imagenInsumo: MultipartBody.Part?,
     )
 
+    /**     * Retrieves a list of all product batches.
+     *
+     * @return A list of [ProductBatchDto] objects representing all available product batches.
+     */
     @GET("productBatch/")
     suspend fun getProductBatches(): List<ProductBatchDto>
 
+    /**
+     * Retrieves a single product batch by its unique identifier.
+     *
+     * @param id The unique ID of the product batch to fetch.
+     * @return The corresponding [ProductBatchDto].
+     */
     @GET("productBatch/{id}")
     suspend fun getProductBatch(
         @Path("id") id: String,
     ): ProductBatchDto
 
+    /**
+     * Creates a new product batch entry.
+     *
+     * @param batch A [ProductBatchRegisterDto] containing the data for the new batch.
+     */
     @POST("productBatch/")
     suspend fun addProductBatch(
         @Body batch: ProductBatchRegisterDto,
     )
 
+    /**
+     * Modifies an existing product batch.
+     *
+     * @param id The unique ID of the product batch to modify.
+     * @param batch A [ProductBatchModifyDto] containing the updated batch information.
+     */
     @PUT("productBatch/{id}")
     suspend fun modifyProductBatch(
         @Path("id") id: String,
         @Body batch: ProductBatchModifyDto,
     )
 
+    /**
+     * Searches for product batches that match a given search term.
+     *
+     * @param term The string to search for within product batch data.
+     * @return A list of matching [ProductBatchDto] objects.
+     */
     @GET("productBatch/search")
     suspend fun searchProductBatch(
         @Query("q") term: String,
     ): List<ProductBatchDto>
 
+    /**
+     * Filters the list of product batches based on a set of criteria.
+     *
+     * @param filters A [FilterDto] object containing the selected filter options.
+     * @return A filtered list of [ProductBatchDto] objects.
+     */
     @POST("productBatch/filter")
     suspend fun filterProductBatch(
         @Body filters: FilterDto,
     ): List<ProductBatchDto>
 
+    /**
+     * Deletes a product batch by its unique identifier.
+     *
+     * @param id The unique ID of the product batch to delete.
+     */
     @DELETE("productBatch/{id}")
     suspend fun deleteProductBatch(
         @Path("id") id: String,
@@ -344,6 +601,22 @@ interface ArcaApi {
         @Path("idProduct") idProduct: String,
     ): Response<Unit>
 
+    /**
+     * Retrieves all products from the API.
+     *
+     * This endpoint fetches the complete list of products available in the system,
+     * returning them as data transfer objects that will be mapped to domain models
+     * by the repository layer. The method performs a GET request to the "product/"
+     * endpoint and suspends execution until the network response is received.
+     *
+     * The returned list contains basic product information suitable for product
+     * listings and overview screens. Each [ProductDto] includes essential fields
+     * such as name, price, availability, and associated workshop information.
+     *
+     * @return A [List] of [ProductDto] objects representing all products returned by the API.
+     * @throws HttpException if the API returns an error response (4xx or 5xx status codes).
+     * @throws IOException if a network error occurs during the request.
+     */
     @GET("product/")
     suspend fun getProducts(): List<ProductDto>
 
@@ -352,6 +625,26 @@ interface ArcaApi {
         @Query("q") query: String,
     ): List<ProductDto>
 
+    /**
+     * Retrieves a specific product by its unique identifier from the API.
+     *
+     * This endpoint fetches detailed information for a single product by querying
+     * the "product/{id}" endpoint with the provided product ID. The method performs
+     * a GET request and suspends execution until the network response is received.
+     *
+     * The method returns null if no product is found with the specified ID, allowing
+     * the calling code to handle the "not found" scenario gracefully without throwing
+     * an exception. This design pattern enables more flexible error handling in the
+     * repository layer.
+     *
+     * @param productId The unique identifier of the product to retrieve, injected into
+     *                  the URL path as the "id" parameter.
+     * @return A [ProductDto] object containing the product's information if found,
+     *         or null if no product exists with the specified ID.
+     * @throws HttpException if the API returns an error response other than 404
+     *         (e.g., 401 Unauthorized, 500 Internal Server Error).
+     * @throws IOException if a network error occurs during the request.
+     */
     @GET("product/{id}")
     suspend fun getProductById(
         @Path("id") productId: String,
@@ -360,9 +653,9 @@ interface ArcaApi {
     @GET("product/add")
     suspend fun getProductFilters(): ProductRegisterInfoDto
 
-    @GET("product/disponible")
-    suspend fun getProductsByAvailability(
-        @Query("disponible") disponible: Int,
+    @GET("product/filter/status")
+    suspend fun getProductsByStatus(
+        @Query("status") status: Int,
     ): List<ProductDto>
 
     @GET("product/workshop")
@@ -402,17 +695,68 @@ interface ArcaApi {
     @PUT("product/{idProduct}/update")
     suspend fun updateProduct(
         @Path("idProduct") idProduct: String,
-        @Part("idTaller") idWorkshop: RequestBody,
+        @Part("idTaller") idWorkshop: RequestBody?,
         @Part("Nombre") name: RequestBody,
         @Part("PrecioUnitario") unitaryPrice: RequestBody,
-        @Part("idCategoria") idCategory: RequestBody,
+        @Part("idCategoria") idCategory: RequestBody?,
         @Part("Descripcion") description: RequestBody,
         @Part("Disponible") status: RequestBody,
         @Part image: MultipartBody.Part?,
     )
 
+    /**
+     * Creates a new QR code for a specific user and workshop.
+     *
+     * This endpoint receives a [CreateQrDto] containing the necessary
+     * identifiers (userID and workshopID) required by the backend to
+     * generate a unique QR code.
+     *
+     * @param request Data transfer object that includes the user and workshop
+     * information needed to create the QR code.
+     * @return [ResponseBody] containing the generated QR code in binary format.
+     */
     @POST("qr/create")
     suspend fun postCreateQr(
         @Body request: CreateQrDto,
     ): ResponseBody
+
+    /**
+     * Uploads an image associated with a workshop to the backend.
+     *
+     * This endpoint receives a multipart file and returns a response indicating
+     * whether the upload was successful, along with the generated URL or file name.
+     *
+     * @param image Multipart file part containing the image to upload.
+     * @return [UploadResponse] containing the result of the operation, including
+     * the stored file name or URL provided by the backend.
+     */
+    @POST("upload")
+    @Multipart
+    suspend fun uploadWorkshopImage(
+        @Part image: MultipartBody.Part,
+    ): UploadResponse
+
+    @GET("attendance")
+    suspend fun getAttendanceByUser(
+        @Query("userId") userId: String,
+    ): List<AttendanceDto>
+
+    /**
+     * Validates a scanned QR code.
+     *
+     * This endpoint receives a [ValidateQrDto] with the encoded QR value,
+     * the timestamp when it was read, and the userID making the request.
+     * The backend verifies whether the QR is valid, expired, duplicated,
+     * or belongs to the corresponding workshop.
+     *
+     * @param request Data transfer object that contains the QR value and
+     * validation metadata required by the backend.
+     * @return [Response] wrapping a [ValidateQrResponseDto] with the validation
+     * result, including status, messages, and related workshop or user data.
+     */
+
+    @POST("qr/validate")
+    suspend fun postValidateQr(
+        @Body request: ValidateQrDto,
+    ): Response<ValidateQrResponseDto>
 }

@@ -19,7 +19,33 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 
-
+/**
+ * Displays detailed information about a specific user with edit and delete capabilities.
+ *
+ * This composable screen presents a comprehensive view of a user's information including
+ * their profile photo, personal details, role, status, and associated documents. It provides
+ * functionality for editing user information, deleting users (marking them as inactive),
+ * and viewing attendance records for volunteer users.
+ *
+ * The screen implements lifecycle-aware data loading, automatically refreshing the user
+ * details whenever the screen resumes (e.g., after returning from the edit screen). This
+ * ensures the displayed information is always current without requiring manual refresh actions.
+ *
+ * User deletion is performed with a confirmation dialog and provides feedback through
+ * snackbar notifications. The delete button is visually disabled for users who are already
+ * inactive, preventing redundant deletion attempts.
+ *
+ * @param viewModel The ViewModel managing the user detail state and business logic. Injected
+ *                  via Hilt, it handles data fetching, deletion operations, and state management.
+ * @param onBackClick Callback invoked when the user taps the back button in the top app bar,
+ *                    typically navigating back to the previous screen.
+ * @param onEditClick Callback invoked when the user taps the edit button, receiving the user's
+ *                    ID as a parameter to navigate to the edit screen with the correct user loaded.
+ * @param onDeleteClick Callback invoked after successful user deletion, typically navigating
+ *                      back to the user list screen.
+ * @param onAttendanceClick Callback invoked when the "Ver asistencias" button is tapped for
+ *                          volunteer users, receiving the user's ID to navigate to their attendance records.
+ */
 @Suppress("ktlint:standard:function-naming")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,6 +54,7 @@ fun UserDetailScreen(
     onBackClick: () -> Unit,
     onEditClick: (String) -> Unit = {},
     onDeleteClick: () -> Unit = {},
+    onAttendanceClick: (String) -> Unit = {},
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val scaffoldState = rememberScaffoldState()
@@ -147,6 +174,9 @@ fun UserDetailScreen(
                         collab = uiState.collab!!,
                         onEditClick = { uiState.collab?.idUsuario?.let { onEditClick(it.toString()) } },
                         onDeleteClick = { showConfirmDialog = true },
+                        onAttendanceClick = { uiState.collab?.idUsuario?.let { id ->
+                            onAttendanceClick(id.toString())
+                        } }
                     )
                 }
             }

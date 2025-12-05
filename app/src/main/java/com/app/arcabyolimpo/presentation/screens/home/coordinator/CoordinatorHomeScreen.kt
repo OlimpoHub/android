@@ -44,6 +44,8 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.FunctionalNavBa
 @Composable
 fun CoordinatorHomeScreen(navController: NavHostController) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+    var homePressedTrigger by rememberSaveable { mutableIntStateOf(0) }
+    var inventoryPressedTrigger by rememberSaveable { mutableIntStateOf(0) }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -55,69 +57,17 @@ fun CoordinatorHomeScreen(navController: NavHostController) {
                 .background(Color(0xFF040610)),
         ) {
             when (selectedTab) {
-                0 -> HomeScreen(navController)
+                0 -> HomeScreen(navController, homePressedTrigger)
                 1 -> WorkshopsListScreen(
                     navController = navController,
                     workshopClick = { id ->
                         navController.navigate(Screen.WorkshopDetail.createRoute(id))
                     }
                 )
-                /**
-                2 ->
-                    TopAppBar(
-                        title = {
-                            Text(
-                                "Pedidos",
-                                color = Color.White,
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Bold,
-                            )
-                        },
-                        colors =
-                            TopAppBarDefaults.topAppBarColors(
-                                containerColor = Color(0xFF040610),
-                            ),
-                        actions = {
-                            IconButton(onClick = { }) {
-                                NotificationIcon()
-                            }
-                        },
-                    )
-                3 -> InventoryScreen(navController)
-                **/
-                2 -> {
-                    Column(modifier = Modifier.fillMaxSize()) {
-                        TopAppBar(
-                            title = {
-                                Text(
-                                    "Pedidos",
-                                    color = Color.White,
-                                    fontSize = 24.sp,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                            },
-                            colors = TopAppBarDefaults.topAppBarColors(
-                                containerColor = Color(0xFF040610),
-                            )
-                        )
 
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "En Proceso...",
-                                color = Color.White,
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
-                }
+                2 -> InventoryScreen(navController, inventoryPressedTrigger)
 
-                3 -> InventoryScreen(navController)
-
-                4 -> BeneficiaryListScreen(
+                3 -> BeneficiaryListScreen(
                     navController = navController,
                     onBeneficiaryClick = { beneficiaryId ->
                         navController.navigate(Screen.BeneficiaryDetail.createRoute(beneficiaryId))
@@ -129,7 +79,19 @@ fun CoordinatorHomeScreen(navController: NavHostController) {
         }
         FunctionalNavBar(
             selectedIndex = selectedTab,
-            onItemSelected = { selectedTab = it },
+            onItemSelected = { index ->
+
+                if (index == selectedTab) {
+
+                    when (index) {
+                        0 -> homePressedTrigger++
+                        2 -> inventoryPressedTrigger++
+                    }
+
+                } else {
+                    selectedTab = index
+                }
+            },
         )
     }
 }

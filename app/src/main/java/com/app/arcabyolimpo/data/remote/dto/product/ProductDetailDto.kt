@@ -24,5 +24,5 @@ data class ProductDetailDto(
     @SerializedName("Categoria") val categoryDescription: String,
     @SerializedName("Disponible") val status: Int, // 1 o 0
     @SerializedName("Descripcion") val description: String,
-    @SerializedName("imagen") val image: String?
+    @SerializedName("imagen") val image: String?,
 )

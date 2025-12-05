@@ -1,5 +1,7 @@
 package com.app.arcabyolimpo.presentation.screens.workshop
 
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.arcabyolimpo.data.remote.dto.user.UserDto
@@ -7,20 +9,47 @@ import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.usecase.workshops.PostAddNewWorkshop
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopDto
 import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopFormData
+import com.app.arcabyolimpo.domain.usecase.upload.PostUploadImage
 import com.app.arcabyolimpo.domain.usecase.user.GetAllUsersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
 import java.util.UUID
 import javax.inject.Inject
 
+/**
+ * ViewModel responsible for managing the UI state of the Add New Workshop screen.
+ *
+ * This class handles the workflow required for registering a new workshop in the system,
+ * including:
+ * - Managing form state for all workshop fields.
+ * - Retrieving the list of available users (e.g., instructors).
+ * - Uploading the workshop image when provided by the user.
+ * - Sending the completed data to the backend for registration.
+ *
+ * It exposes a [StateFlow] of [AddNewWorkshopUiState] that the UI observes to render updates,
+ * such as loading progress, success states, error messages, or updated form values.
+ *
+ * This ViewModel interacts with multiple use cases from the domain layer:
+ *
+ * @property postAddNewWorkshop Use case responsible for submitting a new workshop to the server.
+ * @property getAllUsersUseCase Use case that retrieves the list of users for assignment.
+ * @property postUploadImage Use case responsible for uploading the workshop image.
+ * @property context Application context used for accessing resources or file utilities.
+ */
 @HiltViewModel
 class AddNewWorkshopViewModel @Inject constructor(
     private val postAddNewWorkshop: PostAddNewWorkshop,
-    private val getAllUsersUseCase: GetAllUsersUseCase
+    private val getAllUsersUseCase: GetAllUsersUseCase,
+    private val postUploadImage: PostUploadImage,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     /** Backing property for the workshops UI state. */
@@ -31,7 +60,8 @@ class AddNewWorkshopViewModel @Inject constructor(
     private val _fieldErrors = MutableStateFlow<Map<String, Boolean>>(emptyMap())
     val fieldErrors: StateFlow<Map<String, Boolean>> = _fieldErrors.asStateFlow()
 
-
+    private val _selectedImageUri = MutableStateFlow<Uri?>(null)
+    val selectedImageUri: StateFlow<Uri?> = _selectedImageUri.asStateFlow()
     private val _users = MutableStateFlow<List<UserDto>>(emptyList())
     val users: StateFlow<List<UserDto>> = _users.asStateFlow()
 
@@ -40,6 +70,35 @@ class AddNewWorkshopViewModel @Inject constructor(
 
     private val _usersError = MutableStateFlow<String?>(null)
     val usersError: StateFlow<String?> = _usersError.asStateFlow()
+
+    fun setSelectedImageUri(uri: Uri?) {
+        _selectedImageUri.value = uri
+    }
+
+    fun getFileFromUri(context: Context, uri: Uri): File? {
+        return try {
+            val contentResolver = context.contentResolver
+            val tempFile = File(context.cacheDir, "upload_temp_${System.currentTimeMillis()}")
+            contentResolver.openInputStream(uri)?.use { inputStream ->
+                FileOutputStream(tempFile).use { outputStream ->
+                    inputStream.copyTo(outputStream)
+                }
+            }
+            tempFile
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+    private val regexValidation = Regex("^[a-zA-Z0-9 áéíóúÁÉÍÓÚñÑ/]*$")
+    private val urlTypingRegex = Regex("^[a-zA-Z0-9:/.?=&_\\-]*$")
+
+    fun validateInput(text: String, regex: Regex, maxLength: Int): Boolean
+    {
+        if (text.isEmpty()) {return true}
+        return text.length <= maxLength && regex.matches(text)
+    }
+
 
     fun loadUsers() {
         viewModelScope.launch {
@@ -74,6 +133,43 @@ class AddNewWorkshopViewModel @Inject constructor(
         if (!validateForm()) return
 
         viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, error = null, isSuccess = false) }
+
+            val imageUri = _selectedImageUri.value
+            var remoteImageUrl: String? = null
+            var uploadError: String? = null
+
+            if (imageUri != null) {
+                val fileToUpload = getFileFromUri(context, imageUri)
+
+                if (fileToUpload == null) {
+                    uploadError = "Error al preparar la imagen para la subida."
+                } else {
+
+                    val uploadResult = postUploadImage(fileToUpload)
+                        .let { flow ->
+                            flow.first { it !is Result.Loading }
+                        }
+
+                    when (uploadResult) {
+                        is Result.Success -> {
+                            remoteImageUrl = uploadResult.data.url
+                            fileToUpload.delete()
+                        }
+                        is Result.Error -> {
+                            uploadError = "Error al subir la imagen: ${uploadResult.exception.message}"
+                            fileToUpload.delete()
+                        }
+                        is Result.Loading -> { }
+                    }
+                }
+
+                if (uploadError != null) {
+                    _uiState.update { it.copy(isLoading = false, error = uploadError) }
+                    return@launch
+                }
+            }
+
             val workshopDto = WorkshopDto(
                 id = UUID.randomUUID().toString(),
                 name = _formData.value.name,
@@ -83,8 +179,7 @@ class AddNewWorkshopViewModel @Inject constructor(
                 idUser = _formData.value.idUser,
                 description = _formData.value.description,
                 date = _formData.value.date,
-                image = _formData.value.image,
-                videoTraining = _formData.value.videoTraining
+                image = remoteImageUrl
             )
 
             postAddNewWorkshop(workshopDto).collect { result ->
@@ -95,7 +190,6 @@ class AddNewWorkshopViewModel @Inject constructor(
                             error = null,
                             isSuccess = false
                         )
-
                         is Result.Success -> state.copy(
                             addNewWorkshop = workshopDto,
                             isLoading = false,
@@ -114,7 +208,18 @@ class AddNewWorkshopViewModel @Inject constructor(
         }
     }
 
+    /** Function that updates the form data, making sure that it follows the regex and dosen't
+     * exceed the char number */
+
     fun updateFormData(update: WorkshopFormData.() -> WorkshopFormData) {
+        val currentState = _formData.value
+        val newState = currentState.update()
+        if (currentState.name != newState.name) {
+            if (!validateInput(newState.name, regexValidation, maxLength = 50)) return
+        }
+        if (currentState.description != newState.description) {
+            if (!validateInput(newState.description, regexValidation, maxLength = 400)) return
+        }
         _formData.update { it.update() }
         clearFieldErrors()
     }
@@ -152,13 +257,6 @@ class AddNewWorkshopViewModel @Inject constructor(
         if (data.date.isBlank()) errors["date"] = true
         if (data.description.isBlank()) errors["description"] = true
         if (data.idUser.isBlank()) errors["idUser"] = true
-        if (data.videoTraining.isBlank()) {
-            errors["videoTraining"] = true
-        } else {
-            if (!isValidUrl(data.videoTraining)) {
-                errors["videoTraining"] = true
-            }
-        }
 
         if (data.startHour.isNotBlank() && !hourRegex.matches(data.startHour)) {
             errors["startHour"] = true
@@ -175,4 +273,3 @@ class AddNewWorkshopViewModel @Inject constructor(
     }
 
 }
-

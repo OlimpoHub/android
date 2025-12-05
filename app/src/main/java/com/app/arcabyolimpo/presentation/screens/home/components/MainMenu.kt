@@ -38,7 +38,7 @@ fun MainMenu(
     onSelect: (String) -> Unit,
     sessionViewModel: SessionViewModel = hiltViewModel(),
 ) {
-    val role by sessionViewModel.role.collectAsState(initial = "")
+    val role by sessionViewModel.role.collectAsState()
 
     Column(
         modifier =
@@ -53,7 +53,13 @@ fun MainMenu(
         HomeScreenCard(
             name = "QR Asistencia",
             image = painterResource(id = R.drawable.img_qr),
-            onClick = { onSelect("qr") },
+            onClick = {
+                if (role == "BECARIO") {
+                    onSelect("readQR")
+                } else {
+                    onSelect("qr")
+                }
+            }
         )
 
         Text(
@@ -78,12 +84,6 @@ fun MainMenu(
             image = painterResource(id = R.drawable.img_trainings),
             onClick = { onSelect("training") },
         )
-        if (role == "COORDINADOR" || role == "ASISTENTE") {
-            HomeScreenCard(
-                name = "Análisis",
-                image = painterResource(id = R.drawable.img_dashboard),
-                onClick = { onSelect("analysis") },
-            )
-        }
+
     }
 }

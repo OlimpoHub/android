@@ -1,6 +1,5 @@
 package com.app.arcabyolimpo.presentation.screens.workshop
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,11 +19,27 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 import javax.inject.Inject
 
+/**
+ * ViewModel responsible for managing the UI state of the Workshop Detail screen.
+ *
+ * This ViewModel handles:
+ * - Fetching detailed information for a specific workshop.
+ * - Managing the state of confirmation dialogs (e.g., deletion validation).
+ * - Handling the workshop deletion process.
+ *
+ * It exposes a [StateFlow] of [WorkshopDetailUiState] that the UI observes to reactively
+ * update loading indicators, dialog visibility, error messages, and other UI elements.
+ *
+ * The ViewModel interacts with data and domain layers:
+ *
+ * @property repository Repository used to retrieve workshop details from the backend.
+ * @property savedStateHandle Handle used to access navigation arguments such as the workshop ID.
+ * @property deleteWorkshopsUseCase Use case responsible for deleting a workshop from the system.
+ */
 @HiltViewModel
 class WorkshopDetailViewModel @Inject constructor(
     private val repository: WorkshopRepository,
     savedStateHandle: SavedStateHandle,
-    //Yessica
     private val deleteWorkshopsUseCase: DeleteWorkshopUseCase,
 ) : ViewModel() {
 
@@ -41,12 +56,8 @@ class WorkshopDetailViewModel @Inject constructor(
 
     private val _formattedDate = MutableStateFlow("")
     val formattedDate: StateFlow<String> = _formattedDate.asStateFlow()
-
-    //Yessica
-
     private val _uiState = MutableStateFlow(WorkshopDetailUiState())
     val uiState: StateFlow<WorkshopDetailUiState> = _uiState.asStateFlow()
-    //-------
 
     init {
         loadWorkshop()
@@ -177,9 +188,5 @@ class WorkshopDetailViewModel @Inject constructor(
             }
         }
     }
-
-
-    //--------------
-
 
 }

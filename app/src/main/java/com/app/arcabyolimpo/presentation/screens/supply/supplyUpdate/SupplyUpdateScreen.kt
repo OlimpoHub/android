@@ -44,7 +44,15 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.SelectObjectInp
 import com.app.arcabyolimpo.presentation.ui.components.molecules.StatusSelector
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
-
+/** ---------------------------------------------------------------------------------------------- *
+ * SupplyUpdateScreen -> view where all the inputs, buttons and selects are shown with the
+ * information collected by the view model, handles different states and errors.
+ *
+ * @param viewModel: SupplyUpdateViewModel -> vm for the view in charge of placing the data
+ * @param onModifyClick: () -> Unit -> function when the user modifies the supply
+ * @param onCancel: () -> Unit -> function when the user cancels the operation
+ * @param onBackClick: () -> Unit -> function when the user clicks the back button
+ * ---------------------------------------------------------------------------------------------- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SupplyUpdateScreen(
@@ -127,13 +135,19 @@ fun SupplyUpdateScreen(
                     errorMessage = uiState.nameError,
                 )
 
-                val imageUri = uiState.selectedImageUrl ?: uiState.currentImageUrl
-                    ?.takeIf { it.isNotBlank() }
-                    ?.let{ Uri.parse(it)}
+                val displayImage = if (uiState.selectedImageUrl != null) {
+                    // Case A: User just picked a new photo from gallery
+                    uiState.selectedImageUrl
+                } else {
+                    // Case B: User hasn't touched the image, show the existing one from server
+                    uiState.currentImageUrl
+                        ?.takeIf { it.isNotBlank() }
+                        ?.let { Uri.parse("http://74.208.78.8:8080/$it") }
+                }
 
                 ImageUploadInput(
                     label = "Imagen del insumo",
-                    value = imageUri,
+                    value = displayImage,
                     onValueChange = viewModel::onImageSelected,
                 )
 

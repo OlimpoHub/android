@@ -26,6 +26,5 @@ data class Workshop(
     val finishHour: String?,
     val status: Int,
     val description: String?,
-    val date: String?,
-    val videoTraining: String?
+    val date: String?
 )

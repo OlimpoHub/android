@@ -12,8 +12,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -37,8 +40,19 @@ import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun InventoryScreen(navController: NavHostController) {
+fun InventoryScreen(
+    navController: NavHostController,
+    resetTrigger: Int,
+) {
     var selectedOption by rememberSaveable { mutableStateOf<String?>(null) }
+    var prevReset by remember { mutableIntStateOf(resetTrigger) }
+
+    LaunchedEffect(resetTrigger) {
+        if (resetTrigger != prevReset && selectedOption != null) {
+            selectedOption = null
+        }
+        prevReset = resetTrigger
+    }
 
     ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false) {
         Box(modifier = Modifier.fillMaxSize()) {
