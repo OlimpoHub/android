@@ -28,6 +28,7 @@ import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.DescriptionInput
+import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.MultiSelectInput
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
@@ -46,7 +47,7 @@ fun AddNewBeneficiaryScreen(
         val fieldErrors by viewModel.fieldErrors.collectAsStateWithLifecycle()
 
         var showConfirmDialog by remember { mutableStateOf(false) }
-
+        val selectedImageUri by viewModel.selectedImageUri.collectAsStateWithLifecycle()
         val snackbarHostState = remember { SnackbarHostState() }
         val scope = rememberCoroutineScope()
 
@@ -113,16 +114,15 @@ fun AddNewBeneficiaryScreen(
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     /** Upload image - Lado izquierdo */
-                    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
                     ImageUploadInput(
                         label = "",
                         value = selectedImageUri,
                         onValueChange = { uri ->
-                            selectedImageUri = uri
+                            viewModel.setSelectedImageUri(uri)
                             viewModel.updateFormData { copy(foto = uri?.toString().orEmpty()) }
                         },
-                        isError = false,
-                        errorMessage = null,
+                        isError = fieldErrors["foto"] != null,
+                        errorMessage = fieldErrors["foto"],
                         modifier = Modifier.weight(0.4f)
                     )
 
@@ -239,15 +239,20 @@ fun AddNewBeneficiaryScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                /** Discapacidades - Selector desde base de datos */
-                SelectInput(
+                /** Discapacidades - Multi Selector desde base de datos */
+                MultiSelectInput(
                     label = "Discapacidades:",
-                    selectedOption = disabilities.firstOrNull { it.id == formData.discapacidad }?.name
-                        ?: "Seleccionar",
+                    selectedOptions = formData.disabilities.mapNotNull { disabilityId ->
+                        disabilities.find { it.id == disabilityId }?.name
+                    },
                     options = disabilities.map { it.name },
-                    onOptionSelected = { selectedNombre ->
-                        val selectedDisability = disabilities.find { it.name == selectedNombre }
-                        viewModel.updateFormData { copy(discapacidad = selectedDisability?.id ?: "") }
+                    onOptionsSelected = { selectedNames ->
+                        val selectedIds = selectedNames.mapNotNull { name ->
+                            disabilities.find { it.name == name }?.id
+                        }
+                        viewModel.updateFormData {
+                            copy(disabilities = selectedIds)
+                        }
                     },
                     modifier = Modifier.fillMaxWidth(),
                     isError = fieldErrors["discapacidad"] != null,

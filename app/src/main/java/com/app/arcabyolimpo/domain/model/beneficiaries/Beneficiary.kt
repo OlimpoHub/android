@@ -18,6 +18,9 @@ package com.app.arcabyolimpo.domain.model.beneficiaries
 data class Beneficiary(
     val id: String,
     val name: String,
+    val firstName: String? = null,
+    val paternalName: String? = null,
+    val maternalName: String? = null,
     val birthdate: String,
     val emergencyNumber: String,
     val emergencyName: String,
@@ -25,6 +28,6 @@ data class Beneficiary(
     val details: String,
     val entryDate: String,
     val image: String,
-    val disabilities: String,
+    val disabilities: List<String>,
     val status: Int
 )

@@ -4,6 +4,10 @@ import com.app.arcabyolimpo.domain.model.supplies.Acquisition
 import com.app.arcabyolimpo.domain.model.supplies.Supply
 import com.app.arcabyolimpo.presentation.screens.supply.commonSupplyBatch.SupplyBatchUiStateBase
 
+/**
+ * SupplyBatchModifyUiState -> Data class with states that the view can have, such as the loding
+ * state or an error had happen.
+ */
 data class SupplyBatchModifyUiState(
     override val suppliesList: List<Supply> = emptyList(),
     override val acquisitionTypes: List<Acquisition> = emptyList(),

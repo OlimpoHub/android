@@ -1,5 +1,7 @@
 package com.app.arcabyolimpo.presentation.screens.workshop
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,15 +11,20 @@ import com.app.arcabyolimpo.data.remote.dto.workshops.WorkshopFormData
 import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.model.workshops.Workshop
 import com.app.arcabyolimpo.domain.repository.workshops.WorkshopRepository
+import com.app.arcabyolimpo.domain.usecase.upload.PostUploadImage
 import com.app.arcabyolimpo.domain.usecase.user.GetAllUsersUseCase
 import com.app.arcabyolimpo.domain.usecase.workshops.GetWorkshopsListUseCase
 import com.app.arcabyolimpo.domain.usecase.workshops.PostModifyWorkshop
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -27,12 +34,22 @@ import javax.inject.Inject
 /**
  * ViewModel responsible for managing the UI state of the Modify Workshop screen.
  *
- * This class interacts with the [GetAllUsersUseCase] to fetch data from the users available. It also
- * interacts with the and exposes a [StateFlow] of [WorkshopsListUiState]
- * that the UI observes to render updates.
+ * This class handles the entire workflow needed to modify an existing workshop, including:
+ * - Fetching the workshop data to be edited.
+ * - Retrieving the list of available users who can be assigned as instructors.
+ * - Uploading a new image for the workshop when required.
+ * - Sending the updated workshop information to the backend.
  *
- * @property GetAllUsersUseCase Use case for retrieving the list of users.
- * @property PostModifyWorkshop Use case for updating the data of the workshop in the database.
+ * It exposes a [StateFlow] of [ModifyWorkshopUiState] that the UI observes to reactively display
+ * loading changes, errors, success states, and workshop information.
+ *
+ * This ViewModel interacts with multiple use cases and repositories from the domain and data layers:
+ *
+ * @property postModifyWorkshop Use case responsible for submitting the updated workshop data to the server.
+ * @property getAllUsersUseCase Use case that retrieves the list of active users (e.g., instructors).
+ * @property repository Repository used to fetch existing workshop details from the backend.
+ * @property postUploadImage Use case that handles uploading a new workshop image to the server.
+ * @property context Application context used for accessing resources or file utilities.
  */
 
 @HiltViewModel
@@ -40,6 +57,8 @@ class ModifyWorkshopViewModel @Inject constructor(
     private val postModifyWorkshop: PostModifyWorkshop,
     private val getAllUsersUseCase: GetAllUsersUseCase,
     private val repository: WorkshopRepository,
+    private val postUploadImage: PostUploadImage,
+    @ApplicationContext private val context: Context
 ) : ViewModel(){
 
     private val _uiState = MutableStateFlow(ModifyWorkshopUiState())
@@ -70,7 +89,37 @@ class ModifyWorkshopViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
+    private val _selectedImageUri = MutableStateFlow<Uri?>(null)
+    val selectedImageUri: StateFlow<Uri?> = _selectedImageUri.asStateFlow()
+    private val regexValidation = Regex("^[a-zA-Z0-9 áéíóúÁÉÍÓÚñÑ]*$")
+    private val urlTypingRegex = Regex("^[a-zA-Z0-9:/.?=&_\\-]*$")
 
+    fun validateInput(text: String, regex: Regex, maxLength: Int): Boolean
+    {
+        if (text.isEmpty()) {return true}
+        return text.length <= maxLength && regex.matches(text)
+    }
+
+
+    fun setSelectedImageUri(uri: Uri?) {
+        _selectedImageUri.value = uri
+    }
+
+    fun getFileFromUri(context: Context, uri: Uri): File? {
+        return try {
+            val contentResolver = context.contentResolver
+            val tempFile = File(context.cacheDir, "upload_temp_${System.currentTimeMillis()}")
+            contentResolver.openInputStream(uri)?.use { inputStream ->
+                FileOutputStream(tempFile).use { outputStream ->
+                    inputStream.copyTo(outputStream)
+                }
+            }
+            tempFile
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
     fun loadUsers() {
         viewModelScope.launch {
             _usersLoading.value = true
@@ -123,8 +172,7 @@ class ModifyWorkshopViewModel @Inject constructor(
                             date = cleanDate ?: "",
                             description = workshopData.description ?: "",
                             idUser = workshopData.idUser ?: "",
-                            image = workshopData.url ?: "",
-                            videoTraining = workshopData.videoTraining ?: ""
+                            image = workshopData.url ?: ""
                         )
                     }
                     _formattedDate.value = formatWorkshopDate(workshopData.date)
@@ -166,6 +214,42 @@ class ModifyWorkshopViewModel @Inject constructor(
         if (!validateForm()) return
         Log.d("DEBUG_SAVE", "Intentando guardar -> Nombre: ${_formData.value.name}, Desc: ${_formData.value.description}")
         viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, error = null, isSuccess = false) }
+
+            val imageUri = _selectedImageUri.value
+            var remoteImageUrl: String? = _formData.value.image
+            var uploadError: String? = null
+
+            if (imageUri != null) {
+                val fileToUpload = getFileFromUri(context, imageUri)
+
+                if (fileToUpload == null) {
+                    uploadError = "Error al preparar la imagen para la subida."
+                } else {
+                    val uploadResult = postUploadImage(fileToUpload)
+                        .let { flow ->
+                            flow.first { it !is Result.Loading }
+                        }
+
+                    when (uploadResult) {
+                        is Result.Success -> {
+                            remoteImageUrl = uploadResult.data.url
+                            fileToUpload.delete()
+                        }
+                        is Result.Error -> {
+                            uploadError = "Error al subir la imagen: ${uploadResult.exception.message}"
+                            fileToUpload.delete()
+                        }
+                        is Result.Loading -> { }
+                    }
+                }
+
+                if (uploadError != null) {
+                    _uiState.update { it.copy(isLoading = false, error = uploadError) }
+                    return@launch
+                }
+            }
+
             val workshopDto = WorkshopDto(
                 id = idWorkshop,
                 name = _formData.value.name,
@@ -175,8 +259,7 @@ class ModifyWorkshopViewModel @Inject constructor(
                 idUser = _formData.value.idUser,
                 description = _formData.value.description,
                 date = _formData.value.date,
-                image = _formData.value.image,
-                videoTraining = _formData.value.videoTraining
+                image = remoteImageUrl
             )
             Log.d("WORKSHOP_DEBUG", "Fecha: ${_formData?.value?.date}")
             postModifyWorkshop(workshopDto).collect { result ->
@@ -208,11 +291,21 @@ class ModifyWorkshopViewModel @Inject constructor(
     private fun formatHour(hourString: String?): String {
         return hourString?.takeIf { it.length >= 5 }?.substring(0, 5) ?: ""
     }
+    /** Function that updates the form data, making sure that it follows the regex and dosen't
+     * exceed the char number */
+
     fun updateFormData(update: WorkshopFormData.() -> WorkshopFormData) {
+        val currentState = _formData.value
+        val newState = currentState.update()
+        if (currentState.name != newState.name) {
+            if (!validateInput(newState.name,regexValidation, 50)) return
+        }
+        if (currentState.description != newState.description) {
+            if (!validateInput(newState.name,regexValidation, 400)) return
+        }
         _formData.update { it.update() }
         clearFieldErrors()
     }
-
     fun resetForm() {
         _formData.value = WorkshopFormData()
         _fieldErrors.value = emptyMap()
@@ -246,14 +339,6 @@ class ModifyWorkshopViewModel @Inject constructor(
         if (data.date.isBlank()) errors["date"] = true
         if (data.description.isBlank()) errors["description"] = true
         if (data.idUser.isBlank()) errors["idUser"] = true
-
-        if (data.videoTraining.isBlank()) {
-            errors["videoTraining"] = true
-        } else {
-            if (!isValidUrl(data.videoTraining)) {
-                errors["videoTraining"] = true
-            }
-        }
 
         if (data.startHour.isNotBlank() && !hourRegex.matches(data.startHour)) {
             errors["startHour"] = true

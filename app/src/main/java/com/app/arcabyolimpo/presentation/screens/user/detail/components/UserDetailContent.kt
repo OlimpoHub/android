@@ -1,5 +1,10 @@
 package com.app.arcabyolimpo.presentation.screens.user.detail.components
 
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.PaddingValues
+import com.app.arcabyolimpo.presentation.theme.Poppins
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -31,11 +37,35 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ModifyButto
 import com.app.arcabyolimpo.presentation.ui.components.atoms.status.ActiveStatus
 import com.app.arcabyolimpo.presentation.ui.components.atoms.status.InactiveStatus
 
+/**
+ * Displays comprehensive user details in a scrollable column layout with action buttons.
+ *
+ * This composable presents a user's profile information including their photo, personal details,
+ * role, and status. It provides administrative actions for editing, deleting, and viewing
+ * attendance records for volunteers. The layout features a profile photo at the top (or an
+ * initials-based placeholder if no photo exists), followed by the user's full name, status badge,
+ * and organized information cards for key details like email, phone, career, birth date, and role.
+ *
+ *
+ * @param collab The UserDto object containing all user information to display. Expected fields include
+ *               foto (profile photo URL), nombre (first name), apellidoPaterno (paternal last name),
+ *               apellidoMaterno (maternal last name), estatus (status: 1 for active, 0 for inactive),
+ *               correoElectronico (email), telefono (phone), carrera (career/degree), fechaNacimiento
+ *               (birth date), and idRol (role ID).
+ * @param onEditClick Callback invoked when the user clicks the modify/edit button. Typically used to
+ *                    open an edit modal or navigate to an edit screen.
+ * @param onDeleteClick Callback invoked when the user clicks the delete button and the user status is
+ *                      active. Should typically show a confirmation dialog before proceeding with deletion.
+ * @param onAttendanceClick Callback invoked when the "Ver asistencias" button is clicked. Only available
+ *                          and displayed for users with role ID "3" (Becario/Volunteer). Used to navigate
+ *                          to the attendance records screen for that user.
+ */
 @Composable
 fun UserDetailContent(
     collab: UserDto,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
+    onAttendanceClick: () -> Unit,
 ) {
     Column(
         modifier =
@@ -105,11 +135,41 @@ fun UserDetailContent(
 
         Spacer(modifier = Modifier.height(32.dp))
 
+        // Botón para ver asistencias
+        if (collab.idRol == "3") {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center,
+            ) {
+                Button(
+                    onClick = onAttendanceClick,
+                    modifier = Modifier
+                        .fillMaxWidth(0.76f)
+                        .height(48.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF2844AE),
+                        contentColor = Color(0xFFFFF7EB),
+                    )
+                ) {
+                    Text(
+                        text = "Ver asistencias",
+                        fontFamily = Poppins,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 14.sp,
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // 🟣 Acciones secundarias: Modificar / Eliminar
         Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Box(
@@ -125,17 +185,42 @@ fun UserDetailContent(
                 modifier = Modifier.weight(1f),
                 contentAlignment = Alignment.Center,
             ) {
-                DeleteButton(
-                    onClick = onDeleteClick,
-                )
+                val isEnabled = collab.estatus == 1
+
+                Box(
+                    modifier = if (!isEnabled) Modifier.alpha(0.4f) else Modifier
+                ) {
+                    DeleteButton(
+                        onClick = {
+                            if (isEnabled) onDeleteClick()
+                        },
+                        enabled = true,
+                    )
+                }
             }
         }
 
         Spacer(modifier = Modifier.height(24.dp))
+
     }
 }
 
-// Helper function to format date
+/**
+ * Formats an ISO 8601 date string to a human-readable DD/MM/YYYY format.
+ *
+ * This helper function transforms date strings from the backend's ISO format
+ * (YYYY-MM-DDTHH:mm:ss or YYYY-MM-DD) into a more user-friendly format suitable
+ * for display in the UI. It handles the common ISO timestamp format by extracting
+ * only the date portion before the 'T' separator.
+ *
+ * The function includes error handling to gracefully manage malformed date strings
+ * by returning the original input, ensuring the UI doesn't break due to unexpected
+ * date formats.
+ *
+ * @param dateString The ISO 8601 formatted date string to format, or null if no date is available.
+ * @return A formatted date string in DD/MM/YYYY format, the original string if formatting
+ *         fails, or null if the input was null.
+ */
 fun formatDate(dateString: String?): String? =
     try {
         val parts = dateString?.split("T")[0]?.split("-")
@@ -144,7 +229,22 @@ fun formatDate(dateString: String?): String? =
         dateString
     }
 
-// Helper function to get role name from ID
+/**
+ * Converts a role ID to its corresponding human-readable Spanish name.
+ *
+ * This helper function maps the numeric role identifiers used in the backend
+ * to user-friendly role names displayed throughout the UI. It provides a centralized
+ * location for role name mapping, ensuring consistency across the application.
+ *
+ * The function supports the three main role types in the system:
+ * - Role ID "1": Coordinador (Coordinator) - Administrative oversight role
+ * - Role ID "2": Asistente (Assistant) - Support staff role
+ * - Role ID "3": Becario (Volunteer/Intern) - Volunteer or intern role with attendance tracking
+ *
+ * @param roleId The role identifier string from the backend, or null if unavailable.
+ * @return The Spanish name of the role, or "Desconocido" (Unknown) if the role ID
+ *         doesn't match any known roles or is null.
+ */
 fun getRoleName(roleId: String?): String =
     when (roleId) {
         "1" -> "Coordinador"

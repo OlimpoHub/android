@@ -25,11 +25,17 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +45,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.app.arcabyolimpo.presentation.theme.Poppins
+import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.CancelButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ModifyButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SaveButton
@@ -52,6 +59,7 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
 import com.app.arcabyolimpo.presentation.ui.components.molecules.NumberStepper
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
+import kotlinx.coroutines.launch
 
 /** ProductBatchRegisterScreen: Composable screen for registering a new product batch.
  *
@@ -80,6 +88,10 @@ fun ProductBatchRegisterScreen(
         } else {
             ""
         }
+
+    var showConfirmDialog by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         containerColor = Background,
@@ -231,10 +243,27 @@ fun ProductBatchRegisterScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     SaveButton(
-                        onClick = {
-                            viewModel.validateAndRegister(onSuccess = onCreated)
-                        },
+                        onClick = { showConfirmDialog = true }
                     )
+
+                    if (showConfirmDialog) {
+                        DecisionDialog(
+                            onDismissRequest = {
+                                showConfirmDialog = false
+                                scope.launch {
+                                    snackbarHostState.showSnackbar("Registro cancelado")
+                                }
+                            },
+                            onConfirmation = {
+                                showConfirmDialog = false
+                                viewModel.validateAndRegister(onSuccess = onCreated)
+                            },
+                            dialogTitle = "Confirmar registro",
+                            dialogText = "¿Deseas registrar este lote de producto? Asegúrate de que todos los datos sean correctos.",
+                            confirmText = "Confirmar",
+                            dismissText = "Cancelar",
+                        )
+                    }
                 }
             }
         }

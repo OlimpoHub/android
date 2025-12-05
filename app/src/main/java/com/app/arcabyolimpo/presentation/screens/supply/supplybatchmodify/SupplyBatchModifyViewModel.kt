@@ -23,6 +23,20 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 @HiltViewModel
+/**
+ * ViewModel for modifying an existing supply batch.
+ *
+ * Responsibilities:
+ * - Load supporting data (supplies list, acquisition types).
+ * - Load a single batch by id and populate the form for editing.
+ * - Validate user input and perform the modify batch use case.
+ * - Expose UI state via a StateFlow (`uiState`).
+ *
+ * The ViewModel is defensive about date parsing/formatting: it accepts
+ * multiple input formats (dd/MM/yyyy, yyyy-MM-dd, ISO instants) and converts
+ * backend dates into the UI-friendly `dd/MM/yyyy` representation when
+ * possible.
+ */
 class SupplyBatchModifyViewModel
     @Inject
     constructor(
@@ -156,6 +170,15 @@ class SupplyBatchModifyViewModel
             _uiState.update { it.copy(selectedSupplyId = id, supplyError = null, registerError = null) }
         }
 
+        /**
+         * Called when a batch is selected for modification.
+         *
+         * Loads the batch details from the repository and populates the UI
+         * state with the batch fields so the user can edit them. The method
+         * updates loading/error state while the request is in flight.
+         *
+         * @param id The identifier of the batch to load.
+         */
         fun onSelectBatch(id: String) {
             _uiState.update { it.copy(selectedBatchId = id) }
 
@@ -209,7 +232,21 @@ class SupplyBatchModifyViewModel
             _uiState.update { it.copy(boughtDateInput = value, boughtDateError = null, registerError = null) }
         }
 
-        // Validate inputs for modify action
+        /**
+         * Validate the current UI inputs before attempting to update a batch.
+         *
+         * Validations performed:
+         * - supply is selected
+         * - quantity is present and > 0
+         * - bought/expiration dates are present, below a max length and parse
+         *   to a supported date format
+         * - acquisition type is selected
+         *
+         * On failure the method updates per-field error messages in the
+         * `uiState` so the UI can render inline error messages.
+         *
+         * @return true if all fields are valid, false otherwise.
+         */
         private fun validateInputsForModify(): Boolean {
             val state = _uiState.value
             var valid = true
@@ -277,7 +314,17 @@ class SupplyBatchModifyViewModel
             return valid
         }
 
-        // Shared date validator (tries common formats)
+        /**
+         * Validate that a string represents a date in one of the supported
+         * formats. Accepted formats:
+         * - `dd/MM/yyyy` (UI display format)
+         * - `yyyy-MM-dd` (ISO local date)
+         * - ISO date-times with offset (e.g. `2025-11-26T06:00:00Z`)
+         * - Instant parseable strings
+         *
+         * The function is intentionally permissive to accommodate backend
+         * variations; it returns `true` if any parser succeeds.
+         */
         private fun isValidDate(dateStr: String): Boolean {
             if (dateStr.isBlank()) return false
             try {
@@ -304,6 +351,15 @@ class SupplyBatchModifyViewModel
             return false
         }
 
+        /**
+         * Attempt to update the currently selected batch using the values
+         * present in `uiState`.
+         *
+         * The method validates inputs first, constructs a `RegisterSupplyBatch`
+         * domain object and calls the `modifySupplyBatchUseCase`. It updates
+         * the `uiState` to reflect loading, success or error results so the
+         * UI can react (show progress, errors, or navigate on success).
+         */
         fun updateBatch() {
             val current = _uiState.value
 
@@ -386,6 +442,12 @@ class SupplyBatchModifyViewModel
             }
         }
 
+        /**
+         * Reset the registration/update status flags in the UI state.
+         *
+         * This is useful for clearing transient flags such as `registerSuccess`
+         * after the parent screen has handled navigation/snackbar display.
+         */
         fun clearRegisterStatus() {
             Log.d(TAG, "clearRegisterStatus: clearing register flags")
             _uiState.update {

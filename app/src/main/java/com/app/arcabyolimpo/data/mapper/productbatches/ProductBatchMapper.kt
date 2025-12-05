@@ -8,9 +8,9 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 /**
- * Mapping the Dto to Domain model and viceversa
+ * Converts a [ProductBatchDto] (data layer) to a [ProductBatch] (domain layer).
  *
- * @return ProductBatch
+ * @return The corresponding [ProductBatch] domain model.
  */
 fun ProductBatchDto.toDomain(): ProductBatch =
     ProductBatch(
@@ -27,6 +27,11 @@ fun ProductBatchDto.toDomain(): ProductBatch =
         fechaRealizacion = fechaRealizacion,
     )
 
+/**
+ * Converts a [ProductBatch] (domain layer) to a [ProductBatchDto] (data layer).
+ *
+ * @return The corresponding [ProductBatchDto] data transfer object.
+ */
 fun ProductBatch.toDto(): ProductBatchDto =
     ProductBatchDto(
         idProducto = idProducto,
@@ -46,14 +51,27 @@ private val inputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 private val outputFormatter = DateTimeFormatter.ISO_LOCAL_DATE // This is "yyyy-MM-dd"
 
 /**
- * Helper function to reformat the date string.
- * It parses "dd/MM/yyyy" and returns "yyyy-MM-dd".
+ * Reformats a date string from "dd/MM/yyyy" to "yyyy-MM-dd" format.
+ *
+ * This is a helper function used to ensure dates are in the correct format expected
+ * by the remote API.
+ *
+ * @param dateString The date string in "dd/MM/yyyy" format.
+ * @return The date string reformatted to "yyyy-MM-dd".
  */
 private fun reformatDate(dateString: String): String {
     val localDate = LocalDate.parse(dateString, inputFormatter)
     return localDate.format(outputFormatter)
 }
 
+/**
+ * Converts a [ProductBatch] (domain layer) to a [ProductBatchRegisterDto] (data layer).
+ *
+ * This mapping is specifically for creating a new product batch. It handles the conversion
+ * of price to a Double and reformats the date strings to "yyyy-MM-dd".
+ *
+ * @return A [ProductBatchRegisterDto] ready for network serialization.
+ */
 fun ProductBatch.toRegisterDto(): ProductBatchRegisterDto =
     ProductBatchRegisterDto(
         idProducto = idProducto,
@@ -66,6 +84,14 @@ fun ProductBatch.toRegisterDto(): ProductBatchRegisterDto =
         fechaRealizacion = reformatDate(fechaRealizacion),
     )
 
+/**
+ * Converts a [ProductBatch] (domain layer) to a [ProductBatchModifyDto] (data layer).
+ *
+ * This mapping is specifically for updating an existing product batch. It handles the
+ * conversion of price and reformats date strings to the API-required "yyyy-MM-dd" format.
+ *
+ * @return A [ProductBatchModifyDto] ready for network serialization.
+ */
 fun ProductBatch.toModifyDto(): ProductBatchModifyDto =
     ProductBatchModifyDto(
         PrecioVenta = precioVenta.toDoubleOrNull() ?: 0.0,

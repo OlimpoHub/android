@@ -27,6 +27,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,6 +52,7 @@ import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDial
 import com.app.arcabyolimpo.presentation.ui.components.atoms.status.ActiveStatus
 import com.app.arcabyolimpo.presentation.ui.components.atoms.status.InactiveStatus
 import com.app.arcabyolimpo.domain.model.beneficiaries.Beneficiary
+import com.app.arcabyolimpo.presentation.screens.session.SessionViewModel
 import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
 import com.app.arcabyolimpo.presentation.ui.components.molecules.TextValue
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
@@ -60,14 +62,19 @@ import kotlinx.coroutines.launch
 @Composable
 fun BeneficiaryDetailScreen(
     onBackClick: () -> Unit,
-    onModifyClick: () -> Unit,
-    viewModel: BeneficiaryDetailViewModel = hiltViewModel()
+    onModifyClick: (String) -> Unit,
+    viewModel: BeneficiaryDetailViewModel = hiltViewModel(),
+    beneficiaryId: String,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
     var showDeleteDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.loadBeneficiary(beneficiaryId)
+    }
 
     LaunchedEffect(uiState.deleteSuccess, uiState.deleteError) {
         if (uiState.deleteSuccess) {
@@ -90,14 +97,14 @@ fun BeneficiaryDetailScreen(
         snackbarHostState = snackbarHostState,
         showDeleteDialog = showDeleteDialog,
         onBackClick = onBackClick,
-        onModifyClick = {
-            uiState.beneficiary?.id?.let { onModifyClick() }
-        },
+        onModifyClick = onModifyClick,
         onDeleteClick = viewModel::onDeleteClicked,
         onShowDialog = { showDeleteDialog = true },
-        onDismissDialog = { showDeleteDialog = false }
+        onDismissDialog = { showDeleteDialog = false },
+        beneficiaryId = beneficiaryId,
     )
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BeneficiaryDetailContent(
@@ -105,11 +112,15 @@ fun BeneficiaryDetailContent(
     snackbarHostState: SnackbarHostState,
     showDeleteDialog: Boolean,
     onBackClick: () -> Unit,
-    onModifyClick: () -> Unit,
+    onModifyClick: (String) -> Unit,
     onDeleteClick: () -> Unit,
     onShowDialog: () -> Unit,
-    onDismissDialog: () -> Unit
+    onDismissDialog: () -> Unit,
+    beneficiaryId: String,
+    sessionViewModel: SessionViewModel = hiltViewModel(),
 ) {
+    val role by sessionViewModel.role.collectAsState()
+
     if (showDeleteDialog) {
         DecisionDialog(
             dialogTitle = "¿Seguro que quieres eliminar a ${uiState.beneficiary?.name ?: "..."}?",
@@ -161,13 +172,15 @@ fun BeneficiaryDetailContent(
             }
             uiState.beneficiary != null -> {
                 val beneficiary = uiState.beneficiary
+                val imageUrl = beneficiary.image.takeIf { !it.isNullOrBlank() }
+
                 Column(
                     modifier = Modifier
                         .padding(paddingValues)
                         .padding(horizontal = 24.dp)
                         .fillMaxSize()
                 ) {
-                   Column(
+                    Column(
                         modifier = Modifier
                             .weight(1f)
                             .verticalScroll(rememberScrollState()),
@@ -185,7 +198,7 @@ fun BeneficiaryDetailContent(
                             ) {
                                 Image(
                                     painter = rememberAsyncImagePainter(
-                                        model = beneficiary.image,
+                                        model = imageUrl,
                                         placeholder = painterResource(id = R.drawable.ic_beneficiary_icon),
                                         error = painterResource(id = R.drawable.img_arca_logo)
                                     ),
@@ -220,7 +233,7 @@ fun BeneficiaryDetailContent(
                             }
                         }
 
-                       Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -233,7 +246,7 @@ fun BeneficiaryDetailContent(
                                 TextValue(label = "Número de teléfono", value = beneficiary.emergencyNumber.orEmpty())
                             }
                         }
-                       Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -243,7 +256,14 @@ fun BeneficiaryDetailContent(
                                 StatusField(isActive = beneficiary.status == 1)
                             }
                             Column(modifier = Modifier.weight(1f)) {
-                                TextValue(label = "Discapacidades", value = beneficiary.disabilities.orEmpty())
+                                TextValue(
+                                    label = "Discapacidades",
+                                    value = if (beneficiary.disabilities.isNotEmpty()) {
+                                        beneficiary.disabilities.joinToString(", ")
+                                    } else {
+                                        "Ninguna"
+                                    }
+                                )
                             }
                         }
 
@@ -258,17 +278,19 @@ fun BeneficiaryDetailContent(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        DeleteButton(
-                            modifier = Modifier.size(width = 112.dp, height = 40.dp),
-                            onClick = { onShowDialog() }
-                        )
+                        if (role == "COORDINADOR") {
+                            DeleteButton(
+                                modifier = Modifier.size(width = 112.dp, height = 40.dp),
+                                onClick = { onShowDialog() }
+                            )
+                        }
 
                         Spacer(modifier = Modifier.width(16.dp))
 
-                        /*ModifyButton(
+                        ModifyButton(
                             modifier = Modifier.size(width = 112.dp, height = 40.dp),
-                            onClick = onModifyClick
-                        )*/
+                            onClick = { onModifyClick(beneficiaryId) }
+                        )
                     }
                 }
             }
@@ -317,7 +339,6 @@ fun DetailTextRow(label: String, value: String?) {
 }
 
 
-
 @Preview(name = "Activo", showBackground = true, backgroundColor = 0xFF1C1B1F)
 @Composable
 fun BeneficiaryDetailPreviewActive() {
@@ -335,7 +356,7 @@ fun BeneficiaryDetailPreviewActive() {
                     details = "Detalles del beneficiario",
                     entryDate = "01/01/2023",
                     image = "",
-                    disabilities = "Sí",
+                    disabilities = listOf("Visual", "Auditiva"),
                     status = 1
                 )
             ),
@@ -345,7 +366,8 @@ fun BeneficiaryDetailPreviewActive() {
             onModifyClick = {},
             onDeleteClick = {},
             onShowDialog = {},
-            onDismissDialog = {}
+            onDismissDialog = {},
+            beneficiaryId = ""
         )
     }
 }
@@ -366,8 +388,8 @@ fun BeneficiaryDetailPreviewInactive() {
                     emergencyRelation = "Padre",
                     details = "Detalles del beneficiario",
                     entryDate = "01/01/2023",
-                    image = "",
-                    disabilities = "Sí",
+                    image = "https://ajemplo.com",
+                    disabilities =  listOf("Visual"),
                     status = 0
                 )
             ),
@@ -377,7 +399,8 @@ fun BeneficiaryDetailPreviewInactive() {
             onModifyClick = {},
             onDeleteClick = {},
             onShowDialog = {},
-            onDismissDialog = {}
+            onDismissDialog = {},
+            beneficiaryId = ""
         )
     }
 }

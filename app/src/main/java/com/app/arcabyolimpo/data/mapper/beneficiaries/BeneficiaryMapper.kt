@@ -10,6 +10,8 @@ import com.app.arcabyolimpo.domain.model.filter.FilterData
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
+import kotlin.text.split
+
 
 /**
  * Extension function to convert a [BeneficiaryDto] from the data (remote) layer
@@ -26,6 +28,9 @@ fun BeneficiaryDto.toDomain(): Beneficiary {
     return Beneficiary(
         id = id.orEmpty(),
         name = fullName.ifEmpty { "Nombre no disponible" },
+        firstName = firstName.orEmpty(),
+        paternalName = paternalName.orEmpty(),
+        maternalName = maternalName.orEmpty(),
         birthdate = formatApiDate(birthdate),
         emergencyNumber = emergencyNumber.orEmpty(),
         emergencyName = emergencyName.orEmpty(),
@@ -33,7 +38,7 @@ fun BeneficiaryDto.toDomain(): Beneficiary {
         details = details.orEmpty(),
         entryDate = formatApiDate(entryDate),
         image = image.orEmpty(),
-        disabilities = disabilities.orEmpty(),
+        disabilities = disabilities ?: emptyList(),
         status = status ?: 0,
     )
 }
@@ -146,7 +151,7 @@ fun BeneficiaryFormData.toBeneficiaryDto() = BeneficiaryDto(
     details = descripcion,
     entryDate = fechaIngreso,
     image = foto,
-    disabilities = discapacidad.orEmpty(),
+    disabilities = disabilities,
     status = estatus
 )
 
@@ -165,6 +170,9 @@ fun BeneficiaryFormData.toDomain(): Beneficiary {
     return Beneficiary(
         id = id ?: "",
         name = fullName.ifEmpty { "Nombre no disponible" },
+        firstName = nombre,
+        paternalName = apellidoPaterno,
+        maternalName = apellidoMaterno,
         birthdate = fechaNacimiento,
         emergencyNumber = numeroEmergencia,
         emergencyName = nombreContactoEmergencia,
@@ -172,7 +180,7 @@ fun BeneficiaryFormData.toDomain(): Beneficiary {
         details = descripcion,
         entryDate = fechaIngreso,
         image = foto,
-        disabilities = discapacidad,
+        disabilities = disabilities,
         status = estatus
     )
 }

@@ -16,7 +16,18 @@ import javax.inject.Inject
 import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.model.supplies.SupplyAdd
 import kotlinx.coroutines.async
+import androidx.core.net.toUri
 
+/**
+ * SuppliesUpdateViewModel -> Collects the information for the workshops and categories, renders the
+ * previous supply information and waits for the new user information then collects it to create a
+ * new Supply
+ *
+ * @param getWorkshopCategoryInfoUseCase -> fetch all categories and workshops
+ * @param getSupplyBatchListUseCase -> gathers the supply information
+ * @param updateOneSupplyUseCase -> sends the updated information of the supply
+ * @return ViewModel
+ */
 @HiltViewModel
 class SupplyUpdateViewModel @Inject constructor(
     private val getWorkshopCategoryInfoUseCase: GetWorkshopCategoryInfoUseCase,
@@ -190,31 +201,48 @@ class SupplyUpdateViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.update { it.copy(isSaving = true) }
-
-            val supply = SupplyAdd(
-                name = formData.name,
-                idWorkshop = formData.selectedIdWorkshop!!,
-                measureUnit = formData.measureUnit,
-                idCategory = formData.selectedIdCategory!!,
-                status = formData.status,
-            )
-
-            val result = updateOneSupplyUseCase(
-                idSupply = idSupply,
-                supply = supply,
-                image = formData.selectedImageUrl
-            )
-
-            _uiState.update {
-                if (result.isSuccess) {
-                    it.copy(
-                        isSaving = false,
-                        success = true
-                    )
+            try {
+                val imageUri = if (uiState.value.selectedImageUrl != null) {
+                    uiState.value.selectedImageUrl
                 } else {
+                    uiState.value.currentImageUrl?.let {
+                        // Make sure to add your base URL here
+                        Uri.parse("http://74.208.78.8:8080/$it")
+                    }
+                }
+
+                val supply = SupplyAdd(
+                    name = formData.name,
+                    idWorkshop = formData.selectedIdWorkshop!!,
+                    measureUnit = formData.measureUnit,
+                    idCategory = formData.selectedIdCategory!!,
+                    status = formData.status
+                )
+
+                val result = updateOneSupplyUseCase(
+                    idSupply = idSupply,
+                    supply = supply,
+                    image = imageUri
+                )
+
+                _uiState.update {
+                    if (result.isSuccess) {
+                        it.copy(
+                            isSaving = false,
+                            success = true
+                        )
+                    } else {
+                        it.copy(
+                            isSaving = false,
+                            error = result.exceptionOrNull()?.message
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                _uiState.update {
                     it.copy(
                         isSaving = false,
-                        error = result.exceptionOrNull()?.message
+                        error = e.message ?: "Error desconocido al guardar"
                     )
                 }
             }

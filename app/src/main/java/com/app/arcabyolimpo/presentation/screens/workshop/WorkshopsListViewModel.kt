@@ -18,12 +18,18 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import javax.inject.Inject
 
 /**
- * ViewModel responsible for managing the UI state of the workshops list screen.
+ * ViewModel responsible for managing the UI state of the Workshops List screen.
  *
- * This class interacts with the [GetWorkshopsListUseCase] to fetch data from the domain layer
- * and exposes a [StateFlow] of [WorkshopsListUiState] that the UI observes to render updates.
+ * This ViewModel handles:
+ * - Loading the full list of workshops from the backend.
+ * - Searching workshops based on various filters or text queries.
+ * - Exposing changes in loading states, error messages, and filtered results.
  *
- * @property getWorkshopsListUseCase Use case for retrieving the list of workshops.
+ * It exposes a [StateFlow] of [WorkshopsListUiState] that the UI observes to dynamically
+ * render the list of workshops and react to user interactions.
+ *
+ * @property getWorkshopsListUseCase Use case responsible for retrieving the entire workshop list.
+ * @property searchWorkshopsUseCase Use case that performs search operations on workshops.
  */
 @HiltViewModel
 class WorkshopsListViewModel @Inject constructor(
@@ -70,7 +76,7 @@ class WorkshopsListViewModel @Inject constructor(
 
                             val uniqueDates =
                                 result.data
-                                    .mapNotNull { it.date?.take(10) } // "2025-11-03T06:00:00.000Z" -> "2025-11-03"
+                                    .mapNotNull { it.date?.take(10) }
                                     .distinct()
                                     .sorted()
 
@@ -140,6 +146,14 @@ class WorkshopsListViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Clears all active filters and restores the original list of workshops.
+     *
+     * This resets:
+     * - The selected filters object
+     * - The visible workshop list
+     * - The search results list
+     */
     fun clearFilters() {
         _uiState.update { current ->
             current.copy(
@@ -149,38 +163,48 @@ class WorkshopsListViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Applies filtering logic according to the provided [FilterDto].
+     *
+     * Supports:
+     * - Filtering by "Estatus" (Activo / Inactivo)
+     * - Filtering by date of the workshop
+     * - Filtering by entry hour of the workshop
+     * - Sorting based on the "order" parameter
+     *
+     * Updates the UI state with the filtered and sorted list.
+     */
     fun applyFilters(filterDto: FilterDto) {
         _uiState.update { current ->
-            val dateFilter = filterDto.filters["Fecha"]
-            val hourFilter = filterDto.filters["Hora de Entrada"]
-            val statusFilter = filterDto.filters["Estado"]
+            val dateFilter = getFilterValues(filterDto, "Fecha")
+            val hourFilter = getFilterValues(filterDto, "Hora de Entrada")
+            val statusFilter = getFilterValues(filterDto, "Estado")
 
             val filteredWorkshops =
                 originalWorkshopsList.filter { workshop ->
 
-                    // ----- Fecha -----
                     val normalizedDate = (workshop.date ?: "").take(10)
                     val matchesDate =
                         when {
                             dateFilter.isNullOrEmpty() -> true
-                            else -> normalizedDate in dateFilter
+                            else -> dateFilter.any { selected ->
+                                normalizedDate == selected.take(10)
+                            }
                         }
 
-                    // ----- Hora de entrada -----
                     val matchesHour =
                         when {
                             hourFilter.isNullOrEmpty() -> true
                             workshop.startHour.isNullOrBlank() -> false
                             else -> {
-                                val workshopHour = workshop.startHour.take(5)   // "07:00:00" -> "07:00"
+                                val workshopHour = workshop.startHour.take(5)
                                 hourFilter.any { selected ->
-                                    val selectedNorm = selected.take(5)         // por si acaso
+                                    val selectedNorm = selected.take(5)
                                     workshopHour == selectedNorm
                                 }
                             }
                         }
 
-                    // ----- Estatus -----
                     val matchesStatus =
                         when {
                             statusFilter.isNullOrEmpty() -> true
@@ -191,7 +215,6 @@ class WorkshopsListViewModel @Inject constructor(
                                 }
                             }
                         }
-
 
                     matchesDate && matchesHour && matchesStatus
                 }
@@ -209,4 +232,32 @@ class WorkshopsListViewModel @Inject constructor(
             )
         }
     }
+
+    /**
+     * Retrieves the selected filter values for a specific filter key.
+     *
+     * Supports:
+     * - Normalized lookup (ignores case and extra spaces)
+     * - Partial key matching (e.g., "Fecha" matches "Fecha del Taller")
+     * - Returning all selected values for the filter section
+     *
+     * Behavior:
+     * - Returns null if no filters are applied
+     * - Returns the matching list of values if found
+     * - Returns null if the requested key does not exist in the filter map
+     *
+     * @param filterDto Filter data containing all active filters.
+     * @param key The filter section to look for (e.g., "Fecha", "Estado").
+     */
+    private fun getFilterValues(filterDto: FilterDto, key: String): List<String>? {
+        if (filterDto.filters.isEmpty()) return null
+
+        val target = key.lowercase().trim()
+
+        return filterDto.filters.entries.firstOrNull { (k, _) ->
+            val normalizedKey = k.lowercase().trim()
+            normalizedKey == target || normalizedKey.contains(target)
+        }?.value
+    }
+
 }

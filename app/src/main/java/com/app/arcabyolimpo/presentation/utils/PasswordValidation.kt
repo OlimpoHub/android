@@ -1,5 +1,17 @@
 package com.app.arcabyolimpo.presentation.utils
 
+/**
+ * Validates a password based on a set of rules.
+ *
+ * @param password The password string to validate.
+ * @param minLength The minimum required length for the password.
+ * @param maxLength The maximum allowed length for the password.
+ * @param requireUppercase If true, the password must contain at least one uppercase letter.
+ * @param requireDigit If true, the password must contain at least one digit.
+ * @param requireSpecial If true, the password must contain at least one special character.
+ * @return A Pair where the first element is a Boolean indicating if the password is valid,
+ * and the second element is a nullable String containing an error message if validation fails.
+ */
 fun validatePassword(
     password: String,
     minLength: Int = 8,

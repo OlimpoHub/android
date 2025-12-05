@@ -25,6 +25,14 @@ class PostPasswordRecoveryUseCase
     constructor(
         private val repository: PasswordUserRepository,
     ) {
+        /**
+         * Executes the password recovery request for the given email address.
+         *
+         * @param email The email address associated with the user requesting
+         *              password recovery.
+         *
+         * @return A [Flow] emitting the operation status wrapped in [Result].
+         */
         operator fun invoke(email: String): Flow<Result<String>> =
             flow {
                 try {

@@ -6,6 +6,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
+/**
+ * Use case responsible for managing the logic of deleting an existing product.
+ * It validates the input product ID and delegates the deletion operation to the [ProductRepository].
+ *
+ * @property repository The repository that handles the actual data operation (deletion).
+ */
 class DeleteProductUseCase @Inject constructor(
     private val repository: ProductRepository,
 ) {

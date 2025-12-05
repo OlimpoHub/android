@@ -1,5 +1,97 @@
+## [0.2.0] - 04/12/2025
+### Added
+ - Code comments for workshops
+
+## [0.2.0] - 03/12/2025
+### Added
+ - Code comments
+
+## [0.2.0] - 03/12/2025
+### Added
+- Delete disability
+- Icon
+
+### Fixed
+- Disability's details' routes
+- Modify beneficiary (Active/inactive beneficiary)
+- Fix Decision Dialog on Delete and applied to Modify
+- Fix Workshop cards size
+- Fix Color background on Product Batches
+- Comments' languague fixing on Product Batches, Supply Batches Offline and Register Disability
+
+## [0.2.0] - 02/12/2025
+### Added
+- Confirm dialog option added to supply and product batches form to add
+- Consult disability details
+- Disability Card
+
+### Fixed
+- When added a supply it appears inmediatly in the supply list screen
+- Fix workshop video training, taking it out
+- Fix upload image in modify beneficiary
+- Fix image containers for product batches
+
+### Updated
+- Path prefix for updating password
+- Filter for Qr workshop selection
+- Title of the Qr workshop selection view
+  
+## [0.2.0] - 01/12/2025
+### Changed
+ - Modify topbar for scaffold
+
+### Changed
+- Attendance screen now always displays exit time as 14:30.
+  
+## [0.2.0] - 01/12/2025
+### Added
+- Cache for product list and detail
+- Modify beneficiary
+- Register Disability Functionalities
+- Add functionality to add, view, and modify images in Beneficiary, Workshop, Supply, Product and User
+
+### Changed
+ - Modify topbar for scaffold
+
+### Fixed
+- Debug modify beneficiary
+
+## [0.2.0] - 30/11/2025
+### Added
+- feature for scanning qr code for attendance
+
+### Changed
+- Added a wey to prevent certain chars and emojis in workshop inputs. 
+
+### Fixed
+- Fixed attendance date/time formatting.
+- Improved "View Attendance" button alignment and styling.
+
+## [0.2.0] - 29/11/2025
+### Added
+- Added offline for product batch list and detail
+- Added a Capacitations view for Disabilities List
+- Added offline for supply batches
+
+## [0.2.0] - 29/11/2025
+
+### Added
+- RBAC for coordinator, assistant, and scholar roles
+- Atom for Multiple selects
+
+### Changed
+- Change beneficiary detail for showing more disabilities
+- Change so now Beneficiaries can be registered with more disabilities
+
+## [0.1.0] - 25/11/2025
+### Added
+- US for consult attendance
+
 ## [0.1.0] - 20/11/2025
 ### Added
+- ModifyProduct validation fields
+- RegisterProduct validation fields
+- Arrow to return register and modify product
 - US for filter and order workshops.
 - Functional go back button to Supplies List Screen
 - Functional go back buttons to Orders and Inventory Screens

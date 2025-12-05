@@ -18,12 +18,17 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -33,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.app.arcabyolimpo.presentation.theme.Poppins
+import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.CancelButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.SaveButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.inputs.ImageUploadInput
@@ -41,6 +47,7 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.SelectObjectInp
 import com.app.arcabyolimpo.presentation.ui.components.molecules.StatusSelector
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
+import kotlinx.coroutines.launch
 
 /** ---------------------------------------------------------------------------------------------- *
  * SupplyAddScreen -> view where all the inputs, buttons and selects are shown with the information
@@ -60,6 +67,9 @@ fun SupplyAddScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    var showConfirmDialog by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(
         key1 = uiState.success,
@@ -181,9 +191,27 @@ fun SupplyAddScreen(
                     CircularProgressIndicator()
                 } else {
                     CancelButton(onClick = onCancel)
-                    SaveButton(onClick = viewModel::onSaveClick)
-                }
+                    SaveButton(onClick = { showConfirmDialog = true })
 
+                    if (showConfirmDialog) {
+                        DecisionDialog(
+                            onDismissRequest = {
+                                showConfirmDialog = false
+                                scope.launch {
+                                    snackbarHostState.showSnackbar("Registro cancelado")
+                                }
+                            },
+                            onConfirmation = {
+                                showConfirmDialog = false
+                                viewModel.onSaveClick()
+                            },
+                            dialogTitle = "Confirmar registro",
+                            dialogText = "¿Deseas registrar este insumo? Asegúrate de que todos los datos sean correctos.",
+                            confirmText = "Confirmar",
+                            dismissText = "Cancelar",
+                        )
+                    }
+                }
             }
         }
     }

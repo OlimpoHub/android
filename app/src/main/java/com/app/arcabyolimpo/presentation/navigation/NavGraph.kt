@@ -1,5 +1,6 @@
 package com.app.arcabyolimpo.presentation.navigation
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,32 +19,40 @@ import com.app.arcabyolimpo.data.remote.interceptor.SessionManager
 import com.app.arcabyolimpo.domain.model.auth.UserRole
 import com.app.arcabyolimpo.presentation.common.components.LoadingShimmer
 import com.app.arcabyolimpo.presentation.screens.accountactivation.AccountActivationScreen
+import com.app.arcabyolimpo.presentation.screens.attendance.AttendanceListScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.AddNewBeneficiaryScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryDetailScreen
 import com.app.arcabyolimpo.presentation.screens.beneficiary.BeneficiaryListScreen
+import com.app.arcabyolimpo.presentation.screens.beneficiary.ModifyBeneficiaryScreen
+import com.app.arcabyolimpo.presentation.screens.capacitations.DisabilitiesListScreen
+import com.app.arcabyolimpo.presentation.screens.capacitations.DisabilityDetailScreen
+import com.app.arcabyolimpo.presentation.screens.capacitations.disabilitiesRegister.DisabilitiesRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.home.assistant.CollaboratorHomeScreen
 import com.app.arcabyolimpo.presentation.screens.home.coordinator.CoordinatorHomeScreen
+import com.app.arcabyolimpo.presentation.screens.home.scholar.ScholarHomeScreen
 import com.app.arcabyolimpo.presentation.screens.login.LoginScreen
 import com.app.arcabyolimpo.presentation.screens.passwordrecovery.PasswordRecoveryScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationScreen
 import com.app.arcabyolimpo.presentation.screens.passwordregisteration.PasswordRegistrationSuccessScreen
 import com.app.arcabyolimpo.presentation.screens.product.addProduct.ProductAddScreen
-import com.app.arcabyolimpo.presentation.screens.product.updateProduct.ProductUpdateScreen
 import com.app.arcabyolimpo.presentation.screens.product.list.ProductListScreen
 import com.app.arcabyolimpo.presentation.screens.product.productDetail.ProductDetailScreen
+import com.app.arcabyolimpo.presentation.screens.product.updateProduct.ProductUpdateScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchDetail.ProductBatchDetailScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchModify.ProductBatchModifyScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchRegister.ProductBatchRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.productbatches.productBatchesList.ProductBatchesListScreen
 import com.app.arcabyolimpo.presentation.screens.qr.qr.QrScreen
+import com.app.arcabyolimpo.presentation.screens.qr.scanqr.ScanQrScreen
+import com.app.arcabyolimpo.presentation.screens.qr.scanresult.ScanResultScreen
 import com.app.arcabyolimpo.presentation.screens.qr.workshopselection.QrWorkshopsListScreen
 import com.app.arcabyolimpo.presentation.screens.splash.SplashScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyAdd.SupplyAddScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyBatchList.SupplyBatchListScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyDetail.SuppliesDetailScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyList.SupplyListScreen
-import com.app.arcabyolimpo.presentation.screens.supply.supplybatchmodify.SupplyBatchModifyScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplyUpdate.SupplyUpdateScreen
+import com.app.arcabyolimpo.presentation.screens.supply.supplybatchmodify.SupplyBatchModifyScreen
 import com.app.arcabyolimpo.presentation.screens.supply.supplybatchregister.SupplyBatchRegisterScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationFailedScreen
 import com.app.arcabyolimpo.presentation.screens.tokenverification.TokenVerificationViewModel
@@ -63,53 +72,187 @@ import com.app.arcabyolimpo.presentation.screens.workshop.modifyWorkshopScreen
 sealed class Screen(
     val route: String,
 ) {
+    /**
+     * Initial loading screen displayed while the app initializes,
+     * checks authentication status, or prepares resources.
+     */
     object Splash : Screen("splash")
 
+    /**
+     * Screen where users enter their credentials to access the application.
+     */
     object Login : Screen("login")
 
+    /**
+     * Screen where users can request a password recovery email.
+     */
     object PasswordRecovery : Screen("password-recovery")
 
+    /**
+     * Screen used for account activation requests, allowing users to resend
+     * activation instructions or set up initial credentials.
+     */
     object AccountActivation : Screen("account-activation")
 
+    /**
+     * Screen that displays the list of all registered users.
+     *
+     * This screen also supports search and filtering features.
+     */
     object UserList : Screen("user")
 
+    /**
+     * Screen where a new user can be registered manually by an administrator.
+     */
     object UserRegister : Screen("user_register")
 
+    /**
+     * Screen showing the detailed information of a specific user.
+     *
+     * Dynamic argument:
+     * - userId: The ID of the user whose details should be displayed.
+     *
+     * @see createRoute Utility function for building the dynamic route.
+     */
     object UserDetail : Screen("user_detail/{userId}") {
+        /**
+         * Builds a complete route for navigating to the User Detail screen.
+         *
+         * @param userId The ID of the user.
+         * @return A formatted route string including the userId.
+         */
         fun createRoute(userId: String) = "user_detail/$userId"
     }
 
+    /**
+     * Screen that allows editing the information of a specific user.
+     *
+     * Dynamic argument:
+     * - userId: The ID of the user to be updated.
+     *
+     * @see createRoute Helper for constructing the navigation path.
+     */
     object UpdateUserScreen : Screen("update_user/{userId}") {
+        /**
+         * Builds a dynamic route for navigating to the Update User screen.
+         *
+         * @param userId The ID of the user being edited.
+         * @return A complete navigation route string.
+         */
         fun createRoute(userId: String) = "update_user/$userId"
     }
 
+    object AttendanceList : Screen("attendance_list/{userId}") {
+        fun createRoute(userId: String) = "attendance_list/$userId"
+    }
+
+    /**
+     * Screen used to verify a password recovery or account activation token.
+     *
+     * This route accepts a query parameter:
+     * - token: The token received by email and required for backend verification.
+     *
+     * @see createRoute Helper for constructing a navigable route with the token included.
+     */
     object TokenVerification : Screen("user/verify-token?token={token}") {
+        /**
+         * Builds a valid route for navigating to the token verification screen.
+         *
+         * @param token The verification token sent via email.
+         * @return The complete route string including the token as a query parameter.
+         */
         fun createRoute(token: String) = "user/verify-token?token=$token"
     }
 
+    /**
+     * Screen displayed when the token verification fails.
+     *
+     * This occurs when the token is invalid, expired, malformed,
+     * or the backend rejects the validation for any reason.
+     */
     object TokenVerificationFailed : Screen("token-activation-failed")
 
+    /**
+     * Screen where the user registers or restores their password.
+     *
+     * This route requires:
+     * - email: The email associated with the account being recovered/activated.
+     *
+     * @see createRoute Builds the navigation route dynamically.
+     */
     object PasswordRegistration : Screen("password-registration/{email}") {
+        /**
+         * Constructs the navigation route for the password registration screen.
+         *
+         * @param email The user’s email that needs a new password set.
+         * @return A complete formatted route including the email parameter.
+         */
         fun createRoute(email: String) = "password-registration/$email"
     }
 
+    /**
+     * Screen displayed after the password has been successfully registered or reset.
+     */
     object PasswordRegistrationSuccess : Screen("pasword-registration-success")
 
     object CoordinatorHome : Screen("coordinator")
 
     object CollaboratorHome : Screen("collaborator")
 
+    object ScholarHome : Screen("scholar")
+
     object SuppliesList : Screen("supply")
 
+    /**
+     * Screen that displays the full list of workshops.
+     *
+     * This screen serves as the entry point to browse all registered workshops.
+     * It does not require any navigation arguments and simply loads the catalog
+     * of workshops from the corresponding view model.
+     */
     object WorkshopsList : Screen("workshop")
 
+    /**
+     * Screen that displays the detailed information of a single workshop.
+     *
+     * This route requires:
+     * - id: The unique identifier of the workshop whose details will be shown.
+     *
+     * @see createRoute Builds the navigation route dynamically.
+     */
     object WorkshopDetail : Screen("workshop/{id}") {
+        /**
+         * Constructs the navigation route for the workshop detail screen.
+         *
+         * @param id The unique identifier of the workshop to display.
+         * @return A complete formatted route including the workshop id parameter.
+         */
         fun createRoute(id: String): String = "workshop/$id"
     }
 
+    /**
+     * Screen where the user can register a new workshop.
+     *
+     * This route requires no parameters and opens the form
+     * for adding a brand-new workshop to the system.
+     */
     object AddNewWorkshop : Screen("workshop/add")
 
-    object ModifyWorkshop : Screen("workshop/modify/{idTaller}"){
+    /**
+     * Screen where the user edits an existing workshop.
+     *
+     * This route requires:
+     * - idTaller: The unique identifier of the workshop to be modified.
+     *
+     * @see createRoute Builds the navigation route dynamically.
+     */
+    object ModifyWorkshop : Screen("workshop/modify/{idTaller}") {
+        /**
+         * Constructs the navigation route for the modify workshop screen.
+         *
+         * @param idTaller The ID of the workshop the user intends to modify.
+         * @return A complete formatted route including the workshop ID parameter.
+         */
         fun createRoute(idTaller: String) = "workshop/modify/$idTaller"
     }
 
@@ -125,13 +268,23 @@ sealed class Screen(
 
     object AddNewBeneficiary : Screen("beneficiary/create")
 
+    object ModifyBeneficiary : Screen("beneficiary/update/{beneficiaryId}") {
+        fun createRoute(beneficiaryId: String) = "beneficiary/update/$beneficiaryId"
+    }
+
+    object CapacitationScreen : Screen("/disabilities/list")
+
+    object DisabilitiesRegisterScreen : Screen("/disabilities/register")
+
+    object DisabilityDetail : Screen("disability/{disabilityId}") {
+        fun createRoute(disabilityId: String) = "disability/$disabilityId"
+    }
+
     object SupplyDetail : Screen("supply/{idSupply}") {
         fun createRoute(idSupply: String) = "supply/$idSupply"
     }
 
     object SupplyAdd : Screen("supply/add")
-
-    // object UserList : Screen("user")
 
     object ProductBatchesList : Screen("product_batches")
 
@@ -159,7 +312,7 @@ sealed class Screen(
             idInsumo: String,
         ) = "supply_batch_list/dates/$date?idInsumo=$idInsumo"
     }
-    
+
     object ProductDetail : Screen("product/{productId}") {
         fun createRoute(productId: String) = "product/$productId"
     }
@@ -174,14 +327,43 @@ sealed class Screen(
 
     object ProductList : Screen("product/")
 
+    /**
+     * Screen for selecting a workshop before creating a QR code.
+     */
     object QrWorkshopSelection : Screen("qr/workshop_selection")
 
+    /**
+     * Screen that displays the generated QR code for a selected workshop.
+     *
+     * This route requires:
+     * - [workshopID]   ID of the workshop the QR belongs to.
+     * - [workshopName] Name of the workshop to show on the UI.
+     *
+     * @see createRoute Used to build the route dynamically.
+     */
     object CreateQr : Screen("qr/workshop_selection/show_qr/{workshopID}/{workshopName}") {
+        /**
+         * Constructs a valid navigation route including the workshop parameters.
+         *
+         * @param workshopID The identifier of the selected workshop.
+         * @param workshopName The display name of the workshop.
+         * @return A fully formatted navigation route.
+         */
         fun createRoute(
             workshopID: String,
             workshopName: String,
         ) = "qr/workshop_selection/show_qr/$workshopID/$workshopName"
     }
+
+    /**
+     * Screen where the camera is used to scan QR codes.
+     */
+    object ScanQr : Screen("qr/scan_qr")
+
+    /**
+     * Screen responsible for validating the scanned QR content.
+     */
+    object ValidateQr : Screen("qr/scan_qr/validate_qr")
 }
 
 /**
@@ -193,6 +375,7 @@ sealed class Screen(
  * @param navController The controller managing app navigation.
  * @param sessionManager Observes session state to handle automatic logout or token expiration.
  */
+
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun ArcaNavGraph(
@@ -232,12 +415,12 @@ fun ArcaNavGraph(
                         }
 
                     UserRole.ASISTENTE ->
-                        navController.navigate(Screen.CollaboratorHome.route) {
+                        navController.navigate(Screen.CoordinatorHome.route) {
                             popUpTo(Screen.Splash.route) { inclusive = true }
                         }
 
                     UserRole.BECARIO ->
-                        navController.navigate(Screen.CollaboratorHome.route) {
+                        navController.navigate(Screen.ScholarHome.route) {
                             popUpTo(Screen.Splash.route) { inclusive = true }
                         }
 
@@ -260,12 +443,12 @@ fun ArcaNavGraph(
                             }
 
                         UserRole.ASISTENTE ->
-                            navController.navigate(Screen.CollaboratorHome.route) {
+                            navController.navigate(Screen.CoordinatorHome.route) {
                                 popUpTo(Screen.Login.route) { inclusive = true }
                             }
 
                         UserRole.BECARIO ->
-                            navController.navigate(Screen.CollaboratorHome.route) {
+                            navController.navigate(Screen.ScholarHome.route) {
                                 popUpTo(Screen.Login.route) { inclusive = true }
                             }
                     }
@@ -279,6 +462,14 @@ fun ArcaNavGraph(
             )
         }
 
+        /**
+         * Password Recovery Screen Navigation.
+         *
+         * Navigates to the screen where users can initiate the process of recovering
+         * their password by submitting their registered email address.
+         *
+         * If the back stack is empty, navigation returns to the Login screen.
+         */
         composable(Screen.PasswordRecovery.route) {
             PasswordRecoveryScreen(
                 onBackClick = {
@@ -290,6 +481,14 @@ fun ArcaNavGraph(
             )
         }
 
+        /**
+         * Account Activation Screen Navigation.
+         *
+         * Displays the interface used to activate a user account after email verification.
+         * This screen is accessed after requesting an activation link.
+         *
+         * If the back stack cannot be popped, the flow redirects to Login.
+         */
         composable(Screen.AccountActivation.route) {
             AccountActivationScreen(
                 onBackClick = {
@@ -301,6 +500,23 @@ fun ArcaNavGraph(
             )
         }
 
+        /**
+         * Token Verification Screen Navigation.
+         *
+         * Handles deep links sent to the user via email to verify account or password
+         * reset tokens.
+         *
+         * This composable:
+         * - Extracts the token from navigation arguments or the deep link.
+         * - Triggers token validation through [TokenVerificationViewModel].
+         * - Displays different screens depending on validation state:
+         *      - [PasswordRegistrationScreen] if the token is valid.
+         *      - A loading shimmer during verification.
+         *      - [TokenVerificationFailedScreen] if the token is invalid or expired.
+         *
+         * Deep Link format:
+         *  arcabyolimpo://user/verify-token?token={token}
+         */
         composable(
             route = Screen.TokenVerification.route,
             arguments =
@@ -325,6 +541,7 @@ fun ArcaNavGraph(
                 token?.let { viewModel.getTokenVerification(it) }
             }
 
+            /** Depending on the response, it navigates different screen */
             when {
                 uiState.response?.valid == true -> {
                     PasswordRegistrationScreen(
@@ -359,6 +576,14 @@ fun ArcaNavGraph(
             }
         }
 
+        /**
+         * Token Verification Failed Screen Navigation.
+         *
+         * Displays an error message when the user accesses the app using an invalid,
+         * malformed, or expired verification token.
+         *
+         * If the back stack is empty, the user is returned to the Login screen.
+         */
         composable(Screen.TokenVerificationFailed.route) {
             TokenVerificationFailedScreen(
                 onBackClick = {
@@ -369,6 +594,16 @@ fun ArcaNavGraph(
             )
         }
 
+        /**
+         * Password Registration Screen Navigation.
+         *
+         * Screen where the user creates a new password after a valid token is verified.
+         * Receives the user's email as an argument.
+         *
+         * On successful password creation:
+         * - The function pops two screens to return to the previous flow
+         *   (usually the token verification or password recovery sequence).
+         */
         composable(
             route = Screen.PasswordRegistration.route,
             arguments = listOf(navArgument("email") { type = NavType.StringType }),
@@ -389,6 +624,12 @@ fun ArcaNavGraph(
             )
         }
 
+        /**
+         * Password Registration Success Screen Navigation.
+         *
+         * Shows a confirmation message to the user after successfully creating a new
+         * password. Redirects back to the Login screen upon exit.
+         */
         composable(Screen.PasswordRegistrationSuccess.route) {
             PasswordRegistrationSuccessScreen(
                 onBackClick = {
@@ -406,9 +647,15 @@ fun ArcaNavGraph(
 
         /** Collaborator Home Screen */
         composable(Screen.CollaboratorHome.route) {
-            CollaboratorHomeScreen()
+            CollaboratorHomeScreen(navController)
         }
 
+        /** Scholar Home Screen */
+        composable(Screen.ScholarHome.route) {
+            ScholarHomeScreen(
+                navController = navController,
+            )
+        }
 
         /** User Detail Screen */
         composable(
@@ -422,6 +669,9 @@ fun ArcaNavGraph(
                     navController.navigate(Screen.UpdateUserScreen.createRoute(id))
                 },
                 onDeleteClick = { navController.popBackStack() },
+                onAttendanceClick = { id ->
+                    navController.navigate(Screen.AttendanceList.createRoute(id))
+                },
             )
         }
 
@@ -450,7 +700,17 @@ fun ArcaNavGraph(
                         ?.savedStateHandle
                         ?.set("refresh_detail_$userId", true)
                     navController.popBackStack()
-                }
+                },
+            )
+        }
+
+        /** Attendance List Screen */
+        composable(
+            route = Screen.AttendanceList.route,
+            arguments = listOf(navArgument("userId") { type = NavType.StringType }),
+        ) {
+            AttendanceListScreen(
+                onBackClick = { navController.popBackStack() },
             )
         }
 
@@ -490,11 +750,13 @@ fun ArcaNavGraph(
             arguments = listOf(navArgument("id") { type = NavType.StringType }),
         ) { backStackEntry ->
             val workshopId = backStackEntry.arguments?.getString("id") ?: ""
-            WorkshopDetailScreen(navController,
+            WorkshopDetailScreen(
+                navController,
                 workshopId,
                 onModifyClick = { workshopId ->
                     navController.navigate(Screen.ModifyWorkshop.createRoute(workshopId))
-                })
+                },
+            )
         }
 
         /**
@@ -518,18 +780,33 @@ fun ArcaNavGraph(
             )
         }
 
+        /**
+         * Workshops Modify Screen.
+         *
+         * This composable represents the screen where users can modify the data
+         * of an existing workshop. It receives the workshop's unique identifier
+         * through navigation arguments.
+         *
+         * It connects to the [modifyWorkshopScreen] composable, which displays the UI and
+         * interacts with its corresponding [ModifyWorkshopViewModel] to handle current data loading,
+         * update operations, validation, and error states.
+         *
+         * Navigation Arguments:
+         * - idTaller: The unique ID of the workshop to be edited.
+         */
         composable(
             route = Screen.ModifyWorkshop.route,
             arguments = listOf(navArgument("idTaller") { type = NavType.StringType }),
-
-        ){ backStackEntry ->
+        ) { backStackEntry ->
             val workshopId = backStackEntry.arguments?.getString("idTaller") ?: ""
+
             modifyWorkshopScreen(
                 navController = navController,
                 viewModel = hiltViewModel(),
-                workshopId = workshopId
+                workshopId = workshopId,
             )
         }
+
 
         /**
 
@@ -553,7 +830,7 @@ fun ArcaNavGraph(
                 },
                 onBackClick = {
                     navController.popBackStack()
-                }
+                },
             )
         }
 
@@ -676,7 +953,71 @@ fun ArcaNavGraph(
         ) {
             BeneficiaryDetailScreen(
                 onBackClick = { navController.popBackStack() },
-                onModifyClick = { /* TODO: Lógica de VM */ },
+                onModifyClick = { beneficiaryId ->
+                    navController.navigate(Screen.ModifyBeneficiary.createRoute(beneficiaryId))
+                },
+                viewModel = hiltViewModel(),
+                beneficiaryId = it.arguments?.getString("beneficiaryId") ?: "",
+            )
+        }
+
+        /**
+         * Modify Beneficiary Screen.
+         *
+         * Allows the modification of an existing and active beneficiary.
+         */
+        composable(
+            route = Screen.ModifyBeneficiary.route,
+            arguments = listOf(navArgument("beneficiaryId") { type = NavType.StringType }),
+        ) { backStackEntry ->
+            val beneficiaryId = backStackEntry.arguments?.getString("beneficiaryId") ?: ""
+            ModifyBeneficiaryScreen(
+                navController = navController,
+                viewModel = hiltViewModel(),
+                beneficiaryId = beneficiaryId,
+            )
+        }
+
+        /**
+         * Capacitations Screen.
+         *
+         * Shows a list of the disabilities created by the users
+         */
+
+        composable(route = Screen.CapacitationScreen.route) {
+            DisabilitiesListScreen(
+                navController = navController,
+                onDisabilityClick = { id ->
+                    Log.d("Click", "Click")
+                    // TODO: Navigate to disability detail when screen is created
+                    navController.navigate(Screen.DisabilityDetail.createRoute(id))
+                },
+                onAddClick = { navController.navigate(Screen.DisabilitiesRegisterScreen.route) },
+                onBackClick = { navController.popBackStack() },
+            )
+        }
+
+        /*** The screen for registering a new disability.
+         * Navigates back to the previous screen on back click, and to the disabilities list
+         * screen upon successful creation.
+         */
+        composable(Screen.DisabilitiesRegisterScreen.route) {
+            DisabilitiesRegisterScreen(
+                onCreated = { navController.popBackStack() },
+                onBackClick = { navController.popBackStack() },
+            )
+        }
+
+        /**
+         * Disability Detail Screen.
+         *
+         * Shows the details of a disability.
+         */
+        composable(
+            route = Screen.DisabilityDetail.route,
+        ) {
+            DisabilityDetailScreen(
+                onBackClick = { navController.popBackStack() },
                 viewModel = hiltViewModel(),
             )
         }
@@ -797,16 +1138,15 @@ fun ArcaNavGraph(
                 onAddProductClick = {
                     navController.navigate(Screen.ProductAdd.route)
                 },
-                onBackClick ={
-                  navController.navigateUp()
+                onBackClick = {
+                    navController.navigateUp()
                 },
             )
         }
 
-
         composable(
             route = Screen.ProductDetail.route,
-            arguments = listOf(navArgument("productId") { type = NavType.StringType } ),
+            arguments = listOf(navArgument("productId") { type = NavType.StringType }),
         ) { backStackEntry ->
             val productId = backStackEntry.arguments?.getString("productId") ?: ""
             ProductDetailScreen(
@@ -821,13 +1161,12 @@ fun ArcaNavGraph(
             )
         }
 
-
-
         composable(
             route = Screen.ProductUpdate.route,
-            arguments = listOf(
-                navArgument("idProduct") { type = NavType.StringType }
-            )
+            arguments =
+                listOf(
+                    navArgument("idProduct") { type = NavType.StringType },
+                ),
         ) {
             ProductUpdateScreen(
                 onModifyClick = {
@@ -857,7 +1196,7 @@ fun ArcaNavGraph(
             val date = backStackEntry.arguments?.getString("date") ?: ""
             val idInsumo = backStackEntry.arguments?.getString("idInsumo") ?: ""
             android.util.Log.d("NavGraph", "SupplyBatchList args received: date=$date, idInsumo=$idInsumo")
-                SupplyBatchListScreen(
+            SupplyBatchListScreen(
                 supplyId = idInsumo,
                 supplyName = "",
                 date = date,
@@ -873,7 +1212,7 @@ fun ArcaNavGraph(
 
         composable(
             route = Screen.SupplyUpdate.route,
-            arguments = listOf(navArgument("idSupply") { type = NavType.StringType })
+            arguments = listOf(navArgument("idSupply") { type = NavType.StringType }),
         ) { backStackEntry ->
 
             SupplyUpdateScreen(
@@ -891,6 +1230,16 @@ fun ArcaNavGraph(
             )
         }
 
+        /**
+         * QR Workshop Selection Screen Navigation.
+         *
+         * Displays the list of available workshops for which a coordinator can generate
+         * a QR code. When a workshop is selected, navigation proceeds to the QR creation
+         * screen using the workshop's ID and name.
+         *
+         * This composable hosts the [QrWorkshopsListScreen] and handles back navigation
+         * by popping the current screen from the back stack.
+         */
         composable(Screen.QrWorkshopSelection.route) {
             QrWorkshopsListScreen(
                 onBackClick = { navController.popBackStack() },
@@ -900,6 +1249,17 @@ fun ArcaNavGraph(
             )
         }
 
+        /**
+         * QR Creation Screen Navigation.
+         *
+         * This screen displays the generated QR code for a specific workshop.
+         * It receives two navigation arguments:
+         *  - `workshopID`: Identifier for the selected workshop.
+         *  - `workshopName`: Display name of the workshop.
+         *
+         * These values are extracted from the back stack and passed to [QrScreen],
+         * where the QR is generated and presented to the user.
+         */
         composable(
             route = Screen.CreateQr.route,
             arguments =
@@ -916,6 +1276,52 @@ fun ArcaNavGraph(
                 onBackClick = { navController.popBackStack() },
                 workshopId = id,
                 workshopName = name,
+            )
+        }
+
+        /**
+         * QR Scanning Screen Navigation.
+         *
+         * Opens the camera interface allowing users to scan the QR code of a workshop.
+         * Upon successful scan, the scanned value is stored in the `savedStateHandle`
+         * of the current back stack entry. Navigation then proceeds to the QR
+         * validation screen.
+         *
+         * This composable hosts the [ScanQrScreen] and supports returning to the
+         * previous screen through the back stack.
+         */
+        composable(Screen.ScanQr.route) {
+            ScanQrScreen(
+                onBackClick = { navController.popBackStack() },
+                onScanSuccess = { qrValue ->
+                    navController.currentBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("qrValue", qrValue)
+                    navController.navigate(Screen.ValidateQr.route)
+                },
+            )
+        }
+
+        /**
+         * QR Validation Screen Navigation.
+         *
+         * Retrieves the scanned QR value stored in the previous back stack entry’s
+         * `savedStateHandle` and displays the validation result via [ScanResultScreen].
+         *
+         * This screen shows whether the scanned QR corresponds to a valid workshop
+         * entry and allows the user to return to the scanning interface.
+         */
+        composable(route = Screen.ValidateQr.route) { backStackEntry ->
+            val qrValue =
+                navController.previousBackStackEntry
+                    ?.savedStateHandle
+                    ?.get<String>("qrValue")
+
+            ScanResultScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                qrValue = qrValue,
             )
         }
     }

@@ -12,8 +12,8 @@ data class ProductUpdate(
     val name: String,
     val unitaryPrice: String,
     val description: String,
-    val idWorkshop: String,
-    val idCategory: String,
+    val idWorkshop: String?,
+    val idCategory: String?,
     val status: String,
     val image: Uri?,
 )

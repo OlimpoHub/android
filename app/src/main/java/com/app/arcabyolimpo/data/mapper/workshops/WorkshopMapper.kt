@@ -17,8 +17,7 @@ fun WorkshopDto.toDomain(): Workshop {
         finishHour = finishHour ?: "",
         status = status,
         description = description ?: "",
-        date = date ?: "",
-        videoTraining = videoTraining ?: ""
+        date = date ?: ""
     )
 }
 
@@ -34,7 +33,6 @@ fun WorkshopFormData.toWorkshopDto() = WorkshopDto(
     description = description ?: "",
     date = date ?: "",
     image = image ?: "",
-    videoTraining = videoTraining ?: "",
     status = 1
 )
 
@@ -53,7 +51,6 @@ fun WorkshopFormData.toDomain(): Workshop {
         finishHour = finishHour,
         status = status,
         description = description,
-        date = date,
-        videoTraining = videoTraining
+        date = date
     )
 }

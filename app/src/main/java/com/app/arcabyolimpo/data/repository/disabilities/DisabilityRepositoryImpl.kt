@@ -1,9 +1,14 @@
 package com.app.arcabyolimpo.data.repository.disabilities
 
 import android.util.Log
+import com.app.arcabyolimpo.data.mapper.disabilities.toDomain
+import com.app.arcabyolimpo.data.mapper.disabilities.toRegisterDto
 import com.app.arcabyolimpo.data.remote.api.ArcaApi
+import com.app.arcabyolimpo.data.remote.dto.workshops.DeleteWorkshopDto
 import com.app.arcabyolimpo.domain.model.disabilities.Disability
 import com.app.arcabyolimpo.domain.repository.disability.DisabilityRepository
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 import kotlin.collections.map
 
@@ -20,32 +25,74 @@ class DisabilityRepositoryImpl
     constructor(
         private val api: ArcaApi,
     ) : DisabilityRepository {
-    /**
-     * Retrieves a list of all available disabilities from the API.
-     *
-     * Each item in the response is converted into a [Disability] domain model.
-     *
-     * @return A list of [Disabilities] objects representing the available disabilities.
-     */
+        /**
+         * Retrieves a list of all available disabilities from the API.
+         *
+         * Each item in the response is converted into a [Disability] domain model.
+         *
+         * @return A list of [Disabilities] objects representing the available disabilities.
+         */
 
-    override suspend fun getDisabilities(): List<Disability> {
-        Log.d("DisabilityRepo", "Llamando a getDisabilities...")
+        override suspend fun getDisabilities(): List<Disability> {
+            Log.d("DisabilityRepo", "Llamando a getDisabilities...")
 
-        try {
-            val response = api.getDisabilitiesList()
-            Log.d("DisabilityRepo", "Éxito: ${response.size} discapacidades recibidas")
+            try {
+                val response = api.getDisabilitiesList()
+                Log.d("DisabilityRepo", "Éxito: ${response.size} discapacidades recibidas")
 
-            return response.map { dto ->
-                Disability(
-                    id = dto.id,
-                    name = dto.name,
-                    characteristics = dto.characteristics
-                )
+                return response.map { dto ->
+                    Disability(
+                        id = dto.id,
+                        name = dto.name,
+                        characteristics = dto.characteristics,
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e("DisabilityRepo", "Error al obtener discapacidades: ${e.message}")
+                Log.e("DisabilityRepo", "Stack trace: ", e)
+                throw e
             }
-        } catch (e: Exception) {
-            Log.e("DisabilityRepo", "Error al obtener discapacidades: ${e.message}")
-            Log.e("DisabilityRepo", "Stack trace: ", e)
-            throw e
         }
-    }
+
+        /**
+         * Creates a new disability entry via the API.
+         *
+         * It converts the domain model into a Data Transfer Object (DTO) suitable for
+         * the network request.
+         *
+         * @param disability The [Disability] domain model to be registered.
+         */
+        override suspend fun registerDisability(disability: Disability) {
+            val dto = disability.toRegisterDto()
+            api.registerDisability(dto)
+        }
+
+        /**
+         * Retrieves the details of the selected disability from the API.
+         *
+         * The response is converted into a [Disability] domain model.
+         *
+         * @return A [Disabilities] object representing the available disabilities.
+         */
+        override suspend fun getDisability(id: String): Disability = api.getDisabilityDetail(id).toDomain()
+
+        /**
+         * Performs a hard delete of a disability identified by its [id].
+         *
+         * @param id Unique identifier of the disability to be hard-deleted.
+         * @throws Exception If the network request fails or the server
+         *         returns an error.
+         */
+        override suspend fun deleteDisability(id: String) {
+            try {
+                val response = api.deleteDisability(id)
+                if (!response.isSuccessful) {
+                    throw HttpException(response)
+                }
+            } catch (e: HttpException) {
+                throw e
+            } catch (e: IOException) {
+                throw e
+            }
+        }
     }

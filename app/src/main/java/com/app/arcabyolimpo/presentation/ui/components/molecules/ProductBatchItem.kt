@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -26,6 +27,7 @@ import coil.compose.AsyncImage
 import com.app.arcabyolimpo.presentation.screens.productbatches.model.ProductBatchUiModel
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.ViewButton
 import com.app.arcabyolimpo.ui.theme.Background
+import com.app.arcabyolimpo.ui.theme.ButtonBlue
 import com.app.arcabyolimpo.ui.theme.DangerGray
 import com.app.arcabyolimpo.ui.theme.White
 
@@ -67,12 +69,12 @@ fun ProductBatchItem(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 AsyncImage(
-                    model = batch.imagen,
+                    model = "http://74.208.78.8:8080/" + batch.imagen,
                     contentDescription = batch.nombre,
                     modifier =
                         Modifier
                             .size(60.dp)
-                            .background(DangerGray, CircleShape)
+                            .background(color = Color(0xFF040710), shape = CircleShape)
                             .clip(CircleShape),
                     contentScale = ContentScale.Crop,
                 )

@@ -24,6 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.app.arcabyolimpo.presentation.navigation.Screen
+import com.app.arcabyolimpo.presentation.screens.session.SessionViewModel
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
 import com.app.arcabyolimpo.presentation.ui.components.atoms.buttons.AddButton
 import com.app.arcabyolimpo.presentation.ui.components.atoms.icons.FilterIcon
@@ -35,13 +36,32 @@ import com.app.arcabyolimpo.ui.theme.Background
 import kotlinx.coroutines.launch
 import com.app.arcabyolimpo.ui.theme.White
 
+/**
+ * Composable screen that displays the complete list of workshops.
+ *
+ * This screen retrieves the workshop list from the [WorkshopsListViewModel] and provides:
+ * - A scrollable list showing all workshops registered in the database.
+ * - The ability to click on any workshop item to navigate to its detail screen
+ *   using the [workshopClick] callback.
+ * - A button to refresh the list or load more if needed.
+ * - A navbar at the bottom of the screen.
+ *
+ * Session management, including user actions and permissions, is handled through the [SessionViewModel].
+ *
+ * @param navController The navigation controller used to move between screens defined in the [NavGraph].
+ * @param workshopClick Callback triggered when selecting a specific workshop. Receives the workshop ID.
+ * @param viewModel The [WorkshopsListViewModel] responsible for loading and managing the workshop list UI state.
+ * @param sessionViewModel The [SessionViewModel] used to manage session and authentication state.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WorkshopsListScreen(
     navController: NavHostController,
     workshopClick: (String) -> Unit,
-    viewModel: WorkshopsListViewModel = hiltViewModel()
+    viewModel: WorkshopsListViewModel = hiltViewModel(),
+    sessionViewModel: SessionViewModel = hiltViewModel(),
 ) {
+    val role by sessionViewModel.role.collectAsState()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -83,9 +103,11 @@ fun WorkshopsListScreen(
                     )
                 },
                 floatingActionButton = {
-                    AddButton(
-                        onClick = { navController.navigate(Screen.AddNewWorkshop.route) }
-                    )
+                    if (role != "BECARIO") {
+                        AddButton(
+                            onClick = { navController.navigate(Screen.AddNewWorkshop.route) }
+                        )
+                    }
                 }
             ) { padding ->
 
@@ -171,6 +193,7 @@ fun WorkshopsListScreen(
                             items(uiState.workshopsList) { workshop ->
                                 WorkshopCard(
                                     name = workshop.nameWorkshop.toString(),
+                                    imageUrl = workshop.url?.toString(),
                                     onClick = { workshopClick(workshop.id.toString()) }
                                 )
                             }

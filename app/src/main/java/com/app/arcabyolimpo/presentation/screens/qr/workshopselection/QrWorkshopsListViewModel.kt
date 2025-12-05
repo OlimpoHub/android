@@ -2,6 +2,7 @@ package com.app.arcabyolimpo.presentation.screens.qr.workshopselection
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.arcabyolimpo.data.remote.dto.filter.FilterDto
 import com.app.arcabyolimpo.domain.common.Result
 import com.app.arcabyolimpo.domain.model.workshops.Workshop
 import com.app.arcabyolimpo.domain.usecase.workshops.GetWorkshopsListUseCase
@@ -11,9 +12,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.collections.component1
+import kotlin.collections.component2
 
 /**
  * ViewModel responsible for managing the UI state of the workshops list screen.
@@ -40,11 +45,16 @@ class QrWorkshopsListViewModel
 
         init {
             loadWorkshopsList()
+            setupSearchDebounce()
         }
 
+        /**
+         * Updates the search query and restores the full list if the query is cleared.
+         *
+         * @param text The new text entered by the user in the search field.
+         */
         fun onSearchQueryChange(text: String) {
             _searchQuery.value = text
-
             if (text.isBlank()) {
                 _uiState.update { state ->
                     state.copy(
@@ -53,11 +63,16 @@ class QrWorkshopsListViewModel
                         error = null,
                     )
                 }
-            } else {
-                searchWorkshops(text)
             }
         }
 
+        /**
+         * Loads the full list of workshops from the backend.
+         *
+         * - Emits Loading → Success → Error states.
+         * - Stores the original list to allow resets.
+         * - Extracts and populates unique date filters into the UI.
+         */
         fun loadWorkshopsList() {
             viewModelScope.launch {
                 getWorkshopsListUseCase().collect { result ->
@@ -68,10 +83,22 @@ class QrWorkshopsListViewModel
 
                             is Result.Success -> {
                                 originalWorkshopsList = result.data
+
+                                val uniqueDates =
+                                    result.data
+                                        .mapNotNull { it.date?.take(10) }
+                                        .distinct()
+                                        .sorted()
+
                                 state.copy(
                                     workshopsList = result.data,
                                     isLoading = false,
                                     error = null,
+                                    filterData =
+                                        state.filterData.copy(
+                                            sections =
+                                                state.filterData.sections + ("Fecha" to uniqueDates),
+                                        ),
                                 )
                             }
 
@@ -86,7 +113,34 @@ class QrWorkshopsListViewModel
             }
         }
 
-        fun searchWorkshops(name: String) {
+        /**
+         * Configures debounce for search input to reduce API calls.
+         *
+         * Executes a search after 400 ms of no typing and only if the query changes.
+         */
+        private fun setupSearchDebounce() {
+            viewModelScope.launch {
+                _searchQuery
+                    .debounce(400)
+                    .distinctUntilChanged()
+                    .collect { query ->
+                        if (query.isNotBlank()) {
+                            performSearch(query)
+                        }
+                    }
+            }
+        }
+
+        /**
+         * Executes a search request to filter workshops by name.
+         *
+         * - Emits loading state.
+         * - Replaces the current list with matches.
+         * - If search fails, restores the original list.
+         *
+         * @param name The text entered by the user.
+         */
+        private fun performSearch(name: String) {
             viewModelScope.launch {
                 _uiState.update { it.copy(isLoading = true) }
 
@@ -114,5 +168,116 @@ class QrWorkshopsListViewModel
                     }
                 }
             }
+        }
+
+        /**
+         * Resets all filters and restores the unmodified workshop list.
+         */
+        fun clearFilters() {
+            _uiState.update { current ->
+                current.copy(
+                    selectedFilters = FilterDto(emptyMap(), order = "ASC"),
+                    workshopsList = originalWorkshopsList,
+                )
+            }
+        }
+
+        /**
+         * Applies selected filters (date, hour, status) and sorts the result.
+         *
+         * Filtering steps:
+         * - Match by date (day).
+         * - Match by start hour (HH:mm).
+         * - Match by status (Activo/Inactivo → 1/0).
+         *
+         * Resulting list is sorted alphabetically depending on the sort order.
+         *
+         * @param filterDto Object containing the selected filters and sort order.
+         */
+        fun applyFilters(filterDto: FilterDto) {
+            _uiState.update { current ->
+                val dateFilter = getFilterValues(filterDto, "Fecha")
+                val hourFilter = getFilterValues(filterDto, "Hora de Entrada")
+                val statusFilter = getFilterValues(filterDto, "Estado")
+
+                val filteredWorkshops =
+                    originalWorkshopsList.filter { workshop ->
+
+                        // ----- Fecha -----
+                        val normalizedDate = (workshop.date ?: "").take(10)
+                        val matchesDate =
+                            when {
+                                dateFilter.isNullOrEmpty() -> true
+                                else ->
+                                    dateFilter.any { selected ->
+                                        normalizedDate == selected.take(10)
+                                    }
+                            }
+
+                        // ----- Hora de entrada -----
+                        val matchesHour =
+                            when {
+                                hourFilter.isNullOrEmpty() -> true
+                                workshop.startHour.isNullOrBlank() -> false
+                                else -> {
+                                    val workshopHour = workshop.startHour.take(5)
+                                    hourFilter.any { selected ->
+                                        val selectedNorm = selected.take(5)
+                                        workshopHour == selectedNorm
+                                    }
+                                }
+                            }
+
+                        // ----- Estatus -----
+                        val matchesStatus =
+                            when {
+                                statusFilter.isNullOrEmpty() -> true
+                                else -> {
+                                    statusFilter.any { selected ->
+                                        val mapped = if (selected == "Activo") 1 else 0
+                                        workshop.status == mapped
+                                    }
+                                }
+                            }
+
+                        matchesDate && matchesHour && matchesStatus
+                    }
+
+                val filteredWorkshopsFinal =
+                    if (filterDto.order == "ASC") {
+                        filteredWorkshops.sortedBy { it.nameWorkshop }
+                    } else {
+                        filteredWorkshops.sortedByDescending { it.nameWorkshop }
+                    }
+
+                current.copy(
+                    selectedFilters = filterDto,
+                    workshopsList = filteredWorkshopsFinal,
+                )
+            }
+        }
+
+        /**
+         * Retrieves the filter values for a given key.
+         *
+         * Keys are normalized (lowercase + trimmed) to improve matching.
+         *
+         * @param filterDto The applied filters.
+         * @param key The human-readable filter section name (e.g., "Fecha").
+         * @return A list of filter values or null if the filter is not present.
+         */
+        private fun getFilterValues(
+            filterDto: FilterDto,
+            key: String,
+        ): List<String>? {
+            if (filterDto.filters.isEmpty()) return null
+
+            val target = key.lowercase().trim()
+
+            return filterDto.filters.entries
+                .firstOrNull { (k, _) ->
+                    val normalizedKey = k.lowercase().trim()
+                    normalizedKey == target || normalizedKey.contains(target)
+                }?.value
         }
     }

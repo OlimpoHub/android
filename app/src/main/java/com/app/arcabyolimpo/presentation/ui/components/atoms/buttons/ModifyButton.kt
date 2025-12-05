@@ -38,7 +38,7 @@ fun ModifyButton(
         shape = RoundedCornerShape(cornerRadius),
 
         contentPadding = PaddingValues(
-            horizontal = 16.dp,
+            horizontal = 8.dp,
             vertical = 8.dp
         ),
         enabled = enabled

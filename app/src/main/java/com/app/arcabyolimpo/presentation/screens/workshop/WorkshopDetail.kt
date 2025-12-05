@@ -24,6 +24,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.app.arcabyolimpo.presentation.screens.home.InventoryScreen
 import com.app.arcabyolimpo.presentation.navigation.Screen
+import com.app.arcabyolimpo.presentation.screens.session.SessionViewModel
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.DecisionDialog
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.SnackbarVisualsWithError
 import com.app.arcabyolimpo.presentation.ui.components.atoms.alerts.Snackbarcustom
@@ -34,70 +35,67 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.FunctionalNavBa
 import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import com.app.arcabyolimpo.ui.theme.Background
-import kotlinx.coroutines.launch 
+import kotlinx.coroutines.launch
 
 /**
+ * Composable screen that displays the detailed information of a specific workshop.
  *
- * This composable acts as the screen for an individual Workshop.
- */
-
-/**
+ * This screen is responsible for showing all the information retrieved from the
+ * [WorkshopDetailViewModel] according to the provided [workshopId]. It provides:
+ * - The full detail of the selected workshop.
+ * - A button or action to navigate to the modification screen, triggered through [onModifyClick].
+ * - A button to return to the previous screen.
+ * - A navbar at the bottom of the screen.
  *
- * This composable acts as the screen for an individual Workshop.
+ * Additionally, session-related actions and validation are handled by the [SessionViewModel].
+ *
+ * @param navController The navigation controller used to move between screens in the [NavGraph].
+ * @param workshopId The unique identifier of the workshop whose details will be displayed.
+ * @param onModifyClick Callback invoked when the user chooses to modify the workshop.
+ * Receives the workshop ID to redirect properly.
+ * @param viewModel The [WorkshopDetailViewModel] responsible for providing workshop details.
+ * @param sessionViewModel The [SessionViewModel] used to manage session and authentication state.
  */
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WorkshopDetailScreen(
     navController: NavHostController,
     workshopId: String,
     onModifyClick: (String) -> Unit,
-    viewModel: WorkshopDetailViewModel = hiltViewModel()
+    viewModel: WorkshopDetailViewModel = hiltViewModel(),
+    sessionViewModel: SessionViewModel = hiltViewModel(),
 ) {
+    val role by sessionViewModel.role.collectAsState()
     val workshop by viewModel.workshop.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
     val formattedDate by viewModel.formattedDate.collectAsState()
     ArcaByOlimpoTheme(darkTheme = true, dynamicColor = false) {
-    // State of the snackbar that will handle all messages on the screen.
     val snackbarHostState = remember { SnackbarHostState() }
-    // We use it to launch the coroutine that displays the snackbar.
     val scope = rememberCoroutineScope()
-    // We collect the state exposed by the ViewModel, reacting to changes
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-
-    // In this case, if there is no error in the uiState,
-    // we consider it a success.
     val haserror = if (uiState.error == null){
         true
     }else {
         false
     }
 
-    // Effect triggered when the uiState.snackbarVisible flag changes.
-    // If true, the snackbar is displayed and the system waits to dismiss it.
     LaunchedEffect(uiState.snackbarVisible) {
 
         if (uiState.snackbarVisible == true){
-            // show snackbar as a suspend function
             scope.launch {
 
                 val result =
                     snackbarHostState.showSnackbar(
                         SnackbarVisualsWithError(
                             "Taller Borrado Correctamente",
-                            // isError controls the visual style (red/blue)
                             isError = true,
                         ),
                     )
-                // When the snack bar ends, we act according to the result
                 when (result){
                     SnackbarResult.Dismissed -> {
-                        //Tell the VM that the visible snackbar is finished
                         viewModel.onSnackbarShown()
-
-                        //Navigate back as soon as the snack bar is finished
                         navController.popBackStack()
 
                     }
@@ -110,15 +108,11 @@ fun WorkshopDetailScreen(
             viewModel.loadWorkshop()
         }
 
-
-    // Displays a confirmation dialog when the user wants to delete an item.
     if (uiState.decisionDialogVisible == true){
         DecisionDialog(
-            // The dialogue closes without any action being taken.
             onDismissRequest = {
                 viewModel.toggledecisionDialog(showdecisionDialog = false)
             },
-            // If the user confirms, the ViewModel is called to delete the input
             onConfirmation = {
                 viewModel.deleteWorkshops(workshopId)
             },
@@ -130,14 +124,11 @@ fun WorkshopDetailScreen(
     }
 
         Scaffold(
-            // Host del snackbar para la pantalla.
         snackbarHost = {
             SnackbarHost(snackbarHostState) { data ->
-                // Every time a snackbar is displayed, our custom component is called
                 Snackbarcustom(
                     data.visuals.message.toString(),
                     modifier = Modifier,
-                    // the type of snack bar (whether it's red or blue).
                     ifSucces = haserror,
                 )
             }
@@ -219,21 +210,6 @@ fun WorkshopDetailScreen(
                                         style = MaterialTheme.typography.bodyLarge
                                     )
                                     Spacer(modifier = Modifier.height(24.dp))
-                                    if (workshop?.videoTraining != null) {
-                                        videoView(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .height(200.dp),// Dale una altura fija
-                                            videoUrl = workshop!!.videoTraining!!
-                                        )
-                                    }
-                                    else{
-                                        Text(
-                                            text= "No hay video disponible",
-                                            style = MaterialTheme.typography.bodyLarge
-                                        )
-                                    }
-                                    Spacer(modifier = Modifier.height(24.dp))
                                     Text(
                                         text= "Sobre el Taller:",
                                         style = MaterialTheme.typography.headlineMedium
@@ -267,23 +243,27 @@ fun WorkshopDetailScreen(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    DeleteButton(
-                        modifier = Modifier.size(width = 112.dp, height = 40.dp),
-                        onClick = {
-                        // When you press delete in the details, we display the dialog
-                        viewModel.toggledecisionDialog(showdecisionDialog = true)
-                        //Log.d("ButtonDelete", "Click ")
-                        }
-                    )
+                    if (role != "BECARIO") {
+                        DeleteButton(
+                            modifier = Modifier.size(width = 112.dp, height = 40.dp),
+                            onClick = {
+                                // When you press delete in the details, we display the dialog
+                                viewModel.toggledecisionDialog(showdecisionDialog = true)
+                                //Log.d("ButtonDelete", "Click ")
+                            }
+                        )
+                    }
 
                     Spacer(modifier = Modifier.width(16.dp))
 
-                    ModifyButton(
-                        modifier = Modifier.size(width = 112.dp, height = 40.dp),
-                        onClick = {
-                            onModifyClick(workshopId)
-                        }
-                    )
+                    if (role != "BECARIO") {
+                        ModifyButton(
+                            modifier = Modifier.size(width = 112.dp, height = 40.dp),
+                            onClick = {
+                                onModifyClick(workshopId)
+                            }
+                        )
+                    }
                 }
             }
 

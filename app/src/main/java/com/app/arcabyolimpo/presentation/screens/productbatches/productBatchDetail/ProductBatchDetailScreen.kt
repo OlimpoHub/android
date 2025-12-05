@@ -24,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -31,10 +32,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,13 +59,22 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.InfoRow
 import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
 import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
+import kotlinx.coroutines.launch
 import org.jetbrains.annotations.Async
 
-/** ProductBatchDetailScreen: Composable screen displaying detailed information about a product batch.
+/**
+ * A Composable screen that displays detailed information about a single product batch.
  *
- * @param batchId String -> ID of the product batch to display
- * @param onBackClick () -> Unit -> callback for back navigation
- * @param viewModel ProductBatchDetailViewModel = hiltViewModel() -> ViewModel for managing UI state
+ * This screen fetches and shows data like the product image, price, status, and dates.
+ * It provides options to navigate back, delete the batch (with confirmation), or navigate
+ * to a modification screen. It also handles loading and error states.
+ *
+ * @param batchId The unique identifier of the product batch to be displayed.
+ * @param onBackClick A callback function to be invoked when the user taps the back button.
+ * @param onModifyClick A callback function that triggers navigation to the modification screen,
+ * passing the batch ID.
+ * @param viewModel The ViewModel instance for this screen, provided by Hilt, which manages
+ * state and business logic.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
@@ -76,6 +91,10 @@ fun ProductBatchDetailScreen(
     LaunchedEffect(batchId) {
         viewModel.loadBatch(batchId)
     }
+
+    var showConfirmDialog by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         containerColor = Background,
@@ -151,7 +170,16 @@ fun ProductBatchDetailScreen(
                                     .clip(RoundedCornerShape(16.dp))
                                     .background(MaterialTheme.colorScheme.surface),
                         ) {
-                            AsyncImage(model = batch?.imagen, contentDescription = null)
+                            AsyncImage(
+                                model = "http://74.208.78.8:8080/" + batch?.imagen,
+                                contentDescription = "imagen de ${batch?.nombre}",
+                                contentScale = ContentScale.Fit,
+                                alignment = Alignment.Center,
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .background(Color(0xFF040710)),
+                            )
                         }
 
                         Spacer(modifier = Modifier.height(16.dp))
@@ -178,7 +206,7 @@ fun ProductBatchDetailScreen(
                             }
 
                             InfoRow(label = "Cantidad Producida:", value = "${batch?.cantidadProducida ?: "0000"}")
-                            InfoRow(label = "Precio de Venta:", value = batch?.precioUnitario ?: "$00 MXN")
+                            InfoRow(label = "Precio Unitario:", value = batch?.precioUnitario ?: "$00 MXN")
                             InfoRow(label = "Descripción:", value = batch?.descripcion ?: "Lote de ${batch?.nombre ?: "Producto"}")
                             InfoRow(label = "Fecha de Caducidad:", value = batch?.fechaCaducidadFormatted ?: "00/00/00")
                             InfoRow(label = "Fecha de Elaboración:", value = batch?.fechaRealizacionFormatted ?: "00/00/00")
@@ -195,13 +223,30 @@ fun ProductBatchDetailScreen(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
                         DeleteButton(
-                            onClick = {
-                                viewModel.toggledecisionDialog(
-                                    showdecisionDialog = true,
-                                )
-                            },
+                            onClick = { showConfirmDialog = true },
                             modifier = Modifier.weight(1f),
                         )
+
+                        if (showConfirmDialog) {
+                            DecisionDialog(
+                                onDismissRequest = {
+                                    showConfirmDialog = false
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar("Lote no eliminado")
+                                    }
+                                },
+                                onConfirmation = {
+                                    showConfirmDialog = false
+                                    viewModel.deleteBatch(batchId)
+                                    onBackClick()
+                                },
+                                dialogTitle = "Confirmar eliminación",
+                                dialogText = "¿Deseas eliminar este lote de producto?",
+                                confirmText = "Confirmar",
+                                dismissText = "Cancelar",
+                            )
+                        }
+
                         ModifyButton(
                             onClick = {
                                 onModifyClick(batch?.idInventario ?: "")
@@ -212,27 +257,16 @@ fun ProductBatchDetailScreen(
                 }
             }
         }
-        if (state.decisionDialogVisible) {
-            DecisionDialog(
-                onDismissRequest = {
-                    viewModel.toggledecisionDialog(false)
-                },
-                onConfirmation = {
-                    viewModel.deleteBatch(batchId)
-                    viewModel.toggledecisionDialog(false)
-                    onBackClick()
-                },
-                dialogTitle = "¿Estás seguro de eliminar este Lote?",
-                dialogText = "Esta accion no podrá revertirse",
-                confirmText = "Confirmar",
-                dismissText = "Cancelar",
-            )
-        }
     }
 }
 
 /**
- * Helper Composable para el "badge" de estatus (ej. "Caducado")
+ * A private helper Composable that displays a status badge.
+ *
+ * This function determines which visual style to use for the badge based on the status text.
+ * For example, it will show an "ExpiredStatus" badge if the status is "Caducado".
+ *
+ * @param status The text string representing the batch's status (e.g., "Disponible", "Caducado").
  */
 @Suppress("ktlint:standard:function-naming")
 @Composable

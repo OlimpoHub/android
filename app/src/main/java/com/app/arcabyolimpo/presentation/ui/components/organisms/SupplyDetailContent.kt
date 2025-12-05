@@ -116,13 +116,13 @@ fun SupplyDetailContent(
                     .fillMaxWidth(),
         ) {
             AsyncImage(
-                model = supply.imageUrl,
+                model = "http://74.208.78.8:8080/" + supply.imageUrl,
                 contentDescription = "imagen de ${supply.name}",
                 modifier =
                     Modifier
                         .size(160.dp)
                         .background(
-                            Color(0xFF2A2A2A),
+                            Color(0xFF040610),
                             shape = RoundedCornerShape(20.dp),
                         ),
             )

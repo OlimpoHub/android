@@ -52,6 +52,18 @@ import com.app.arcabyolimpo.ui.theme.Background
 import com.app.arcabyolimpo.ui.theme.White
 import kotlinx.coroutines.launch
 
+/**
+ * SuppluBatchModifyScreen -> view where all the inputs, buttons and selects are shown with the
+ * information collected by the view model, handles different states and errors.
+ * @param supplyBatchId: String -> id of the batch to modify
+ * @param onRegisterClick: () -> Unit -> function when the batch is modified
+ * @param onBackClick: () -> Unit -> function when the user cancels the operation
+ * @param viewModel: SupplyBatchModifyViewModel -> vm for the view in charge of placing the data
+ * @return Unit
+ * @see SupplyBatchModifyViewModel
+ * @see SupplyBatchRegisterContent
+ * @see SupplyBatchModifyBottomBar
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable
@@ -93,8 +105,9 @@ fun SupplyBatchModifyScreen(
         topBar = {
             TopAppBar(
                 title = {
+                    val supplyName = state.suppliesList.firstOrNull { it.id == state.selectedSupplyId }?.name
                     Text(
-                        text = "Modificar Lotes",
+                        text = supplyName?.let { "Modificar Lotes de $it" } ?: "Modificar Lotes",
                         color = White,
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Bold,

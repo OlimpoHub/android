@@ -14,11 +14,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import com.app.arcabyolimpo.presentation.navigation.Screen
+import com.app.arcabyolimpo.presentation.screens.qr.scanqr.ScanQrScreen
+import com.app.arcabyolimpo.presentation.screens.qr.scanresult.ScanResultScreen
 import com.app.arcabyolimpo.presentation.screens.session.SessionViewModel
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun CollaboratorHomeScreen() {
+fun CollaboratorHomeScreen(navController: NavHostController) {
     val sessionViewModel: SessionViewModel = hiltViewModel()
 
     Column(
@@ -30,7 +34,9 @@ fun CollaboratorHomeScreen() {
         verticalArrangement = Arrangement.Center,
     ) {
         Text("Bienvenido Colaborador 👑", style = MaterialTheme.typography.headlineSmall)
-
+        Button(onClick = { navController.navigate(Screen.ScanQr.route) }) {
+            Text("Qr")
+        }
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(onClick = { sessionViewModel.logout() }) {
