@@ -4,6 +4,12 @@ import android.net.Uri
 import com.app.arcabyolimpo.domain.model.supplies.CategoryInfo
 import com.app.arcabyolimpo.domain.model.supplies.WorkshopInfo
 
+/**
+ * ProductAddUiState -> Data class that holds the current state of the UI for the
+ * product update screen.
+ *
+ * It contains all the data fields that the user can add as well as UI-specific states.
+ */
 data class ProductUpdateUiState(
     val workshops: List<WorkshopInfo> = emptyList(),
     val categories: List<CategoryInfo> = emptyList(),

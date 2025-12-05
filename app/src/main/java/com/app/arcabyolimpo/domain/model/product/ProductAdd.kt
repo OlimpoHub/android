@@ -2,10 +2,13 @@ package com.app.arcabyolimpo.domain.model.product
 
 import android.net.Uri
 
-/** ---------------------------------------------------------------------------------------------- *
- * Data class for adding a product, but this class is used so kotlin can handle the post easier
- * ---------------------------------------------------------------------------------------------- */
-data class ProductAdd(
+/**
+ * Domain model representing a product's full details, typically used
+ * for viewing, listing, or pre-filling an edit form.
+ * This model contains the structured data required by the business logic,
+ * converted from the ProductDto. To handle post easier.
+ */
+ data class ProductAdd(
     val idWorkshop: String,
     val name: String,
     val unitaryPrice: String,
