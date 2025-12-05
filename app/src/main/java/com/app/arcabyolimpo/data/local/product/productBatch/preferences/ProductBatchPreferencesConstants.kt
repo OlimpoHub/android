@@ -1,5 +1,8 @@
 package com.app.arcabyolimpo.data.local.product.productBatch.preferences
 
+/**
+ * Constants for product batch caching mechanism.
+ */
 object  ProductBatchPreferencesConstants {
     const val PREF_NAME = "product_batch_preferences"
     const val KEY_BATCH_CACHE = "product_batch_cache"

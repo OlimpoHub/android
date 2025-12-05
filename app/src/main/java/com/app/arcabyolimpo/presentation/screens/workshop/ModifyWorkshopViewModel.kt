@@ -34,12 +34,22 @@ import javax.inject.Inject
 /**
  * ViewModel responsible for managing the UI state of the Modify Workshop screen.
  *
- * This class interacts with the [GetAllUsersUseCase] to fetch data from the users available. It also
- * interacts with the and exposes a [StateFlow] of [WorkshopsListUiState]
- * that the UI observes to render updates.
+ * This class handles the entire workflow needed to modify an existing workshop, including:
+ * - Fetching the workshop data to be edited.
+ * - Retrieving the list of available users who can be assigned as instructors.
+ * - Uploading a new image for the workshop when required.
+ * - Sending the updated workshop information to the backend.
  *
- * @property GetAllUsersUseCase Use case for retrieving the list of users.
- * @property PostModifyWorkshop Use case for updating the data of the workshop in the database.
+ * It exposes a [StateFlow] of [ModifyWorkshopUiState] that the UI observes to reactively display
+ * loading changes, errors, success states, and workshop information.
+ *
+ * This ViewModel interacts with multiple use cases and repositories from the domain and data layers:
+ *
+ * @property postModifyWorkshop Use case responsible for submitting the updated workshop data to the server.
+ * @property getAllUsersUseCase Use case that retrieves the list of active users (e.g., instructors).
+ * @property repository Repository used to fetch existing workshop details from the backend.
+ * @property postUploadImage Use case that handles uploading a new workshop image to the server.
+ * @property context Application context used for accessing resources or file utilities.
  */
 
 @HiltViewModel

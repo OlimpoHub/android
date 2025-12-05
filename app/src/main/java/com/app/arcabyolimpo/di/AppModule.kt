@@ -350,6 +350,19 @@ object AppModule {
     @Singleton
     fun provideQrRepository(api: ArcaApi): QrRepository = QrRepositoryImpl(api)
 
+    /**
+     * Provides the [UploadRepository] implementation.
+     *
+     * This repository manages all upload-related operations,
+     * including sending images or files to the backend and
+     * returning the result of the upload process. It relies
+     * on [UploadRepositoryImpl] as the concrete implementation
+     * responsible for handling the API interaction.
+     *
+     * @param uploadRepositoryImpl The implementation of [UploadRepository]
+     * injected by Hilt to manage upload operations.
+     * @return A singleton instance of [UploadRepository] used across the app.
+     */
     @Provides
     @Singleton
     fun provideUploadRepository(uploadRepositoryImpl: UploadRepositoryImpl): UploadRepository = uploadRepositoryImpl

@@ -35,18 +35,27 @@ import com.app.arcabyolimpo.presentation.ui.components.molecules.FunctionalNavBa
 import com.app.arcabyolimpo.presentation.ui.components.molecules.NavBar
 import com.app.arcabyolimpo.ui.theme.ArcaByOlimpoTheme
 import com.app.arcabyolimpo.ui.theme.Background
-import kotlinx.coroutines.launch 
+import kotlinx.coroutines.launch
 
 /**
+ * Composable screen that displays the detailed information of a specific workshop.
  *
- * This composable acts as the screen for an individual Workshop.
- */
-
-/**
+ * This screen is responsible for showing all the information retrieved from the
+ * [WorkshopDetailViewModel] according to the provided [workshopId]. It provides:
+ * - The full detail of the selected workshop.
+ * - A button or action to navigate to the modification screen, triggered through [onModifyClick].
+ * - A button to return to the previous screen.
+ * - A navbar at the bottom of the screen.
  *
- * This composable acts as the screen for an individual Workshop.
+ * Additionally, session-related actions and validation are handled by the [SessionViewModel].
+ *
+ * @param navController The navigation controller used to move between screens in the [NavGraph].
+ * @param workshopId The unique identifier of the workshop whose details will be displayed.
+ * @param onModifyClick Callback invoked when the user chooses to modify the workshop.
+ * Receives the workshop ID to redirect properly.
+ * @param viewModel The [WorkshopDetailViewModel] responsible for providing workshop details.
+ * @param sessionViewModel The [SessionViewModel] used to manage session and authentication state.
  */
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WorkshopDetailScreen(

@@ -203,15 +203,56 @@ sealed class Screen(
 
     object SuppliesList : Screen("supply")
 
+    /**
+     * Screen that displays the full list of workshops.
+     *
+     * This screen serves as the entry point to browse all registered workshops.
+     * It does not require any navigation arguments and simply loads the catalog
+     * of workshops from the corresponding view model.
+     */
     object WorkshopsList : Screen("workshop")
 
+    /**
+     * Screen that displays the detailed information of a single workshop.
+     *
+     * This route requires:
+     * - id: The unique identifier of the workshop whose details will be shown.
+     *
+     * @see createRoute Builds the navigation route dynamically.
+     */
     object WorkshopDetail : Screen("workshop/{id}") {
+        /**
+         * Constructs the navigation route for the workshop detail screen.
+         *
+         * @param id The unique identifier of the workshop to display.
+         * @return A complete formatted route including the workshop id parameter.
+         */
         fun createRoute(id: String): String = "workshop/$id"
     }
 
+    /**
+     * Screen where the user can register a new workshop.
+     *
+     * This route requires no parameters and opens the form
+     * for adding a brand-new workshop to the system.
+     */
     object AddNewWorkshop : Screen("workshop/add")
 
+    /**
+     * Screen where the user edits an existing workshop.
+     *
+     * This route requires:
+     * - idTaller: The unique identifier of the workshop to be modified.
+     *
+     * @see createRoute Builds the navigation route dynamically.
+     */
     object ModifyWorkshop : Screen("workshop/modify/{idTaller}") {
+        /**
+         * Constructs the navigation route for the modify workshop screen.
+         *
+         * @param idTaller The ID of the workshop the user intends to modify.
+         * @return A complete formatted route including the workshop ID parameter.
+         */
         fun createRoute(idTaller: String) = "workshop/modify/$idTaller"
     }
 
@@ -739,17 +780,33 @@ fun ArcaNavGraph(
             )
         }
 
+        /**
+         * Workshops Modify Screen.
+         *
+         * This composable represents the screen where users can modify the data
+         * of an existing workshop. It receives the workshop's unique identifier
+         * through navigation arguments.
+         *
+         * It connects to the [modifyWorkshopScreen] composable, which displays the UI and
+         * interacts with its corresponding [ModifyWorkshopViewModel] to handle current data loading,
+         * update operations, validation, and error states.
+         *
+         * Navigation Arguments:
+         * - idTaller: The unique ID of the workshop to be edited.
+         */
         composable(
             route = Screen.ModifyWorkshop.route,
             arguments = listOf(navArgument("idTaller") { type = NavType.StringType }),
         ) { backStackEntry ->
             val workshopId = backStackEntry.arguments?.getString("idTaller") ?: ""
+
             modifyWorkshopScreen(
                 navController = navController,
                 viewModel = hiltViewModel(),
                 workshopId = workshopId,
             )
         }
+
 
         /**
 

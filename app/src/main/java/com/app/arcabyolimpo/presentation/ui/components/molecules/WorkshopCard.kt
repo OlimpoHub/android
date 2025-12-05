@@ -20,6 +20,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 
+/**
+ * A styled card component used to display a workshop inside the Workshops screen.
+ *
+ * This card shows the workshop name on the left side and loads an image from a URL
+ * on the right side. It uses the same blue gradient styling as [HomeScreenCard]
+ * to maintain visual consistency across the app.
+ *
+ * The entire card is clickable and triggers the provided [onClick] callback
+ * when pressed.
+ *
+ * @param name The displayed name of the workshop.
+ * @param imageUrl The URL pointing to the image associated with the workshop.
+ * If null or empty, a placeholder box is shown instead.
+ * @param onClick Lambda executed when the card is tapped.
+ */
 @Composable
 fun WorkshopCard(
     name: String,

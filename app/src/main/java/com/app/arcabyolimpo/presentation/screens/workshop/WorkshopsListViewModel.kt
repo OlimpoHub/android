@@ -18,12 +18,18 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import javax.inject.Inject
 
 /**
- * ViewModel responsible for managing the UI state of the workshops list screen.
+ * ViewModel responsible for managing the UI state of the Workshops List screen.
  *
- * This class interacts with the [GetWorkshopsListUseCase] to fetch data from the domain layer
- * and exposes a [StateFlow] of [WorkshopsListUiState] that the UI observes to render updates.
+ * This ViewModel handles:
+ * - Loading the full list of workshops from the backend.
+ * - Searching workshops based on various filters or text queries.
+ * - Exposing changes in loading states, error messages, and filtered results.
  *
- * @property getWorkshopsListUseCase Use case for retrieving the list of workshops.
+ * It exposes a [StateFlow] of [WorkshopsListUiState] that the UI observes to dynamically
+ * render the list of workshops and react to user interactions.
+ *
+ * @property getWorkshopsListUseCase Use case responsible for retrieving the entire workshop list.
+ * @property searchWorkshopsUseCase Use case that performs search operations on workshops.
  */
 @HiltViewModel
 class WorkshopsListViewModel @Inject constructor(

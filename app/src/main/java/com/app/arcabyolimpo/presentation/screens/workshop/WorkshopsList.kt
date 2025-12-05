@@ -36,6 +36,23 @@ import com.app.arcabyolimpo.ui.theme.Background
 import kotlinx.coroutines.launch
 import com.app.arcabyolimpo.ui.theme.White
 
+/**
+ * Composable screen that displays the complete list of workshops.
+ *
+ * This screen retrieves the workshop list from the [WorkshopsListViewModel] and provides:
+ * - A scrollable list showing all workshops registered in the database.
+ * - The ability to click on any workshop item to navigate to its detail screen
+ *   using the [workshopClick] callback.
+ * - A button to refresh the list or load more if needed.
+ * - A navbar at the bottom of the screen.
+ *
+ * Session management, including user actions and permissions, is handled through the [SessionViewModel].
+ *
+ * @param navController The navigation controller used to move between screens defined in the [NavGraph].
+ * @param workshopClick Callback triggered when selecting a specific workshop. Receives the workshop ID.
+ * @param viewModel The [WorkshopsListViewModel] responsible for loading and managing the workshop list UI state.
+ * @param sessionViewModel The [SessionViewModel] used to manage session and authentication state.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WorkshopsListScreen(

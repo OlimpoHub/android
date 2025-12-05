@@ -24,6 +24,26 @@ import java.io.FileOutputStream
 import java.util.UUID
 import javax.inject.Inject
 
+/**
+ * ViewModel responsible for managing the UI state of the Add New Workshop screen.
+ *
+ * This class handles the workflow required for registering a new workshop in the system,
+ * including:
+ * - Managing form state for all workshop fields.
+ * - Retrieving the list of available users (e.g., instructors).
+ * - Uploading the workshop image when provided by the user.
+ * - Sending the completed data to the backend for registration.
+ *
+ * It exposes a [StateFlow] of [AddNewWorkshopUiState] that the UI observes to render updates,
+ * such as loading progress, success states, error messages, or updated form values.
+ *
+ * This ViewModel interacts with multiple use cases from the domain layer:
+ *
+ * @property postAddNewWorkshop Use case responsible for submitting a new workshop to the server.
+ * @property getAllUsersUseCase Use case that retrieves the list of users for assignment.
+ * @property postUploadImage Use case responsible for uploading the workshop image.
+ * @property context Application context used for accessing resources or file utilities.
+ */
 @HiltViewModel
 class AddNewWorkshopViewModel @Inject constructor(
     private val postAddNewWorkshop: PostAddNewWorkshop,
