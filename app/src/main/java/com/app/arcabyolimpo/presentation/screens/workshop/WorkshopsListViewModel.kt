@@ -146,6 +146,14 @@ class WorkshopsListViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Clears all active filters and restores the original list of workshops.
+     *
+     * This resets:
+     * - The selected filters object
+     * - The visible workshop list
+     * - The search results list
+     */
     fun clearFilters() {
         _uiState.update { current ->
             current.copy(
@@ -155,6 +163,17 @@ class WorkshopsListViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Applies filtering logic according to the provided [FilterDto].
+     *
+     * Supports:
+     * - Filtering by "Estatus" (Activo / Inactivo)
+     * - Filtering by date of the workshop
+     * - Filtering by entry hour of the workshop
+     * - Sorting based on the "order" parameter
+     *
+     * Updates the UI state with the filtered and sorted list.
+     */
     fun applyFilters(filterDto: FilterDto) {
         _uiState.update { current ->
             val dateFilter = getFilterValues(filterDto, "Fecha")
@@ -164,7 +183,6 @@ class WorkshopsListViewModel @Inject constructor(
             val filteredWorkshops =
                 originalWorkshopsList.filter { workshop ->
 
-                    // ----- Fecha -----
                     val normalizedDate = (workshop.date ?: "").take(10)
                     val matchesDate =
                         when {
@@ -174,7 +192,6 @@ class WorkshopsListViewModel @Inject constructor(
                             }
                         }
 
-                    // ----- Hora de entrada -----
                     val matchesHour =
                         when {
                             hourFilter.isNullOrEmpty() -> true
@@ -188,7 +205,6 @@ class WorkshopsListViewModel @Inject constructor(
                             }
                         }
 
-                    // ----- Estatus -----
                     val matchesStatus =
                         when {
                             statusFilter.isNullOrEmpty() -> true
@@ -217,6 +233,22 @@ class WorkshopsListViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Retrieves the selected filter values for a specific filter key.
+     *
+     * Supports:
+     * - Normalized lookup (ignores case and extra spaces)
+     * - Partial key matching (e.g., "Fecha" matches "Fecha del Taller")
+     * - Returning all selected values for the filter section
+     *
+     * Behavior:
+     * - Returns null if no filters are applied
+     * - Returns the matching list of values if found
+     * - Returns null if the requested key does not exist in the filter map
+     *
+     * @param filterDto Filter data containing all active filters.
+     * @param key The filter section to look for (e.g., "Fecha", "Estado").
+     */
     private fun getFilterValues(filterDto: FilterDto, key: String): List<String>? {
         if (filterDto.filters.isEmpty()) return null
 
