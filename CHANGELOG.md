@@ -1,3 +1,7 @@
+## [0.2.0] - 05/12/2025
+### Fixed
+- Update Product View Model - Validation function
+
 ## [0.2.0] - 04/12/2025
 ### Added
  - Code comments for workshops

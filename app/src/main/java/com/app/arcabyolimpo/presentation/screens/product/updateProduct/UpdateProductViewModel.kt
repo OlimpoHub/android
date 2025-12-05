@@ -198,7 +198,7 @@ class UpdateProductViewModel @Inject constructor(
         }
 
         // 2. Validacion for image
-        if(state.selectedImage == null) {
+        if(state.selectedImageUrl == null) {
             _uiState.update { it.copy(isImageError = true, imageErrorMessage = "Debes seleccionar una imagen.") }
             isValid = false
         }
@@ -213,13 +213,13 @@ class UpdateProductViewModel @Inject constructor(
         }
 
         // 4. Validacion for workshop
-        if(state.selectedWorkshopId.isBlank()) {
+        if(state.selectedIdWorkshop.isNullOrBlank()) {
             _uiState.update { it.copy(isWorkshopError = true, workshopErrorMessage = "Debes seleccionar un taller.") }
             isValid = false
         }
 
         // 5. Validación for category
-        if(state.selectedCategoryId.isBlank()) {
+        if(state.selectedIdCategory.isNullOrBlank()) {
             _uiState.update { it.copy(isCategoryError = true, categoryErrorMessage = "Debes seleccionar una categoría.") }
             isValid = false
         }
