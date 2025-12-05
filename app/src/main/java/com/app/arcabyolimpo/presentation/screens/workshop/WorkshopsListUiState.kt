@@ -8,13 +8,13 @@ import com.app.arcabyolimpo.domain.model.workshops.Workshop
  * UI state model representing the current state of the workshop list screen.
  *
  * This state is observed by the UI to reflect updates from the domain layer,
- * such as loading progress, data availability, or errors.
+ * such as loading status, available workshops, applied filters, or error states.
  *
- * @property workshopList The list of [Workshop] items currently displayed on screen.
+ * @property workshopsList The list of [Workshop] items currently displayed on screen.
  * @property isLoading Indicates whether the workshop list is being loaded.
  * @property error An optional error message shown when data loading fails.
- * @property filterData The available filtering options displayed in the filter modal.
- * @property selectedFilters The active filters and ordering applied to the workshops list.
+ * @property filterData Contains all available filter sections and their options for the list.
+ * @property selectedFilters The set of filters currently applied to the workshop list.
  */
 data class WorkshopsListUiState (
     val workshopsList: List<Workshop> = emptyList(),

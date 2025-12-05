@@ -311,25 +311,54 @@ interface ArcaApi {
     ): DeleteResponseDto
 
     // Workshop ---------------------------
-
+    /**
+     * Retrieves the complete list of workshops from the backend.
+     *
+     * @return A list of [WorkshopDto] representing all workshops stored in the system.
+     */
     @GET("workshop")
     suspend fun getWorkshops(): List<WorkshopDto>
 
+    /**
+     * Searches workshops by name.
+     *
+     * @param name Name or partial name of the workshop to search for.
+     * @return A list of [WorkshopDto] matching the search criteria.
+     */
     @GET("workshop/search")
     suspend fun searchWorkshops(
         @Query("nameWorkshop") name: String,
     ): List<WorkshopDto>
 
+    /**
+     * Retrieves detailed information for a single workshop.
+     *
+     * @param id Unique identifier of the workshop to retrieve.
+     * @return A [WorkshopResponseDto] containing full workshop information.
+     */
     @GET("workshop/{id}")
     suspend fun getWorkshop(
         @Path("id") id: String,
     ): WorkshopResponseDto
 
+    /**
+     * Registers a new workshop in the backend.
+     *
+     * @param requestBody Data transfer object containing the required workshop fields.
+     * @return [AddNewWorkshopDto] containing confirmation details of the creation.
+     */
     @POST("workshop/add")
     suspend fun addWorkshop(
         @Body requestBody: WorkshopDto,
     ): AddNewWorkshopDto
 
+    /**
+     * Updates an existing workshop in the backend.
+     *
+     * @param id Unique identifier of the workshop to update.
+     * @param requestBody Data transfer object containing the updated workshop fields.
+     * @return [AddNewWorkshopDto] containing confirmation details of the update.
+     */
     @POST("workshop/modify/{idTaller}")
     suspend fun modifyWorkshop(
         @Path("idTaller") id: String,
@@ -337,20 +366,19 @@ interface ArcaApi {
     ): AddNewWorkshopDto
 
     /**
-     * Deletes a single Workshop from the backend.
+     * Deletes a single workshop from the backend.
      *
      * This endpoint receives a [DeleteWorkshopDto] with the information needed
-     * to identify which supply should be removed ( its ID).
+     * to identify which workshop should be removed.
      *
-     * @param requestBody Data transfer object that contains the supply
-     * information required by the API to perform the delete operation.
-     * @return [DeleteResponseWorkshopDto] containing the result of the delete
-     * operation, such as a success flag and/or a confirmation message.
+     * @param requestBody Data transfer object containing the workshop ID
+     * required by the API to perform the delete operation.
+     * @return [DeleteResponseWorkshopDto] with the result of the delete operation,
+     * including a success flag and/or confirmation message.
      */
     @POST("workshop/delete")
     suspend fun deleteWorkshops(
         @Body requestBody: DeleteWorkshopDto,
-        // DeleteResponseDto is for the response, for the snackbar
     ): DeleteResponseWorkshopDto
 
     // Beneficiary -------------
@@ -692,6 +720,16 @@ interface ArcaApi {
         @Body request: CreateQrDto,
     ): ResponseBody
 
+    /**
+     * Uploads an image associated with a workshop to the backend.
+     *
+     * This endpoint receives a multipart file and returns a response indicating
+     * whether the upload was successful, along with the generated URL or file name.
+     *
+     * @param image Multipart file part containing the image to upload.
+     * @return [UploadResponse] containing the result of the operation, including
+     * the stored file name or URL provided by the backend.
+     */
     @POST("upload")
     @Multipart
     suspend fun uploadWorkshopImage(
